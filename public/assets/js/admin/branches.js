@@ -79,51 +79,51 @@
         tbody.innerHTML = branches.map((b, i) => {
             const isSystem = b.type === 'system';
             const typeBadge = isSystem
-                ? '<span class="status-badge !bg-blue-50 !text-blue-700 !border-blue-200 dark:!bg-blue-900/30 dark:!text-blue-400 !text-[9px] !px-2 font-mono">SYSTEM</span>'
-                : '<span class="status-badge !bg-amber-50 !text-amber-700 !border-amber-200 dark:!bg-amber-900/30 dark:!text-amber-400 !text-[9px] !px-2 font-mono">CUSTOM</span>';
+                ? '<span class="px-2 py-0.5 rounded-md text-[9px] font-mono font-bold bg-blue-50 text-blue-700 border border-blue-200 dark:bg-blue-950/60 dark:text-blue-300 dark:border-blue-800/40">SYSTEM</span>'
+                : '<span class="px-2 py-0.5 rounded-md text-[9px] font-mono font-bold bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-800/40">CUSTOM</span>';
             
             const countStr = String(i + 1).padStart(2, '0');
             const isActive = b.status === 'active';
             const statusBadge = isActive 
-                ? '<span class="status-badge badge-success !text-[9px] !px-2">ACTIVE</span>'
-                : '<span class="status-badge badge-danger !text-[9px] !px-2">INACTIVE</span>';
+                ? '<span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800/40 inline-flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> ACTIVE</span>'
+                : '<span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-red-50 text-red-700 border border-red-200 dark:bg-red-950/60 dark:text-red-300 dark:border-red-800/40 inline-flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> INACTIVE</span>';
 
             const managerAvatarUrl = b.manager_avatar_url || resolveUrl(b.manager_avatar, 'staff-photos');
             const managerInitial = b.manager_initials || (b.manager_name ? b.manager_name.charAt(0).toUpperCase() : '??');
             
             return `
-            <tr data-id="${b.id}" class="hover:bg-surface-hover/60 transition-colors">
-                <td class="font-bold opacity-40 text-xs">${countStr}</td>
-                <td>
-                    <div class="font-bold text-sm text-text-primary branch-name-text">${escapeHtml(b.name)}</div>
-                    <div class="text-[10px] text-text-secondary font-medium">${escapeHtml(b.city || b.state || 'Local Branch')}</div>
+            <tr data-id="${b.id}" class="hover:bg-surface-hover/60 dark:hover:bg-white/5 transition-colors border-b border-border-subtle dark:border-white/5">
+                <td class="font-bold opacity-40 text-xs text-text-primary dark:text-slate-400 px-4 py-3.5">${countStr}</td>
+                <td class="px-4 py-3.5">
+                    <div class="font-bold text-sm text-text-primary dark:text-white branch-name-text">${escapeHtml(b.name)}</div>
+                    <div class="text-[10px] text-text-secondary dark:text-slate-400 font-medium">${escapeHtml(b.city || b.state || 'Local Branch')}</div>
                 </td>
-                <td class="text-xs font-bold font-mono text-primary">${escapeHtml(b.branch_code || 'N/A')}</td>
-                <td class="text-xs font-medium text-text-primary">${escapeHtml(b.state || 'N/A')}</td>
-                <td>
+                <td class="px-4 py-3.5 text-xs font-bold font-mono text-primary dark:text-amber-400">${escapeHtml(b.branch_code || 'N/A')}</td>
+                <td class="px-4 py-3.5 text-xs font-medium text-text-primary dark:text-slate-300">${escapeHtml(b.state || 'N/A')}</td>
+                <td class="px-4 py-3.5">
                     <div class="flex items-center gap-2.5">
-                        <div class="w-7 h-7 text-[10px] bg-primary-50 dark:bg-primary/20 text-primary font-black flex items-center justify-center rounded-full uppercase overflow-hidden shrink-0 border border-primary-100 dark:border-primary/30">
+                        <div class="w-7 h-7 text-[10px] bg-primary-50 dark:bg-primary/20 text-primary dark:text-primary-300 font-black flex items-center justify-center rounded-full uppercase overflow-hidden shrink-0 border border-primary-100 dark:border-primary/30">
                             ${managerAvatarUrl ? `<img src="${managerAvatarUrl}?v=${Date.now()}" class="w-full h-full object-cover" onerror="this.parentElement.innerHTML='${managerInitial}'">` : managerInitial}
                         </div>
                         <div class="min-w-0">
-                            <div class="text-xs font-bold text-text-primary truncate">${escapeHtml(b.manager_name || 'Unassigned')}</div>
-                            ${b.manager_staff_id ? `<div class="text-[10px] opacity-60 font-mono font-medium">${escapeHtml(b.manager_staff_id)}</div>` : ''}
+                            <div class="text-xs font-bold text-text-primary dark:text-white truncate">${escapeHtml(b.manager_name || 'Unassigned')}</div>
+                            ${b.manager_staff_id ? `<div class="text-[10px] text-text-secondary dark:text-slate-400 font-mono font-medium">${escapeHtml(b.manager_staff_id)}</div>` : ''}
                         </div>
                     </div>
                 </td>
-                <td class="text-center font-bold text-xs text-text-primary">${b.staff_count || 0}</td>
-                <td>${typeBadge}</td>
-                <td>${statusBadge}</td>
-                <td class="text-right">
+                <td class="px-4 py-3.5 text-center font-bold text-xs text-text-primary dark:text-slate-200">${b.staff_count || 0}</td>
+                <td class="px-4 py-3.5">${typeBadge}</td>
+                <td class="px-4 py-3.5">${statusBadge}</td>
+                <td class="px-4 py-3.5 text-right">
                     <div class="flex justify-end gap-1">
-                        <button type="button" class="p-2 hover:bg-surface-hover rounded-lg text-text-secondary hover:text-primary transition-colors action-view" data-id="${b.id}" title="View Details">
+                        <button type="button" class="p-2 hover:bg-surface-hover dark:hover:bg-white/10 rounded-lg text-text-secondary dark:text-slate-400 hover:text-primary dark:hover:text-white transition-colors action-view" data-id="${b.id}" title="View Details">
                             <span class="material-symbols-outlined text-[18px]" aria-hidden="true">visibility</span>
                         </button>
-                        <button type="button" class="p-2 hover:bg-surface-hover rounded-lg text-text-secondary hover:text-primary transition-colors action-edit" data-id="${b.id}" title="Edit Branch">
+                        <button type="button" class="p-2 hover:bg-surface-hover dark:hover:bg-white/10 rounded-lg text-text-secondary dark:text-slate-400 hover:text-primary dark:hover:text-white transition-colors action-edit" data-id="${b.id}" title="Edit Branch">
                             <span class="material-symbols-outlined text-[18px]" aria-hidden="true">edit</span>
                         </button>
                         ${!isSystem ? `
-                        <button type="button" class="p-2 hover:bg-error-bg rounded-lg text-text-secondary hover:text-error transition-colors action-delete" data-id="${b.id}" data-name="${escapeHtml(b.name)}" data-code="${escapeHtml(b.branch_code)}" title="Delete Branch">
+                        <button type="button" class="p-2 hover:bg-red-50 dark:hover:bg-red-950/40 rounded-lg text-text-secondary dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 transition-colors action-delete" data-id="${b.id}" data-name="${escapeHtml(b.name)}" data-code="${escapeHtml(b.branch_code)}" title="Delete Branch">
                             <span class="material-symbols-outlined text-[18px]" aria-hidden="true">delete</span>
                         </button>` : ''}
                     </div>
@@ -153,19 +153,19 @@
 
         if (totalEl) {
             totalEl.classList.remove('skeleton');
-            totalEl.innerHTML = `${stats.total || 0} <span class="admin-stat-delta neutral bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 px-1.5 py-0.5 rounded text-[10px] ml-1">Network</span>`;
+            totalEl.innerHTML = `${stats.total || 0} <span class="admin-stat-delta neutral bg-blue-100 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800/40 px-1.5 py-0.5 rounded text-[10px] ml-1 font-bold">Network</span>`;
         }
         if (activeEl) {
             activeEl.classList.remove('skeleton');
-            activeEl.innerHTML = `${stats.active || 0} <span class="admin-stat-delta positive bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 px-1.5 py-0.5 rounded text-[10px] ml-1">Operational</span>`;
+            activeEl.innerHTML = `${stats.active || 0} <span class="admin-stat-delta positive bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/40 px-1.5 py-0.5 rounded text-[10px] ml-1 font-bold">Operational</span>`;
         }
         if (staffEl) {
             staffEl.classList.remove('skeleton');
-            staffEl.innerHTML = `${stats.total_staff || 0} <span class="admin-stat-delta bg-primary-50 dark:bg-primary/20 text-primary px-1.5 py-0.5 rounded text-[10px] ml-1">Assigned</span>`;
+            staffEl.innerHTML = `${stats.total_staff || 0} <span class="admin-stat-delta bg-purple-100 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800/40 px-1.5 py-0.5 rounded text-[10px] ml-1 font-bold">Assigned</span>`;
         }
         if (txnsEl) {
             txnsEl.classList.remove('skeleton');
-            txnsEl.innerHTML = `${stats.total_txns || 0} <span class="admin-stat-delta bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 px-1.5 py-0.5 rounded text-[10px] ml-1">Processed</span>`;
+            txnsEl.innerHTML = `${stats.total_txns || 0} <span class="admin-stat-delta bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800/40 px-1.5 py-0.5 rounded text-[10px] ml-1 font-bold">Processed</span>`;
         }
     }
 
@@ -198,10 +198,10 @@
         }
 
         let html = `
-            <div class="finzo-dropdown-option flex items-center gap-3 p-3 hover:bg-surface-hover cursor-pointer transition-colors border-b border-border-subtle" data-value="" data-name="Select Staff Member (Optional)">
-                <div class="w-7 h-7 rounded-full bg-surface-hover flex items-center justify-center font-bold text-xs text-text-secondary">—</div>
+            <div class="finzo-dropdown-option flex items-center gap-3 p-3 hover:bg-surface-hover dark:hover:bg-white/5 cursor-pointer transition-colors border-b border-border-subtle dark:border-white/10" data-value="" data-name="Select Staff Member (Optional)">
+                <div class="w-7 h-7 rounded-full bg-surface-subtle dark:bg-surface-dark flex items-center justify-center font-bold text-xs text-text-secondary dark:text-slate-400">—</div>
                 <div class="flex-1 min-w-0">
-                    <div class="text-xs font-bold text-text-secondary">None (Unassigned)</div>
+                    <div class="text-xs font-bold text-text-secondary dark:text-slate-400">None (Unassigned)</div>
                 </div>
             </div>
         `;
@@ -210,11 +210,11 @@
             const isSelected = selectedManagerId && String(s.id) === String(selectedManagerId);
             const initial = s.initials || (s.full_name ? s.full_name.charAt(0).toUpperCase() : 'ST');
             return `
-            <div class="finzo-dropdown-option flex items-center gap-3 p-3 hover:bg-surface-hover cursor-pointer transition-colors ${isSelected ? 'bg-primary-50/50 dark:bg-primary/10' : ''}" data-value="${s.id}" data-name="${escapeHtml(s.full_name)}" data-id="${escapeHtml(s.staff_id)}">
-                <div class="w-7 h-7 rounded-full bg-primary-50 dark:bg-primary/20 text-primary flex items-center justify-center font-bold text-xs uppercase shrink-0">${initial}</div>
+            <div class="finzo-dropdown-option flex items-center gap-3 p-3 hover:bg-surface-hover dark:hover:bg-white/5 cursor-pointer transition-colors ${isSelected ? 'bg-primary-50/50 dark:bg-primary/20' : ''}" data-value="${s.id}" data-name="${escapeHtml(s.full_name)}" data-id="${escapeHtml(s.staff_id)}">
+                <div class="w-7 h-7 rounded-full bg-primary-50 dark:bg-primary/20 text-primary dark:text-primary-300 flex items-center justify-center font-bold text-xs uppercase shrink-0 border border-primary-100 dark:border-primary/30">${initial}</div>
                 <div class="flex-1 min-w-0">
-                    <div class="text-xs font-bold text-text-primary truncate">${escapeHtml(s.full_name)}</div>
-                    <div class="text-[10px] text-text-secondary font-medium truncate">${escapeHtml(s.staff_id)} &bull; ${escapeHtml(s.designation || 'Staff')}</div>
+                    <div class="text-xs font-bold text-text-primary dark:text-white truncate">${escapeHtml(s.full_name)}</div>
+                    <div class="text-[10px] text-text-secondary dark:text-slate-400 font-medium truncate">${escapeHtml(s.staff_id)} &bull; ${escapeHtml(s.designation || 'Staff')}</div>
                 </div>
             </div>`;
         }).join('');
@@ -682,13 +682,13 @@
         if (badgesContainer) {
             const isSystem = branch.type === 'system';
             const typeBadge = isSystem
-                ? '<span class="px-2 py-0.5 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-800 text-[9px] font-black rounded uppercase tracking-widest font-mono">SYSTEM</span>'
-                : '<span class="px-2 py-0.5 bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800 text-[9px] font-black rounded uppercase tracking-widest font-mono">CUSTOM</span>';
+                ? '<span class="px-2 py-0.5 bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800/40 text-[9px] font-black rounded uppercase tracking-widest font-mono">SYSTEM</span>'
+                : '<span class="px-2 py-0.5 bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800/40 text-[9px] font-black rounded uppercase tracking-widest font-mono">CUSTOM</span>';
             
             const isActive = branch.status === 'active';
             const statusBadge = isActive
-                ? '<span class="px-2 py-0.5 bg-success-bg text-success border border-success-bg text-[9px] font-black rounded uppercase tracking-widest">ACTIVE</span>'
-                : '<span class="px-2 py-0.5 bg-error-bg text-error border border-error-bg text-[9px] font-black rounded uppercase tracking-widest">INACTIVE</span>';
+                ? '<span class="px-2 py-0.5 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/40 text-[9px] font-black rounded uppercase tracking-widest">ACTIVE</span>'
+                : '<span class="px-2 py-0.5 bg-red-50 dark:bg-red-950/60 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800/40 text-[9px] font-black rounded uppercase tracking-widest">INACTIVE</span>';
 
             badgesContainer.innerHTML = `${typeBadge} ${statusBadge}`;
         }
@@ -808,30 +808,32 @@
                 } else {
                     if (noStaff) noStaff.classList.add('hidden');
                     tbody.innerHTML = staff.map(s => {
-                        const statusStyle = s.status === 'active' ? 'badge-success' : 'badge-danger';
+                        const statusBadge = s.status === 'active' 
+                            ? '<span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800/40 inline-flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> ACTIVE</span>'
+                            : '<span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-red-50 text-red-700 border border-red-200 dark:bg-red-950/60 dark:text-red-300 dark:border-red-800/40 inline-flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> INACTIVE</span>';
                         const photoUrl = s.profile_photo_url || resolveUrl(s.profile_photo, 'staff-photos');
                         const initial = s.initials || (s.full_name ? s.full_name.charAt(0).toUpperCase() : 'ST');
 
                         return `
-                        <tr class="hover:bg-surface-hover/60 transition-colors border-b border-border-subtle">
-                            <td class="px-6 py-4 font-mono text-xs font-bold text-primary">${escapeHtml(s.staff_id)}</td>
+                        <tr class="hover:bg-surface-hover/60 dark:hover:bg-white/5 transition-colors border-b border-border-subtle dark:border-white/5">
+                            <td class="px-6 py-4 font-mono text-xs font-bold text-primary dark:text-amber-400">${escapeHtml(s.staff_id)}</td>
                             <td class="px-6 py-4">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-8 h-8 rounded-full bg-primary-50 dark:bg-primary/20 text-primary font-bold text-xs flex items-center justify-center overflow-hidden shrink-0 border border-primary-100 dark:border-primary/30">
+                                    <div class="w-8 h-8 rounded-full bg-primary-50 dark:bg-primary/20 text-primary dark:text-primary-300 font-bold text-xs flex items-center justify-center overflow-hidden shrink-0 border border-primary-100 dark:border-primary/30">
                                         ${photoUrl ? `<img src="${photoUrl}?v=${Date.now()}" class="w-full h-full object-cover" onerror="this.parentElement.innerHTML='${initial}'">` : initial}
                                     </div>
                                     <div class="min-w-0">
-                                        <div class="text-xs font-bold text-text-primary truncate">${escapeHtml(s.full_name)}</div>
-                                        <div class="text-[10px] text-text-secondary font-bold uppercase tracking-widest">${escapeHtml(s.designation || 'Staff')}</div>
+                                        <div class="text-xs font-bold text-text-primary dark:text-white truncate">${escapeHtml(s.full_name)}</div>
+                                        <div class="text-[10px] text-text-secondary dark:text-slate-400 font-bold uppercase tracking-widest">${escapeHtml(s.designation || 'Staff')}</div>
                                     </div>
                                 </div>
                             </td>
                             <td class="px-6 py-4">
-                                <div class="text-xs font-bold text-text-primary">${escapeHtml(s.personal_email || s.email || 'N/A')}</div>
-                                <div class="text-[10px] text-text-secondary font-medium">${escapeHtml(s.phone || 'N/A')}</div>
+                                <div class="text-xs font-bold text-text-primary dark:text-white">${escapeHtml(s.personal_email || s.email || 'N/A')}</div>
+                                <div class="text-[10px] text-text-secondary dark:text-slate-400 font-medium">${escapeHtml(s.phone || 'N/A')}</div>
                             </td>
                             <td class="px-6 py-4">
-                                <span class="status-badge ${statusStyle} !text-[9px] !px-2">${(s.status || 'ACTIVE').toUpperCase()}</span>
+                                ${statusBadge}
                             </td>
                             <td class="px-6 py-4 text-right">
                                 <a href="/Finzo/public/views/admin/admin-staff.php?search=${encodeURIComponent(s.staff_id)}" class="btn btn-secondary btn-sm !px-3 !py-1 !text-[10px]" target="_blank">

@@ -19,63 +19,70 @@ ob_start();
     <!-- STATS ROW -->
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8 relative z-10">
         <div class="ds-card p-5 sm:p-6 flex flex-col items-start justify-center group relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
-            <div class="absolute -right-6 -top-6 w-24 h-24 bg-info/10 rounded-full blur-2xl group-hover:bg-info/20 transition-all"></div>
+            <div class="absolute -right-6 -top-6 w-24 h-24 bg-blue-500/10 rounded-full blur-2xl group-hover:bg-blue-500/20 transition-all"></div>
             <div class="relative z-10 w-full">
-                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-info/20 to-info/5 text-info flex items-center justify-center mb-4 border border-info/20 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]">
+                <div class="w-12 h-12 rounded-xl bg-blue-500/10 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-4 border border-blue-500/20 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]">
                     <span class="material-symbols-outlined text-2xl" aria-hidden="true">store</span>
                 </div>
-                <div class="text-[10px] font-black text-text-secondary uppercase tracking-[0.15em] mb-2">TOTAL BRANCHES</div>
-                <div id="stat-total-branches" class="text-3xl font-black font-display tracking-tighter leading-none text-text-primary skeleton min-w-[40px]">—</div>
+                <div class="text-[10px] font-black text-text-secondary dark:text-slate-400 uppercase tracking-[0.15em] mb-2">TOTAL BRANCHES</div>
+                <div id="stat-total-branches" class="text-3xl font-black font-display tracking-tighter leading-none text-text-primary dark:text-white skeleton min-w-[40px]">—</div>
             </div>
         </div>
         <div class="ds-card p-5 sm:p-6 flex flex-col items-start justify-center group relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
-            <div class="absolute -right-6 -top-6 w-24 h-24 bg-success/10 rounded-full blur-2xl group-hover:bg-success/20 transition-all"></div>
+            <div class="absolute -right-6 -top-6 w-24 h-24 bg-emerald-500/10 rounded-full blur-2xl group-hover:bg-emerald-500/20 transition-all"></div>
             <div class="relative z-10 w-full">
-                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-success/20 to-success/5 text-success flex items-center justify-center mb-4 border border-success/20 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]">
+                <div class="w-12 h-12 rounded-xl bg-emerald-500/10 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mb-4 border border-emerald-500/20 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]">
                     <span class="material-symbols-outlined text-2xl" aria-hidden="true">check_circle</span>
                 </div>
-                <div class="text-[10px] font-black text-text-secondary uppercase tracking-[0.15em] mb-2">ACTIVE BRANCHES</div>
-                <div id="stat-active-branches" class="text-3xl font-black font-display tracking-tighter leading-none text-text-primary skeleton min-w-[40px]">—</div>
+                <div class="text-[10px] font-black text-text-secondary dark:text-slate-400 uppercase tracking-[0.15em] mb-2">ACTIVE BRANCHES</div>
+                <div id="stat-active-branches" class="text-3xl font-black font-display tracking-tighter leading-none text-text-primary dark:text-white skeleton min-w-[40px]">—</div>
             </div>
         </div>
         <div class="ds-card p-5 sm:p-6 flex flex-col items-start justify-center group relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
-            <div class="absolute -right-6 -top-6 w-24 h-24 bg-primary/10 rounded-full blur-2xl group-hover:bg-primary/20 transition-all"></div>
+            <div class="absolute -right-6 -top-6 w-24 h-24 bg-purple-500/10 rounded-full blur-2xl group-hover:bg-purple-500/20 transition-all"></div>
             <div class="relative z-10 w-full">
-                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 text-primary flex items-center justify-center mb-4 border border-primary/20 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]">
+                <div class="w-12 h-12 rounded-xl bg-purple-500/10 dark:bg-purple-500/20 text-purple-600 dark:text-purple-400 flex items-center justify-center mb-4 border border-purple-500/20 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]">
                     <span class="material-symbols-outlined text-2xl" aria-hidden="true">badge</span>
                 </div>
-                <div class="text-[10px] font-black text-text-secondary uppercase tracking-[0.15em] mb-2">TOTAL STAFF ASSIGNED</div>
-                <div id="stat-total-staff" class="text-3xl font-black font-display tracking-tighter leading-none text-text-primary skeleton min-w-[40px]">—</div>
+                <div class="text-[10px] font-black text-text-secondary dark:text-slate-400 uppercase tracking-[0.15em] mb-2">TOTAL STAFF ASSIGNED</div>
+                <div id="stat-total-staff" class="text-3xl font-black font-display tracking-tighter leading-none text-text-primary dark:text-white skeleton min-w-[40px]">—</div>
             </div>
         </div>
         <div class="ds-card p-5 sm:p-6 flex flex-col items-start justify-center group relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
             <div class="absolute -right-6 -top-6 w-24 h-24 bg-amber-500/10 rounded-full blur-2xl group-hover:bg-amber-500/20 transition-all"></div>
             <div class="relative z-10 w-full">
-                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500/20 to-amber-500/5 text-amber-600 dark:text-amber-400 flex items-center justify-center mb-4 border border-amber-500/20 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]">
+                <div class="w-12 h-12 rounded-xl bg-amber-500/10 dark:bg-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center mb-4 border border-amber-500/20 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]">
                     <span class="material-symbols-outlined text-2xl" aria-hidden="true">receipt_long</span>
                 </div>
-                <div class="text-[10px] font-black text-text-secondary uppercase tracking-[0.15em] mb-2">PROCESSED TRANSACTIONS</div>
-                <div id="stat-total-txns" class="text-3xl font-black font-display tracking-tighter leading-none text-text-primary skeleton min-w-[40px]">—</div>
+                <div class="text-[10px] font-black text-text-secondary dark:text-slate-400 uppercase tracking-[0.15em] mb-2">PROCESSED TRANSACTIONS</div>
+                <div id="stat-total-txns" class="text-3xl font-black font-display tracking-tighter leading-none text-text-primary dark:text-white skeleton min-w-[40px]">—</div>
             </div>
         </div>
     </div>
 
     <!-- INFO BANNER -->
-    <div class="p-4 bg-info-bg border border-info-bg rounded-xl flex gap-3 mb-6 items-start">
-        <span class="material-symbols-outlined text-info text-2xl shrink-0" aria-hidden="true">account_balance</span>
+    <div class="p-4 bg-blue-50/90 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800/40 rounded-2xl flex gap-3 mb-6 items-start">
+        <div class="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 border border-blue-200 dark:border-blue-800/50">
+            <span class="material-symbols-outlined text-2xl" aria-hidden="true">account_balance</span>
+        </div>
         <div>
-            <div class="text-sm font-black text-info">Main Central Hub (System Branch)</div>
-            <div class="text-xs font-bold text-info/80 mt-0.5">Finzo's designated primary headquarters is <b>Barasat</b> (Type: <code>system</code>). As the system root hub, it is protected from deletion. All auxiliary branches can be registered, edited, and managed below.</div>
+            <div class="text-sm font-black text-blue-900 dark:text-blue-200 flex items-center gap-2">
+                <span>Central Headquarters (System Hub)</span>
+                <span class="px-2 py-0.5 rounded-full bg-blue-200/70 dark:bg-blue-900/60 text-blue-800 dark:text-blue-300 text-[9px] font-mono font-bold uppercase">System Protected</span>
+            </div>
+            <div class="text-xs font-medium text-blue-800 dark:text-blue-300 mt-1 leading-relaxed">
+                The primary bank headquarters (Type: <code class="px-1.5 py-0.5 rounded bg-blue-100 dark:bg-blue-900/60 text-blue-900 dark:text-blue-200 font-mono text-[11px]">system</code>) is the core operational hub and is protected from deletion. Auxiliary branches across Indian states can be registered, edited, and monitored below.
+            </div>
         </div>
     </div>
 
     <!-- SEARCH & TABLE CARD -->
     <div class="ds-card relative z-20">
-        <div class="p-4 sm:p-6 border-b border-border-subtle bg-background flex flex-col sm:flex-row gap-4 justify-between items-center">
-            <div class="relative w-full sm:max-w-md">
-                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-text-secondary transition-colors text-lg" aria-hidden="true">search</span>
+        <div class="p-4 sm:p-6 border-b border-border-subtle dark:border-white/10 bg-background dark:bg-surface flex flex-col sm:flex-row gap-4 justify-between items-center">
+            <div class="relative w-full sm:max-w-md fin-input-wrapper">
+                <span class="material-symbols-outlined input-icon-left text-text-secondary dark:text-slate-400 text-lg" aria-hidden="true">search</span>
                 <input type="text" id="admin-branch-finder" name="branch_query" placeholder="Search by branch name, branch code, or state..." 
-                    autocomplete="off" class="fin-input pl-12">
+                    autocomplete="off" class="fin-input has-icon-left bg-surface dark:bg-surface-elevated text-text-primary dark:text-white border-border-subtle dark:border-white/10">
             </div>
             <div class="flex items-center gap-3 w-full sm:w-auto justify-end">
                 <button type="button" id="btn-refresh-branches" class="btn btn-secondary btn-sm flex items-center gap-1.5" title="Refresh Table">
@@ -86,17 +93,17 @@ ob_start();
 
         <div class="ds-table-wrapper border-0 rounded-none shadow-none bg-transparent">
             <table class="ds-table w-full min-w-[1000px] text-left">
-                <thead scope="col">
+                <thead scope="col" class="bg-surface-subtle dark:bg-surface-elevated/70 border-b border-border-subtle dark:border-white/10">
                     <tr>
-                        <th class="w-[5%]" scope="col">#</th>
-                        <th class="w-[20%]" scope="col">BRANCH</th>
-                        <th class="w-[13%]" scope="col">BRANCH ID</th>
-                        <th class="w-[14%]" scope="col">STATE</th>
-                        <th class="w-[18%]" scope="col">MANAGER</th>
-                        <th class="w-[7%] text-center" scope="col">STAFF</th>
-                        <th class="w-[8%]" scope="col">TYPE</th>
-                        <th class="w-[7%]" scope="col">STATUS</th>
-                        <th class="w-[8%] text-right" scope="col">ACTIONS</th>
+                        <th class="w-[5%] py-3.5 px-4 text-[10px] font-black text-text-secondary dark:text-slate-400 uppercase tracking-widest" scope="col">#</th>
+                        <th class="w-[20%] py-3.5 px-4 text-[10px] font-black text-text-secondary dark:text-slate-400 uppercase tracking-widest" scope="col">BRANCH</th>
+                        <th class="w-[13%] py-3.5 px-4 text-[10px] font-black text-text-secondary dark:text-slate-400 uppercase tracking-widest" scope="col">BRANCH ID</th>
+                        <th class="w-[14%] py-3.5 px-4 text-[10px] font-black text-text-secondary dark:text-slate-400 uppercase tracking-widest" scope="col">STATE</th>
+                        <th class="w-[18%] py-3.5 px-4 text-[10px] font-black text-text-secondary dark:text-slate-400 uppercase tracking-widest" scope="col">MANAGER</th>
+                        <th class="w-[7%] py-3.5 px-4 text-center text-[10px] font-black text-text-secondary dark:text-slate-400 uppercase tracking-widest" scope="col">STAFF</th>
+                        <th class="w-[8%] py-3.5 px-4 text-[10px] font-black text-text-secondary dark:text-slate-400 uppercase tracking-widest" scope="col">TYPE</th>
+                        <th class="w-[7%] py-3.5 px-4 text-[10px] font-black text-text-secondary dark:text-slate-400 uppercase tracking-widest" scope="col">STATUS</th>
+                        <th class="w-[8%] py-3.5 px-4 text-right text-[10px] font-black text-text-secondary dark:text-slate-400 uppercase tracking-widest" scope="col">ACTIONS</th>
                     </tr>
                 </thead>
                 <tbody id="branches-table-body">
@@ -127,21 +134,21 @@ ob_start();
         </div>
 
         <!-- PAGINATION / SUMMARY FOOTER -->
-        <div class="p-4 sm:p-6 bg-background border-t border-border-subtle flex flex-col sm:flex-row justify-between items-center gap-4 transition-all w-full">
-            <div id="branch-summary-count" class="text-[10px] text-text-secondary font-black uppercase tracking-widest">Loading branches...</div>
+        <div class="p-4 sm:p-6 bg-background dark:bg-surface border-t border-border-subtle dark:border-white/10 flex flex-col sm:flex-row justify-between items-center gap-4 transition-all w-full">
+            <div id="branch-summary-count" class="text-[10px] text-text-secondary dark:text-slate-400 font-black uppercase tracking-widest">Loading branches...</div>
         </div>
     </div>
 
     <!-- ADD/EDIT BRANCH MODAL -->
     <div id="addBranchModal" class="fixed inset-0 z-[2000] hidden items-center justify-center p-4" role="dialog" aria-modal="true">
-        <div class="absolute inset-0 bg-surface-dark/80 backdrop-blur-sm transition-all modal-backdrop" data-close-modal="addBranchModal"></div>
-        <div class="relative w-full max-w-2xl bg-background rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh] border border-border-subtle animate-modal-enter">
-            <div class="p-6 border-b border-border-subtle flex justify-between items-center sticky top-0 bg-background z-10 shrink-0">
+        <div class="absolute inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-sm transition-all modal-backdrop" data-close-modal="addBranchModal"></div>
+        <div class="relative w-full max-w-2xl bg-surface dark:bg-surface-elevated text-text-primary dark:text-white rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh] border border-border-subtle dark:border-white/10 animate-modal-enter">
+            <div class="p-6 border-b border-border-subtle dark:border-white/10 flex justify-between items-center sticky top-0 bg-surface dark:bg-surface-elevated z-10 shrink-0">
                 <div>
-                    <h3 id="modal-branch-heading" class="font-black text-xl text-text-primary tracking-tight">Add New Branch</h3>
-                    <p id="modal-branch-subheading" class="text-[10px] font-black uppercase tracking-widest text-text-secondary mt-1">Fill in all details to register a new Finzo branch</p>
+                    <h3 id="modal-branch-heading" class="font-black text-xl text-text-primary dark:text-white tracking-tight">Add New Branch</h3>
+                    <p id="modal-branch-subheading" class="text-[10px] font-black uppercase tracking-widest text-text-secondary dark:text-slate-400 mt-1">Fill in all details to register a new Finzo branch</p>
                 </div>
-                <button type="button" class="p-2 hover:bg-surface-hover rounded-full transition-colors text-text-secondary hover:text-text-primary modal-close-btn" data-close-modal="addBranchModal">
+                <button type="button" class="p-2 hover:bg-surface-hover dark:hover:bg-white/10 rounded-full transition-colors text-text-secondary dark:text-slate-400 hover:text-text-primary dark:hover:text-white modal-close-btn" data-close-modal="addBranchModal">
                     <span class="material-symbols-outlined" aria-hidden="true">close</span>
                 </button>
             </div>
@@ -150,33 +157,33 @@ ob_start();
                 <form class="space-y-6 sm:space-y-8" id="addBranchForm" novalidate>
                     <!-- SECTION 1 -->
                     <div>
-                        <div class="text-[10px] font-black tracking-widest text-primary uppercase mb-4 py-1 border-b border-border-subtle flex items-center gap-2">
+                        <div class="text-[10px] font-black tracking-widest text-primary dark:text-amber-400 uppercase mb-4 py-1 border-b border-border-subtle dark:border-white/10 flex items-center gap-2">
                             <span class="material-symbols-outlined text-sm" aria-hidden="true">domain</span>
                             SECTION 1: Branch Information
                         </div>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                             <div class="col-span-1">
-                                <label for="add-branch-name" class="fin-label mb-1.5 block text-[10px] font-black uppercase text-text-secondary">Branch Name *</label>
-                                <input type="text" id="add-branch-name" name="branch_name" placeholder="e.g. Mumbai West Hub" required class="fin-input">
+                                <label for="add-branch-name" class="fin-label mb-1.5 block text-[10px] font-black uppercase text-text-secondary dark:text-slate-300">Branch Name *</label>
+                                <input type="text" id="add-branch-name" name="branch_name" placeholder="e.g. Mumbai West Hub" required class="fin-input bg-surface dark:bg-surface-subtle text-text-primary dark:text-white border-border-subtle dark:border-white/10">
                             </div>
                             <div class="col-span-1">
-                                <label for="add-branch-code" class="fin-label mb-1.5 block text-[10px] font-black uppercase text-text-secondary">Branch Code *</label>
-                                <input type="text" id="add-branch-code" name="branch_code" placeholder="FNZ-XX-000" readonly class="fin-input bg-surface-hover cursor-not-allowed font-mono text-primary font-bold">
-                                <p class="text-[10px] text-text-secondary mt-1 font-bold">Auto-generated from state selection.</p>
+                                <label for="add-branch-code" class="fin-label mb-1.5 block text-[10px] font-black uppercase text-text-secondary dark:text-slate-300">Branch Code *</label>
+                                <input type="text" id="add-branch-code" name="branch_code" placeholder="FNZ-XX-000" readonly class="fin-input bg-surface-subtle dark:bg-surface-dark cursor-not-allowed font-mono text-primary dark:text-amber-400 font-bold border-border-subtle dark:border-white/10">
+                                <p class="text-[10px] text-text-secondary dark:text-slate-400 mt-1 font-bold">Auto-generated from state selection.</p>
                             </div>
                             <div class="col-span-1">
-                                <label for="add-branch-city" class="fin-label mb-1.5 block text-[10px] font-black uppercase text-text-secondary">City / District *</label>
-                                <input type="text" id="add-branch-city" name="city" placeholder="e.g. Mumbai" required class="fin-input">
+                                <label for="add-branch-city" class="fin-label mb-1.5 block text-[10px] font-black uppercase text-text-secondary dark:text-slate-300">City / District *</label>
+                                <input type="text" id="add-branch-city" name="city" placeholder="e.g. Mumbai" required class="fin-input bg-surface dark:bg-surface-subtle text-text-primary dark:text-white border-border-subtle dark:border-white/10">
                             </div>
                             <div class="col-span-1">
-                                <label for="branch-state" class="fin-label mb-1.5 block text-[10px] font-black uppercase text-text-secondary">State / UT *</label>
+                                <label for="branch-state" class="fin-label mb-1.5 block text-[10px] font-black uppercase text-text-secondary dark:text-slate-300">State / UT *</label>
                                 <div class="finzo-dropdown w-full" id="branch-state-dropdown">
-                                    <div class="finzo-dropdown-trigger fin-input !flex items-center justify-between cursor-pointer" id="state-dropdown-trigger">
-                                        <span class="dropdown-label font-bold text-sm text-text-primary truncate" id="state-dropdown-label">Select State / UT</span>
-                                        <span class="material-symbols-outlined chevron text-text-secondary shrink-0" aria-hidden="true">expand_more</span>
+                                    <div class="finzo-dropdown-trigger fin-input !flex items-center justify-between cursor-pointer bg-surface dark:bg-surface-subtle text-text-primary dark:text-white border-border-subtle dark:border-white/10" id="state-dropdown-trigger">
+                                        <span class="dropdown-label font-bold text-sm text-text-primary dark:text-white truncate" id="state-dropdown-label">Select State / UT</span>
+                                        <span class="material-symbols-outlined chevron text-text-secondary dark:text-slate-400 shrink-0" aria-hidden="true">expand_more</span>
                                     </div>
-                                    <div class="finzo-dropdown-menu w-full !max-h-[260px] overflow-y-auto z-50">
-                                        <div class="px-4 py-2 text-[10px] font-black uppercase text-text-secondary tracking-widest bg-background sticky top-0 z-10 border-b border-border-subtle">Indian States</div>
+                                    <div class="finzo-dropdown-menu w-full !max-h-[260px] overflow-y-auto z-50 bg-surface dark:bg-surface-elevated border border-border-subtle dark:border-white/10 text-text-primary dark:text-white shadow-2xl">
+                                        <div class="px-4 py-2 text-[10px] font-black uppercase text-text-secondary dark:text-slate-400 tracking-widest bg-surface-subtle dark:bg-surface-dark sticky top-0 z-10 border-b border-border-subtle dark:border-white/10">Indian States</div>
                                         <div class="finzo-dropdown-option" data-value="Andhra Pradesh">Andhra Pradesh</div>
                                         <div class="finzo-dropdown-option" data-value="Arunachal Pradesh">Arunachal Pradesh</div>
                                         <div class="finzo-dropdown-option" data-value="Assam">Assam</div>
@@ -205,7 +212,7 @@ ob_start();
                                         <div class="finzo-dropdown-option" data-value="Uttar Pradesh">Uttar Pradesh</div>
                                         <div class="finzo-dropdown-option" data-value="Uttarakhand">Uttarakhand</div>
                                         <div class="finzo-dropdown-option" data-value="West Bengal">West Bengal</div>
-                                        <div class="px-4 py-2 mt-2 text-[10px] font-black uppercase text-text-secondary tracking-widest bg-background sticky top-0 z-10 border-b border-border-subtle">Union Territories</div>
+                                        <div class="px-4 py-2 mt-2 text-[10px] font-black uppercase text-text-secondary dark:text-slate-400 tracking-widest bg-surface-subtle dark:bg-surface-dark sticky top-0 z-10 border-b border-border-subtle dark:border-white/10">Union Territories</div>
                                         <div class="finzo-dropdown-option" data-value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</div>
                                         <div class="finzo-dropdown-option" data-value="Chandigarh">Chandigarh</div>
                                         <div class="finzo-dropdown-option" data-value="Dadra and Nagar Haveli and Daman and Diu">Dadra and Nagar Haveli and Daman and Diu</div>
@@ -219,106 +226,106 @@ ob_start();
                                 </div>
                             </div>
                             <div class="col-span-1 sm:col-span-2">
-                                <label for="add-branch-address" class="fin-label mb-1.5 block text-[10px] font-black uppercase text-text-secondary">Full Address *</label>
-                                <textarea id="add-branch-address" name="address" rows="2" placeholder="Building no., street name, locality, pincode" required class="fin-input"></textarea>
+                                <label for="add-branch-address" class="fin-label mb-1.5 block text-[10px] font-black uppercase text-text-secondary dark:text-slate-300">Full Address *</label>
+                                <textarea id="add-branch-address" name="address" rows="2" placeholder="Building no., street name, locality, pincode" required class="fin-input bg-surface dark:bg-surface-subtle text-text-primary dark:text-white border-border-subtle dark:border-white/10"></textarea>
                             </div>
                         </div>
                     </div>
 
                     <!-- SECTION 2 -->
                     <div>
-                        <div class="text-[10px] font-black tracking-widest text-primary uppercase mb-4 py-1 border-b border-border-subtle flex items-center gap-2">
+                        <div class="text-[10px] font-black tracking-widest text-primary dark:text-amber-400 uppercase mb-4 py-1 border-b border-border-subtle dark:border-white/10 flex items-center gap-2">
                             <span class="material-symbols-outlined text-sm" aria-hidden="true">person</span>
                             SECTION 2: Branch Manager Assignment
                         </div>
                         <div class="mb-4">
-                            <label class="fin-label mb-1.5 block text-[10px] font-black uppercase text-text-secondary">Assign Branch Manager</label>
+                            <label class="fin-label mb-1.5 block text-[10px] font-black uppercase text-text-secondary dark:text-slate-300">Assign Branch Manager</label>
                             
                             <div class="finzo-dropdown w-full" id="manager-dropdown">
-                                <div class="finzo-dropdown-trigger fin-input !flex items-center justify-between cursor-pointer" id="manager-dropdown-trigger">
-                                    <span class="dropdown-label font-bold text-sm text-text-primary truncate" id="manager-dropdown-label">Select Staff Member (Optional)</span>
-                                    <span class="material-symbols-outlined chevron text-text-secondary shrink-0" aria-hidden="true">expand_more</span>
+                                <div class="finzo-dropdown-trigger fin-input !flex items-center justify-between cursor-pointer bg-surface dark:bg-surface-subtle text-text-primary dark:text-white border-border-subtle dark:border-white/10" id="manager-dropdown-trigger">
+                                    <span class="dropdown-label font-bold text-sm text-text-primary dark:text-white truncate" id="manager-dropdown-label">Select Staff Member (Optional)</span>
+                                    <span class="material-symbols-outlined chevron text-text-secondary dark:text-slate-400 shrink-0" aria-hidden="true">expand_more</span>
                                 </div>
-                                <div class="finzo-dropdown-menu w-full max-h-[220px] overflow-y-auto z-50" id="manager-dropdown-menu">
-                                    <div class="p-4 text-center text-xs text-text-secondary font-bold">Loading staff members...</div>
+                                <div class="finzo-dropdown-menu w-full max-h-[220px] overflow-y-auto z-50 bg-surface dark:bg-surface-elevated border border-border-subtle dark:border-white/10 text-text-primary dark:text-white shadow-2xl" id="manager-dropdown-menu">
+                                    <div class="p-4 text-center text-xs text-text-secondary dark:text-slate-400 font-bold">Loading staff members...</div>
                                 </div>
                                 <input type="hidden" id="manager-id" name="manager_id" value="">
                             </div>
 
-                            <div class="p-3 bg-warning-bg border border-warning-bg rounded-xl flex gap-3 mt-3 items-center">
-                                <span class="material-symbols-outlined text-warning text-lg shrink-0" aria-hidden="true">info</span>
-                                <p class="text-xs text-warning font-bold">Assigning a staff member will associate their profile to this branch automatically.</p>
+                            <div class="p-3 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/40 rounded-xl flex gap-3 mt-3 items-center">
+                                <span class="material-symbols-outlined text-amber-600 dark:text-amber-400 text-lg shrink-0" aria-hidden="true">info</span>
+                                <p class="text-xs text-amber-800 dark:text-amber-300 font-bold">Assigning a staff member will link their profile to this branch as the primary branch head.</p>
                             </div>
                         </div>
                     </div>
 
                     <!-- SECTION 3 -->
                     <div id="section-admin-verification">
-                        <div class="text-[10px] font-black tracking-widest text-primary uppercase mb-4 py-1 border-b border-border-subtle flex items-center gap-2">
+                        <div class="text-[10px] font-black tracking-widest text-primary dark:text-amber-400 uppercase mb-4 py-1 border-b border-border-subtle dark:border-white/10 flex items-center gap-2">
                             <span class="material-symbols-outlined text-sm" aria-hidden="true">lock</span>
                             SECTION 3: Security & Admin Verification
                         </div>
                         <div class="mb-2">
-                            <label for="admin-confirm-pw" class="fin-label mb-1.5 block text-[10px] font-black uppercase text-text-secondary">Admin Security Password *</label>
-                            <div class="relative">
-                                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-text-secondary text-lg" aria-hidden="true">admin_panel_settings</span>
-                                <input type="password" id="admin-confirm-pw" name="admin_password" placeholder="Enter your administrator password" required class="fin-input pl-12 pr-12">
-                                <button type="button" id="toggle-admin-pw" class="absolute right-4 top-1/2 -translate-y-1/2 text-text-secondary hover:text-text-primary transition-colors">
+                            <label for="admin-confirm-pw" class="fin-label mb-1.5 block text-[10px] font-black uppercase text-text-secondary dark:text-slate-300">Admin Security Password *</label>
+                            <div class="fin-input-wrapper">
+                                <span class="material-symbols-outlined input-icon-left text-text-secondary dark:text-slate-400 text-lg" aria-hidden="true">admin_panel_settings</span>
+                                <input type="password" id="admin-confirm-pw" name="admin_password" placeholder="Enter your administrator password" required class="fin-input has-icon-left has-icon-right bg-surface dark:bg-surface-subtle text-text-primary dark:text-white border-border-subtle dark:border-white/10">
+                                <button type="button" id="toggle-admin-pw" class="password-toggle-btn text-text-secondary dark:text-slate-400 hover:text-text-primary dark:hover:text-white transition-colors" aria-label="Toggle password visibility">
                                     <span class="material-symbols-outlined text-lg" id="toggle-admin-pw-icon" aria-hidden="true">visibility</span>
                                 </button>
                             </div>
-                            <div class="p-3 bg-error-bg border border-error-bg rounded-xl flex gap-3 mt-3 items-center">
-                                <span class="material-symbols-outlined text-error text-lg shrink-0" aria-hidden="true">shield</span>
-                                <p class="text-xs text-error font-bold">This authorization verifies high-privilege branch configuration actions in the audit ledger.</p>
+                            <div class="p-3 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800/40 rounded-xl flex gap-3 mt-3 items-center">
+                                <span class="material-symbols-outlined text-red-600 dark:text-red-400 text-lg shrink-0" aria-hidden="true">shield</span>
+                                <p class="text-xs text-red-800 dark:text-red-300 font-bold">This authorization confirms administrative branch changes in the system audit trail.</p>
                             </div>
                         </div>
                     </div>
 
                     <!-- SECTION 4 -->
                     <div>
-                        <div class="text-[10px] font-black tracking-widest text-primary uppercase mb-4 py-1 border-b border-border-subtle flex items-center gap-2">
+                        <div class="text-[10px] font-black tracking-widest text-primary dark:text-amber-400 uppercase mb-4 py-1 border-b border-border-subtle dark:border-white/10 flex items-center gap-2">
                             <span class="material-symbols-outlined text-sm" aria-hidden="true">description</span>
                             SECTION 4: Description & Operational Notes
                         </div>
                         <div>
-                            <label for="branch-desc" class="fin-label mb-1.5 block text-[10px] font-black uppercase text-text-secondary">Branch Description / Notes</label>
-                            <textarea id="branch-desc" name="description" rows="3" maxlength="500" placeholder="Operational timings, specialized banking services, lockers, etc." class="fin-input"></textarea>
-                            <div class="char-counter text-[10px] text-text-secondary font-black uppercase tracking-widest text-right mt-1" id="branch-desc-counter">0 / 500</div>
+                            <label for="branch-desc" class="fin-label mb-1.5 block text-[10px] font-black uppercase text-text-secondary dark:text-slate-300">Branch Description / Notes</label>
+                            <textarea id="branch-desc" name="description" rows="3" maxlength="500" placeholder="Operational timings, specialized banking services, lockers, etc." class="fin-input bg-surface dark:bg-surface-subtle text-text-primary dark:text-white border-border-subtle dark:border-white/10"></textarea>
+                            <div class="char-counter text-[10px] text-text-secondary dark:text-slate-400 font-black uppercase tracking-widest text-right mt-1" id="branch-desc-counter">0 / 500</div>
                         </div>
                     </div>
 
                     <!-- SECTION 5 -->
                     <div>
-                        <div class="text-[10px] font-black tracking-widest text-primary uppercase mb-4 py-1 border-b border-border-subtle flex items-center gap-2">
+                        <div class="text-[10px] font-black tracking-widest text-primary dark:text-amber-400 uppercase mb-4 py-1 border-b border-border-subtle dark:border-white/10 flex items-center gap-2">
                             <span class="material-symbols-outlined text-sm" aria-hidden="true">verified_user</span>
                             SECTION 5: Registration Certificate
                         </div>
-                        <label class="fin-label mb-1 block text-[10px] font-black uppercase text-text-secondary">Official Branch Registration Certificate</label>
-                        <p class="text-[10px] text-text-secondary mb-3 font-black uppercase tracking-widest">PDF, JPG, or PNG (Max 10MB)</p>
+                        <label class="fin-label mb-1 block text-[10px] font-black uppercase text-text-secondary dark:text-slate-300">Official Branch Registration Certificate</label>
+                        <p class="text-[10px] text-text-secondary dark:text-slate-400 mb-3 font-black uppercase tracking-widest">PDF, JPG, or PNG (Max 10MB)</p>
                         
                         <input type="file" id="branch-file-input" name="certificate" class="hidden" accept=".pdf,.jpg,.png,.jpeg">
-                        <div class="cursor-pointer p-6 border-2 border-dashed border-border-subtle rounded-2xl hover:bg-surface-hover hover:border-primary transition-all text-center" id="upload-trigger">
-                            <span class="material-symbols-outlined text-4xl text-text-secondary mb-2" id="upload-icon" aria-hidden="true">upload_file</span>
+                        <div class="cursor-pointer p-6 border-2 border-dashed border-border-subtle dark:border-white/15 rounded-2xl bg-surface-subtle/50 dark:bg-white/2 hover:bg-surface-hover dark:hover:bg-white/5 hover:border-primary dark:hover:border-amber-400 transition-all text-center" id="upload-trigger">
+                            <span class="material-symbols-outlined text-4xl text-text-secondary dark:text-slate-400 mb-2" id="upload-icon" aria-hidden="true">upload_file</span>
                             <div>
-                                <div class="text-sm font-black text-text-primary">Click to upload document</div>
-                                <div class="text-[10px] font-black uppercase tracking-widest text-text-secondary mt-1">Select official RBI / Banking license or branch permit</div>
+                                <div class="text-sm font-black text-text-primary dark:text-white">Click to upload document</div>
+                                <div class="text-[10px] font-black uppercase tracking-widest text-text-secondary dark:text-slate-400 mt-1">Select official RBI / Banking license or branch permit</div>
                             </div>
                             <button type="button" class="btn btn-secondary btn-sm mt-4 pointer-events-none">Browse Files</button>
                         </div>
-                        <div id="file-preview" class="hidden mt-3 p-4 bg-success-bg border border-success-bg rounded-xl flex items-center justify-between">
+                        <div id="file-preview" class="hidden mt-3 p-4 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/40 rounded-xl flex items-center justify-between">
                             <div class="flex items-center gap-3 min-w-0">
-                                <span class="material-symbols-outlined text-success text-2xl shrink-0" aria-hidden="true">check_circle</span>
+                                <span class="material-symbols-outlined text-emerald-600 dark:text-emerald-400 text-2xl shrink-0" aria-hidden="true">check_circle</span>
                                 <div class="min-w-0">
-                                    <div id="file-name" class="text-xs font-black text-success truncate max-w-[250px]">branch_cert.pdf</div>
-                                    <div id="file-size" class="text-[10px] text-success/80 font-black uppercase tracking-widest">2.4 MB</div>
+                                    <div id="file-name" class="text-xs font-black text-emerald-800 dark:text-emerald-300 truncate max-w-[250px]">branch_cert.pdf</div>
+                                    <div id="file-size" class="text-[10px] text-emerald-600 dark:text-emerald-400 font-black uppercase tracking-widest">2.4 MB</div>
                                 </div>
                             </div>
-                            <button type="button" id="remove-file" class="text-[10px] font-black text-error uppercase tracking-widest hover:underline px-2 py-1 shrink-0">Remove</button>
+                            <button type="button" id="remove-file" class="text-[10px] font-black text-red-600 dark:text-red-400 uppercase tracking-widest hover:underline px-2 py-1 shrink-0">Remove</button>
                         </div>
                     </div>
 
                     <!-- FOOTER -->
-                    <div class="pt-6 border-t border-border-subtle flex flex-col-reverse sm:flex-row justify-end gap-3 mt-6">
+                    <div class="pt-6 border-t border-border-subtle dark:border-white/10 flex flex-col-reverse sm:flex-row justify-end gap-3 mt-6">
                         <button type="button" class="btn btn-secondary py-3 px-8 text-center justify-center modal-close-btn" data-close-modal="addBranchModal">Cancel</button>
                         <button type="submit" id="submit-branch-btn" class="btn btn-primary py-3 px-12 text-center justify-center flex-1 sm:flex-none">Create Branch</button>
                     </div>
@@ -329,55 +336,55 @@ ob_start();
 
     <!-- VIEW BRANCH MODAL -->
     <div id="viewBranchModal" class="fixed inset-0 z-[2000] hidden items-center justify-center p-4" role="dialog" aria-modal="true">
-        <div class="absolute inset-0 bg-surface-dark/80 backdrop-blur-sm transition-all modal-backdrop" data-close-modal="viewBranchModal"></div>
-        <div class="relative w-full max-w-2xl bg-background rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh] border border-border-subtle animate-modal-enter">
-            <div id="view-modal-header" class="p-6 border-b border-border-subtle flex justify-between items-center sticky top-0 bg-background z-10 shrink-0">
+        <div class="absolute inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-sm transition-all modal-backdrop" data-close-modal="viewBranchModal"></div>
+        <div class="relative w-full max-w-2xl bg-surface dark:bg-surface-elevated text-text-primary dark:text-white rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh] border border-border-subtle dark:border-white/10 animate-modal-enter">
+            <div id="view-modal-header" class="p-6 border-b border-border-subtle dark:border-white/10 flex justify-between items-center sticky top-0 bg-surface dark:bg-surface-elevated z-10 shrink-0">
                 <div>
-                    <h3 id="view-branch-title" class="font-black text-xl text-text-primary tracking-tight">Branch Details</h3>
+                    <h3 id="view-branch-title" class="font-black text-xl text-text-primary dark:text-white tracking-tight">Branch Details</h3>
                     <div class="flex gap-2 mt-2" id="view-branch-badges">
-                        <span class="px-2 py-0.5 bg-background border border-border-subtle text-[9px] font-black rounded uppercase tracking-widest text-text-secondary font-mono">SYSTEM</span>
-                        <span class="px-2 py-0.5 bg-success-bg text-success border border-success-bg text-[9px] font-black rounded uppercase tracking-widest">ACTIVE</span>
+                        <span class="px-2 py-0.5 bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800/40 text-[9px] font-black rounded uppercase tracking-widest font-mono">SYSTEM</span>
+                        <span class="px-2 py-0.5 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/40 text-[9px] font-black rounded uppercase tracking-widest">ACTIVE</span>
                     </div>
                 </div>
-                <button type="button" class="p-2 hover:bg-surface-hover rounded-full transition-colors text-text-secondary hover:text-text-primary modal-close-btn" data-close-modal="viewBranchModal">
+                <button type="button" class="p-2 hover:bg-surface-hover dark:hover:bg-white/10 rounded-full transition-colors text-text-secondary dark:text-slate-400 hover:text-text-primary dark:hover:text-white modal-close-btn" data-close-modal="viewBranchModal">
                     <span class="material-symbols-outlined" aria-hidden="true">close</span>
                 </button>
             </div>
 
             <div class="p-6 sm:p-8 grid grid-cols-1 sm:grid-cols-2 gap-6 overflow-y-auto flex-1">
                 <div class="space-y-6">
-                    <div class="ds-card !bg-surface-hover !p-5 !border-none">
-                        <label class="block text-[10px] font-black uppercase text-text-secondary mb-3">Branch Location & ID</label>
+                    <div class="p-5 bg-surface-subtle dark:bg-surface-dark border border-border-subtle dark:border-white/5 rounded-2xl">
+                        <label class="block text-[10px] font-black uppercase text-text-secondary dark:text-slate-400 mb-3">Branch Location & ID</label>
                         <div class="space-y-4">
                             <div>
-                                <div class="text-[10px] text-text-secondary uppercase tracking-widest font-black">Branch Code</div>
-                                <div id="view-branch-code" class="font-bold text-sm tracking-tight text-primary font-mono mt-0.5">—</div>
+                                <div class="text-[10px] text-text-secondary dark:text-slate-400 uppercase tracking-widest font-black">Branch Code</div>
+                                <div id="view-branch-code" class="font-bold text-sm tracking-tight text-primary dark:text-amber-400 font-mono mt-0.5">—</div>
                             </div>
                             <div class="grid grid-cols-2 gap-2">
                                 <div>
-                                    <div class="text-[10px] text-text-secondary uppercase tracking-widest font-black">City / District</div>
-                                    <div id="view-branch-city" class="font-bold text-sm text-text-primary mt-0.5">—</div>
+                                    <div class="text-[10px] text-text-secondary dark:text-slate-400 uppercase tracking-widest font-black">City / District</div>
+                                    <div id="view-branch-city" class="font-bold text-sm text-text-primary dark:text-white mt-0.5">—</div>
                                 </div>
                                 <div>
-                                    <div class="text-[10px] text-text-secondary uppercase tracking-widest font-black">State / UT</div>
-                                    <div id="view-branch-state" class="font-bold text-sm text-text-primary mt-0.5">—</div>
+                                    <div class="text-[10px] text-text-secondary dark:text-slate-400 uppercase tracking-widest font-black">State / UT</div>
+                                    <div id="view-branch-state" class="font-bold text-sm text-text-primary dark:text-white mt-0.5">—</div>
                                 </div>
                             </div>
                             <div>
-                                <div class="text-[10px] text-text-secondary uppercase tracking-widest font-black">Full Address</div>
-                                <div id="view-branch-address" class="text-xs font-bold leading-relaxed text-text-primary mt-0.5">—</div>
+                                <div class="text-[10px] text-text-secondary dark:text-slate-400 uppercase tracking-widest font-black">Full Address</div>
+                                <div id="view-branch-address" class="text-xs font-bold leading-relaxed text-text-primary dark:text-slate-300 mt-0.5">—</div>
                             </div>
                         </div>
                     </div>
                     
-                    <div class="ds-card !bg-surface-hover !p-5 !border-none">
-                        <label class="block text-[10px] font-black uppercase text-text-secondary mb-3">Branch Manager</label>
+                    <div class="p-5 bg-surface-subtle dark:bg-surface-dark border border-border-subtle dark:border-white/5 rounded-2xl">
+                        <label class="block text-[10px] font-black uppercase text-text-secondary dark:text-slate-400 mb-3">Branch Manager</label>
                         <div class="flex items-center gap-4">
-                            <div id="view-manager-avatar" class="w-12 h-12 rounded-full flex items-center justify-center bg-primary-50 text-primary font-black text-lg shrink-0">??</div>
+                            <div id="view-manager-avatar" class="w-12 h-12 rounded-full flex items-center justify-center bg-primary-50 dark:bg-primary/20 text-primary dark:text-primary-300 font-black text-lg shrink-0 border border-primary-100 dark:border-primary/30">??</div>
                             <div class="min-w-0">
-                                <div id="view-manager-name" class="font-black text-sm text-text-primary truncate">Unassigned</div>
-                                <div id="view-manager-email" class="text-[10px] text-text-secondary font-bold tracking-widest uppercase truncate">No Manager Assigned</div>
-                                <a href="#" id="view-manager-link" class="text-[10px] text-primary font-black uppercase tracking-widest mt-1 inline-block hover:underline">View Staff Profile &rarr;</a>
+                                <div id="view-manager-name" class="font-black text-sm text-text-primary dark:text-white truncate">Unassigned</div>
+                                <div id="view-manager-email" class="text-[10px] text-text-secondary dark:text-slate-400 font-bold tracking-widest uppercase truncate">No Manager Assigned</div>
+                                <a href="#" id="view-manager-link" class="text-[10px] text-primary dark:text-amber-400 font-black uppercase tracking-widest mt-1 inline-block hover:underline">View Staff Profile &rarr;</a>
                             </div>
                         </div>
                     </div>
@@ -385,40 +392,40 @@ ob_start();
 
                 <div class="space-y-6">
                     <div class="grid grid-cols-2 gap-4">
-                        <div class="bg-primary-50 dark:bg-primary/10 p-4 rounded-xl text-center border border-primary-100 dark:border-primary/20">
-                            <div id="view-staff-count" class="text-2xl font-black text-primary tracking-tight font-display">0</div>
-                            <div class="text-[10px] text-text-secondary font-black uppercase tracking-widest mt-1">Assigned Staff</div>
+                        <div class="bg-primary-50 dark:bg-primary/15 p-4 rounded-xl text-center border border-primary-100 dark:border-primary/25">
+                            <div id="view-staff-count" class="text-2xl font-black text-primary dark:text-primary-300 tracking-tight font-display">0</div>
+                            <div class="text-[10px] text-text-secondary dark:text-slate-400 font-black uppercase tracking-widest mt-1">Assigned Staff</div>
                         </div>
-                        <div class="bg-success-bg p-4 rounded-xl text-center border border-success-bg">
-                            <div id="view-txn-count" class="text-2xl font-black text-success tracking-tight font-display">0</div>
-                            <div class="text-[10px] text-text-secondary font-black uppercase tracking-widest mt-1">Total Trans</div>
+                        <div class="bg-emerald-50 dark:bg-emerald-950/30 p-4 rounded-xl text-center border border-emerald-200 dark:border-emerald-800/30">
+                            <div id="view-txn-count" class="text-2xl font-black text-emerald-700 dark:text-emerald-400 tracking-tight font-display">0</div>
+                            <div class="text-[10px] text-text-secondary dark:text-slate-400 font-black uppercase tracking-widest mt-1">Total Transactions</div>
                         </div>
                     </div>
 
                     <div>
-                        <label class="block text-[10px] font-black uppercase text-text-secondary mb-2">Registration Certificate</label>
-                        <div id="view-cert-container" class="hidden items-center gap-3 p-3 bg-surface-hover rounded-xl border border-border-subtle">
-                            <span class="material-symbols-outlined text-error text-2xl shrink-0" aria-hidden="true">picture_as_pdf</span>
+                        <label class="block text-[10px] font-black uppercase text-text-secondary dark:text-slate-400 mb-2">Registration Certificate</label>
+                        <div id="view-cert-container" class="hidden items-center gap-3 p-3 bg-surface-subtle dark:bg-surface-dark rounded-xl border border-border-subtle dark:border-white/10">
+                            <span class="material-symbols-outlined text-red-600 dark:text-red-400 text-2xl shrink-0" aria-hidden="true">picture_as_pdf</span>
                             <div class="flex-1 min-w-0">
-                                <div id="view-cert-name" class="text-xs font-bold text-text-primary truncate">certificate.pdf</div>
+                                <div id="view-cert-name" class="text-xs font-bold text-text-primary dark:text-white truncate">certificate.pdf</div>
                             </div>
-                            <a id="view-cert-download" href="#" target="_blank" class="p-2 text-primary hover:bg-background rounded-lg transition-colors shrink-0" title="Download Document">
+                            <a id="view-cert-download" href="#" target="_blank" class="p-2 text-primary dark:text-amber-400 hover:bg-surface-hover dark:hover:bg-white/10 rounded-lg transition-colors shrink-0" title="Download Document">
                                 <span class="material-symbols-outlined text-base" aria-hidden="true">download</span>
                             </a>
                         </div>
-                        <div id="view-cert-empty" class="text-[10px] p-4 bg-surface-hover rounded-xl text-text-secondary font-black uppercase tracking-widest text-center">No certificate uploaded</div>
+                        <div id="view-cert-empty" class="text-[10px] p-4 bg-surface-subtle dark:bg-surface-dark rounded-xl text-text-secondary dark:text-slate-400 font-black uppercase tracking-widest text-center border border-border-subtle dark:border-white/5">No certificate uploaded</div>
                     </div>
 
                     <div>
-                        <label class="block text-[10px] font-black uppercase text-text-secondary mb-2">Branch Description</label>
-                        <div id="view-branch-desc" class="text-xs p-4 bg-surface-hover rounded-xl text-text-secondary font-medium leading-relaxed italic">
+                        <label class="block text-[10px] font-black uppercase text-text-secondary dark:text-slate-400 mb-2">Branch Description</label>
+                        <div id="view-branch-desc" class="text-xs p-4 bg-surface-subtle dark:bg-surface-dark rounded-xl text-text-secondary dark:text-slate-300 font-medium leading-relaxed italic border border-border-subtle dark:border-white/5">
                             No description provided.
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="p-6 border-t border-border-subtle flex gap-3 justify-end bg-background shrink-0">
+            <div class="p-6 border-t border-border-subtle dark:border-white/10 flex gap-3 justify-end bg-surface dark:bg-surface-elevated shrink-0">
                 <button type="button" id="view-btn-edit" class="btn btn-secondary px-6">Edit Branch Info</button>
                 <button type="button" id="view-btn-staff" class="btn btn-primary px-6">View Staff List</button>
             </div>
@@ -427,14 +434,14 @@ ob_start();
 
     <!-- BRANCH STAFF MODAL -->
     <div id="branchStaffModal" class="fixed inset-0 z-[2500] hidden items-center justify-center p-4" role="dialog" aria-modal="true">
-        <div class="absolute inset-0 bg-surface-dark/80 backdrop-blur-sm transition-all modal-backdrop" data-close-modal="branchStaffModal"></div>
-        <div class="relative w-full max-w-4xl bg-background rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh] border border-border-subtle animate-modal-enter">
-            <div class="p-6 border-b border-border-subtle flex justify-between items-center sticky top-0 bg-background z-10 shrink-0">
+        <div class="absolute inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-sm transition-all modal-backdrop" data-close-modal="branchStaffModal"></div>
+        <div class="relative w-full max-w-4xl bg-surface dark:bg-surface-elevated text-text-primary dark:text-white rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh] border border-border-subtle dark:border-white/10 animate-modal-enter">
+            <div class="p-6 border-b border-border-subtle dark:border-white/10 flex justify-between items-center sticky top-0 bg-surface dark:bg-surface-elevated z-10 shrink-0">
                 <div>
-                    <h3 id="staff-modal-title" class="font-black text-xl text-text-primary tracking-tight">Branch Staff List</h3>
-                    <p id="staff-modal-subtitle" class="text-[10px] text-text-secondary uppercase font-black tracking-widest mt-1">Loading staff members...</p>
+                    <h3 id="staff-modal-title" class="font-black text-xl text-text-primary dark:text-white tracking-tight">Branch Staff List</h3>
+                    <p id="staff-modal-subtitle" class="text-[10px] text-text-secondary dark:text-slate-400 uppercase font-black tracking-widest mt-1">Loading staff members...</p>
                 </div>
-                <button type="button" class="p-2 hover:bg-surface-hover rounded-full transition-colors text-text-secondary hover:text-text-primary modal-close-btn" data-close-modal="branchStaffModal">
+                <button type="button" class="p-2 hover:bg-surface-hover dark:hover:bg-white/10 rounded-full transition-colors text-text-secondary dark:text-slate-400 hover:text-text-primary dark:hover:text-white modal-close-btn" data-close-modal="branchStaffModal">
                     <span class="material-symbols-outlined" aria-hidden="true">close</span>
                 </button>
             </div>
@@ -442,13 +449,13 @@ ob_start();
             <div class="p-0 overflow-y-auto flex-1">
                 <div class="ds-table-wrapper border-0 rounded-none shadow-none bg-transparent">
                     <table class="ds-table w-full text-left">
-                        <thead scope="col">
-                            <tr class="bg-surface-hover">
-                                <th class="px-6 py-4 text-[10px] font-black tracking-widest text-text-secondary uppercase" scope="col">Staff ID</th>
-                                <th class="px-6 py-4 text-[10px] font-black tracking-widest text-text-secondary uppercase" scope="col">Name & Role</th>
-                                <th class="px-6 py-4 text-[10px] font-black tracking-widest text-text-secondary uppercase" scope="col">Contact</th>
-                                <th class="px-6 py-4 text-[10px] font-black tracking-widest text-text-secondary uppercase" scope="col">Status</th>
-                                <th class="px-6 py-4 text-[10px] font-black tracking-widest text-text-secondary uppercase text-right" scope="col">Action</th>
+                        <thead scope="col" class="bg-surface-subtle dark:bg-surface-dark border-b border-border-subtle dark:border-white/10">
+                            <tr>
+                                <th class="px-6 py-4 text-[10px] font-black tracking-widest text-text-secondary dark:text-slate-400 uppercase" scope="col">Staff ID</th>
+                                <th class="px-6 py-4 text-[10px] font-black tracking-widest text-text-secondary dark:text-slate-400 uppercase" scope="col">Name & Role</th>
+                                <th class="px-6 py-4 text-[10px] font-black tracking-widest text-text-secondary dark:text-slate-400 uppercase" scope="col">Contact</th>
+                                <th class="px-6 py-4 text-[10px] font-black tracking-widest text-text-secondary dark:text-slate-400 uppercase" scope="col">Status</th>
+                                <th class="px-6 py-4 text-[10px] font-black tracking-widest text-text-secondary dark:text-slate-400 uppercase text-right" scope="col">Action</th>
                             </tr>
                         </thead>
                         <tbody id="branch-ds-table-body">
@@ -457,12 +464,12 @@ ob_start();
                     </table>
                 </div>
                 <div id="no-staff-error" class="hidden p-12 text-center" aria-live="polite">
-                    <span class="material-symbols-outlined text-4xl text-text-secondary mb-2" aria-hidden="true">person_off</span>
-                    <div class="text-[10px] font-black uppercase tracking-widest text-text-secondary">No staff members assigned to this branch yet.</div>
+                    <span class="material-symbols-outlined text-4xl text-text-secondary dark:text-slate-400 mb-2" aria-hidden="true">person_off</span>
+                    <div class="text-[10px] font-black uppercase tracking-widest text-text-secondary dark:text-slate-400">No staff members assigned to this branch yet.</div>
                 </div>
             </div>
             
-            <div class="p-6 border-t border-border-subtle flex justify-end bg-background shrink-0">
+            <div class="p-6 border-t border-border-subtle dark:border-white/10 flex justify-end bg-surface dark:bg-surface-elevated shrink-0">
                 <button type="button" class="btn btn-secondary px-8 modal-close-btn" data-close-modal="branchStaffModal">Close List</button>
             </div>
         </div>
@@ -470,39 +477,42 @@ ob_start();
 
     <!-- DELETE CONFIRMATION MODAL -->
     <div id="confirmModal" class="fixed inset-0 z-[3000] hidden items-center justify-center p-4" role="dialog" aria-modal="true">
-        <div class="absolute inset-0 bg-surface-dark/80 backdrop-blur-sm transition-all modal-backdrop" data-close-modal="confirmModal"></div>
-        <div class="relative w-full max-w-md bg-background rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh] border border-border-subtle p-6 sm:p-8 text-center animate-modal-enter">
-            <div id="confirm-icon-box" class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-5 bg-error-bg text-error">
+        <div class="absolute inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-sm transition-all modal-backdrop" data-close-modal="confirmModal"></div>
+        <div class="relative w-full max-w-md bg-surface dark:bg-surface-elevated text-text-primary dark:text-white rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh] border border-border-subtle dark:border-white/10 p-6 sm:p-8 text-center animate-modal-enter">
+            <div id="confirm-icon-box" class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-5 bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800/40">
                 <span class="material-symbols-outlined text-3xl" aria-hidden="true">delete_forever</span>
             </div>
-            <h3 id="confirm-title" class="font-headline text-xl font-black text-text-primary tracking-tight mb-2">Delete Branch</h3>
-            <p id="confirm-text" class="text-xs text-text-secondary font-bold leading-relaxed mb-6">You are permanently decommissioning <span class="font-black text-text-primary" id="target-branch-name">—</span>. All assigned staff will be unlinked.</p>
+            <h3 id="confirm-title" class="font-headline text-xl font-black text-text-primary dark:text-white tracking-tight mb-2">Delete Branch</h3>
+            <p id="confirm-text" class="text-xs text-text-secondary dark:text-slate-300 font-bold leading-relaxed mb-6">You are permanently decommissioning <span class="font-black text-text-primary dark:text-white" id="target-branch-name">—</span>. All assigned staff will be unlinked.</p>
             
             <div id="confirm-input-area" class="space-y-4 text-left mb-6 overflow-y-auto">
                 <div>
-                    <label for="confirm-branch-name-input" class="fin-label mb-1.5 block text-[10px] font-black uppercase text-text-secondary">Type Branch Name to Confirm *</label>
-                    <input type="text" id="confirm-branch-name-input" placeholder="Type exact branch name" class="fin-input">
+                    <label for="confirm-branch-name-input" class="fin-label mb-1.5 block text-[10px] font-black uppercase text-text-secondary dark:text-slate-300">Type Branch Name to Confirm *</label>
+                    <input type="text" id="confirm-branch-name-input" placeholder="Type exact branch name" class="fin-input bg-surface dark:bg-surface-subtle text-text-primary dark:text-white border-border-subtle dark:border-white/10">
                 </div>
                 
                 <div>
-                    <label for="confirm-admin-pw" class="fin-label mb-1.5 block text-[10px] font-black uppercase text-text-secondary">Admin Password *</label>
-                    <input type="password" id="confirm-admin-pw" placeholder="Enter administrator password" class="fin-input">
+                    <label for="confirm-admin-pw" class="fin-label mb-1.5 block text-[10px] font-black uppercase text-text-secondary dark:text-slate-300">Admin Password *</label>
+                    <div class="fin-input-wrapper">
+                        <span class="material-symbols-outlined input-icon-left text-text-secondary dark:text-slate-400 text-lg" aria-hidden="true">lock</span>
+                        <input type="password" id="confirm-admin-pw" placeholder="Enter administrator password" class="fin-input has-icon-left bg-surface dark:bg-surface-subtle text-text-primary dark:text-white border-border-subtle dark:border-white/10">
+                    </div>
                 </div>
 
                 <div>
-                    <label class="fin-label mb-1.5 block text-[10px] font-black uppercase text-text-secondary">Official Decommission Document (Optional)</label>
-                    <div id="delete-upload-trigger" class="cursor-pointer p-4 border-2 border-dashed border-border-subtle rounded-xl hover:bg-surface-hover hover:border-primary transition-all text-center">
-                        <span class="material-symbols-outlined text-text-secondary mb-1 text-2xl" aria-hidden="true">upload_file</span>
-                        <div class="text-[10px] font-black text-text-primary uppercase tracking-widest">Upload closure authorization</div>
-                        <div class="text-[10px] text-text-secondary font-bold uppercase tracking-widest mt-0.5">PDF, JPG, or PNG (Max 5MB)</div>
+                    <label class="fin-label mb-1.5 block text-[10px] font-black uppercase text-text-secondary dark:text-slate-300">Official Decommission Document (Optional)</label>
+                    <div id="delete-upload-trigger" class="cursor-pointer p-4 border-2 border-dashed border-border-subtle dark:border-white/15 rounded-xl bg-surface-subtle/50 dark:bg-white/2 hover:bg-surface-hover dark:hover:bg-white/5 hover:border-primary dark:hover:border-amber-400 transition-all text-center">
+                        <span class="material-symbols-outlined text-text-secondary dark:text-slate-400 mb-1 text-2xl" aria-hidden="true">upload_file</span>
+                        <div class="text-[10px] font-black text-text-primary dark:text-white uppercase tracking-widest">Upload closure authorization</div>
+                        <div class="text-[10px] text-text-secondary dark:text-slate-400 font-bold uppercase tracking-widest mt-0.5">PDF, JPG, or PNG (Max 5MB)</div>
                     </div>
                     <input type="file" id="delete-file-input" class="hidden" accept=".pdf,.jpg,.jpeg,.png">
                     <div id="delete-file-preview" class="hidden items-center gap-3 p-3 bg-primary-50 dark:bg-primary/10 rounded-xl border border-primary-100 dark:border-primary/20 mt-2">
-                        <span class="material-symbols-outlined text-primary text-xl shrink-0" aria-hidden="true">description</span>
+                        <span class="material-symbols-outlined text-primary dark:text-primary-400 text-xl shrink-0" aria-hidden="true">description</span>
                         <div class="flex-1 min-w-0">
-                            <div id="delete-file-name" class="text-xs font-black text-text-primary truncate">document.pdf</div>
+                            <div id="delete-file-name" class="text-xs font-black text-text-primary dark:text-white truncate">document.pdf</div>
                         </div>
-                        <button type="button" id="remove-delete-file" class="p-1 hover:bg-white dark:hover:bg-white/10 rounded-lg transition-colors text-error shrink-0">
+                        <button type="button" id="remove-delete-file" class="p-1 hover:bg-white dark:hover:bg-white/10 rounded-lg transition-colors text-red-600 dark:text-red-400 shrink-0">
                             <span class="material-symbols-outlined text-sm" aria-hidden="true">close</span>
                         </button>
                     </div>
@@ -510,7 +520,7 @@ ob_start();
             </div>
 
             <div class="flex flex-col gap-3">
-                <button type="button" id="confirm-btn-action" class="btn btn-primary w-full justify-center !py-3 !bg-error-bg !text-error border !border-error-bg !shadow-none opacity-50 cursor-not-allowed" disabled>Permanently Delete Branch</button>
+                <button type="button" id="confirm-btn-action" class="btn btn-primary w-full justify-center !py-3 !bg-red-600 hover:!bg-red-700 !text-white border-0 opacity-50 cursor-not-allowed" disabled>Permanently Delete Branch</button>
                 <button type="button" class="btn btn-secondary w-full justify-center !py-3 modal-close-btn" data-close-modal="confirmModal">Cancel Action</button>
             </div>
         </div>
