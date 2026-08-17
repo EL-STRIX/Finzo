@@ -53,25 +53,31 @@
   align-items: center;
 }
 
-.fin-input.has-icon-left {
-  padding-left: 2.75rem;
+.fin-input.has-icon-left,
+.form-control.has-icon-left {
+  padding-left: 2.75rem !important;
 }
 
-.fin-input.has-icon-right {
-  padding-right: 2.75rem;
+.fin-input.has-icon-right,
+.form-control.has-icon-right {
+  padding-right: 2.75rem !important;
 }
 
-.input-icon-left {
+.input-icon-left,
+.input-icon {
   position: absolute;
   left: 0.9rem;
   top: 50%;
   transform: translateY(-50%);
-  color: var(--color-text-muted);
+  color: var(--color-text-muted, #78716C);
   font-size: 20px;
+  line-height: 1;
   pointer-events: none;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
+  z-index: 10;
+  user-select: none;
 }
 
 .input-icon-right, .password-toggle-btn {
@@ -79,16 +85,19 @@
   right: 0.9rem;
   top: 50%;
   transform: translateY(-50%);
-  color: var(--color-text-muted);
+  color: var(--color-text-muted, #78716C);
   font-size: 20px;
+  line-height: 1;
   background: transparent;
   border: none;
   padding: 4px;
   cursor: pointer;
   border-radius: var(--radius-sm);
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
+  z-index: 10;
+  user-select: none;
   transition: color var(--transition-fast), background-color var(--transition-fast);
 }
 

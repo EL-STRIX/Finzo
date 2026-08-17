@@ -228,11 +228,17 @@ ob_start();
                         <div class="space-y-4">
                             <div>
                                 <label for="curr-pw" class="fin-label mb-1 block text-[10px] font-black text-text-secondary uppercase tracking-widest">Current Password</label>
-                                <input type="password" id="curr-pw" class="fin-input">
+                                <div class="fin-input-wrapper">
+                                    <span class="material-symbols-outlined input-icon-left">lock</span>
+                                    <input type="password" id="curr-pw" class="fin-input has-icon-left" placeholder="Enter current password">
+                                </div>
                             </div>
                             <div>
                                 <label for="new-pw" class="fin-label mb-1 block text-[10px] font-black text-text-secondary uppercase tracking-widest">New Password</label>
-                                <input type="password" id="new-pw" class="fin-input" oninput="window.AdminProfile.checkStrength(this.value)">
+                                <div class="fin-input-wrapper">
+                                    <span class="material-symbols-outlined input-icon-left">lock_open</span>
+                                    <input type="password" id="new-pw" class="fin-input has-icon-left" placeholder="Min 8 characters" oninput="window.AdminProfile.checkStrength(this.value)">
+                                </div>
                                 <div class="mt-2 pl-1">
                                     <div class="password-strength-bar w-full h-1 bg-surface-hover rounded overflow-hidden">
                                         <div class="password-strength-fill h-full transition-all duration-300" id="pw-bar" style="width:0%; background:var(--primary-base);"></div>
@@ -242,7 +248,10 @@ ob_start();
                             </div>
                             <div>
                                 <label for="conf-pw" class="fin-label mb-1 block text-[10px] font-black text-text-secondary uppercase tracking-widest">Confirm New Password</label>
-                                <input type="password" id="conf-pw" class="fin-input">
+                                <div class="fin-input-wrapper">
+                                    <span class="material-symbols-outlined input-icon-left">check_circle</span>
+                                    <input type="password" id="conf-pw" class="fin-input has-icon-left" placeholder="Confirm new password">
+                                </div>
                             </div>
                             <button data-action="window.AdminProfile.updatePassword()" class="w-full btn btn-primary mt-4">Change Password</button>
                         </div>
