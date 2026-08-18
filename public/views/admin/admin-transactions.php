@@ -5,33 +5,15 @@ ob_start();
 ?>
 
 <!-- TOP PAGE HEADER & ACTION BAR -->
-<div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6 relative z-10">
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 relative z-10">
     <div>
-        <div class="flex items-center gap-3">
-            <h1 class="text-2xl font-headline font-black text-text-primary tracking-tight">Global Transactions</h1>
-            <div id="live-indicator" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 text-[10px] font-black uppercase tracking-wider">
-                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                <span>Live Feed</span>
-            </div>
-        </div>
+        <h1 class="text-2xl font-headline font-black text-text-primary tracking-tight">Global Transactions</h1>
         <p class="text-xs font-bold text-text-secondary uppercase tracking-widest mt-1">Real-time ledger audit, multi-channel flow monitor, and transaction reversal control</p>
     </div>
     
-    <div class="flex flex-wrap items-center gap-3">
-        <!-- Auto-Refresh Toggle -->
-        <button id="toggle-autorefresh" class="btn btn-secondary px-3.5 py-2 rounded-xl text-xs font-bold uppercase tracking-wider flex items-center gap-2 border border-border-subtle bg-surface/80 hover:bg-surface transition-all shadow-sm group" title="Toggle 10s live auto-refresh">
-            <span id="autorefresh-icon" class="material-symbols-outlined text-[18px] text-emerald-500 transition-transform group-hover:rotate-180">sync</span>
-            <span id="autorefresh-text">Auto-Refresh: <strong class="text-emerald-500 font-black">ON (10s)</strong></span>
-        </button>
-
-        <!-- Quick Manual Refresh -->
-        <button id="manual-refresh-btn" class="btn btn-secondary p-2 rounded-xl border border-border-subtle bg-surface/80 hover:bg-surface transition-all shadow-sm" title="Refresh now">
-            <span class="material-symbols-outlined text-[18px] text-text-secondary" aria-hidden="true">refresh</span>
-        </button>
-
-        <!-- Export CSV Button -->
-        <button id="open-export-modal" class="btn btn-primary px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest flex items-center gap-2 shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all">
-            <span class="material-symbols-outlined text-[18px]" aria-hidden="true">download</span>
+    <div class="flex items-center gap-3">
+        <button id="open-export-modal" class="btn btn-secondary px-4 py-2.5 rounded-xl border border-border-subtle bg-surface/80 hover:bg-surface hover:border-primary/40 text-text-primary text-xs font-bold uppercase tracking-wider flex items-center gap-2 shadow-sm transition-all hover:shadow-md active:scale-95 group">
+            <span class="material-symbols-outlined text-[18px] text-primary transition-transform group-hover:-translate-y-0.5" aria-hidden="true">download</span>
             <span>Export CSV</span>
         </button>
     </div>
@@ -188,7 +170,7 @@ ob_start();
             <div class="lg:col-span-2">
                 <label for="filter-status" class="fin-label mb-2 block text-[10px] font-black text-text-secondary uppercase tracking-widest">Status</label>
                 <div class="finzo-dropdown w-full" id="status-dropdown">
-                    <div class="finzo-dropdown-trigger fin-input !flex items-center justify-between w-full !py-2">
+                    <div class="finzo-dropdown-trigger fin-input !flex items-center justify-between w-full !py-2 cursor-pointer">
                         <div class="flex items-center gap-2">
                             <span class="material-symbols-outlined text-[16px] text-text-secondary" aria-hidden="true">tune</span>
                             <span class="dropdown-label font-bold text-xs text-text-primary">All Status</span>
@@ -222,7 +204,7 @@ ob_start();
             <div class="lg:col-span-2">
                 <label for="filter-sort" class="fin-label mb-2 block text-[10px] font-black text-text-secondary uppercase tracking-widest">Sort By</label>
                 <div class="finzo-dropdown w-full" id="sort-dropdown">
-                    <div class="finzo-dropdown-trigger fin-input !flex items-center justify-between w-full !py-2">
+                    <div class="finzo-dropdown-trigger fin-input !flex items-center justify-between w-full !py-2 cursor-pointer">
                         <div class="flex items-center gap-2">
                             <span class="material-symbols-outlined text-[16px] text-text-secondary" aria-hidden="true">sort</span>
                             <span class="dropdown-label font-bold text-xs text-text-primary">Newest First</span>

@@ -1,6 +1,6 @@
 /**
  * Finzo Admin — Global Transactions Controller
- * Manages live feeds, real-time polling, filters, statistics, reversal workflows, and audit modals.
+ * Manages table rendering, filters, statistics, reversal workflows, and audit modals.
  */
 
 (function() {
@@ -10,8 +10,6 @@
     let currentType = 'all';
     let currentPage = 1;
     const rowsPerPage = 10;
-    let autoRefreshEnabled = true;
-    let autoRefreshTimer = null;
     let isModalOpen = false;
     let activeTransactionsData = [];
     let pendingReversalTxnId = null;
@@ -56,9 +54,9 @@
     /**
      * Load transactions from backend API
      */
-    async function loadTransactions(isSilent = false) {
+    async function loadTransactions() {
         const tbody = document.getElementById('txn-table-body');
-        if (!isSilent && tbody) {
+        if (tbody) {
             renderSkeletonTable();
         }
 
@@ -82,13 +80,13 @@
 
             const response = await window.api.get('/transactions', params);
 
-            if (response.success) {
+            if (response && response.success) {
                 activeTransactionsData = response.transactions || [];
                 renderTable(activeTransactionsData, response.total || 0, response.pages || 1);
                 updateStats(response.summary || {});
             } else {
                 if (tbody) {
-                    tbody.innerHTML = `<tr><td colspan="9" class="py-12 text-center text-rose-500 font-bold text-xs uppercase tracking-widest">${response.message || 'Failed to load transactions'}</td></tr>`;
+                    tbody.innerHTML = `<tr><td colspan="9" class="py-12 text-center text-rose-500 font-bold text-xs uppercase tracking-widest">${(response && response.message) || 'No transactions returned'}</td></tr>`;
                 }
             }
         } catch (error) {
@@ -648,12 +646,12 @@
                 reason: reason
             });
 
-            if (response.success) {
+            if (response && response.success) {
                 if (window.showToast) window.showToast('Transaction successfully reversed and ledger updated.', 'success');
                 window.closeReversalModal();
                 loadTransactions();
             } else {
-                if (window.showToast) window.showToast(response.message || 'Failed to reverse transaction', 'error');
+                if (window.showToast) window.showToast((response && response.message) || 'Failed to reverse transaction', 'error');
             }
         } catch (error) {
             console.error('Reversal error:', error);
@@ -678,7 +676,7 @@
     window.copyText = function(text) {
         if (!text || text === 'N/A') return;
         navigator.clipboard.writeText(text).then(() => {
-            if (window.showToast) window.showToast(`Copied to clipboard: ${text}`, 'success');
+            if (window.showToast) window.showToast(`Copied: ${text}`, 'success');
         }).catch(() => {
             if (window.showToast) window.showToast('Failed to copy', 'error');
         });
@@ -743,25 +741,6 @@
 
         loadTransactions();
     };
-
-    /**
-     * Start background auto-refresh loop (every 10s)
-     */
-    function startAutoRefresh() {
-        stopAutoRefresh();
-        autoRefreshTimer = setInterval(() => {
-            if (autoRefreshEnabled && !isModalOpen) {
-                loadTransactions(true); // silent background reload
-            }
-        }, 10000);
-    }
-
-    function stopAutoRefresh() {
-        if (autoRefreshTimer) {
-            clearInterval(autoRefreshTimer);
-            autoRefreshTimer = null;
-        }
-    }
 
     /**
      * Export CSV Handler
@@ -876,6 +855,13 @@
         if (dateTo) dateTo.addEventListener('change', () => { currentPage = 1; loadTransactions(); });
 
         // Status Dropdown
+        const statusInput = document.getElementById('filter-status');
+        if (statusInput) {
+            statusInput.addEventListener('change', () => {
+                currentPage = 1;
+                loadTransactions();
+            });
+        }
         const statusDropdown = document.getElementById('status-dropdown');
         if (statusDropdown) {
             statusDropdown.addEventListener('click', (e) => {
@@ -887,6 +873,13 @@
         }
 
         // Sort Dropdown
+        const sortInput = document.getElementById('filter-sort');
+        if (sortInput) {
+            sortInput.addEventListener('change', () => {
+                currentPage = 1;
+                loadTransactions();
+            });
+        }
         const sortDropdown = document.getElementById('sort-dropdown');
         if (sortDropdown) {
             sortDropdown.addEventListener('click', (e) => {
@@ -900,39 +893,6 @@
         // Reset Filters Button
         const resetBtn = document.getElementById('reset-filters-btn');
         if (resetBtn) resetBtn.addEventListener('click', window.resetTransactionFilters);
-
-        // Auto Refresh Toggle
-        const toggleRefreshBtn = document.getElementById('toggle-autorefresh');
-        const liveIndicator = document.getElementById('live-indicator');
-        if (toggleRefreshBtn) {
-            toggleRefreshBtn.addEventListener('click', () => {
-                autoRefreshEnabled = !autoRefreshEnabled;
-                const icon = document.getElementById('autorefresh-icon');
-                const text = document.getElementById('autorefresh-text');
-                if (autoRefreshEnabled) {
-                    if (icon) icon.className = 'material-symbols-outlined text-[18px] text-emerald-500 transition-transform group-hover:rotate-180';
-                    if (text) text.innerHTML = 'Auto-Refresh: <strong class="text-emerald-500 font-black">ON (10s)</strong>';
-                    if (liveIndicator) liveIndicator.className = 'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 text-[10px] font-black uppercase tracking-wider';
-                    startAutoRefresh();
-                    if (window.showToast) window.showToast('Auto-refresh activated (10s interval)', 'info');
-                } else {
-                    if (icon) icon.className = 'material-symbols-outlined text-[18px] text-text-secondary transition-transform';
-                    if (text) text.innerHTML = 'Auto-Refresh: <strong class="text-text-secondary font-black">PAUSED</strong>';
-                    if (liveIndicator) liveIndicator.className = 'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-500/10 text-amber-500 border border-amber-500/20 text-[10px] font-black uppercase tracking-wider';
-                    stopAutoRefresh();
-                    if (window.showToast) window.showToast('Auto-refresh paused', 'info');
-                }
-            });
-        }
-
-        // Manual Refresh Button
-        const manualRefreshBtn = document.getElementById('manual-refresh-btn');
-        if (manualRefreshBtn) {
-            manualRefreshBtn.addEventListener('click', () => {
-                loadTransactions();
-                if (window.showToast) window.showToast('Refreshing transaction records...', 'info');
-            });
-        }
 
         // Pagination Clicks
         document.addEventListener('click', (e) => {
@@ -983,11 +943,16 @@
         });
     }
 
-    // Initialize on DOM Ready
-    document.addEventListener('DOMContentLoaded', () => {
+    // Initialize function
+    function init() {
         loadTransactions();
         bindEvents();
-        startAutoRefresh();
-    });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
 
 })();
