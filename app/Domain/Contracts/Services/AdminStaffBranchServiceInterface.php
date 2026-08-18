@@ -23,6 +23,7 @@ interface AdminStaffBranchServiceInterface
     public function createBranch(array $data, ?array $certFile, int $adminId, string $adminPassword): array;
     public function updateBranch(int $branchId, array $data, ?array $certFile, int $adminId, ?string $adminPassword): array;
     public function getBranchById(int $branchId): ?array;
+    public function toggleBranchStatus(int $branchId, string $status, int $adminId, string $adminPassword, ?string $reason = null): array;
     public function executeStaffAction(int $staffId, string $action, ?string $reason, int $adminId, string $adminPassword): array;
 }
 

@@ -612,6 +612,61 @@ class AdminStaffBranchService implements \App\Domain\Contracts\Services\AdminSta
     }
 
     /**
+     * Toggle Branch Status (Suspend or Reactivate).
+     *
+     * @param int $branchId
+     * @param string $status 'active' or 'inactive'
+     * @param int $adminId
+     * @param string $adminPassword
+     * @param ?string $reason
+     * @return array
+     */
+    public function toggleBranchStatus(int $branchId, string $status, int $adminId, string $adminPassword, ?string $reason = null): array
+    {
+        if (!in_array($status, ['active', 'inactive'])) {
+            throw new \App\Shared\Core\Exceptions\ApiException('Invalid branch status. Must be active or inactive.', 422);
+        }
+
+        if (empty($adminPassword)) {
+            throw new \App\Shared\Core\Exceptions\ApiException('Administrator security password is required.', 422);
+        }
+
+        if (!$this->verifyAdminPassword($adminId, $adminPassword)) {
+            throw new \App\Shared\Core\Exceptions\ApiException('Invalid administrator password.', 401);
+        }
+
+        $branch = $this->repo->findBranchById($branchId);
+        if (!$branch) {
+            throw new \App\Shared\Core\Exceptions\ApiException('Branch not found.', 404);
+        }
+
+        $type = is_array($branch) ? ($branch['type'] ?? 'custom') : ($branch->type ?? 'custom');
+        if ($type === 'system' && $status === 'inactive') {
+            throw new \App\Shared\Core\Exceptions\ApiException('Root system branches cannot be suspended.', 403);
+        }
+
+        $branchName = is_array($branch) ? ($branch['name'] ?? 'Branch') : ($branch->name ?? 'Branch');
+
+        $this->repo->updateBranchStatus($branchId, $status);
+
+        $actionType = ($status === 'inactive') ? 'branch_suspended' : 'branch_reactivated';
+        $auditMsg = ($status === 'inactive') 
+            ? "Suspended branch: {$branchName}" . ($reason ? " | Reason: {$reason}" : "")
+            : "Reactivated branch: {$branchName}" . ($reason ? " | Note: {$reason}" : "");
+
+        $security = new \App\Shared\Security\SecurityService();
+        $security->writeAuditLog($actionType, $branchName, 'branch', (string)$adminId, 'admin', $auditMsg);
+
+        $msg = ($status === 'inactive') ? 'Branch suspended successfully.' : 'Branch reactivated successfully.';
+
+        return [
+            'success' => true,
+            'message' => $msg,
+            'status'  => $status
+        ];
+    }
+
+    /**
      * Get Branches List.
      *
      * @param string $search

@@ -474,10 +474,59 @@ ob_start();
                 </div>
             </div>
 
-            <div class="p-6 border-t border-border-subtle dark:border-white/10 flex gap-3 justify-end bg-surface dark:bg-surface-elevated shrink-0">
+            <div class="p-6 border-t border-border-subtle dark:border-white/10 flex flex-wrap gap-3 justify-end items-center bg-surface dark:bg-surface-elevated shrink-0">
+                <button type="button" id="view-btn-toggle-status" class="btn btn-secondary px-5 text-xs font-bold flex items-center gap-1.5"></button>
                 <button type="button" id="view-btn-edit" class="btn btn-secondary px-6">Edit Branch Info</button>
                 <button type="button" id="view-btn-staff" class="btn !bg-amber-600 hover:!bg-amber-500 active:!bg-amber-700 !text-white font-bold px-6 shadow-md shadow-amber-900/20 border-0">View Staff List</button>
             </div>
+        </div>
+    </div>
+
+    <!-- BRANCH STATUS TOGGLE MODAL (SUSPEND / REACTIVATE) -->
+    <div id="branchStatusModal" class="fixed inset-0 z-[3000] hidden items-center justify-center p-4" role="dialog" aria-modal="true">
+        <div class="absolute inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-sm transition-all modal-backdrop" data-close-modal="branchStatusModal"></div>
+        <div class="relative w-full max-w-md bg-surface dark:bg-surface-elevated text-text-primary dark:text-white rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh] border border-border-subtle dark:border-white/10 p-6 sm:p-8 text-center animate-modal-enter">
+            <div id="status-modal-icon-box" class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-800/40">
+                <span class="material-symbols-outlined text-3xl" id="status-modal-icon" aria-hidden="true">pause_circle</span>
+            </div>
+            
+            <h3 id="status-modal-title" class="font-headline text-xl font-black text-text-primary dark:text-white tracking-tight mb-1.5">Suspend Branch</h3>
+            <p id="status-modal-desc" class="text-xs text-text-secondary dark:text-slate-300 font-medium leading-relaxed mb-4">
+                You are changing the operational status of <span class="font-black text-text-primary dark:text-white" id="status-target-branch-name">—</span>.
+            </p>
+
+            <div id="status-modal-alert" class="p-3 bg-amber-500/10 dark:bg-amber-500/10 border border-amber-500/20 dark:border-amber-500/20 rounded-xl flex items-center gap-2.5 text-left mb-5">
+                <span class="material-symbols-outlined text-amber-600 dark:text-amber-400 text-lg shrink-0" aria-hidden="true">info</span>
+                <p id="status-modal-alert-text" class="text-[11px] font-bold text-amber-700 dark:text-amber-300 leading-tight">
+                    Suspending this branch will mark it as INACTIVE. Operational transactions and new staff teller assignments will be paused.
+                </p>
+            </div>
+
+            <form id="branchStatusForm" class="space-y-4 text-left mb-4" novalidate>
+                <input type="hidden" id="status-branch-id" value="">
+                <input type="hidden" id="status-target-action" value="inactive">
+
+                <div>
+                    <label for="status-admin-pw" class="fin-label mb-1.5 block text-[10px] font-black uppercase text-text-secondary dark:text-slate-300">Admin Security Password *</label>
+                    <div class="fin-input-wrapper">
+                        <span class="material-symbols-outlined input-icon-left text-text-secondary dark:text-slate-400 text-lg" aria-hidden="true">admin_panel_settings</span>
+                        <input type="password" id="status-admin-pw" name="admin_password" placeholder="Enter your administrator password" required class="fin-input has-icon-left has-icon-right bg-surface dark:bg-surface-subtle text-text-primary dark:text-white border-border-subtle dark:border-white/10">
+                        <button type="button" id="toggle-status-pw" class="password-toggle-btn text-text-secondary dark:text-slate-400 hover:text-text-primary dark:hover:text-white transition-colors" aria-label="Toggle password visibility">
+                            <span class="material-symbols-outlined text-lg" id="toggle-status-pw-icon" aria-hidden="true">visibility</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div>
+                    <label for="status-reason-input" class="fin-label mb-1.5 block text-[10px] font-black uppercase text-text-secondary dark:text-slate-300">Reason / Operational Note (Optional)</label>
+                    <textarea id="status-reason-input" name="reason" rows="2" placeholder="e.g. Scheduled annual renovation, regulatory compliance review..." class="fin-input bg-surface dark:bg-surface-subtle text-text-primary dark:text-white border-border-subtle dark:border-white/10"></textarea>
+                </div>
+
+                <div class="flex flex-col gap-2.5 pt-2">
+                    <button type="submit" id="status-submit-btn" class="btn w-full justify-center !py-3 !bg-amber-600 hover:!bg-amber-500 !text-white font-bold border-0 shadow-lg">Confirm Suspension</button>
+                    <button type="button" class="btn btn-secondary w-full justify-center !py-2.5 modal-close-btn" data-close-modal="branchStatusModal">Cancel</button>
+                </div>
+            </form>
         </div>
     </div>
 

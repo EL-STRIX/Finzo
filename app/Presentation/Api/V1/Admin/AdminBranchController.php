@@ -121,6 +121,28 @@ class AdminBranchController
         return $this->service->getBranchesList($search, $type, $status);
     }
 
+    public function updateBranchStatus(?string $id = null, ?string $extra = null): array
+    {
+        $user = Auth::user();
+        $adminId = $user['id'] ?? ($_SESSION['admin_id_num'] ?? ($_SESSION['admin_id'] ?? 1));
+        $branchId = intval($id ?: ($_POST['branch_id'] ?? 0));
+        $status = $this->security->cleanInput($_POST['status'] ?? '');
+        $adminPassword = $_POST['admin_password'] ?? '';
+        $reason = $this->security->cleanInput($_POST['reason'] ?? '');
+
+        if (empty($branchId)) {
+            throw new ApiException('Branch ID is required.', 422);
+        }
+        if (empty($status) || !in_array($status, ['active', 'inactive'])) {
+            throw new ApiException('Valid status (active or inactive) is required.', 422);
+        }
+        if (empty($adminPassword)) {
+            throw new ApiException('Admin password is required to change branch operational status.', 422);
+        }
+
+        return $this->service->toggleBranchStatus($branchId, $status, (int)$adminId, $adminPassword, $reason);
+    }
+
     public function departments(): array
     {
         $this->security->enforcePermission('view_branches');

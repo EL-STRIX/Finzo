@@ -99,6 +99,7 @@ $router->get('/api/v1/branches/departments', [AdminBranchController::class, 'dep
 $router->get('/api/v1/branches/{id}', [AdminBranchController::class, 'getBranch'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->post('/api/v1/branches/{id}', [AdminBranchController::class, 'updateBranch'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->put('/api/v1/branches/{id}', [AdminBranchController::class, 'updateBranch'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
+$router->post('/api/v1/branches/{id}/status', [AdminBranchController::class, 'updateBranchStatus'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->post('/api/v1/branches/{id}/delete', [AdminBranchController::class, 'deleteBranch'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 
 use App\Presentation\Api\V1\Admin\AdminLoanController;

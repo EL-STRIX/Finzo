@@ -142,6 +142,9 @@
                             <span class="material-symbols-outlined text-[18px]" aria-hidden="true">edit</span>
                         </button>
                         ${!isSystem ? `
+                        <button type="button" class="w-8 h-8 rounded-lg flex items-center justify-center text-text-secondary dark:text-slate-400 ${isActive ? 'hover:text-amber-600 dark:hover:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-500/15' : 'hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-500/15'} transition-colors action-toggle-status" data-id="${b.id}" data-status="${isActive ? 'inactive' : 'active'}" data-name="${escapeHtml(b.name)}" title="${isActive ? 'Suspend Branch' : 'Reactivate Branch'}">
+                            <span class="material-symbols-outlined text-[18px]" aria-hidden="true">${isActive ? 'pause_circle' : 'play_circle'}</span>
+                        </button>
                         <button type="button" class="w-8 h-8 rounded-lg flex items-center justify-center text-text-secondary dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/15 transition-colors action-delete" data-id="${b.id}" data-name="${escapeHtml(b.name)}" data-code="${escapeHtml(b.branch_code)}" title="Delete Branch">
                             <span class="material-symbols-outlined text-[18px]" aria-hidden="true">delete</span>
                         </button>` : ''}
@@ -626,10 +629,72 @@
             });
         }
 
+        // Branch Status Form Submission
+        const branchStatusForm = document.getElementById('branchStatusForm');
+        if (branchStatusForm) {
+            branchStatusForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                const branchId = document.getElementById('status-branch-id')?.value;
+                const targetAction = document.getElementById('status-target-action')?.value || 'inactive';
+                const adminPw = document.getElementById('status-admin-pw')?.value;
+                const reason = document.getElementById('status-reason-input')?.value.trim();
+                const submitBtn = document.getElementById('status-submit-btn');
+
+                if (!branchId) {
+                    window.showToast('Branch ID is missing', 'error');
+                    return;
+                }
+                if (!adminPw) {
+                    window.showToast('Please enter your administrator security password', 'warning');
+                    document.getElementById('status-admin-pw')?.focus();
+                    return;
+                }
+
+                window.api.setButtonLoading(submitBtn, true, targetAction === 'inactive' ? 'Suspending...' : 'Reactivating...');
+
+                const formData = new FormData();
+                formData.append('branch_id', branchId);
+                formData.append('status', targetAction);
+                formData.append('admin_password', adminPw);
+                if (reason) formData.append('reason', reason);
+
+                try {
+                    const res = await window.api.upload(`/branches/${branchId}/status`, formData);
+                    if (res.success || res.status === 'success') {
+                        window.showToast(res.message || (targetAction === 'inactive' ? 'Branch suspended successfully' : 'Branch reactivated successfully'), 'success');
+                        closeModal('branchStatusModal');
+                        branchStatusForm.reset();
+                        loadBranches();
+                    } else {
+                        window.showToast(res.message || 'Failed to update branch status', 'error');
+                    }
+                } catch (err) {
+                    console.error('Status toggle error:', err);
+                    window.showToast(err.message || 'Server error occurred while updating status', 'error');
+                } finally {
+                    window.api.setButtonLoading(submitBtn, false, targetAction === 'inactive' ? 'Confirm Suspension' : 'Confirm Reactivation');
+                }
+            });
+        }
+
+        // Toggle Status Password visibility
+        const toggleStatusPwBtn = document.getElementById('toggle-status-pw');
+        const statusPwInput = document.getElementById('status-admin-pw');
+        const statusPwIcon = document.getElementById('toggle-status-pw-icon');
+        if (toggleStatusPwBtn && statusPwInput) {
+            toggleStatusPwBtn.addEventListener('click', () => {
+                const isPw = statusPwInput.type === 'password';
+                statusPwInput.type = isPw ? 'text' : 'password';
+                if (statusPwIcon) statusPwIcon.textContent = isPw ? 'visibility_off' : 'visibility';
+            });
+        }
+
         // Event Delegation for Table Actions
         document.addEventListener('click', (e) => {
             const viewBtn = e.target.closest('.action-view');
             const editBtn = e.target.closest('.action-edit');
+            const toggleStatusBtn = e.target.closest('.action-toggle-status');
             const deleteBtn = e.target.closest('.action-delete');
 
             if (viewBtn) {
@@ -639,6 +704,11 @@
             } else if (editBtn) {
                 const id = editBtn.getAttribute('data-id');
                 showEditModal(id);
+            } else if (toggleStatusBtn) {
+                const id = toggleStatusBtn.getAttribute('data-id');
+                const targetStatus = toggleStatusBtn.getAttribute('data-status');
+                const name = toggleStatusBtn.getAttribute('data-name');
+                showStatusModal(id, targetStatus, name);
             } else if (deleteBtn) {
                 const id = deleteBtn.getAttribute('data-id');
                 const name = deleteBtn.getAttribute('data-name');
@@ -877,6 +947,34 @@
 
         document.getElementById('view-branch-desc').textContent = branch.clean_description || branch.description || 'No specialized description provided.';
 
+        // Status Toggle button in View modal
+        const statusToggleBtn = document.getElementById('view-btn-toggle-status');
+        if (statusToggleBtn) {
+            const isSystem = branch.type === 'system';
+            const isActive = branch.status === 'active';
+
+            if (isSystem) {
+                statusToggleBtn.classList.add('hidden');
+            } else {
+                statusToggleBtn.classList.remove('hidden');
+                if (isActive) {
+                    statusToggleBtn.className = 'btn px-4 text-xs font-bold flex items-center gap-1.5 border border-amber-500/30 text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10 hover:bg-amber-100 dark:hover:bg-amber-500/20';
+                    statusToggleBtn.innerHTML = '<span class="material-symbols-outlined text-base">pause_circle</span> Suspend Branch';
+                    statusToggleBtn.onclick = () => {
+                        closeModal('viewBranchModal');
+                        showStatusModal(branch.id, 'inactive', branch.name);
+                    };
+                } else {
+                    statusToggleBtn.className = 'btn px-4 text-xs font-bold flex items-center gap-1.5 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 hover:bg-emerald-100 dark:hover:bg-emerald-500/20';
+                    statusToggleBtn.innerHTML = '<span class="material-symbols-outlined text-base">play_circle</span> Reactivate Branch';
+                    statusToggleBtn.onclick = () => {
+                        closeModal('viewBranchModal');
+                        showStatusModal(branch.id, 'active', branch.name);
+                    };
+                }
+            }
+        }
+
         // Action buttons
         document.getElementById('view-btn-edit').onclick = () => {
             closeModal('viewBranchModal');
@@ -888,6 +986,60 @@
         };
 
         openModal('viewBranchModal');
+    }
+
+    function showStatusModal(id, targetStatus, name) {
+        const branch = currentBranches.find(b => String(b.id) === String(id));
+        if (branch && branch.type === 'system' && targetStatus === 'inactive') {
+            window.showToast('Root system branches cannot be suspended.', 'error');
+            return;
+        }
+
+        const branchName = name || (branch ? branch.name : 'Branch');
+        const isSuspending = targetStatus === 'inactive';
+
+        document.getElementById('status-branch-id').value = id;
+        document.getElementById('status-target-action').value = targetStatus;
+        document.getElementById('status-target-branch-name').textContent = branchName;
+
+        const iconBox = document.getElementById('status-modal-icon-box');
+        const icon = document.getElementById('status-modal-icon');
+        const title = document.getElementById('status-modal-title');
+        const desc = document.getElementById('status-modal-desc');
+        const alertBox = document.getElementById('status-modal-alert');
+        const alertText = document.getElementById('status-modal-alert-text');
+        const submitBtn = document.getElementById('status-submit-btn');
+
+        if (isSuspending) {
+            if (iconBox) iconBox.className = 'w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-800/40';
+            if (icon) icon.textContent = 'pause_circle';
+            if (title) title.textContent = 'Suspend Branch';
+            if (desc) desc.innerHTML = `You are changing the operational status of <span class="font-black text-text-primary dark:text-white">${escapeHtml(branchName)}</span>.`;
+            if (alertBox) alertBox.className = 'p-3 bg-amber-500/10 dark:bg-amber-500/10 border border-amber-500/20 dark:border-amber-500/20 rounded-xl flex items-center gap-2.5 text-left mb-5';
+            if (alertText) alertText.textContent = 'Suspending this branch will mark it as INACTIVE. Operational transactions and new staff teller assignments will be paused.';
+            if (submitBtn) {
+                submitBtn.className = 'btn w-full justify-center !py-3 !bg-amber-600 hover:!bg-amber-500 !text-white font-bold border-0 shadow-lg';
+                submitBtn.textContent = 'Confirm Suspension';
+            }
+        } else {
+            if (iconBox) iconBox.className = 'w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/40';
+            if (icon) icon.textContent = 'play_circle';
+            if (title) title.textContent = 'Reactivate Branch';
+            if (desc) desc.innerHTML = `You are restoring the operational status of <span class="font-black text-text-primary dark:text-white">${escapeHtml(branchName)}</span>.`;
+            if (alertBox) alertBox.className = 'p-3 bg-emerald-500/10 dark:bg-emerald-500/10 border border-emerald-500/20 dark:border-emerald-500/20 rounded-xl flex items-center gap-2.5 text-left mb-5';
+            if (alertText) alertText.textContent = 'Reactivating this branch will restore its ACTIVE status in the network. Staff operations and teller transactions will resume normally.';
+            if (submitBtn) {
+                submitBtn.className = 'btn w-full justify-center !py-3 !bg-emerald-600 hover:!bg-emerald-500 !text-white font-bold border-0 shadow-lg';
+                submitBtn.textContent = 'Confirm Reactivation';
+            }
+        }
+
+        const pwInput = document.getElementById('status-admin-pw');
+        const reasonInput = document.getElementById('status-reason-input');
+        if (pwInput) pwInput.value = '';
+        if (reasonInput) reasonInput.value = '';
+
+        openModal('branchStatusModal');
     }
 
     function showDeleteModal(id, name, code) {
@@ -1022,6 +1174,7 @@
     window.closeModal = closeModal;
     window.showViewModal = showViewModal;
     window.showEditModal = showEditModal;
+    window.showStatusModal = showStatusModal;
     window.showDeleteModal = showDeleteModal;
 
     // Initialize

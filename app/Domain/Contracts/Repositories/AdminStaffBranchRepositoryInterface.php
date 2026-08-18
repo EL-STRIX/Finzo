@@ -34,6 +34,7 @@ interface AdminStaffBranchRepositoryInterface
     public function getStaffList(array $filters, int $page = 1, int $perPage = 20): array;
     public function getStaffDetailComprehensive(int $staffId): ?array;
     public function updateBranchRecord(int $id, array $data): bool;
+    public function updateBranchStatus(int $id, string $status): bool;
     public function getBranchDetailWithStats(int $id): ?array;
 }
 

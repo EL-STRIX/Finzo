@@ -94,6 +94,12 @@ class AdminStaffBranchRepository extends BaseRepository implements \App\Domain\C
         return $stmt->execute($values);
     }
 
+    public function updateBranchStatus(int $id, string $status): bool
+    {
+        $stmt = $this->db->prepare("UPDATE branches SET status = ?, updated_at = NOW() WHERE id = ?");
+        return $stmt->execute([$status, $id]);
+    }
+
     public function getBranchDetailWithStats(int $id): ?array
     {
         $stmt = $this->db->prepare("
