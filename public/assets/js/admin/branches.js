@@ -882,13 +882,13 @@
         if (badgesContainer) {
             const isSystem = branch.type === 'system';
             const typeBadge = isSystem
-                ? '<span class="inline-flex items-center px-2.5 py-0.5 rounded text-[10px] font-mono font-bold bg-blue-50 text-blue-700 border border-blue-200 dark:bg-blue-500/20 dark:text-blue-300 dark:border-blue-500/30">SYSTEM</span>'
-                : '<span class="inline-flex items-center px-2.5 py-0.5 rounded text-[10px] font-mono font-bold bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-500/20 dark:text-amber-300 dark:border-amber-500/30">CUSTOM</span>';
+                ? '<span class="inline-flex items-center px-2.5 py-0.5 rounded text-[10px] font-mono font-bold bg-blue-100 text-blue-800 border border-blue-300 dark:bg-blue-500/20 dark:text-blue-300 dark:border-blue-500/30">SYSTEM</span>'
+                : '<span class="inline-flex items-center px-2.5 py-0.5 rounded text-[10px] font-mono font-bold bg-amber-100 text-amber-800 border border-amber-300 dark:bg-amber-500/20 dark:text-amber-300 dark:border-amber-500/30">CUSTOM</span>';
             
             const isActive = branch.status === 'active';
             const statusBadge = isActive
-                ? '<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-500/20 dark:text-emerald-300 dark:border-emerald-500/30"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> ACTIVE</span>'
-                : '<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-red-50 text-red-700 border border-red-200 dark:bg-red-500/20 dark:text-red-300 dark:border-red-500/30"><span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> INACTIVE</span>';
+                ? '<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 dark:bg-emerald-500/20 dark:text-emerald-300 dark:border-emerald-500/30"><span class="w-1.5 h-1.5 rounded-full bg-emerald-600 dark:bg-emerald-500 animate-pulse"></span> ACTIVE</span>'
+                : '<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-red-100 text-red-800 border border-red-300 dark:bg-red-500/20 dark:text-red-300 dark:border-red-500/30"><span class="w-1.5 h-1.5 rounded-full bg-red-600 dark:bg-red-500"></span> INACTIVE</span>';
 
             badgesContainer.innerHTML = `${typeBadge} ${statusBadge}`;
         }
@@ -907,7 +907,7 @@
             const avatarUrl = branch.manager_avatar_url || resolveUrl(branch.manager_avatar, 'staff-photos');
             const initial = branch.manager_initials || branch.manager_name.charAt(0).toUpperCase();
 
-            avatarEl.className = 'w-12 h-12 rounded-full flex items-center justify-center bg-amber-500/15 dark:bg-amber-500/15 text-amber-600 dark:text-amber-400 font-black text-lg shrink-0 border border-amber-500/25 dark:border-amber-500/25 overflow-hidden';
+            avatarEl.className = 'w-12 h-12 rounded-full flex items-center justify-center bg-amber-500/15 text-amber-800 dark:text-amber-400 font-black text-lg shrink-0 border-2 border-amber-500/30 overflow-hidden';
             if (avatarUrl) {
                 avatarEl.innerHTML = `<img src="${avatarUrl}?v=${Date.now()}" class="w-full h-full object-cover" onerror="this.parentElement.innerHTML='${initial}'">`;
             } else {
@@ -918,7 +918,7 @@
             linkEl.classList.remove('hidden');
             linkEl.href = `/Finzo/public/views/admin/admin-staff.php?search=${encodeURIComponent(branch.manager_staff_id || branch.manager_name)}`;
         } else {
-            avatarEl.className = 'w-12 h-12 rounded-full flex items-center justify-center bg-surface-subtle dark:bg-white/5 text-text-secondary dark:text-slate-400 font-black text-lg shrink-0 border border-border-subtle dark:border-white/10';
+            avatarEl.className = 'w-12 h-12 rounded-full flex items-center justify-center bg-slate-100 dark:bg-white/5 text-slate-500 dark:text-slate-400 font-black text-lg shrink-0 border-2 border-slate-200 dark:border-white/10';
             avatarEl.innerHTML = '<span class="material-symbols-outlined text-xl opacity-60">person_off</span>';
             nameEl.textContent = 'Unassigned';
             emailEl.textContent = 'No manager assigned';
@@ -958,14 +958,14 @@
             } else {
                 statusToggleBtn.classList.remove('hidden');
                 if (isActive) {
-                    statusToggleBtn.className = 'btn px-4 text-xs font-bold flex items-center gap-1.5 border border-amber-500/30 text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10 hover:bg-amber-100 dark:hover:bg-amber-500/20';
+                    statusToggleBtn.className = 'btn px-5 py-2.5 text-xs font-bold flex items-center gap-1.5 border border-amber-300 text-amber-900 bg-amber-50 hover:bg-amber-100 dark:border-amber-700/50 dark:text-amber-300 dark:bg-amber-950/40 shadow-sm';
                     statusToggleBtn.innerHTML = '<span class="material-symbols-outlined text-base">pause_circle</span> Suspend Branch';
                     statusToggleBtn.onclick = () => {
                         closeModal('viewBranchModal');
                         showStatusModal(branch.id, 'inactive', branch.name);
                     };
                 } else {
-                    statusToggleBtn.className = 'btn px-4 text-xs font-bold flex items-center gap-1.5 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 hover:bg-emerald-100 dark:hover:bg-emerald-500/20';
+                    statusToggleBtn.className = 'btn px-5 py-2.5 text-xs font-bold flex items-center gap-1.5 border border-emerald-300 text-emerald-900 bg-emerald-50 hover:bg-emerald-100 dark:border-emerald-700/50 dark:text-emerald-300 dark:bg-emerald-950/40 shadow-sm';
                     statusToggleBtn.innerHTML = '<span class="material-symbols-outlined text-base">play_circle</span> Reactivate Branch';
                     statusToggleBtn.onclick = () => {
                         closeModal('viewBranchModal');
@@ -1011,25 +1011,25 @@
         const submitBtn = document.getElementById('status-submit-btn');
 
         if (isSuspending) {
-            if (iconBox) iconBox.className = 'w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-800/40';
+            if (iconBox) iconBox.className = 'w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400 border-2 border-amber-300 dark:border-amber-800/40';
             if (icon) icon.textContent = 'pause_circle';
             if (title) title.textContent = 'Suspend Branch';
-            if (desc) desc.innerHTML = `You are changing the operational status of <span class="font-black text-text-primary dark:text-white">${escapeHtml(branchName)}</span>.`;
-            if (alertBox) alertBox.className = 'p-3 bg-amber-500/10 dark:bg-amber-500/10 border border-amber-500/20 dark:border-amber-500/20 rounded-xl flex items-center gap-2.5 text-left mb-5';
+            if (desc) desc.innerHTML = `You are changing the operational status of <span class="font-black text-slate-950 dark:text-white">${escapeHtml(branchName)}</span>.`;
+            if (alertBox) alertBox.className = 'p-3.5 bg-amber-50 dark:bg-amber-950/40 border-2 border-amber-300 dark:border-amber-700/50 rounded-xl flex items-center gap-2.5 text-left mb-5';
             if (alertText) alertText.textContent = 'Suspending this branch will mark it as INACTIVE. Operational transactions and new staff teller assignments will be paused.';
             if (submitBtn) {
-                submitBtn.className = 'btn w-full justify-center !py-3 !bg-amber-600 hover:!bg-amber-500 !text-white font-bold border-0 shadow-lg';
+                submitBtn.className = 'btn w-full justify-center !py-3.5 !bg-amber-600 hover:!bg-amber-500 !text-white font-black text-sm border-0 shadow-lg shadow-amber-900/20';
                 submitBtn.textContent = 'Confirm Suspension';
             }
         } else {
-            if (iconBox) iconBox.className = 'w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/40';
+            if (iconBox) iconBox.className = 'w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border-2 border-emerald-300 dark:border-emerald-800/40';
             if (icon) icon.textContent = 'play_circle';
             if (title) title.textContent = 'Reactivate Branch';
-            if (desc) desc.innerHTML = `You are restoring the operational status of <span class="font-black text-text-primary dark:text-white">${escapeHtml(branchName)}</span>.`;
-            if (alertBox) alertBox.className = 'p-3 bg-emerald-500/10 dark:bg-emerald-500/10 border border-emerald-500/20 dark:border-emerald-500/20 rounded-xl flex items-center gap-2.5 text-left mb-5';
+            if (desc) desc.innerHTML = `You are restoring the operational status of <span class="font-black text-slate-950 dark:text-white">${escapeHtml(branchName)}</span>.`;
+            if (alertBox) alertBox.className = 'p-3.5 bg-emerald-50 dark:bg-emerald-950/40 border-2 border-emerald-300 dark:border-emerald-700/50 rounded-xl flex items-center gap-2.5 text-left mb-5';
             if (alertText) alertText.textContent = 'Reactivating this branch will restore its ACTIVE status in the network. Staff operations and teller transactions will resume normally.';
             if (submitBtn) {
-                submitBtn.className = 'btn w-full justify-center !py-3 !bg-emerald-600 hover:!bg-emerald-500 !text-white font-bold border-0 shadow-lg';
+                submitBtn.className = 'btn w-full justify-center !py-3.5 !bg-emerald-600 hover:!bg-emerald-500 !text-white font-black text-sm border-0 shadow-lg shadow-emerald-900/20';
                 submitBtn.textContent = 'Confirm Reactivation';
             }
         }
@@ -1090,7 +1090,7 @@
         const tbody = document.getElementById('branch-ds-table-body');
         const noStaff = document.getElementById('no-staff-error');
         if (tbody) {
-            tbody.innerHTML = '<tr><td colspan="5" class="py-12 text-center text-text-secondary dark:text-slate-400 font-bold"><div class="flex flex-col items-center"><span class="material-symbols-outlined text-4xl animate-spin mb-2">refresh</span>Loading staff roster...</div></td></tr>';
+            tbody.innerHTML = '<tr><td colspan="5" class="py-12 text-center text-slate-700 dark:text-slate-400 font-bold"><div class="flex flex-col items-center"><span class="material-symbols-outlined text-4xl animate-spin mb-2">refresh</span>Loading staff roster...</div></td></tr>';
         }
         if (noStaff) noStaff.classList.add('hidden');
 
@@ -1108,34 +1108,34 @@
                     if (noStaff) noStaff.classList.add('hidden');
                     tbody.innerHTML = staff.map(s => {
                         const statusBadge = s.status === 'active' 
-                            ? '<span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-500/20 dark:text-emerald-300 dark:border-emerald-500/30 inline-flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> ACTIVE</span>'
-                            : '<span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-red-50 text-red-700 border border-red-200 dark:bg-red-500/20 dark:text-red-300 dark:border-red-500/30 inline-flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> INACTIVE</span>';
+                            ? '<span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 dark:bg-emerald-500/20 dark:text-emerald-300 dark:border-emerald-500/30 inline-flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-emerald-600 dark:bg-emerald-500 animate-pulse"></span> ACTIVE</span>'
+                            : '<span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-red-100 text-red-800 border border-red-300 dark:bg-red-500/20 dark:text-red-300 dark:border-red-500/30 inline-flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-red-600 dark:bg-red-500"></span> INACTIVE</span>';
                         const photoUrl = s.profile_photo_url || resolveUrl(s.profile_photo, 'staff-photos');
                         const initial = s.initials || (s.full_name ? s.full_name.charAt(0).toUpperCase() : 'ST');
 
                         return `
-                        <tr class="hover:bg-surface-hover/60 dark:hover:bg-white/5 transition-colors border-b border-border-subtle dark:border-white/5">
-                            <td class="px-6 py-4 font-mono text-xs font-bold text-primary dark:text-amber-400 whitespace-nowrap">${escapeHtml(s.staff_id)}</td>
+                        <tr class="hover:bg-slate-50 dark:hover:bg-white/5 transition-colors border-b border-slate-200 dark:border-white/5">
+                            <td class="px-6 py-4 font-mono text-xs font-bold text-amber-700 dark:text-amber-400 whitespace-nowrap">${escapeHtml(s.staff_id)}</td>
                             <td class="px-6 py-4">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-8 h-8 rounded-full bg-amber-500/15 dark:bg-amber-500/15 text-amber-600 dark:text-amber-400 font-bold text-xs flex items-center justify-center overflow-hidden shrink-0 border border-amber-500/25 dark:border-amber-500/25">
+                                    <div class="w-8 h-8 rounded-full bg-amber-500/15 text-amber-800 dark:text-amber-400 font-bold text-xs flex items-center justify-center overflow-hidden shrink-0 border border-amber-500/25">
                                         ${photoUrl ? `<img src="${photoUrl}?v=${Date.now()}" class="w-full h-full object-cover" onerror="this.parentElement.innerHTML='${initial}'">` : initial}
                                     </div>
                                     <div class="min-w-0">
-                                        <div class="text-xs font-bold text-text-primary dark:text-white truncate">${escapeHtml(s.full_name)}</div>
-                                        <div class="text-[10px] text-text-secondary dark:text-slate-400 font-bold uppercase tracking-widest">${escapeHtml(s.designation || 'Staff')}</div>
+                                        <div class="text-xs font-bold text-slate-900 dark:text-white truncate">${escapeHtml(s.full_name)}</div>
+                                        <div class="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest">${escapeHtml(s.designation || 'Staff')}</div>
                                     </div>
                                 </div>
                             </td>
                             <td class="px-6 py-4">
-                                <div class="text-xs font-bold text-text-primary dark:text-white">${escapeHtml(s.personal_email || s.email || 'N/A')}</div>
-                                <div class="text-[10px] text-text-secondary dark:text-slate-400 font-medium">${escapeHtml(s.phone || 'N/A')}</div>
+                                <div class="text-xs font-bold text-slate-900 dark:text-white">${escapeHtml(s.personal_email || s.email || 'N/A')}</div>
+                                <div class="text-[10px] text-slate-500 dark:text-slate-400 font-medium">${escapeHtml(s.phone || 'N/A')}</div>
                             </td>
                             <td class="px-6 py-4">
                                 ${statusBadge}
                             </td>
                             <td class="px-6 py-4 text-right">
-                                <a href="/Finzo/public/views/admin/admin-staff.php?search=${encodeURIComponent(s.staff_id)}" class="btn btn-secondary btn-sm !px-3 !py-1 !text-[10px]" target="_blank">
+                                <a href="/Finzo/public/views/admin/admin-staff.php?search=${encodeURIComponent(s.staff_id)}" class="btn btn-secondary btn-sm !px-3 !py-1 !text-[10px] font-bold" target="_blank">
                                     View Profile
                                 </a>
                             </td>
@@ -1143,11 +1143,11 @@
                     }).join('');
                 }
             } else {
-                if (tbody) tbody.innerHTML = '<tr><td colspan="5" class="py-12 text-center text-error font-bold">Failed to load staff list.</td></tr>';
+                if (tbody) tbody.innerHTML = '<tr><td colspan="5" class="py-12 text-center text-red-600 font-bold">Failed to load staff list.</td></tr>';
             }
         } catch (e) {
             console.error('Error fetching branch staff:', e);
-            if (tbody) tbody.innerHTML = '<tr><td colspan="5" class="py-12 text-center text-error font-bold">Error loading staff list.</td></tr>';
+            if (tbody) tbody.innerHTML = '<tr><td colspan="5" class="py-12 text-center text-red-600 font-bold">Error loading staff list.</td></tr>';
         }
     };
 
