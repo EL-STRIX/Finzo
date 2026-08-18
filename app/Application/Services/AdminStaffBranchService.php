@@ -151,20 +151,73 @@ class AdminStaffBranchService implements \App\Domain\Contracts\Services\AdminSta
         return $errors;
     }
     /**
-     * Generate Branch Code.
+     * Map state/UT name to standard 2-letter Indian state code.
+     */
+    public static function getStateCode(string $state): string
+    {
+        $map = [
+            'Andhra Pradesh' => 'AP',
+            'Arunachal Pradesh' => 'AR',
+            'Assam' => 'AS',
+            'Bihar' => 'BR',
+            'Chhattisgarh' => 'CG',
+            'Goa' => 'GA',
+            'Gujarat' => 'GJ',
+            'Haryana' => 'HR',
+            'Himachal Pradesh' => 'HP',
+            'Jharkhand' => 'JH',
+            'Karnataka' => 'KA',
+            'Kerala' => 'KL',
+            'Madhya Pradesh' => 'MP',
+            'Maharashtra' => 'MH',
+            'Manipur' => 'MN',
+            'Meghalaya' => 'ML',
+            'Mizoram' => 'MZ',
+            'Nagaland' => 'NL',
+            'Odisha' => 'OD',
+            'Punjab' => 'PB',
+            'Rajasthan' => 'RJ',
+            'Sikkim' => 'SK',
+            'Tamil Nadu' => 'TN',
+            'Telangana' => 'TG',
+            'Tripura' => 'TR',
+            'Uttar Pradesh' => 'UP',
+            'Uttarakhand' => 'UK',
+            'West Bengal' => 'WB',
+            'Andaman and Nicobar Islands' => 'AN',
+            'Chandigarh' => 'CH',
+            'Dadra and Nagar Haveli and Daman and Diu' => 'DH',
+            'Delhi' => 'DL',
+            'Jammu and Kashmir' => 'JK',
+            'Ladakh' => 'LA',
+            'Lakshadweep' => 'LD',
+            'Puducherry' => 'PY',
+        ];
+
+        $normalized = trim($state);
+        foreach ($map as $name => $code) {
+            if (strcasecmp($name, $normalized) === 0) {
+                return $code;
+            }
+        }
+
+        $clean = trim(preg_replace('/[^a-zA-Z\s]/', '', $normalized));
+        $words = preg_split('/\s+/', $clean);
+        if (count($words) >= 2) {
+            return strtoupper(substr($words[0], 0, 1) . substr($words[1], 0, 1));
+        }
+        return strtoupper(substr(str_replace(' ', '', $clean), 0, 2)) ?: 'XX';
+    }
+
+    /**
+     * Generate Branch Code based on state.
      *
      * @param mixed $state
-     * @return mixed
+     * @return string
      */
-    public function generateBranchCode($state)
+    public function generateBranchCode($state): string
     {
-        $state_clean = trim(preg_replace('/[^a-zA-Z\s]/', '', $state));
-        $words = preg_split('/\s+/', $state_clean);
-        if (count($words) >= 2) {
-            $state_code = strtoupper(substr($words[0], 0, 1) . substr($words[1], 0, 1));
-        } else {
-            $state_code = strtoupper(substr(str_replace(' ', '', $state_clean), 0, 2));
-        }
+        $state_code = self::getStateCode((string)$state);
 
         $count = $this->repo->countBranchByCode("FNZ-{$state_code}-%");
         $branch_code = "FNZ-{$state_code}-" . str_pad($count + 1, 3, '0', STR_PAD_LEFT);

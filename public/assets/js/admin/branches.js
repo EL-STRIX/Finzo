@@ -303,25 +303,77 @@
     }
 
     /**
+     * Map state name to standard 2-letter state code
+     */
+    const STATE_CODE_MAP = {
+        'andhra pradesh': 'AP',
+        'arunachal pradesh': 'AR',
+        'assam': 'AS',
+        'bihar': 'BR',
+        'chhattisgarh': 'CG',
+        'goa': 'GA',
+        'gujarat': 'GJ',
+        'haryana': 'HR',
+        'himachal pradesh': 'HP',
+        'jharkhand': 'JH',
+        'karnataka': 'KA',
+        'kerala': 'KL',
+        'madhya pradesh': 'MP',
+        'maharashtra': 'MH',
+        'manipur': 'MN',
+        'meghalaya': 'ML',
+        'mizoram': 'MZ',
+        'nagaland': 'NL',
+        'odisha': 'OD',
+        'punjab': 'PB',
+        'rajasthan': 'RJ',
+        'sikkim': 'SK',
+        'tamil nadu': 'TN',
+        'telangana': 'TG',
+        'tripura': 'TR',
+        'uttar pradesh': 'UP',
+        'uttarakhand': 'UK',
+        'west bengal': 'WB',
+        'andaman and nicobar islands': 'AN',
+        'chandigarh': 'CH',
+        'dadra and nagar haveli and daman and diu': 'DH',
+        'delhi': 'DL',
+        'jammu and kashmir': 'JK',
+        'ladakh': 'LA',
+        'lakshadweep': 'LD',
+        'puducherry': 'PY'
+    };
+
+    function getStateCode(state) {
+        if (!state) return 'XX';
+        const key = state.toLowerCase().trim();
+        if (STATE_CODE_MAP[key]) return STATE_CODE_MAP[key];
+        const clean = state.replace(/[^a-zA-Z\s]/g, '').trim();
+        const words = clean.split(/\s+/);
+        if (words.length >= 2) {
+            return (words[0][0] + words[1][0]).toUpperCase();
+        }
+        return (clean.substring(0, 2) || 'XX').toUpperCase();
+    }
+
+    /**
      * Generate branch code dynamically based on state selection
      */
     async function updateBranchCode(state) {
         const codeInput = document.getElementById('add-branch-code');
         if (!codeInput || !state) return;
 
+        const fallbackCode = getStateCode(state);
+        // Instant visual feedback
+        codeInput.value = `FNZ-${fallbackCode}-001`;
+
         try {
             const response = await window.api.get(`/branches/generate-code?state=${encodeURIComponent(state)}`);
-            if (response.success && response.branch_code) {
+            if (response && response.branch_code) {
                 codeInput.value = response.branch_code;
             }
         } catch (e) {
-            // Fallback code calculation
-            const clean = state.replace(/[^a-zA-Z\s]/g, '').trim();
-            const words = clean.split(/\s+/);
-            const code = words.length >= 2
-                ? (words[0][0] + words[1][0]).toUpperCase()
-                : clean.substring(0, 2).toUpperCase();
-            codeInput.value = `FNZ-${code}-001`;
+            console.warn('Fallback branch code applied for state:', fallbackCode);
         }
     }
 
@@ -441,6 +493,14 @@
         const openAddBtn = document.getElementById('btn-open-add-branch');
         if (openAddBtn) {
             openAddBtn.addEventListener('click', () => openAddModal());
+        }
+
+        // Branch code auto-uppercase
+        const branchCodeInput = document.getElementById('add-branch-code');
+        if (branchCodeInput) {
+            branchCodeInput.addEventListener('input', function() {
+                this.value = this.value.toUpperCase();
+            });
         }
 
         // Password visibility toggle
@@ -826,6 +886,10 @@
         // Reset state dropdown
         document.getElementById('branch-state').value = '';
         document.getElementById('state-dropdown-label').textContent = 'Select State / UT';
+
+        // Reset branch code
+        const branchCodeInput = document.getElementById('add-branch-code');
+        if (branchCodeInput) branchCodeInput.value = '';
 
         // Reset manager dropdown
         document.getElementById('manager-id').value = '';

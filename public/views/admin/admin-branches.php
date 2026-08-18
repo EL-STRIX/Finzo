@@ -18,10 +18,7 @@ ob_start();
             <p class="text-xs font-bold text-slate-600 dark:text-stone-400 uppercase tracking-widest mt-1">Manage bank branches, locations, managers, and operational configurations</p>
         </div>
         <div class="flex items-center gap-3">
-            <button id="btn-refresh-branches" type="button" class="btn btn-secondary px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider inline-flex items-center gap-2 shadow-sm hover:scale-[1.02] active:scale-[0.98] transition-transform text-slate-900 dark:text-stone-100 bg-slate-100 hover:bg-slate-200 dark:bg-[#292524] dark:hover:bg-[#383330] border border-slate-300 dark:border-white/10">
-                <span class="material-symbols-outlined text-base" aria-hidden="true">refresh</span>
-                <span>Refresh</span>
-            </button>
+
             <button id="btn-open-add-branch" type="button" class="btn btn-primary px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider inline-flex items-center gap-2 shadow-lg shadow-amber-900/20 hover:scale-[1.02] active:scale-[0.98] transition-transform">
                 <span class="material-symbols-outlined text-lg" aria-hidden="true">add_business</span>
                 <span>Add New Branch</span>
@@ -229,8 +226,8 @@ ob_start();
                             </div>
                             <div class="col-span-1">
                                 <label for="add-branch-code" class="fin-label mb-1.5 block text-xs font-black uppercase tracking-wider text-slate-800 dark:text-stone-200">Branch Code *</label>
-                                <input type="text" id="add-branch-code" name="branch_code" placeholder="FNZ-XX-000" readonly class="fin-input bg-slate-100 dark:bg-[#141211] cursor-not-allowed font-mono text-amber-800 dark:text-amber-400 font-black border-2 border-slate-300 dark:border-white/15 shadow-sm">
-                                <p class="text-xs text-slate-600 dark:text-stone-400 mt-1 font-bold">Auto-generated from state selection.</p>
+                                <input type="text" id="add-branch-code" name="branch_code" placeholder="e.g. FNZ-MH-001" required class="fin-input uppercase bg-white dark:bg-[#292524] text-slate-950 dark:text-stone-100 border-2 border-slate-300 dark:border-white/15 focus:border-amber-500 font-mono font-black shadow-sm">
+                                <p class="text-xs text-slate-600 dark:text-stone-400 mt-1 font-bold">Auto-calculated from state (e.g. Maharashtra &rarr; FNZ-MH-001) or edit manually.</p>
                             </div>
                             <div class="col-span-1">
                                 <label for="add-branch-city" class="fin-label mb-1.5 block text-xs font-black uppercase tracking-wider text-slate-800 dark:text-stone-200">City / District *</label>
