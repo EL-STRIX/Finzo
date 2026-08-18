@@ -90,62 +90,62 @@
         tbody.innerHTML = branches.map((b, i) => {
             const isSystem = b.type === 'system';
             const typeBadge = isSystem
-                ? '<span class="inline-flex items-center px-2.5 py-0.5 rounded text-[10px] font-mono font-bold bg-blue-50 text-blue-700 border border-blue-200 dark:bg-blue-500/20 dark:text-blue-300 dark:border-blue-500/30">SYSTEM</span>'
-                : '<span class="inline-flex items-center px-2.5 py-0.5 rounded text-[10px] font-mono font-bold bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-500/20 dark:text-amber-300 dark:border-amber-500/30">CUSTOM</span>';
+                ? '<span class="inline-flex items-center px-2.5 py-0.5 rounded text-[10px] font-mono font-bold bg-blue-100 text-blue-800 border border-blue-300 dark:bg-blue-500/20 dark:text-blue-300 dark:border-blue-500/30">SYSTEM</span>'
+                : '<span class="inline-flex items-center px-2.5 py-0.5 rounded text-[10px] font-mono font-bold bg-amber-100 text-amber-800 border border-amber-300 dark:bg-amber-500/20 dark:text-amber-300 dark:border-amber-500/30">CUSTOM</span>';
             
             const countStr = String(i + 1).padStart(2, '0');
             const isActive = b.status === 'active';
             const statusBadge = isActive 
-                ? '<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-500/20 dark:text-emerald-300 dark:border-emerald-500/30 whitespace-nowrap"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> ACTIVE</span>'
-                : '<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-red-50 text-red-700 border border-red-200 dark:bg-red-500/20 dark:text-red-300 dark:border-red-500/30 whitespace-nowrap"><span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> INACTIVE</span>';
+                ? '<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 dark:bg-emerald-500/20 dark:text-emerald-300 dark:border-emerald-500/30 whitespace-nowrap"><span class="w-1.5 h-1.5 rounded-full bg-emerald-600 dark:bg-emerald-500 animate-pulse"></span> ACTIVE</span>'
+                : '<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-red-100 text-red-800 border border-red-300 dark:bg-red-500/20 dark:text-red-300 dark:border-red-500/30 whitespace-nowrap"><span class="w-1.5 h-1.5 rounded-full bg-red-600 dark:bg-red-500"></span> INACTIVE</span>';
 
             const hasManager = b.manager_name && b.manager_name.trim().length > 0;
             const managerAvatarUrl = b.manager_avatar_url || resolveUrl(b.manager_avatar, 'staff-photos');
             const managerInitial = b.manager_initials || (hasManager ? b.manager_name.charAt(0).toUpperCase() : '??');
             
             return `
-            <tr data-id="${b.id}" class="hover:bg-surface-hover/60 dark:hover:bg-white/5 transition-colors border-b border-border-subtle dark:border-white/5">
-                <td class="font-bold opacity-40 text-xs text-text-primary dark:text-slate-400 px-4 py-4">${countStr}</td>
+            <tr data-id="${b.id}" class="hover:bg-slate-50 dark:hover:bg-white/5 transition-colors border-b border-slate-200 dark:border-white/5">
+                <td class="font-bold opacity-60 text-xs text-slate-700 dark:text-slate-400 px-4 py-4">${countStr}</td>
                 <td class="px-4 py-4">
-                    <div class="font-bold text-sm text-text-primary dark:text-white branch-name-text">${escapeHtml(b.name)}</div>
-                    <div class="text-[10px] text-text-secondary dark:text-slate-400 font-medium">${escapeHtml(b.city || b.state || 'Local Branch')}</div>
+                    <div class="font-bold text-sm text-slate-900 dark:text-white branch-name-text">${escapeHtml(b.name)}</div>
+                    <div class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold">${escapeHtml(b.city || b.state || 'Local Branch')}</div>
                 </td>
-                <td class="px-4 py-4 text-xs font-bold font-mono text-primary dark:text-amber-400 whitespace-nowrap">${escapeHtml(b.branch_code || 'N/A')}</td>
-                <td class="px-4 py-4 text-xs font-medium text-text-primary dark:text-slate-300">${escapeHtml(b.state || 'N/A')}</td>
+                <td class="px-4 py-4 text-xs font-bold font-mono text-amber-700 dark:text-amber-400 whitespace-nowrap">${escapeHtml(b.branch_code || 'N/A')}</td>
+                <td class="px-4 py-4 text-xs font-semibold text-slate-800 dark:text-slate-300">${escapeHtml(b.state || 'N/A')}</td>
                 <td class="px-4 py-4">
                     ${hasManager ? `
                     <div class="flex items-center gap-2.5">
-                        <div class="w-7 h-7 text-[10px] bg-primary-50 dark:bg-primary/20 text-primary dark:text-amber-400 font-black flex items-center justify-center rounded-full uppercase overflow-hidden shrink-0 border border-primary-100 dark:border-primary/30">
+                        <div class="w-7 h-7 text-[10px] bg-amber-500/15 text-amber-700 dark:text-amber-400 font-black flex items-center justify-center rounded-full uppercase overflow-hidden shrink-0 border border-amber-500/25">
                             ${managerAvatarUrl ? `<img src="${managerAvatarUrl}?v=${Date.now()}" class="w-full h-full object-cover" onerror="this.parentElement.innerHTML='${managerInitial}'">` : managerInitial}
                         </div>
                         <div class="min-w-0">
-                            <div class="text-xs font-bold text-text-primary dark:text-white truncate">${escapeHtml(b.manager_name)}</div>
-                            ${b.manager_staff_id ? `<div class="text-[10px] text-text-secondary dark:text-slate-400 font-mono font-medium">${escapeHtml(b.manager_staff_id)}</div>` : ''}
+                            <div class="text-xs font-bold text-slate-900 dark:text-white truncate">${escapeHtml(b.manager_name)}</div>
+                            ${b.manager_staff_id ? `<div class="text-[10px] text-slate-500 dark:text-slate-400 font-mono font-bold">${escapeHtml(b.manager_staff_id)}</div>` : ''}
                         </div>
                     </div>` : `
-                    <div class="flex items-center gap-2 text-text-secondary dark:text-slate-400">
-                        <div class="w-7 h-7 rounded-full bg-surface-subtle dark:bg-white/5 border border-border-subtle dark:border-white/10 flex items-center justify-center text-xs shrink-0">
+                    <div class="flex items-center gap-2 text-slate-500 dark:text-slate-400">
+                        <div class="w-7 h-7 rounded-full bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 flex items-center justify-center text-xs shrink-0">
                             <span class="material-symbols-outlined text-[15px] opacity-60">person_off</span>
                         </div>
                         <span class="text-xs font-semibold opacity-75">Unassigned</span>
                     </div>`}
                 </td>
-                <td class="px-4 py-4 text-center font-bold text-xs text-text-primary dark:text-slate-200">${b.staff_count || 0}</td>
+                <td class="px-4 py-4 text-center font-bold text-xs text-slate-900 dark:text-slate-200">${b.staff_count || 0}</td>
                 <td class="px-4 py-4 text-center">${typeBadge}</td>
                 <td class="px-4 py-4 text-center">${statusBadge}</td>
                 <td class="px-4 py-4 text-right">
                     <div class="flex justify-end items-center gap-1.5">
-                        <button type="button" class="w-8 h-8 rounded-lg flex items-center justify-center text-text-secondary dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-500/15 transition-colors action-view" data-id="${b.id}" title="View Details">
+                        <button type="button" class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-500/15 transition-colors action-view" data-id="${b.id}" title="View Details">
                             <span class="material-symbols-outlined text-[18px]" aria-hidden="true">visibility</span>
                         </button>
-                        <button type="button" class="w-8 h-8 rounded-lg flex items-center justify-center text-text-secondary dark:text-slate-400 hover:text-amber-600 dark:hover:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-500/15 transition-colors action-edit" data-id="${b.id}" title="Edit Branch">
+                        <button type="button" class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-600 dark:text-slate-400 hover:text-amber-600 dark:hover:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-500/15 transition-colors action-edit" data-id="${b.id}" title="Edit Branch">
                             <span class="material-symbols-outlined text-[18px]" aria-hidden="true">edit</span>
                         </button>
                         ${!isSystem ? `
-                        <button type="button" class="w-8 h-8 rounded-lg flex items-center justify-center text-text-secondary dark:text-slate-400 ${isActive ? 'hover:text-amber-600 dark:hover:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-500/15' : 'hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-500/15'} transition-colors action-toggle-status" data-id="${b.id}" data-status="${isActive ? 'inactive' : 'active'}" data-name="${escapeHtml(b.name)}" title="${isActive ? 'Suspend Branch' : 'Reactivate Branch'}">
+                        <button type="button" class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-600 dark:text-slate-400 ${isActive ? 'hover:text-amber-600 dark:hover:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-500/15' : 'hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-500/15'} transition-colors action-toggle-status" data-id="${b.id}" data-status="${isActive ? 'inactive' : 'active'}" data-name="${escapeHtml(b.name)}" title="${isActive ? 'Suspend Branch' : 'Reactivate Branch'}">
                             <span class="material-symbols-outlined text-[18px]" aria-hidden="true">${isActive ? 'pause_circle' : 'play_circle'}</span>
                         </button>
-                        <button type="button" class="w-8 h-8 rounded-lg flex items-center justify-center text-text-secondary dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/15 transition-colors action-delete" data-id="${b.id}" data-name="${escapeHtml(b.name)}" data-code="${escapeHtml(b.branch_code)}" title="Delete Branch">
+                        <button type="button" class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-600 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/15 transition-colors action-delete" data-id="${b.id}" data-name="${escapeHtml(b.name)}" data-code="${escapeHtml(b.branch_code)}" title="Delete Branch">
                             <span class="material-symbols-outlined text-[18px]" aria-hidden="true">delete</span>
                         </button>` : ''}
                     </div>
