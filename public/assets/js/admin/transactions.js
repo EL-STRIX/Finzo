@@ -1,6 +1,6 @@
 /**
  * Finzo Admin — Global Transactions Controller
- * Manages table rendering, filters, statistics, reversal workflows, and audit modals.
+ * Manages table rendering, filters, statistics, reversal workflows, passbook/statement printing, and CSV exports.
  */
 
 (function() {
@@ -355,7 +355,7 @@
                 <td class="py-3.5 px-4">
                     <div class="flex items-center gap-1.5">
                         <span class="text-xs font-mono font-bold text-primary">${r.txn_id}</span>
-                        <button onclick="event.stopPropagation(); window.copyText('${r.txn_id}')" class="opacity-0 group-hover:opacity-100 text-text-secondary hover:text-text-primary transition-all p-0.5" title="Copy ID">
+                        <button onclick="event.stopPropagation(); window.copyText('${r.txn_id}')" class="opacity-0 group-hover:opacity-100 text-text-secondary hover:text-text-primary transition-all p-0.5 print:hidden" title="Copy ID">
                             <span class="material-symbols-outlined text-[13px]">content_copy</span>
                         </button>
                     </div>
@@ -366,7 +366,7 @@
                 <td class="py-3.5 px-4 text-sm font-black ${amountColorClass}">${amountFormatted}</td>
                 <td class="py-3.5 px-4 text-xs font-semibold text-text-secondary whitespace-nowrap">${r.created_at}</td>
                 <td class="py-3.5 px-4 text-center">${statusBadgeHtml}</td>
-                <td class="py-3.5 px-6 text-right" onclick="event.stopPropagation()">
+                <td class="py-3.5 px-6 text-right print:hidden" onclick="event.stopPropagation()">
                     <div class="flex items-center justify-end gap-1.5">
                         <button onclick="window.openTransactionDetails('${r.txn_id}')" class="btn btn-secondary !p-1.5 rounded-lg text-text-secondary hover:text-primary hover:bg-surface-hover" title="View Breakdown">
                             <span class="material-symbols-outlined text-[16px]">visibility</span>
@@ -669,6 +669,35 @@
     }
 
     /**
+     * Print Ledger Statement / Passbook view
+     */
+    function printStatement() {
+        const periodEl = document.getElementById('print-period');
+        const dateFrom = document.getElementById('filter-date-from')?.value;
+        const dateTo = document.getElementById('filter-date-to')?.value;
+        
+        let periodText = 'All Transactions';
+        if (dateFrom && dateTo) {
+            periodText = `${dateFrom} to ${dateTo}`;
+        } else if (dateFrom) {
+            periodText = `From ${dateFrom}`;
+        } else if (dateTo) {
+            periodText = `Up to ${dateTo}`;
+        }
+
+        if (currentType !== 'all') {
+            periodText += ` (${currentType.toUpperCase()})`;
+        }
+
+        if (periodEl) periodEl.textContent = `Period: ${periodText}`;
+        
+        const genEl = document.getElementById('print-generated');
+        if (genEl) genEl.textContent = new Date().toLocaleString();
+
+        window.print();
+    }
+
+    /**
      * Open official Receipt PDF
      */
     window.openReceipt = function(txnId) {
@@ -765,21 +794,37 @@
             to_date: dateTo ? dateTo.value : ''
         };
 
-        const exportBtn = document.getElementById('start-export-btn');
-        if (window.api && window.api.setButtonLoading) {
-            window.api.setButtonLoading(exportBtn, true, 'Exporting...');
+        const exportBtn = document.getElementById('start-export-btn') || document.getElementById('open-export-modal');
+        const originalHtml = exportBtn ? exportBtn.innerHTML : '';
+        if (exportBtn) {
+            exportBtn.disabled = true;
+            exportBtn.innerHTML = '<span class="material-symbols-outlined animate-spin text-[16px]">autorenew</span> <span>Exporting...</span>';
         }
 
         try {
-            await window.api.get('/transactions', params);
-            if (window.showToast) window.showToast('Transactions CSV downloaded successfully', 'success');
+            const basePath = window.location.pathname.includes('/public/') ? '/Finzo/public' : '/Finzo';
+            const qs = new URLSearchParams(params).toString();
+            const exportUrl = `${basePath}/api/v1/transactions?${qs}`;
+            
+            // Direct browser download via anchor
+            const dlLink = document.createElement('a');
+            dlLink.href = exportUrl;
+            dlLink.setAttribute('download', 'finzo_transactions_' + new Date().toISOString().slice(0, 10) + '.csv');
+            document.body.appendChild(dlLink);
+            dlLink.click();
+            setTimeout(() => {
+                if (document.body.contains(dlLink)) document.body.removeChild(dlLink);
+            }, 200);
+
+            if (window.showToast) window.showToast('Transactions CSV export downloaded successfully', 'success');
             closeExportModal();
         } catch (error) {
             console.error('Export error:', error);
             if (window.showToast) window.showToast('Export failed', 'error');
         } finally {
-            if (window.api && window.api.setButtonLoading) {
-                window.api.setButtonLoading(exportBtn, false);
+            if (exportBtn) {
+                exportBtn.disabled = false;
+                exportBtn.innerHTML = originalHtml;
             }
         }
     }
@@ -898,6 +943,9 @@
         // Reset Filters Button
         const resetBtn = document.getElementById('reset-filters-btn');
         if (resetBtn) resetBtn.addEventListener('click', window.resetTransactionFilters);
+
+        // Print Statement Button
+        document.getElementById('print-statement-btn')?.addEventListener('click', printStatement);
 
         // Pagination Clicks
         document.addEventListener('click', (e) => {
