@@ -53,6 +53,26 @@
     }
 
     /**
+     * Get current active filter object
+     */
+    function getActiveFilters() {
+        const searchInput = document.getElementById('transaction-search');
+        const statusFilter = document.getElementById('filter-status');
+        const dateFrom = document.getElementById('filter-date-from');
+        const dateTo = document.getElementById('filter-date-to');
+        const sortFilter = document.getElementById('filter-sort');
+
+        return {
+            type: currentType,
+            status: statusFilter ? statusFilter.value : 'all',
+            search: searchInput ? searchInput.value.trim() : '',
+            from_date: dateFrom ? dateFrom.value : '',
+            to_date: dateTo ? dateTo.value : '',
+            sort: sortFilter ? sortFilter.value : 'newest'
+        };
+    }
+
+    /**
      * Load transactions from backend API
      */
     async function loadTransactions() {
@@ -62,19 +82,8 @@
         }
 
         try {
-            const searchInput = document.getElementById('transaction-search');
-            const statusFilter = document.getElementById('filter-status');
-            const dateFrom = document.getElementById('filter-date-from');
-            const dateTo = document.getElementById('filter-date-to');
-            const sortFilter = document.getElementById('filter-sort');
-
             const params = {
-                type: currentType,
-                status: statusFilter ? statusFilter.value : 'all',
-                search: searchInput ? searchInput.value.trim() : '',
-                from_date: dateFrom ? dateFrom.value : '',
-                to_date: dateTo ? dateTo.value : '',
-                sort: sortFilter ? sortFilter.value : 'newest',
+                ...getActiveFilters(),
                 page: currentPage,
                 per_page: rowsPerPage
             };
@@ -478,40 +487,92 @@
     }
 
     /**
-     * Print Ledger Statement / Passbook view (Identical UX to User & Staff Statement)
+     * Print Filtered Ledger Statement / Passbook (Fetches all filtered matching records for print)
      */
-    function printStatement() {
-        const periodEl = document.getElementById('print-period');
-        const dateFrom = document.getElementById('filter-date-from')?.value;
-        const dateTo = document.getElementById('filter-date-to')?.value;
-        
-        let periodText = 'All Transactions';
-        if (dateFrom && dateTo) {
-            periodText = `${dateFrom} to ${dateTo}`;
-        } else if (dateFrom) {
-            periodText = `From ${dateFrom}`;
-        } else if (dateTo) {
-            periodText = `Up to ${dateTo}`;
+    async function printStatement() {
+        const printBtn = document.getElementById('print-statement-btn');
+        const originalHtml = printBtn ? printBtn.innerHTML : '';
+
+        if (printBtn) {
+            printBtn.disabled = true;
+            printBtn.innerHTML = '<span class="material-symbols-outlined animate-spin text-[16px]">autorenew</span> <span>Preparing Statement...</span>';
         }
 
-        if (currentType !== 'all') {
-            periodText += ` (${currentType.toUpperCase()})`;
+        try {
+            const filters = getActiveFilters();
+            
+            // Format Statement Period Title
+            const periodEl = document.getElementById('print-period');
+            let periodText = 'All Transactions';
+            if (filters.from_date && filters.to_date) {
+                periodText = `${filters.from_date} to ${filters.to_date}`;
+            } else if (filters.from_date) {
+                periodText = `From ${filters.from_date}`;
+            } else if (filters.to_date) {
+                periodText = `Up to ${filters.to_date}`;
+            }
+
+            if (currentType !== 'all') {
+                periodText += ` (${currentType.toUpperCase()} ONLY)`;
+            }
+
+            if (periodEl) periodEl.textContent = `Period: ${periodText}`;
+            
+            const genEl = document.getElementById('print-generated');
+            if (genEl) genEl.textContent = new Date().toLocaleString('en-IN', {
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
+            });
+
+            // Fetch full matching records (up to 1000) for the print statement
+            const printParams = {
+                ...filters,
+                page: 1,
+                per_page: 1000
+            };
+
+            const response = await window.api.get('/transactions', printParams);
+
+            if (response && response.success) {
+                const data = response.data || response;
+                const allMatchingTransactions = data.transactions || [];
+                const summary = data.summary || response.summary || {};
+
+                // Render all filtered rows into table
+                renderTable(allMatchingTransactions, allMatchingTransactions.length, 1);
+                updateStats(summary);
+
+                // Small delay to ensure DOM is fully repainted before opening browser print dialog
+                setTimeout(() => {
+                    window.print();
+                }, 150);
+
+                // Restore paginated view once printing is done
+                const restoreHandler = () => {
+                    renderTable(activeTransactionsData, activeSummaryData.total_count || 0, Math.ceil((activeSummaryData.total_count || 0) / rowsPerPage));
+                    updateStats(activeSummaryData);
+                    window.removeEventListener('afterprint', restoreHandler);
+                };
+                window.addEventListener('afterprint', restoreHandler);
+
+                // Fallback restoration in case afterprint does not fire
+                setTimeout(restoreHandler, 2500);
+            } else {
+                if (window.showToast) window.showToast('Failed to load full statement data for printing', 'error');
+            }
+        } catch (error) {
+            console.error('Print Statement error:', error);
+            if (window.showToast) window.showToast('Error generating print statement', 'error');
+        } finally {
+            if (printBtn) {
+                printBtn.disabled = false;
+                printBtn.innerHTML = originalHtml;
+            }
         }
-
-        if (periodEl) periodEl.textContent = `Period: ${periodText}`;
-        
-        const genEl = document.getElementById('print-generated');
-        if (genEl) genEl.textContent = new Date().toLocaleString('en-IN', {
-            day: '2-digit',
-            month: 'short',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: true
-        });
-
-        // Trigger browser print
-        window.print();
     }
 
     /**

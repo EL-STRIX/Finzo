@@ -8,8 +8,8 @@ ob_start();
 <style>
 @media print {
     @page {
-        size: A4 landscape;
-        margin: 12mm;
+        size: auto;
+        margin: 10mm 12mm 12mm 12mm;
     }
     body, html {
         background: #ffffff !important;
@@ -22,7 +22,7 @@ ob_start();
     #sidebar, #sidebar-overlay, header, nav,
     .fin-portal-topbar, .type-pill, #reset-filters-btn,
     .finzo-dropdown, #txn-details-modal, #txn-reversal-modal,
-    button:not(.allow-print) {
+    button {
         display: none !important;
     }
     .print-block, .print\:block {
@@ -50,29 +50,47 @@ ob_start();
         border-collapse: collapse !important;
         border: 1px solid #000000 !important;
         color: #000000 !important;
-        font-size: 11px !important;
+        font-size: 9.5pt !important;
+        page-break-inside: auto !important;
+    }
+    tr {
+        page-break-inside: avoid !important;
+        page-break-after: auto !important;
+    }
+    thead {
+        display: table-header-group !important;
+    }
+    tfoot {
+        display: table-footer-group !important;
     }
     th, td {
         border: 1px solid #000000 !important;
         color: #000000 !important;
-        padding: 6px 8px !important;
+        padding: 6px 7px !important;
         background: transparent !important;
+        text-align: left !important;
+        vertical-align: middle !important;
     }
     th {
         background-color: #f3f4f6 !important;
         font-weight: 800 !important;
         text-transform: uppercase !important;
-        font-size: 10px !important;
+        font-size: 8.5pt !important;
         letter-spacing: 0.05em !important;
+    }
+    td * {
+        color: #000000 !important;
     }
     .badge, .ds-badge {
         border: 1px solid #000000 !important;
         background: transparent !important;
         color: #000000 !important;
-        font-weight: 700 !important;
-        padding: 2px 6px !important;
-        border-radius: 4px !important;
-        font-size: 9px !important;
+        font-weight: 800 !important;
+        padding: 1px 5px !important;
+        border-radius: 3px !important;
+        font-size: 8pt !important;
+        display: inline-block !important;
+        text-transform: uppercase !important;
     }
     /* Hide Actions column in print */
     table th:last-child, table td:last-child {
@@ -126,7 +144,7 @@ ob_start();
     
     <div class="flex items-center gap-3">
         <!-- Print Statement / Passbook Button -->
-        <button id="print-statement-btn" class="btn btn-primary px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider flex items-center gap-2 shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all group" title="Print Ledger Statement / Passbook">
+        <button id="print-statement-btn" class="btn btn-primary px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider flex items-center gap-2 shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all group" title="Print Filtered Statement / Passbook">
             <span class="material-symbols-outlined text-[18px] transition-transform group-hover:scale-110" aria-hidden="true">print</span>
             <span>Print Statement</span>
         </button>
