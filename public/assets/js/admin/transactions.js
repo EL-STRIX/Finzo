@@ -81,9 +81,14 @@
             const response = await window.api.get('/transactions', params);
 
             if (response && response.success) {
-                activeTransactionsData = response.transactions || [];
-                renderTable(activeTransactionsData, response.total || 0, response.pages || 1);
-                updateStats(response.summary || {});
+                const data = response.data || response;
+                activeTransactionsData = data.transactions || [];
+                const total = data.total !== undefined ? data.total : (response.total || 0);
+                const pages = data.pages !== undefined ? data.pages : (response.pages || 1);
+                const summary = data.summary || response.summary || {};
+
+                renderTable(activeTransactionsData, total, pages);
+                updateStats(summary);
             } else {
                 if (tbody) {
                     tbody.innerHTML = `<tr><td colspan="9" class="py-12 text-center text-rose-500 font-bold text-xs uppercase tracking-widest">${(response && response.message) || 'No transactions returned'}</td></tr>`;

@@ -16,7 +16,7 @@ class AdminOperationsController
 
     public function __construct(\App\Domain\Contracts\Services\AdminOperationsServiceInterface $service, ?\App\Domain\Contracts\Security\SecurityServiceInterface $security = null)
     {
-        $this->security = $security;
+        $this->security = $security ?? new \App\Shared\Security\SecurityService();
         $this->service = $service;
     }
 
