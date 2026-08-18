@@ -716,6 +716,18 @@
                 showDeleteModal(id, name, code);
             }
 
+            // Fallback for View Modal Status Toggle button
+            const modalToggleStatusBtn = e.target.closest('#view-btn-toggle-status');
+            if (modalToggleStatusBtn) {
+                const id = modalToggleStatusBtn.getAttribute('data-id');
+                const targetStatus = modalToggleStatusBtn.getAttribute('data-status') || 'active';
+                const name = modalToggleStatusBtn.getAttribute('data-name') || '';
+                if (id) {
+                    closeModal('viewBranchModal');
+                    showStatusModal(id, targetStatus, name);
+                }
+            }
+
             // Close modal triggers
             const closeBtn = e.target.closest('[data-close-modal]');
             if (closeBtn) {
@@ -957,17 +969,25 @@
                 statusToggleBtn.classList.add('hidden');
             } else {
                 statusToggleBtn.classList.remove('hidden');
+                statusToggleBtn.setAttribute('data-id', branch.id);
+                statusToggleBtn.setAttribute('data-status', isActive ? 'inactive' : 'active');
+                statusToggleBtn.setAttribute('data-name', branch.name || '');
+
                 if (isActive) {
-                    statusToggleBtn.className = 'btn px-5 py-2.5 text-xs font-bold flex items-center gap-1.5 border border-amber-300 text-amber-900 bg-amber-50 hover:bg-amber-100 dark:border-amber-700/50 dark:text-amber-300 dark:bg-amber-950/40 shadow-sm';
-                    statusToggleBtn.innerHTML = '<span class="material-symbols-outlined text-base">pause_circle</span> Suspend Branch';
-                    statusToggleBtn.onclick = () => {
+                    statusToggleBtn.className = 'btn px-5 py-2.5 text-xs font-bold flex items-center gap-1.5 border border-amber-300 text-amber-900 bg-amber-50 hover:bg-amber-100 dark:border-amber-700/50 dark:text-amber-300 dark:bg-amber-950/40 shadow-sm cursor-pointer';
+                    statusToggleBtn.innerHTML = '<span class="material-symbols-outlined text-base" aria-hidden="true">pause_circle</span> Suspend Branch';
+                    statusToggleBtn.onclick = (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
                         closeModal('viewBranchModal');
                         showStatusModal(branch.id, 'inactive', branch.name);
                     };
                 } else {
-                    statusToggleBtn.className = 'btn px-5 py-2.5 text-xs font-bold flex items-center gap-1.5 border border-emerald-300 text-emerald-900 bg-emerald-50 hover:bg-emerald-100 dark:border-emerald-700/50 dark:text-emerald-300 dark:bg-emerald-950/40 shadow-sm';
-                    statusToggleBtn.innerHTML = '<span class="material-symbols-outlined text-base">play_circle</span> Reactivate Branch';
-                    statusToggleBtn.onclick = () => {
+                    statusToggleBtn.className = 'btn px-5 py-2.5 text-xs font-bold flex items-center gap-1.5 border border-emerald-300 text-emerald-900 bg-emerald-50 hover:bg-emerald-100 dark:border-emerald-700/50 dark:text-emerald-300 dark:bg-emerald-950/40 shadow-sm cursor-pointer';
+                    statusToggleBtn.innerHTML = '<span class="material-symbols-outlined text-base" aria-hidden="true">play_circle</span> Reactivate Branch';
+                    statusToggleBtn.onclick = (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
                         closeModal('viewBranchModal');
                         showStatusModal(branch.id, 'active', branch.name);
                     };
@@ -976,14 +996,25 @@
         }
 
         // Action buttons
-        document.getElementById('view-btn-edit').onclick = () => {
-            closeModal('viewBranchModal');
-            showEditModal(branch.id);
-        };
+        const editBtn = document.getElementById('view-btn-edit');
+        if (editBtn) {
+            editBtn.setAttribute('data-id', branch.id);
+            editBtn.onclick = (e) => {
+                e.preventDefault();
+                closeModal('viewBranchModal');
+                showEditModal(branch.id);
+            };
+        }
 
-        document.getElementById('view-btn-staff').onclick = () => {
-            window.showBranchStaff(branch.id, branch.name);
-        };
+        const staffBtn = document.getElementById('view-btn-staff');
+        if (staffBtn) {
+            staffBtn.setAttribute('data-id', branch.id);
+            staffBtn.setAttribute('data-name', branch.name || '');
+            staffBtn.onclick = (e) => {
+                e.preventDefault();
+                window.showBranchStaff(branch.id, branch.name);
+            };
+        }
 
         openModal('viewBranchModal');
     }
@@ -998,9 +1029,13 @@
         const branchName = name || (branch ? branch.name : 'Branch');
         const isSuspending = targetStatus === 'inactive';
 
-        document.getElementById('status-branch-id').value = id;
-        document.getElementById('status-target-action').value = targetStatus;
-        document.getElementById('status-target-branch-name').textContent = branchName;
+        const idInput = document.getElementById('status-branch-id');
+        const actionInput = document.getElementById('status-target-action');
+        const nameTarget = document.getElementById('status-target-branch-name');
+
+        if (idInput) idInput.value = id;
+        if (actionInput) actionInput.value = targetStatus;
+        if (nameTarget) nameTarget.textContent = branchName;
 
         const iconBox = document.getElementById('status-modal-icon-box');
         const icon = document.getElementById('status-modal-icon');
@@ -1041,6 +1076,7 @@
 
         openModal('branchStatusModal');
     }
+
 
     function showDeleteModal(id, name, code) {
         const branch = currentBranches.find(b => String(b.id) === String(id));
