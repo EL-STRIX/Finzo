@@ -36,5 +36,6 @@ interface AdminStaffBranchRepositoryInterface
     public function updateBranchRecord(int $id, array $data): bool;
     public function updateBranchStatus(int $id, string $status): bool;
     public function getBranchDetailWithStats(int $id): ?array;
+    public function findBranchByManagerId(int $managerId): ?array;
 }
 

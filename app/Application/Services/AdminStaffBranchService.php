@@ -431,6 +431,11 @@ class AdminStaffBranchService implements \App\Domain\Contracts\Services\AdminSta
             if (!$staff) {
                 throw new \App\Shared\Core\Exceptions\ApiException('Selected manager not found or not active', 422);
             }
+            $existingBranch = $this->repo->findBranchByManagerId($managerId);
+            if ($existingBranch) {
+                $existingName = $existingBranch['name'] ?? 'another branch';
+                throw new \App\Shared\Core\Exceptions\ApiException("Selected staff member is already assigned as manager of '{$existingName}'", 422);
+            }
         }
 
         // Handle certificate upload
@@ -566,6 +571,13 @@ class AdminStaffBranchService implements \App\Domain\Contracts\Services\AdminSta
 
         if (array_key_exists('manager_id', $data)) {
             $newManagerId = !empty($data['manager_id']) ? intval($data['manager_id']) : null;
+            if ($newManagerId) {
+                $existingBranch = $this->repo->findBranchByManagerId($newManagerId);
+                if ($existingBranch && (int)$existingBranch['id'] !== $branchId) {
+                    $existingName = $existingBranch['name'] ?? 'another branch';
+                    throw new \App\Shared\Core\Exceptions\ApiException("Selected staff member is already assigned as manager of '{$existingName}'", 422);
+                }
+            }
             $updateData['manager_id'] = $newManagerId;
             if ($newManagerId) {
                 $this->repo->updateStaffBranch($newManagerId, $branchId);

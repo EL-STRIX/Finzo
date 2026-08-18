@@ -194,13 +194,13 @@
     /**
      * Load staff members for manager assignment
      */
-    async function loadStaffOptions(selectedManagerId = null) {
+    async function loadStaffOptions(selectedManagerId = null, currentBranchId = null) {
         const menu = document.getElementById('manager-dropdown-menu');
         if (!menu) return;
 
         // If we already have staff cached, render immediately
         if (staffList && staffList.length > 0) {
-            renderManagerDropdown(staffList, selectedManagerId);
+            renderManagerDropdown(staffList, selectedManagerId, currentBranchId);
         }
 
         try {
@@ -208,7 +208,7 @@
             if (response) {
                 const payload = response.data || response;
                 staffList = payload.staff || response.staff || payload.data || (Array.isArray(payload) ? payload : []);
-                renderManagerDropdown(staffList, selectedManagerId);
+                renderManagerDropdown(staffList, selectedManagerId, currentBranchId);
             }
         } catch (error) {
             console.error('Failed to load staff list:', error);
@@ -218,11 +218,31 @@
         }
     }
 
-    function renderManagerDropdown(staff, selectedManagerId = null) {
+    function renderManagerDropdown(staff, selectedManagerId = null, currentBranchId = null) {
         const menu = document.getElementById('manager-dropdown-menu');
         if (!menu) return;
 
-        if (!staff || !staff.length) {
+        // Filter out staff who are already managers of another branch
+        const availableStaff = (staff || []).filter(s => {
+            // Always allow the currently selected manager of this branch
+            if (selectedManagerId && String(s.id) === String(selectedManagerId)) {
+                return true;
+            }
+            
+            // Check if staff is managing another branch from currentBranches
+            const isManagerOfOtherInBranches = currentBranches.some(b => 
+                String(b.manager_id) === String(s.id) && 
+                (!currentBranchId || String(b.id) !== String(currentBranchId))
+            );
+
+            // Check if staff has managed_branch_id from backend staff query
+            const isManagerInBackend = s.managed_branch_id && 
+                (!currentBranchId || String(s.managed_branch_id) !== String(currentBranchId));
+
+            return !isManagerOfOtherInBranches && !isManagerInBackend;
+        });
+
+        if (!availableStaff || !availableStaff.length) {
             menu.innerHTML = `
                 <div class="finzo-dropdown-option flex items-center gap-3 p-3 hover:bg-surface-hover dark:hover:bg-white/5 cursor-pointer transition-colors" data-value="" data-name="Select Staff Member (Optional)">
                     <div class="w-7 h-7 rounded-full bg-surface-subtle dark:bg-surface-dark flex items-center justify-center font-bold text-xs text-text-secondary dark:text-slate-400">—</div>
@@ -246,7 +266,7 @@
             </div>
         `;
 
-        html += staff.map(s => {
+        html += availableStaff.map(s => {
             const isSelected = selectedManagerId && String(s.id) === String(selectedManagerId);
             const initial = s.initials || (s.full_name ? s.full_name.charAt(0).toUpperCase() : 'ST');
             const photoUrl = s.profile_photo_url || resolveUrl(s.profile_photo, 'staff-photos');
@@ -781,7 +801,7 @@
         // Reset manager dropdown
         document.getElementById('manager-id').value = '';
         document.getElementById('manager-dropdown-label').textContent = 'Select Staff Member (Optional)';
-        loadStaffOptions();
+        loadStaffOptions(null, null);
 
         // Reset char counter
         const counter = document.getElementById('branch-desc-counter');
@@ -839,7 +859,7 @@
         // Set manager dropdown
         document.getElementById('manager-id').value = branch.manager_id || '';
         document.getElementById('manager-dropdown-label').textContent = branch.manager_name ? `${branch.manager_name} (${branch.manager_staff_id || 'Staff'})` : 'Select Staff Member (Optional)';
-        loadStaffOptions(branch.manager_id);
+        loadStaffOptions(branch.manager_id, branch.id);
 
         // Counter
         const descVal = branch.clean_description || branch.description || '';

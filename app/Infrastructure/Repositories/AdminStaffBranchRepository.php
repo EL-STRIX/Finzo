@@ -126,6 +126,14 @@ class AdminStaffBranchRepository extends BaseRepository implements \App\Domain\C
         return $row;
     }
 
+    public function findBranchByManagerId(int $managerId): ?array
+    {
+        $stmt = $this->db->prepare("SELECT id, name, branch_code, status FROM branches WHERE manager_id = ? LIMIT 1");
+        $stmt->execute([$managerId]);
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return $row ?: null;
+    }
+
     public function updateStaffBranch(int $staffId, int $branchId)
     {
         $stmt = $this->db->prepare("UPDATE staff SET branch_id = ?, updated_at = NOW() WHERE id = ?");
@@ -399,6 +407,8 @@ class AdminStaffBranchRepository extends BaseRepository implements \App\Domain\C
             SELECT s.id, s.staff_id, s.full_name, s.personal_email, s.phone, s.designation, s.department,
                    s.status, s.profile_photo, s.date_of_joining, s.last_login_at, s.created_at,
                    b.id as branch_id, b.name as branch_name, b.branch_code,
+                   (SELECT id FROM branches WHERE manager_id = s.id LIMIT 1) as managed_branch_id,
+                   (SELECT name FROM branches WHERE manager_id = s.id LIMIT 1) as managed_branch_name,
                    (SELECT COUNT(*) FROM transactions WHERE processed_by_staff_id = s.id AND status = 'completed') as txn_count,
                    (SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE processed_by_staff_id = s.id AND status = 'completed') as txn_amount
             FROM staff s
