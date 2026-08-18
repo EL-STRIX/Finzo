@@ -1,6 +1,6 @@
 /**
  * Finzo Admin — Global Transactions Controller
- * Manages table rendering, filters, statistics, reversal workflows, passbook/statement printing, and CSV exports.
+ * Manages table rendering, filters, statistics, reversal workflows, and official statement/passbook printing.
  */
 
 (function() {
@@ -12,6 +12,7 @@
     const rowsPerPage = 10;
     let isModalOpen = false;
     let activeTransactionsData = [];
+    let activeSummaryData = {};
     let pendingReversalTxnId = null;
 
     /**
@@ -83,12 +84,12 @@
             if (response && response.success) {
                 const data = response.data || response;
                 activeTransactionsData = data.transactions || [];
+                activeSummaryData = data.summary || response.summary || {};
                 const total = data.total !== undefined ? data.total : (response.total || 0);
                 const pages = data.pages !== undefined ? data.pages : (response.pages || 1);
-                const summary = data.summary || response.summary || {};
 
                 renderTable(activeTransactionsData, total, pages);
-                updateStats(summary);
+                updateStats(activeSummaryData);
             } else {
                 if (tbody) {
                     tbody.innerHTML = `<tr><td colspan="9" class="py-12 text-center text-rose-500 font-bold text-xs uppercase tracking-widest">${(response && response.message) || 'No transactions returned'}</td></tr>`;
@@ -195,16 +196,16 @@
             let typeBadgeHtml = '';
             switch (typeClass) {
                 case 'deposit':
-                    typeBadgeHtml = `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider bg-emerald-500/10 text-emerald-500 border border-emerald-500/20"><span class="material-symbols-outlined text-[13px]">south_west</span> Deposit</span>`;
+                    typeBadgeHtml = `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider bg-emerald-500/10 text-emerald-500 border border-emerald-500/20"><span class="material-symbols-outlined text-[13px] print:hidden">south_west</span> Deposit</span>`;
                     break;
                 case 'withdrawal':
-                    typeBadgeHtml = `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider bg-rose-500/10 text-rose-500 border border-rose-500/20"><span class="material-symbols-outlined text-[13px]">north_east</span> Withdrawal</span>`;
+                    typeBadgeHtml = `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider bg-rose-500/10 text-rose-500 border border-rose-500/20"><span class="material-symbols-outlined text-[13px] print:hidden">north_east</span> Withdrawal</span>`;
                     break;
                 case 'transfer':
-                    typeBadgeHtml = `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider bg-sky-500/10 text-sky-500 border border-sky-500/20"><span class="material-symbols-outlined text-[13px]">sync_alt</span> Transfer</span>`;
+                    typeBadgeHtml = `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider bg-sky-500/10 text-sky-500 border border-sky-500/20"><span class="material-symbols-outlined text-[13px] print:hidden">sync_alt</span> Transfer</span>`;
                     break;
                 case 'interest_credit':
-                    typeBadgeHtml = `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider bg-amber-500/10 text-amber-500 border border-amber-500/20"><span class="material-symbols-outlined text-[13px]">percent</span> Interest</span>`;
+                    typeBadgeHtml = `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider bg-amber-500/10 text-amber-500 border border-amber-500/20"><span class="material-symbols-outlined text-[13px] print:hidden">percent</span> Interest</span>`;
                     break;
                 default:
                     typeBadgeHtml = `<span class="badge badge-info">${typeClass.toUpperCase()}</span>`;
@@ -236,7 +237,7 @@
                 if (r.description && (r.description.includes('Initial Deposit') || r.description.includes('Account Opening'))) {
                     fromAccountHtml = `
                     <div class="flex items-center gap-3">
-                        <div class="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center border border-primary/20 shrink-0"><span class="material-symbols-outlined text-sm" aria-hidden="true">rocket_launch</span></div>
+                        <div class="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center border border-primary/20 shrink-0 print:hidden"><span class="material-symbols-outlined text-sm" aria-hidden="true">rocket_launch</span></div>
                         <div class="overflow-hidden">
                             <div class="font-bold text-xs text-text-primary truncate">Account Opening</div>
                             <div class="text-[10px] font-bold text-text-secondary uppercase tracking-wider">Initial Funding</div>
@@ -245,7 +246,7 @@
                 } else if (r.processed_by) {
                     fromAccountHtml = `
                     <div class="flex items-center gap-3">
-                        <div class="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center border border-primary/20 shrink-0"><span class="material-symbols-outlined text-sm" aria-hidden="true">badge</span></div>
+                        <div class="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center border border-primary/20 shrink-0 print:hidden"><span class="material-symbols-outlined text-sm" aria-hidden="true">badge</span></div>
                         <div class="overflow-hidden">
                             <div class="font-bold text-xs text-text-primary truncate">OTC Branch Deposit</div>
                             <div class="text-[10px] font-bold text-text-secondary uppercase tracking-wider">Staff: ${r.processed_by}</div>
@@ -254,7 +255,7 @@
                 } else {
                     fromAccountHtml = `
                     <div class="flex items-center gap-3">
-                        <div class="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center border border-primary/20 shrink-0"><span class="material-symbols-outlined text-sm" aria-hidden="true">account_balance_wallet</span></div>
+                        <div class="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center border border-primary/20 shrink-0 print:hidden"><span class="material-symbols-outlined text-sm" aria-hidden="true">account_balance_wallet</span></div>
                         <div class="overflow-hidden">
                             <div class="font-bold text-xs text-text-primary truncate">Direct Deposit</div>
                             <div class="text-[10px] font-bold text-text-secondary uppercase tracking-wider">Electronic Inflow</div>
@@ -264,7 +265,7 @@
             } else if (typeClass === 'interest_credit') {
                 fromAccountHtml = `
                 <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-amber-500/10 text-amber-500 flex items-center justify-center border border-amber-500/20 shrink-0"><span class="material-symbols-outlined text-sm" aria-hidden="true">account_balance</span></div>
+                    <div class="w-8 h-8 rounded-full bg-amber-500/10 text-amber-500 flex items-center justify-center border border-amber-500/20 shrink-0 print:hidden"><span class="material-symbols-outlined text-sm" aria-hidden="true">account_balance</span></div>
                     <div class="overflow-hidden">
                         <div class="font-bold text-xs text-text-primary truncate">Finzo Treasury</div>
                         <div class="text-[10px] font-bold text-text-secondary uppercase tracking-wider">Automated Interest</div>
@@ -281,12 +282,12 @@
                 
                 fromAccountHtml = `
                 <div class="flex items-center gap-3">
-                    <div class="admin-avatar sm uppercase shrink-0">${avatarContent}</div>
+                    <div class="admin-avatar sm uppercase shrink-0 print:hidden">${avatarContent}</div>
                     <div class="overflow-hidden">
                         <div class="font-bold text-xs text-text-primary truncate" title="${senderName}">${senderName}</div>
                         <div class="text-[11px] font-mono font-semibold text-text-secondary flex items-center gap-1">
                             <span>${r.from_account_no}</span>
-                            <button onclick="window.copyText('${r.from_account_no}')" class="opacity-40 hover:opacity-100 transition-opacity" title="Copy Account No">
+                            <button onclick="window.copyText('${r.from_account_no}')" class="opacity-40 hover:opacity-100 transition-opacity print:hidden" title="Copy Account No">
                                 <span class="material-symbols-outlined text-[12px]">content_copy</span>
                             </button>
                         </div>
@@ -300,7 +301,7 @@
                 if (r.processed_by) {
                     toAccountHtml = `
                     <div class="flex items-center gap-3">
-                        <div class="w-8 h-8 rounded-full bg-rose-500/10 text-rose-500 flex items-center justify-center border border-rose-500/20 shrink-0"><span class="material-symbols-outlined text-sm" aria-hidden="true">badge</span></div>
+                        <div class="w-8 h-8 rounded-full bg-rose-500/10 text-rose-500 flex items-center justify-center border border-rose-500/20 shrink-0 print:hidden"><span class="material-symbols-outlined text-sm" aria-hidden="true">badge</span></div>
                         <div class="overflow-hidden">
                             <div class="font-bold text-xs text-text-primary truncate">OTC Cash Payout</div>
                             <div class="text-[10px] font-bold text-text-secondary uppercase tracking-wider">Staff: ${r.processed_by}</div>
@@ -309,7 +310,7 @@
                 } else if (r.description && r.description.includes('Restore Charge')) {
                     toAccountHtml = `
                     <div class="flex items-center gap-3">
-                        <div class="w-8 h-8 rounded-full bg-rose-500/10 text-rose-500 flex items-center justify-center border border-rose-500/20 shrink-0"><span class="material-symbols-outlined text-sm" aria-hidden="true">settings_backup_restore</span></div>
+                        <div class="w-8 h-8 rounded-full bg-rose-500/10 text-rose-500 flex items-center justify-center border border-rose-500/20 shrink-0 print:hidden"><span class="material-symbols-outlined text-sm" aria-hidden="true">settings_backup_restore</span></div>
                         <div class="overflow-hidden">
                             <div class="font-bold text-xs text-text-primary truncate">Admin Fee</div>
                             <div class="text-[10px] font-bold text-text-secondary uppercase tracking-wider">Account Charge</div>
@@ -318,7 +319,7 @@
                 } else {
                     toAccountHtml = `
                     <div class="flex items-center gap-3">
-                        <div class="w-8 h-8 rounded-full bg-rose-500/10 text-rose-500 flex items-center justify-center border border-rose-500/20 shrink-0"><span class="material-symbols-outlined text-sm" aria-hidden="true">atm</span></div>
+                        <div class="w-8 h-8 rounded-full bg-rose-500/10 text-rose-500 flex items-center justify-center border border-rose-500/20 shrink-0 print:hidden"><span class="material-symbols-outlined text-sm" aria-hidden="true">atm</span></div>
                         <div class="overflow-hidden">
                             <div class="font-bold text-xs text-text-primary truncate">ATM / Cash Outflow</div>
                             <div class="text-[10px] font-bold text-text-secondary uppercase tracking-wider">Direct Withdrawal</div>
@@ -336,12 +337,12 @@
                 
                 toAccountHtml = `
                 <div class="flex items-center gap-3">
-                    <div class="admin-avatar sm uppercase shrink-0">${receiverAvatarContent}</div>
+                    <div class="admin-avatar sm uppercase shrink-0 print:hidden">${receiverAvatarContent}</div>
                     <div class="overflow-hidden">
                         <div class="font-bold text-xs text-text-primary truncate" title="${receiverName}">${receiverName}</div>
                         <div class="text-[11px] font-mono font-semibold text-text-secondary flex items-center gap-1">
                             <span>${r.to_account_no}</span>
-                            <button onclick="window.copyText('${r.to_account_no}')" class="opacity-40 hover:opacity-100 transition-opacity" title="Copy Account No">
+                            <button onclick="window.copyText('${r.to_account_no}')" class="opacity-40 hover:opacity-100 transition-opacity print:hidden" title="Copy Account No">
                                 <span class="material-symbols-outlined text-[12px]">content_copy</span>
                             </button>
                         </div>
@@ -455,6 +456,62 @@
             totalTransfersEl.textContent = formatCompactCurrency(combinedInternal);
             totalTransfersEl.classList.remove('skeleton');
         }
+
+        // Update Print Header Summary Metrics
+        const printCreditsEl = document.getElementById('print-credits');
+        const printDebitsEl = document.getElementById('print-debits');
+        const printVolumeEl = document.getElementById('print-volume');
+        const printCountEl = document.getElementById('print-count');
+
+        if (printCreditsEl) {
+            printCreditsEl.textContent = `₹${(parseFloat(summary.total_deposits) || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+        }
+        if (printDebitsEl) {
+            printDebitsEl.textContent = `₹${(parseFloat(summary.total_withdrawals) || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+        }
+        if (printVolumeEl) {
+            printVolumeEl.textContent = `₹${(parseFloat(summary.total_amount) || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+        }
+        if (printCountEl) {
+            printCountEl.textContent = (summary.total_count || 0).toLocaleString();
+        }
+    }
+
+    /**
+     * Print Ledger Statement / Passbook view (Identical UX to User & Staff Statement)
+     */
+    function printStatement() {
+        const periodEl = document.getElementById('print-period');
+        const dateFrom = document.getElementById('filter-date-from')?.value;
+        const dateTo = document.getElementById('filter-date-to')?.value;
+        
+        let periodText = 'All Transactions';
+        if (dateFrom && dateTo) {
+            periodText = `${dateFrom} to ${dateTo}`;
+        } else if (dateFrom) {
+            periodText = `From ${dateFrom}`;
+        } else if (dateTo) {
+            periodText = `Up to ${dateTo}`;
+        }
+
+        if (currentType !== 'all') {
+            periodText += ` (${currentType.toUpperCase()})`;
+        }
+
+        if (periodEl) periodEl.textContent = `Period: ${periodText}`;
+        
+        const genEl = document.getElementById('print-generated');
+        if (genEl) genEl.textContent = new Date().toLocaleString('en-IN', {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true
+        });
+
+        // Trigger browser print
+        window.print();
     }
 
     /**
@@ -669,35 +726,6 @@
     }
 
     /**
-     * Print Ledger Statement / Passbook view
-     */
-    function printStatement() {
-        const periodEl = document.getElementById('print-period');
-        const dateFrom = document.getElementById('filter-date-from')?.value;
-        const dateTo = document.getElementById('filter-date-to')?.value;
-        
-        let periodText = 'All Transactions';
-        if (dateFrom && dateTo) {
-            periodText = `${dateFrom} to ${dateTo}`;
-        } else if (dateFrom) {
-            periodText = `From ${dateFrom}`;
-        } else if (dateTo) {
-            periodText = `Up to ${dateTo}`;
-        }
-
-        if (currentType !== 'all') {
-            periodText += ` (${currentType.toUpperCase()})`;
-        }
-
-        if (periodEl) periodEl.textContent = `Period: ${periodText}`;
-        
-        const genEl = document.getElementById('print-generated');
-        if (genEl) genEl.textContent = new Date().toLocaleString();
-
-        window.print();
-    }
-
-    /**
      * Open official Receipt PDF
      */
     window.openReceipt = function(txnId) {
@@ -775,83 +803,6 @@
 
         loadTransactions();
     };
-
-    /**
-     * Export CSV Handler
-     */
-    async function triggerExport() {
-        const searchInput = document.getElementById('transaction-search');
-        const statusFilter = document.getElementById('filter-status');
-        const dateFrom = document.getElementById('filter-date-from');
-        const dateTo = document.getElementById('filter-date-to');
-
-        const params = {
-            export: 'csv',
-            type: currentType,
-            status: statusFilter ? statusFilter.value : 'all',
-            search: searchInput ? searchInput.value.trim() : '',
-            from_date: dateFrom ? dateFrom.value : '',
-            to_date: dateTo ? dateTo.value : ''
-        };
-
-        const exportBtn = document.getElementById('start-export-btn') || document.getElementById('open-export-modal');
-        const originalHtml = exportBtn ? exportBtn.innerHTML : '';
-        if (exportBtn) {
-            exportBtn.disabled = true;
-            exportBtn.innerHTML = '<span class="material-symbols-outlined animate-spin text-[16px]">autorenew</span> <span>Exporting...</span>';
-        }
-
-        try {
-            const basePath = window.location.pathname.includes('/public/') ? '/Finzo/public' : '/Finzo';
-            const qs = new URLSearchParams(params).toString();
-            const exportUrl = `${basePath}/api/v1/transactions?${qs}`;
-            
-            // Direct browser download via anchor
-            const dlLink = document.createElement('a');
-            dlLink.href = exportUrl;
-            dlLink.setAttribute('download', 'finzo_transactions_' + new Date().toISOString().slice(0, 10) + '.csv');
-            document.body.appendChild(dlLink);
-            dlLink.click();
-            setTimeout(() => {
-                if (document.body.contains(dlLink)) document.body.removeChild(dlLink);
-            }, 200);
-
-            if (window.showToast) window.showToast('Transactions CSV export downloaded successfully', 'success');
-            closeExportModal();
-        } catch (error) {
-            console.error('Export error:', error);
-            if (window.showToast) window.showToast('Export failed', 'error');
-        } finally {
-            if (exportBtn) {
-                exportBtn.disabled = false;
-                exportBtn.innerHTML = originalHtml;
-            }
-        }
-    }
-
-    function openExportModal() {
-        const modal = document.getElementById('export-modal');
-        if (!modal) return;
-        isModalOpen = true;
-        modal.classList.remove('hidden');
-        setTimeout(() => {
-            modal.classList.remove('opacity-0');
-            modal.querySelector('.ds-card').classList.remove('scale-95');
-            modal.querySelector('.ds-card').classList.add('scale-100');
-        }, 10);
-    }
-
-    function closeExportModal() {
-        const modal = document.getElementById('export-modal');
-        if (!modal) return;
-        modal.classList.add('opacity-0');
-        modal.querySelector('.ds-card').classList.remove('scale-100');
-        modal.querySelector('.ds-card').classList.add('scale-95');
-        setTimeout(() => {
-            modal.classList.add('hidden');
-            isModalOpen = false;
-        }, 200);
-    }
 
     /**
      * Bind all DOM event listeners
@@ -980,18 +931,11 @@
             });
         }
 
-        // Export Modal
-        document.getElementById('open-export-modal')?.addEventListener('click', openExportModal);
-        document.getElementById('close-export-modal')?.addEventListener('click', closeExportModal);
-        document.getElementById('cancel-export-btn')?.addEventListener('click', closeExportModal);
-        document.getElementById('start-export-btn')?.addEventListener('click', triggerExport);
-
         // Keyboard escape to close modals
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && isModalOpen) {
                 window.closeTransactionDetails();
                 window.closeReversalModal();
-                closeExportModal();
             }
         });
     }

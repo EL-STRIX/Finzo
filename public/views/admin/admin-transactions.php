@@ -4,18 +4,115 @@ $pageTitle = 'Finzo Admin — Global Transactions';
 ob_start();
 ?>
 
+<!-- PRINT MEDIA STYLES (Strict Black & White Bank Statement Layout) -->
+<style>
+@media print {
+    @page {
+        size: A4 landscape;
+        margin: 12mm;
+    }
+    body, html {
+        background: #ffffff !important;
+        color: #000000 !important;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+    .print-hidden, .print\:hidden,
+    #sidebar, #sidebar-overlay, header, nav,
+    .fin-portal-topbar, .type-pill, #reset-filters-btn,
+    .finzo-dropdown, #txn-details-modal, #txn-reversal-modal,
+    button:not(.allow-print) {
+        display: none !important;
+    }
+    .print-block, .print\:block {
+        display: block !important;
+    }
+    .print-flex, .print\:flex {
+        display: flex !important;
+    }
+    .print-grid, .print\:grid {
+        display: grid !important;
+    }
+    .ds-card {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+    .ds-table-wrapper {
+        overflow: visible !important;
+    }
+    table, .ds-table {
+        width: 100% !important;
+        min-width: 100% !important;
+        border-collapse: collapse !important;
+        border: 1px solid #000000 !important;
+        color: #000000 !important;
+        font-size: 11px !important;
+    }
+    th, td {
+        border: 1px solid #000000 !important;
+        color: #000000 !important;
+        padding: 6px 8px !important;
+        background: transparent !important;
+    }
+    th {
+        background-color: #f3f4f6 !important;
+        font-weight: 800 !important;
+        text-transform: uppercase !important;
+        font-size: 10px !important;
+        letter-spacing: 0.05em !important;
+    }
+    .badge, .ds-badge {
+        border: 1px solid #000000 !important;
+        background: transparent !important;
+        color: #000000 !important;
+        font-weight: 700 !important;
+        padding: 2px 6px !important;
+        border-radius: 4px !important;
+        font-size: 9px !important;
+    }
+    /* Hide Actions column in print */
+    table th:last-child, table td:last-child {
+        display: none !important;
+    }
+}
+</style>
+
 <!-- PRINT-ONLY HEADER (Matches Statement / Passbook Style) -->
 <div class="hidden print:block mb-6">
-    <div class="flex justify-between items-start pb-4 border-b-2 border-black">
+    <div class="flex justify-between items-start pb-4 border-b-2 border-black mb-4">
         <div>
-            <div class="font-display text-3xl font-extrabold text-black">Finzo</div>
-            <div class="text-xs font-bold text-black tracking-widest uppercase mt-0.5">Enterprise Banking System</div>
-            <div class="text-xs text-black">Global Transaction Ledger & Audit Statement</div>
+            <div class="text-3xl font-black text-black tracking-tight">Finzo</div>
+            <div class="text-[11px] font-bold text-black tracking-widest uppercase mt-0.5">Enterprise Banking System</div>
+            <div class="text-xs text-black mt-1">support@finzobank.com • +91 1800-FINZO-BANK</div>
         </div>
         <div class="text-right">
-            <div class="text-sm font-bold text-black uppercase tracking-wider">Official Audit Report</div>
+            <div class="text-base font-black text-black uppercase tracking-wider">Global Transaction Statement</div>
             <div class="text-xs font-bold text-black mt-1 uppercase tracking-widest" id="print-period">Period: All Transactions</div>
             <div class="text-xs text-black uppercase tracking-widest mt-0.5">Generated: <span id="print-generated"><?= date('d M Y, h:i A') ?></span></div>
+        </div>
+    </div>
+
+    <!-- Print-only Statement Summary Metrics Grid -->
+    <div class="grid grid-cols-4 gap-3 mb-6">
+        <div class="border border-black p-3 text-center">
+            <div class="text-[10px] font-bold uppercase tracking-widest text-black mb-1">Total Credits (Deposits)</div>
+            <div class="text-base font-black text-black" id="print-credits">₹0.00</div>
+        </div>
+        <div class="border border-black p-3 text-center">
+            <div class="text-[10px] font-bold uppercase tracking-widest text-black mb-1">Total Debits (Withdrawals)</div>
+            <div class="text-base font-black text-black" id="print-debits">₹0.00</div>
+        </div>
+        <div class="border border-black p-3 text-center">
+            <div class="text-[10px] font-bold uppercase tracking-widest text-black mb-1">Total Ledger Volume</div>
+            <div class="text-base font-black text-black" id="print-volume">₹0.00</div>
+        </div>
+        <div class="border border-black p-3 text-center">
+            <div class="text-[10px] font-bold uppercase tracking-widest text-black mb-1">Total Transactions</div>
+            <div class="text-base font-black text-black" id="print-count">0</div>
         </div>
     </div>
 </div>
@@ -29,31 +126,25 @@ ob_start();
     
     <div class="flex items-center gap-3">
         <!-- Print Statement / Passbook Button -->
-        <button id="print-statement-btn" class="btn btn-secondary px-4 py-2.5 rounded-xl border border-border-subtle bg-surface/80 hover:bg-surface hover:border-primary/40 text-text-primary text-xs font-bold uppercase tracking-wider flex items-center gap-2 shadow-sm transition-all hover:shadow-md active:scale-95 group" title="Print Ledger Statement / Passbook">
-            <span class="material-symbols-outlined text-[18px] text-primary transition-transform group-hover:scale-110" aria-hidden="true">print</span>
+        <button id="print-statement-btn" class="btn btn-primary px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider flex items-center gap-2 shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all group" title="Print Ledger Statement / Passbook">
+            <span class="material-symbols-outlined text-[18px] transition-transform group-hover:scale-110" aria-hidden="true">print</span>
             <span>Print Statement</span>
-        </button>
-
-        <!-- Export CSV Button -->
-        <button id="open-export-modal" class="btn btn-primary px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider flex items-center gap-2 shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all group" title="Export Transactions as CSV">
-            <span class="material-symbols-outlined text-[18px] transition-transform group-hover:-translate-y-0.5" aria-hidden="true">download</span>
-            <span>Export CSV</span>
         </button>
     </div>
 </div>
 
-<!-- 5 STAT CARDS -->
-<div class="grid grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6 relative z-10 mb-6 print:grid-cols-5 print:gap-2">
+<!-- 5 STAT CARDS (Interactive Web Mode) -->
+<div class="grid grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6 relative z-10 mb-6 print:hidden">
     <!-- Card 1: Total Volume -->
-    <div class="ds-card p-5 sm:p-6 flex flex-col items-start justify-center group relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl print:border print:border-black print:shadow-none print:p-3">
-        <div class="absolute -right-6 -top-6 w-24 h-24 bg-primary/10 rounded-full blur-2xl group-hover:bg-primary/20 transition-all print:hidden"></div>
+    <div class="ds-card p-5 sm:p-6 flex flex-col items-start justify-center group relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
+        <div class="absolute -right-6 -top-6 w-24 h-24 bg-primary/10 rounded-full blur-2xl group-hover:bg-primary/20 transition-all"></div>
         <div class="relative z-10 w-full">
-            <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 text-primary flex items-center justify-center mb-3 border border-primary/20 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)] print:hidden">
+            <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 text-primary flex items-center justify-center mb-3 border border-primary/20 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]">
                 <span class="material-symbols-outlined text-2xl" aria-hidden="true">account_balance</span>
             </div>
-            <div class="text-[11px] font-bold text-text-secondary uppercase tracking-[0.15em] mb-1 print:text-black">Total Volume</div>
-            <div class="text-2xl sm:text-3xl font-black font-display tracking-tight leading-none text-text-primary skeleton min-w-[50px] print:text-black print:text-xl" id="stat-total-volume">₹0</div>
-            <div class="text-[10px] font-bold text-text-secondary uppercase tracking-widest mt-2 flex items-center gap-1 print:hidden">
+            <div class="text-[11px] font-bold text-text-secondary uppercase tracking-[0.15em] mb-1">Total Volume</div>
+            <div class="text-2xl sm:text-3xl font-black font-display tracking-tight leading-none text-text-primary skeleton min-w-[50px]" id="stat-total-volume">₹0</div>
+            <div class="text-[10px] font-bold text-text-secondary uppercase tracking-widest mt-2 flex items-center gap-1">
                 <span class="material-symbols-outlined text-[12px] text-primary" aria-hidden="true">all_inclusive</span>
                 <span>Cumulative Ledger Flow</span>
             </div>
@@ -61,15 +152,15 @@ ob_start();
     </div>
 
     <!-- Card 2: Total Transactions -->
-    <div class="ds-card p-5 sm:p-6 flex flex-col items-start justify-center group relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl print:border print:border-black print:shadow-none print:p-3">
-        <div class="absolute -right-6 -top-6 w-24 h-24 bg-info/10 rounded-full blur-2xl group-hover:bg-info/20 transition-all print:hidden"></div>
+    <div class="ds-card p-5 sm:p-6 flex flex-col items-start justify-center group relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
+        <div class="absolute -right-6 -top-6 w-24 h-24 bg-info/10 rounded-full blur-2xl group-hover:bg-info/20 transition-all"></div>
         <div class="relative z-10 w-full">
-            <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-info/20 to-info/5 text-info flex items-center justify-center mb-3 border border-info/20 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)] print:hidden">
+            <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-info/20 to-info/5 text-info flex items-center justify-center mb-3 border border-info/20 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]">
                 <span class="material-symbols-outlined text-2xl" aria-hidden="true">swap_horiz</span>
             </div>
-            <div class="text-[11px] font-bold text-text-secondary uppercase tracking-[0.15em] mb-1 print:text-black">Total Records</div>
-            <div class="text-2xl sm:text-3xl font-black font-display tracking-tight leading-none text-text-primary skeleton min-w-[40px] print:text-black print:text-xl" id="stat-total-count">0</div>
-            <div class="text-[10px] font-bold text-text-secondary uppercase tracking-widest mt-2 flex items-center gap-1 print:hidden">
+            <div class="text-[11px] font-bold text-text-secondary uppercase tracking-[0.15em] mb-1">Total Records</div>
+            <div class="text-2xl sm:text-3xl font-black font-display tracking-tight leading-none text-text-primary skeleton min-w-[40px]" id="stat-total-count">0</div>
+            <div class="text-[10px] font-bold text-text-secondary uppercase tracking-widest mt-2 flex items-center gap-1">
                 <span class="material-symbols-outlined text-[12px] text-info" aria-hidden="true">receipt_long</span>
                 <span>All System Txns</span>
             </div>
@@ -77,15 +168,15 @@ ob_start();
     </div>
 
     <!-- Card 3: Total Deposits -->
-    <div class="ds-card p-5 sm:p-6 flex flex-col items-start justify-center group relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl print:border print:border-black print:shadow-none print:p-3">
-        <div class="absolute -right-6 -top-6 w-24 h-24 bg-emerald-500/10 rounded-full blur-2xl group-hover:bg-emerald-500/20 transition-all print:hidden"></div>
+    <div class="ds-card p-5 sm:p-6 flex flex-col items-start justify-center group relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
+        <div class="absolute -right-6 -top-6 w-24 h-24 bg-emerald-500/10 rounded-full blur-2xl group-hover:bg-emerald-500/20 transition-all"></div>
         <div class="relative z-10 w-full">
-            <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-emerald-500/20 to-emerald-500/5 text-emerald-500 flex items-center justify-center mb-3 border border-emerald-500/20 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)] print:hidden">
+            <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-emerald-500/20 to-emerald-500/5 text-emerald-500 flex items-center justify-center mb-3 border border-emerald-500/20 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]">
                 <span class="material-symbols-outlined text-2xl" aria-hidden="true">south_west</span>
             </div>
-            <div class="text-[11px] font-bold text-text-secondary uppercase tracking-[0.15em] mb-1 print:text-black">Total Deposits</div>
-            <div class="text-2xl sm:text-3xl font-black font-display tracking-tight leading-none text-emerald-500 skeleton min-w-[50px] print:text-black print:text-xl" id="stat-total-deposits">₹0</div>
-            <div class="text-[10px] font-bold text-text-secondary uppercase tracking-widest mt-2 flex items-center gap-1 print:hidden">
+            <div class="text-[11px] font-bold text-text-secondary uppercase tracking-[0.15em] mb-1">Total Deposits</div>
+            <div class="text-2xl sm:text-3xl font-black font-display tracking-tight leading-none text-emerald-500 skeleton min-w-[50px]" id="stat-total-deposits">₹0</div>
+            <div class="text-[10px] font-bold text-text-secondary uppercase tracking-widest mt-2 flex items-center gap-1">
                 <span class="material-symbols-outlined text-[12px] text-emerald-500" aria-hidden="true">arrow_downward</span>
                 <span>Inflows & Funding</span>
             </div>
@@ -93,15 +184,15 @@ ob_start();
     </div>
 
     <!-- Card 4: Total Withdrawals -->
-    <div class="ds-card p-5 sm:p-6 flex flex-col items-start justify-center group relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl print:border print:border-black print:shadow-none print:p-3">
-        <div class="absolute -right-6 -top-6 w-24 h-24 bg-rose-500/10 rounded-full blur-2xl group-hover:bg-rose-500/20 transition-all print:hidden"></div>
+    <div class="ds-card p-5 sm:p-6 flex flex-col items-start justify-center group relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
+        <div class="absolute -right-6 -top-6 w-24 h-24 bg-rose-500/10 rounded-full blur-2xl group-hover:bg-rose-500/20 transition-all"></div>
         <div class="relative z-10 w-full">
-            <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-rose-500/20 to-rose-500/5 text-rose-500 flex items-center justify-center mb-3 border border-rose-500/20 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)] print:hidden">
+            <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-rose-500/20 to-rose-500/5 text-rose-500 flex items-center justify-center mb-3 border border-rose-500/20 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]">
                 <span class="material-symbols-outlined text-2xl" aria-hidden="true">north_east</span>
             </div>
-            <div class="text-[11px] font-bold text-text-secondary uppercase tracking-[0.15em] mb-1 print:text-black">Total Withdrawals</div>
-            <div class="text-2xl sm:text-3xl font-black font-display tracking-tight leading-none text-rose-500 skeleton min-w-[50px] print:text-black print:text-xl" id="stat-total-withdrawals">₹0</div>
-            <div class="text-[10px] font-bold text-text-secondary uppercase tracking-widest mt-2 flex items-center gap-1 print:hidden">
+            <div class="text-[11px] font-bold text-text-secondary uppercase tracking-[0.15em] mb-1">Total Withdrawals</div>
+            <div class="text-2xl sm:text-3xl font-black font-display tracking-tight leading-none text-rose-500 skeleton min-w-[50px]" id="stat-total-withdrawals">₹0</div>
+            <div class="text-[10px] font-bold text-text-secondary uppercase tracking-widest mt-2 flex items-center gap-1">
                 <span class="material-symbols-outlined text-[12px] text-rose-500" aria-hidden="true">arrow_upward</span>
                 <span>Outflows & OTC Cash</span>
             </div>
@@ -109,15 +200,15 @@ ob_start();
     </div>
 
     <!-- Card 5: Transfers & Interest -->
-    <div class="ds-card p-5 sm:p-6 flex flex-col items-start justify-center group relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl col-span-2 lg:col-span-1 print:border print:border-black print:shadow-none print:p-3">
-        <div class="absolute -right-6 -top-6 w-24 h-24 bg-amber-500/10 rounded-full blur-2xl group-hover:bg-amber-500/20 transition-all print:hidden"></div>
+    <div class="ds-card p-5 sm:p-6 flex flex-col items-start justify-center group relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl col-span-2 lg:col-span-1">
+        <div class="absolute -right-6 -top-6 w-24 h-24 bg-amber-500/10 rounded-full blur-2xl group-hover:bg-amber-500/20 transition-all"></div>
         <div class="relative z-10 w-full">
-            <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-amber-500/20 to-amber-500/5 text-amber-500 flex items-center justify-center mb-3 border border-amber-500/20 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)] print:hidden">
+            <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-amber-500/20 to-amber-500/5 text-amber-500 flex items-center justify-center mb-3 border border-amber-500/20 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]">
                 <span class="material-symbols-outlined text-2xl" aria-hidden="true">sync_alt</span>
             </div>
-            <div class="text-[11px] font-bold text-text-secondary uppercase tracking-[0.15em] mb-1 print:text-black">Transfers & Interest</div>
-            <div class="text-2xl sm:text-3xl font-black font-display tracking-tight leading-none text-amber-500 skeleton min-w-[50px] print:text-black print:text-xl" id="stat-total-transfers">₹0</div>
-            <div class="text-[10px] font-bold text-text-secondary uppercase tracking-widest mt-2 flex items-center gap-1 print:hidden">
+            <div class="text-[11px] font-bold text-text-secondary uppercase tracking-[0.15em] mb-1">Transfers & Interest</div>
+            <div class="text-2xl sm:text-3xl font-black font-display tracking-tight leading-none text-amber-500 skeleton min-w-[50px]" id="stat-total-transfers">₹0</div>
+            <div class="text-[10px] font-bold text-text-secondary uppercase tracking-widest mt-2 flex items-center gap-1">
                 <span class="material-symbols-outlined text-[12px] text-amber-500" aria-hidden="true">percent</span>
                 <span>Internal Movement</span>
             </div>
@@ -248,21 +339,21 @@ ob_start();
     
     <!-- DATA TABLE -->
     <div class="ds-table-wrapper w-full border-0 shadow-none rounded-none bg-transparent overflow-x-auto custom-scrollbar print:overflow-visible">
-        <table id="transactions-table" class="ds-table w-full text-left min-w-[1300px] print:min-w-full print:border print:border-black">
+        <table id="transactions-table" class="ds-table w-full text-left min-w-[1300px] print:min-w-full">
             <thead scope="col">
-                <tr class="border-b border-border-subtle bg-surface-subtle/50 text-[10px] font-black uppercase tracking-wider text-text-secondary print:text-black print:border-b-2 print:border-black">
-                    <th scope="col" class="py-3.5 px-4 w-12 text-center print:border-r print:border-black">#</th>
-                    <th scope="col" class="py-3.5 px-4 w-36 print:border-r print:border-black">TXN ID</th>
-                    <th scope="col" class="py-3.5 px-4 print:border-r print:border-black">From Account (Source)</th>
-                    <th scope="col" class="py-3.5 px-4 print:border-r print:border-black">To Account (Destination)</th>
-                    <th scope="col" class="py-3.5 px-4 w-28 print:border-r print:border-black">Type</th>
-                    <th scope="col" class="py-3.5 px-4 w-36 print:border-r print:border-black">Amount</th>
-                    <th scope="col" class="py-3.5 px-4 w-40 print:border-r print:border-black">Date & Time</th>
-                    <th scope="col" class="py-3.5 px-4 w-28 text-center print:border-r print:border-black">Status</th>
+                <tr class="border-b border-border-subtle bg-surface-subtle/50 text-[10px] font-black uppercase tracking-wider text-text-secondary">
+                    <th scope="col" class="py-3.5 px-4 w-12 text-center">#</th>
+                    <th scope="col" class="py-3.5 px-4 w-36">TXN ID</th>
+                    <th scope="col" class="py-3.5 px-4">From Account (Source)</th>
+                    <th scope="col" class="py-3.5 px-4">To Account (Destination)</th>
+                    <th scope="col" class="py-3.5 px-4 w-28">Type</th>
+                    <th scope="col" class="py-3.5 px-4 w-36">Amount</th>
+                    <th scope="col" class="py-3.5 px-4 w-40">Date & Time</th>
+                    <th scope="col" class="py-3.5 px-4 w-28 text-center">Status</th>
                     <th scope="col" class="py-3.5 px-6 text-right w-44 print:hidden">Actions</th>
                 </tr>
             </thead>
-            <tbody id="txn-table-body" class="divide-y divide-border-subtle print:divide-black">
+            <tbody id="txn-table-body" class="divide-y divide-border-subtle">
                 <!-- Data dynamically injected by transactions.js -->
             </tbody>
         </table>
@@ -270,10 +361,10 @@ ob_start();
 
     <!-- PRINT-ONLY FOOTER -->
     <div class="hidden print:block mt-8 pt-4 border-t border-black text-center text-xs text-black uppercase tracking-widest font-bold">
-        This is an official computer-generated audit statement from Finzo Enterprise Banking System. No signature required.
+        This is an official computer-generated statement from Finzo Enterprise Banking System. No signature required.
     </div>
 
-    <!-- PAGINATION -->
+    <!-- PAGINATION (Web Mode) -->
     <div class="p-4 sm:p-6 bg-surface-subtle border-t border-border-subtle flex flex-col sm:flex-row justify-between items-center gap-4 print:hidden">
         <div id="pagination-info" class="text-[10px] font-bold text-text-secondary uppercase tracking-widest">Showing 0-0 of 0 Records</div>
         <div class="flex items-center gap-2">
@@ -472,52 +563,6 @@ ob_start();
             <button id="confirm-reversal-btn" class="btn btn-primary !bg-rose-600 hover:!bg-rose-700 text-white px-5 py-2 text-xs font-black uppercase tracking-wider rounded-xl shadow-lg shadow-rose-600/20 transition-all flex items-center gap-2">
                 <span class="material-symbols-outlined text-[16px]">undo</span>
                 <span>Confirm & Reverse</span>
-            </button>
-        </div>
-    </div>
-</div>
-
-<!-- ========================================================================= -->
-<!-- EXPORT CSV MODAL                                                          -->
-<!-- ========================================================================= -->
-<div id="export-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm hidden p-4 transition-opacity opacity-0 print:hidden">
-    <div class="ds-card w-full max-w-md bg-surface border border-border-subtle rounded-2xl shadow-2xl overflow-hidden transform scale-95 transition-all duration-300">
-        <div class="p-6 border-b border-border-subtle bg-surface-subtle/50 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center border border-primary/20">
-                    <span class="material-symbols-outlined text-xl" aria-hidden="true">download</span>
-                </div>
-                <div>
-                    <h3 class="text-lg font-headline font-black text-text-primary tracking-tight">Export Transactions</h3>
-                    <p class="text-[10px] font-bold text-text-secondary uppercase tracking-widest">Download CSV Ledger</p>
-                </div>
-            </div>
-            <button id="close-export-modal" class="p-2 rounded-xl text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all">
-                <span class="material-symbols-outlined text-xl">close</span>
-            </button>
-        </div>
-
-        <div class="p-6 space-y-4 text-xs">
-            <p class="text-text-secondary font-medium">Export the global transactions dataset matching your active filters. The generated CSV will include full audit columns, account numbers, amounts, timestamps, and staff handlers.</p>
-            <div class="p-3.5 rounded-xl bg-surface-subtle border border-border-subtle space-y-1.5">
-                <div class="flex justify-between">
-                    <span class="text-text-secondary font-bold uppercase text-[10px]">Filter Scope:</span>
-                    <span id="export-scope-text" class="font-black text-text-primary">Current Active Filters</span>
-                </div>
-                <div class="flex justify-between">
-                    <span class="text-text-secondary font-bold uppercase text-[10px]">Format:</span>
-                    <span class="font-bold text-text-primary">CSV (Comma Separated)</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="p-5 border-t border-border-subtle bg-surface-subtle/50 flex items-center justify-end gap-3">
-            <button id="cancel-export-btn" class="btn btn-secondary px-4 py-2 text-xs font-bold uppercase tracking-wider rounded-xl">
-                Cancel
-            </button>
-            <button id="start-export-btn" class="btn btn-primary px-5 py-2 text-xs font-black uppercase tracking-wider rounded-xl shadow-lg shadow-primary/20 flex items-center gap-2">
-                <span class="material-symbols-outlined text-[16px]">file_download</span>
-                <span>Download CSV</span>
             </button>
         </div>
     </div>
