@@ -1181,20 +1181,20 @@
                                         ${photoUrl ? `<img src="${photoUrl}?v=${Date.now()}" class="w-full h-full object-cover" onerror="this.parentElement.innerHTML='${initial}'">` : initial}
                                     </div>
                                     <div class="min-w-0">
-                                        <div class="text-xs font-bold text-slate-900 dark:text-white truncate">${escapeHtml(s.full_name)}</div>
-                                        <div class="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest">${escapeHtml(s.designation || 'Staff')}</div>
+                                        <div class="text-xs font-bold text-slate-900 dark:text-stone-100 truncate">${escapeHtml(s.full_name)}</div>
+                                        <div class="text-[10px] text-slate-500 dark:text-stone-400 font-bold uppercase tracking-widest">${escapeHtml(s.designation || 'Staff')}</div>
                                     </div>
                                 </div>
                             </td>
                             <td class="px-6 py-4">
-                                <div class="text-xs font-bold text-slate-900 dark:text-white">${escapeHtml(s.personal_email || s.email || 'N/A')}</div>
-                                <div class="text-[10px] text-slate-500 dark:text-slate-400 font-medium">${escapeHtml(s.phone || 'N/A')}</div>
+                                <div class="text-xs font-bold text-slate-900 dark:text-stone-100">${escapeHtml(s.personal_email || s.email || 'N/A')}</div>
+                                <div class="text-[10px] text-slate-500 dark:text-stone-400 font-medium">${escapeHtml(s.phone || 'N/A')}</div>
                             </td>
                             <td class="px-6 py-4">
                                 ${statusBadge}
                             </td>
                             <td class="px-6 py-4 text-right">
-                                <a href="/Finzo/public/views/admin/admin-staff.php?search=${encodeURIComponent(s.staff_id)}" class="btn btn-secondary btn-sm !px-3 !py-1 !text-[10px] font-bold" target="_blank">
+                                <a href="/Finzo/public/views/admin/admin-staff.php?search=${encodeURIComponent(s.staff_id)}" class="btn btn-secondary btn-sm !px-3 !py-1 !text-[10px] font-bold text-slate-900 dark:text-stone-100 bg-slate-100 hover:bg-slate-200 dark:bg-[#292524] dark:hover:bg-[#383330] border border-slate-300 dark:border-white/10" target="_blank">
                                     View Profile
                                 </a>
                             </td>

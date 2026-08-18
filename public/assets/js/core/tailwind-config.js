@@ -7,7 +7,12 @@ tailwind.config = {
         secondary: { 50: 'var(--color-secondary-50)', 500: 'var(--color-secondary-500)', 600: 'var(--color-secondary-600)', 700: 'var(--color-secondary-700)', 800: 'var(--color-secondary-800)', 900: 'var(--color-secondary-900)', DEFAULT: 'var(--color-secondary)', hover: 'var(--color-secondary-hover)' },
         accent: { DEFAULT: 'var(--color-accent)', hover: 'var(--color-accent-hover)' },
         background: 'var(--color-background)',
-        surface: { DEFAULT: 'var(--color-surface)', elevated: 'var(--color-surface-elevated)' },
+        surface: { 
+          DEFAULT: 'var(--color-surface)', 
+          elevated: 'var(--color-surface-elevated)',
+          subtle: 'var(--color-surface-elevated)',
+          dark: '#141211'
+        },
         text: { primary: 'var(--color-text-primary)', secondary: 'var(--color-text-secondary)', muted: 'var(--color-text-muted)', inverse: 'var(--color-text-inverse)' },
         border: { DEFAULT: 'var(--color-border)', subtle: 'var(--color-border-subtle)', strong: 'var(--color-border-strong)' },
         success: { DEFAULT: 'var(--color-success)', bg: 'var(--color-success-bg)' },
