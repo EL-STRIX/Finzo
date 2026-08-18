@@ -919,12 +919,12 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
         $where_clauses = ["1=1"];
         $params = [];
 
-        if ($filters['type'] !== 'all' && in_array($filters['type'], ['deposit', 'withdrawal', 'transfer', 'interest_credit'])) {
+        if (isset($filters['type']) && $filters['type'] !== 'all' && in_array($filters['type'], ['deposit', 'withdrawal', 'transfer', 'interest_credit'])) {
             $where_clauses[] = "t.type = ?";
             $params[] = $filters['type'];
         }
 
-        if ($filters['status'] !== 'all' && in_array($filters['status'], ['completed', 'pending', 'failed', 'reversed'])) {
+        if (isset($filters['status']) && $filters['status'] !== 'all' && in_array($filters['status'], ['completed', 'pending', 'failed', 'reversed'])) {
             $where_clauses[] = "t.status = ?";
             $params[] = $filters['status'];
         }
@@ -939,11 +939,30 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
             $params[] = $filters['to_date'];
         }
 
-        if (!empty($filters['search'])) {
-            $where_clauses[] = "(t.txn_id LIKE ? OR fu.full_name LIKE ? OR tu.full_name LIKE ? OR fa.account_no LIKE ? OR ta.account_no LIKE ?)";
-            $s = "%{$filters['search']}%";
-            $params = array_merge($params, [$s, $s, $s, $s, $s]);
+        if (!empty($filters['min_amount']) && is_numeric($filters['min_amount'])) {
+            $where_clauses[] = "t.amount >= ?";
+            $params[] = (float)$filters['min_amount'];
         }
+
+        if (!empty($filters['max_amount']) && is_numeric($filters['max_amount'])) {
+            $where_clauses[] = "t.amount <= ?";
+            $params[] = (float)$filters['max_amount'];
+        }
+
+        if (!empty($filters['search'])) {
+            $where_clauses[] = "(t.txn_id LIKE ? OR fu.full_name LIKE ? OR tu.full_name LIKE ? OR fa.account_no LIKE ? OR ta.account_no LIKE ? OR s.staff_id LIKE ? OR t.description LIKE ?)";
+            $s = "%{$filters['search']}%";
+            $params = array_merge($params, [$s, $s, $s, $s, $s, $s, $s]);
+        }
+
+        $sortMap = [
+            'newest'      => 't.created_at DESC, t.id DESC',
+            'oldest'      => 't.created_at ASC, t.id ASC',
+            'amount_high' => 't.amount DESC, t.created_at DESC',
+            'amount_low'  => 't.amount ASC, t.created_at DESC'
+        ];
+        $sortKey = $filters['sort'] ?? 'newest';
+        $orderSql = $sortMap[$sortKey] ?? $sortMap['newest'];
 
         $where_sql = implode(' AND ', $where_clauses);
         $base_sql = "
@@ -964,7 +983,7 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
         $pages  = max(1, ceil($total / $perPage));
         $offset = ($page - 1) * $perPage;
 
-        $transactions = $this->repository->getTransactions($base_sql, $params, $perPage, $offset);
+        $transactions = $this->repository->getTransactions($base_sql, $params, $perPage, $offset, $orderSql);
         $summary = $this->repository->getTransactionsSummary($base_sql, $params);
 
         return [

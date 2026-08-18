@@ -519,20 +519,27 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
         return (int)$this->fetchOne("SELECT COUNT(*) as count " . $baseSql, $params)['count'] ?? 0;
     }
 
-    public function getTransactions(string $baseSql, array $params, int $perPage, int $offset) {
+    public function getTransactions(string $baseSql, array $params, int $perPage, int $offset, string $orderSql = 't.created_at DESC, t.id DESC') {
         $sql = "
             SELECT
-                t.id, t.txn_id, t.type, t.amount, t.balance_after, t.description,
+                t.id, t.txn_id, t.type, t.amount, t.balance_after, t.dest_balance_after, t.description,
                 t.reference_note, t.status, t.created_at,
                 COALESCE(fa.account_no, 'N/A') as from_account_no,
+                COALESCE(fa.account_type, '') as from_account_type,
                 COALESCE(fu.full_name, 'N/A') as from_user_name,
+                COALESCE(fu.email, '') as from_user_email,
+                COALESCE(fu.customer_id, '') as from_customer_id,
                 fu.profile_picture as from_user_avatar,
                 COALESCE(ta.account_no, 'N/A') as to_account_no,
+                COALESCE(ta.account_type, '') as to_account_type,
                 COALESCE(tu.full_name, 'N/A') as to_user_name,
+                COALESCE(tu.email, '') as to_user_email,
+                COALESCE(tu.customer_id, '') as to_customer_id,
                 tu.profile_picture as to_user_avatar,
-                COALESCE(s.staff_id, '') as processed_by
+                COALESCE(s.staff_id, '') as processed_by,
+                COALESCE(s.full_name, '') as processed_by_name
             {$baseSql}
-            ORDER BY t.created_at DESC, t.id DESC
+            ORDER BY {$orderSql}
             LIMIT {$perPage} OFFSET {$offset}
         ";
         return $this->fetchAll($sql, $params);
@@ -545,7 +552,8 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
                 COALESCE(SUM(t.amount), 0) as total_amount,
                 COALESCE(SUM(CASE WHEN t.type = 'deposit' THEN t.amount ELSE 0 END), 0) as total_deposits,
                 COALESCE(SUM(CASE WHEN t.type = 'withdrawal' THEN t.amount ELSE 0 END), 0) as total_withdrawals,
-                COALESCE(SUM(CASE WHEN t.type = 'transfer' THEN t.amount ELSE 0 END), 0) as total_transfers
+                COALESCE(SUM(CASE WHEN t.type = 'transfer' THEN t.amount ELSE 0 END), 0) as total_transfers,
+                COALESCE(SUM(CASE WHEN t.type = 'interest_credit' THEN t.amount ELSE 0 END), 0) as total_interest
             {$baseSql}
         ";
         return $this->fetchOne($sql, $params);

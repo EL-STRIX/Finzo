@@ -281,14 +281,17 @@ class AdminOperationsController
     public function transactions()
     {
         $filters = [
-            'search'    => $this->security->cleanInput($_GET['search'] ?? ''),
-            'type'      => $this->security->cleanInput($_GET['type'] ?? 'all'),
-            'status'    => $this->security->cleanInput($_GET['status'] ?? 'all'),
-            'from_date' => $this->security->cleanInput($_GET['from_date'] ?? ''),
-            'to_date'   => $this->security->cleanInput($_GET['to_date'] ?? '')
+            'search'     => $this->security->cleanInput($_GET['search'] ?? ''),
+            'type'       => $this->security->cleanInput($_GET['type'] ?? 'all'),
+            'status'     => $this->security->cleanInput($_GET['status'] ?? 'all'),
+            'from_date'  => $this->security->cleanInput($_GET['from_date'] ?? ''),
+            'to_date'    => $this->security->cleanInput($_GET['to_date'] ?? ''),
+            'min_amount' => $this->security->cleanInput($_GET['min_amount'] ?? ''),
+            'max_amount' => $this->security->cleanInput($_GET['max_amount'] ?? ''),
+            'sort'       => $this->security->cleanInput($_GET['sort'] ?? 'newest')
         ];
         $page     = max(1, intval($_GET['page'] ?? 1));
-        $per_page = min(50, max(10, intval($_GET['per_page'] ?? 20)));
+        $per_page = min(100, max(5, intval($_GET['per_page'] ?? 10)));
         $export   = $this->security->cleanInput($_GET['export'] ?? '');
 
         if ($export === 'csv') {

@@ -47,7 +47,7 @@ interface AdminOperationsRepositoryInterface
     public function countSuspendedUsers(string $whereSql, array $params): int;
     public function getSuspendedUsers(string $whereSql, array $params, int $perPage, int $offset);
     public function countTransactions(string $baseSql, array $params): int;
-    public function getTransactions(string $baseSql, array $params, int $perPage, int $offset);
+    public function getTransactions(string $baseSql, array $params, int $perPage, int $offset, string $orderSql = 't.created_at DESC, t.id DESC');
     public function getTransactionsSummary(string $baseSql, array $params);
     public function exportTransactions(string $baseSql, array $params);
     public function exportTransactionsGenerator(string $baseSql, array $params): \Generator;
