@@ -83,7 +83,21 @@
         }
 
         if (!branches.length) {
-            tbody.innerHTML = '<tr><td colspan="9" class="py-12 text-center"><div class="flex flex-col items-center justify-center"><span class="material-symbols-outlined text-4xl text-text-secondary/40 mb-3" aria-hidden="true">domain_disabled</span><div class="text-sm font-bold text-text-secondary uppercase tracking-widest">No branches found matching your records.</div></div></td></tr>';
+            tbody.innerHTML = `
+            <tr>
+                <td colspan="9" class="py-16 text-center">
+                    <div class="flex flex-col items-center justify-center max-w-sm mx-auto">
+                        <div class="w-16 h-16 rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center mb-3 border border-amber-500/20">
+                            <span class="material-symbols-outlined text-3xl" aria-hidden="true">domain_disabled</span>
+                        </div>
+                        <div class="text-sm font-black text-slate-900 dark:text-white mb-1">No Branches Found</div>
+                        <p class="text-xs text-slate-500 dark:text-stone-400 font-medium mb-4">No bank branches match your current search filters or none have been created yet.</p>
+                        <button type="button" class="btn btn-primary px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider inline-flex items-center gap-2 shadow-lg shadow-amber-900/20" onclick="window.openAddModal()">
+                            <span class="material-symbols-outlined text-base" aria-hidden="true">add_business</span> Add New Branch
+                        </button>
+                    </div>
+                </td>
+            </tr>`;
             return;
         }
 
@@ -748,6 +762,21 @@
                 }
             }
 
+            // Add Branch triggers
+            const addTrigger = e.target.closest('#btn-open-add-branch, [data-action="add-branch"], .action-add-branch');
+            if (addTrigger) {
+                e.preventDefault();
+                openAddModal();
+            }
+
+            // Refresh branches trigger
+            const refreshTrigger = e.target.closest('#btn-refresh-branches');
+            if (refreshTrigger) {
+                e.preventDefault();
+                loadBranches();
+                window.showToast('Branch data refreshed', 'info');
+            }
+
             // Close modal triggers
             const closeBtn = e.target.closest('[data-close-modal]');
             if (closeBtn) {
@@ -1251,6 +1280,7 @@
     // Expose helpers globally
     window.openModal = openModal;
     window.closeModal = closeModal;
+    window.openAddModal = openAddModal;
     window.showViewModal = showViewModal;
     window.showEditModal = showEditModal;
     window.showStatusModal = showStatusModal;

@@ -1,21 +1,33 @@
 <?php
 $portal = 'admin';
 $pageTitle = 'Finzo Admin - Branch Management';
-$pageHeader = '
-<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-    <div>
-        <h1 class="text-xl font-headline font-black text-text-primary tracking-tight">Branch Management</h1>
-        <p class="text-[10px] font-black text-text-secondary uppercase tracking-widest mt-0.5">Manage bank branches, locations, managers, and operational configurations</p>
-    </div>
-    <div class="flex items-center gap-3">
-        <button id="btn-open-add-branch" class="btn btn-primary flex items-center gap-2">
-            <span class="material-symbols-outlined text-[18px]" aria-hidden="true">add_business</span> Add New Branch
-        </button>
-    </div>
-</div>
-';
+if (!defined('FINZO_ROOT')) {
+    require_once dirname(__DIR__, 3) . '/bootstrap/app.php';
+}
+\App\Shared\Security\SessionManager::start();
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+$csrfToken = $_SESSION['csrf_token'];
 ob_start();
 ?>
+    <!-- TOP PAGE HEADER & ACTION BAR -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 relative z-10">
+        <div>
+            <h1 class="text-2xl font-headline font-black text-slate-950 dark:text-white tracking-tight">Branch Management</h1>
+            <p class="text-xs font-bold text-slate-600 dark:text-stone-400 uppercase tracking-widest mt-1">Manage bank branches, locations, managers, and operational configurations</p>
+        </div>
+        <div class="flex items-center gap-3">
+            <button id="btn-refresh-branches" type="button" class="btn btn-secondary px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider inline-flex items-center gap-2 shadow-sm hover:scale-[1.02] active:scale-[0.98] transition-transform text-slate-900 dark:text-stone-100 bg-slate-100 hover:bg-slate-200 dark:bg-[#292524] dark:hover:bg-[#383330] border border-slate-300 dark:border-white/10">
+                <span class="material-symbols-outlined text-base" aria-hidden="true">refresh</span>
+                <span>Refresh</span>
+            </button>
+            <button id="btn-open-add-branch" type="button" class="btn btn-primary px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider inline-flex items-center gap-2 shadow-lg shadow-amber-900/20 hover:scale-[1.02] active:scale-[0.98] transition-transform">
+                <span class="material-symbols-outlined text-lg" aria-hidden="true">add_business</span>
+                <span>Add New Branch</span>
+            </button>
+        </div>
+    </div>
     <!-- STATS ROW -->
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8 relative z-10">
         <div class="ds-card p-5 sm:p-6 flex flex-col items-start justify-center group relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
