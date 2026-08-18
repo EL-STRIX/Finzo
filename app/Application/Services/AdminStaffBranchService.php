@@ -541,7 +541,14 @@ class AdminStaffBranchService implements \App\Domain\Contracts\Services\AdminSta
         $address = trim($data['address'] ?? '');
         $description = trim($data['description'] ?? '');
 
-        if (!empty($city) || !empty($address) || !empty($description)) {
+        // Preserve any existing [EditDoc: ...] tag unless updated
+        $currentDesc = $branch->description ?? '';
+        $existingEditDocTag = '';
+        if (preg_match('/\[EditDoc:\s*.*?\]/s', $currentDesc, $existingEditMatch)) {
+            $existingEditDocTag = $existingEditMatch[0];
+        }
+
+        if (!empty($city) || !empty($address) || !empty($description) || !empty($existingEditDocTag)) {
             $locationMeta = [];
             if (!empty($city)) $locationMeta[] = "City: {$city}";
             if (!empty($address)) $locationMeta[] = "Address: {$address}";
@@ -550,6 +557,9 @@ class AdminStaffBranchService implements \App\Domain\Contracts\Services\AdminSta
             if (!empty($locationMeta)) {
                 $metaStr = implode(' | ', $locationMeta);
                 $combinedDesc = !empty($combinedDesc) ? "{$combinedDesc}\n\n[Location: {$metaStr}]" : "[Location: {$metaStr}]";
+            }
+            if (!empty($existingEditDocTag)) {
+                $combinedDesc = !empty($combinedDesc) ? "{$combinedDesc}\n\n{$existingEditDocTag}" : $existingEditDocTag;
             }
             $updateData['description'] = $combinedDesc;
         }
@@ -562,12 +572,12 @@ class AdminStaffBranchService implements \App\Domain\Contracts\Services\AdminSta
             }
         }
 
-        // Handle new certificate if uploaded
+        // Handle new certificate if uploaded during edit (persisted as Latest Edit Document)
         if ($certFile && ($certFile['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_OK) {
             $allowedTypes = ['application/pdf', 'image/jpeg', 'image/png', 'image/jpg'];
             if (in_array($certFile['type'], $allowedTypes) && $certFile['size'] <= 10 * 1024 * 1024) {
                 $ext = pathinfo($certFile['name'], PATHINFO_EXTENSION);
-                $filename = 'branch_cert_' . time() . '_' . rand(1000, 9999) . '.' . $ext;
+                $filename = 'branch_edit_cert_' . time() . '_' . rand(1000, 9999) . '.' . $ext;
                 $publicDir = FINZO_ROOT . '/public/uploads/branch-certs/';
                 $rootUploadDir = FINZO_ROOT . '/uploads/branch-certs/';
                 if (!is_dir($publicDir)) @mkdir($publicDir, 0777, true);
@@ -576,7 +586,18 @@ class AdminStaffBranchService implements \App\Domain\Contracts\Services\AdminSta
                 $dest = $publicDir . $filename;
                 if (move_uploaded_file($certFile['tmp_name'], $dest)) {
                     @copy($dest, $rootUploadDir . $filename);
-                    $updateData['cert_path'] = 'uploads/branch-certs/' . $filename;
+                    $newEditDocPath = 'uploads/branch-certs/' . $filename;
+                    
+                    // If branch had no initial creation document, establish it
+                    if (empty($branch->cert_path)) {
+                        $updateData['cert_path'] = $newEditDocPath;
+                    }
+
+                    // Save as [EditDoc: ...] in description
+                    $activeDesc = $updateData['description'] ?? ($branch->description ?? '');
+                    $activeDesc = preg_replace('/\[EditDoc:\s*.*?\]/s', '', $activeDesc);
+                    $activeDesc = trim($activeDesc);
+                    $updateData['description'] = $activeDesc ? "{$activeDesc}\n\n[EditDoc: {$newEditDocPath}]" : "[EditDoc: {$newEditDocPath}]";
                 }
             }
         }
@@ -605,11 +626,68 @@ class AdminStaffBranchService implements \App\Domain\Contracts\Services\AdminSta
     {
         $branch = $this->repo->getBranchDetailWithStats($branchId);
         if (!$branch) return null;
+
+        $resolveUrl = function(?string $path, string $subDir) {
+            if (empty($path)) return null;
+            if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+                return $path;
+            }
+            $cleanPath = ltrim($path, '/');
+            if (str_starts_with($cleanPath, 'Finzo/')) {
+                return '/' . $cleanPath;
+            }
+            if (str_starts_with($cleanPath, 'uploads/')) {
+                return '/Finzo/' . $cleanPath;
+            }
+            return '/Finzo/uploads/' . $subDir . '/' . $cleanPath;
+        };
+
+        if (!empty($branch['manager_name'])) {
+            $parts = explode(' ', trim($branch['manager_name']));
+            $branch['manager_initials'] = strtoupper(substr($parts[0], 0, 1) . (isset($parts[1]) ? substr($parts[1], 0, 1) : ''));
+        } else {
+            $branch['manager_initials'] = '??';
+        }
+        $branch['manager_avatar_url'] = $resolveUrl($branch['manager_avatar'] ?? null, 'staff-photos');
+
+        $latestEditDoc = null;
+        $desc = $branch['description'] ?? '';
+        if (preg_match('/\[EditDoc:\s*(.*?)\]/s', $desc, $editMatch)) {
+            $latestEditDoc = trim($editMatch[1]);
+        }
+
+        $branch['city'] = '';
+        $branch['address'] = '';
+        $branch['clean_description'] = $desc;
+
+        if (preg_match('/\[Location:\s*(.*?)\]/s', $desc, $matches)) {
+            $locStr = $matches[1];
+            if (preg_match('/City:\s*(.*?)(?:\s*\|\s*Address:|$)/i', $locStr, $cityMatch)) {
+                $branch['city'] = trim($cityMatch[1]);
+            }
+            if (preg_match('/Address:\s*(.*?)$/i', $locStr, $addrMatch)) {
+                $branch['address'] = trim($addrMatch[1]);
+            }
+            $desc = str_replace($matches[0], '', $desc);
+        }
+
+        if (!empty($latestEditDoc)) {
+            $desc = preg_replace('/\[EditDoc:\s*.*?\]/s', '', $desc);
+        }
+        $branch['clean_description'] = trim($desc);
+
+        $branch['creation_doc'] = $branch['cert_path'] ?? null;
+        $branch['latest_edit_doc'] = $latestEditDoc;
+        $branch['creation_doc_url'] = $resolveUrl($branch['creation_doc'], 'branch-certs');
+        $branch['latest_edit_doc_url'] = $resolveUrl($branch['latest_edit_doc'], 'branch-certs');
+        $branch['cert_url'] = $branch['creation_doc_url'];
+
         return [
             'success' => true,
             'branch'  => $branch
         ];
     }
+
 
     /**
      * Toggle Branch Status (Suspend or Reactivate).
@@ -703,24 +781,38 @@ class AdminStaffBranchService implements \App\Domain\Contracts\Services\AdminSta
                 $b['manager_initials'] = '??';
             }
             $b['manager_avatar_url'] = $resolveUrl($b['manager_avatar'] ?? null, 'staff-photos');
-            $b['cert_url'] = $resolveUrl($b['cert_path'] ?? null, 'branch-certs');
-            
+            $latestEditDoc = null;
+            $desc = $b['description'] ?? '';
+            if (preg_match('/\[EditDoc:\s*(.*?)\]/s', $desc, $editMatch)) {
+                $latestEditDoc = trim($editMatch[1]);
+            }
+
             // Extract City and Address if present in description meta
             $b['city'] = '';
             $b['address'] = '';
-            $b['clean_description'] = $b['description'] ?? '';
-            if (!empty($b['description'])) {
-                if (preg_match('/\[Location:\s*(.*?)\]/s', $b['description'], $matches)) {
-                    $locStr = $matches[1];
-                    if (preg_match('/City:\s*(.*?)(?:\s*\|\s*Address:|$)/i', $locStr, $cityMatch)) {
-                        $b['city'] = trim($cityMatch[1]);
-                    }
-                    if (preg_match('/Address:\s*(.*?)$/i', $locStr, $addrMatch)) {
-                        $b['address'] = trim($addrMatch[1]);
-                    }
-                    $b['clean_description'] = trim(str_replace($matches[0], '', $b['description']));
+            $b['clean_description'] = $desc;
+
+            if (preg_match('/\[Location:\s*(.*?)\]/s', $desc, $matches)) {
+                $locStr = $matches[1];
+                if (preg_match('/City:\s*(.*?)(?:\s*\|\s*Address:|$)/i', $locStr, $cityMatch)) {
+                    $b['city'] = trim($cityMatch[1]);
                 }
+                if (preg_match('/Address:\s*(.*?)$/i', $locStr, $addrMatch)) {
+                    $b['address'] = trim($addrMatch[1]);
+                }
+                $desc = str_replace($matches[0], '', $desc);
             }
+
+            if (!empty($latestEditDoc)) {
+                $desc = preg_replace('/\[EditDoc:\s*.*?\]/s', '', $desc);
+            }
+            $b['clean_description'] = trim($desc);
+
+            $b['creation_doc'] = $b['cert_path'] ?? null;
+            $b['latest_edit_doc'] = $latestEditDoc;
+            $b['creation_doc_url'] = $resolveUrl($b['creation_doc'], 'branch-certs');
+            $b['latest_edit_doc_url'] = $resolveUrl($b['latest_edit_doc'], 'branch-certs');
+            $b['cert_url'] = $b['creation_doc_url'];
         }
 
         return [

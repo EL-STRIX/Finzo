@@ -447,18 +447,45 @@ ob_start();
                         </div>
                     </div>
 
-                    <div>
-                        <label class="block text-xs font-black uppercase tracking-wider text-slate-800 dark:text-slate-200 mb-2">Registration Certificate</label>
-                        <div id="view-cert-container" class="hidden items-center gap-3 p-3.5 bg-slate-50 dark:bg-surface-dark rounded-xl border-2 border-slate-200 dark:border-white/10">
-                            <span class="material-symbols-outlined text-red-600 dark:text-red-400 text-2xl shrink-0" aria-hidden="true">picture_as_pdf</span>
-                            <div class="flex-1 min-w-0">
-                                <div id="view-cert-name" class="text-xs font-black text-slate-950 dark:text-white truncate">certificate.pdf</div>
+                    <!-- BRANCH DOCUMENTS: CREATION & LATEST EDIT -->
+                    <div class="space-y-4">
+                        <!-- CREATION DOCUMENT -->
+                        <div>
+                            <div class="flex items-center justify-between mb-1.5">
+                                <label class="block text-xs font-black uppercase tracking-wider text-slate-800 dark:text-slate-200">Branch Creation Document</label>
+                                <span class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-white/5 px-2 py-0.5 rounded">ORIGINAL</span>
                             </div>
-                            <a id="view-cert-download" href="#" target="_blank" class="p-2 text-amber-800 dark:text-amber-400 hover:bg-slate-200 dark:hover:bg-white/10 rounded-lg transition-colors shrink-0" title="Download Document">
-                                <span class="material-symbols-outlined text-lg" aria-hidden="true">download</span>
-                            </a>
+                            <div id="view-create-doc-container" class="hidden items-center gap-3 p-3.5 bg-slate-50 dark:bg-surface-dark rounded-xl border-2 border-slate-200 dark:border-white/10">
+                                <span class="material-symbols-outlined text-red-600 dark:text-red-400 text-2xl shrink-0" aria-hidden="true">picture_as_pdf</span>
+                                <div class="flex-1 min-w-0">
+                                    <div id="view-create-doc-name" class="text-xs font-black text-slate-950 dark:text-white truncate">creation_document.pdf</div>
+                                    <div class="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">Initial registration certificate</div>
+                                </div>
+                                <a id="view-create-doc-download" href="#" target="_blank" class="p-2 text-amber-800 dark:text-amber-400 hover:bg-slate-200 dark:hover:bg-white/10 rounded-lg transition-colors shrink-0" title="View / Download Document">
+                                    <span class="material-symbols-outlined text-lg" aria-hidden="true">download</span>
+                                </a>
+                            </div>
+                            <div id="view-create-doc-empty" class="text-xs p-3.5 bg-slate-50 dark:bg-surface-dark rounded-xl text-slate-600 dark:text-slate-400 font-bold uppercase tracking-wider text-center border-2 border-slate-200 dark:border-white/10">No creation certificate uploaded</div>
                         </div>
-                        <div id="view-cert-empty" class="text-xs p-4 bg-slate-50 dark:bg-surface-dark rounded-xl text-slate-600 dark:text-slate-400 font-bold uppercase tracking-wider text-center border-2 border-slate-200 dark:border-white/10">No certificate uploaded</div>
+
+                        <!-- LATEST EDIT DOCUMENT -->
+                        <div>
+                            <div class="flex items-center justify-between mb-1.5">
+                                <label class="block text-xs font-black uppercase tracking-wider text-slate-800 dark:text-slate-200">Latest Branch Edit Document</label>
+                                <span class="text-[10px] font-black uppercase tracking-widest text-amber-800 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 px-2 py-0.5 rounded border border-amber-300 dark:border-amber-700/50">MODIFIED</span>
+                            </div>
+                            <div id="view-edit-doc-container" class="hidden items-center gap-3 p-3.5 bg-slate-50 dark:bg-surface-dark rounded-xl border-2 border-slate-200 dark:border-white/10">
+                                <span class="material-symbols-outlined text-red-600 dark:text-red-400 text-2xl shrink-0" aria-hidden="true">description</span>
+                                <div class="flex-1 min-w-0">
+                                    <div id="view-edit-doc-name" class="text-xs font-black text-slate-950 dark:text-white truncate">edit_document.pdf</div>
+                                    <div class="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">Latest modification authorization document</div>
+                                </div>
+                                <a id="view-edit-doc-download" href="#" target="_blank" class="p-2 text-amber-800 dark:text-amber-400 hover:bg-slate-200 dark:hover:bg-white/10 rounded-lg transition-colors shrink-0" title="View / Download Document">
+                                    <span class="material-symbols-outlined text-lg" aria-hidden="true">download</span>
+                                </a>
+                            </div>
+                            <div id="view-edit-doc-empty" class="text-xs p-3.5 bg-slate-50 dark:bg-surface-dark rounded-xl text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider text-center border-2 border-dashed border-slate-200 dark:border-white/10">No edit document uploaded (Branch not modified after creation)</div>
+                        </div>
                     </div>
 
                     <div>

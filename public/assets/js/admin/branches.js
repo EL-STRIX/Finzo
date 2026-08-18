@@ -846,29 +846,20 @@
         const counter = document.getElementById('branch-desc-counter');
         if (counter) counter.textContent = `${descVal.length} / 500`;
 
-        // Certificate preview if already attached
+        // Always show clean document upload option in Edit modal without pre-populating older document
         const uploadTrigger = document.getElementById('upload-trigger');
         const filePreview = document.getElementById('file-preview');
         const fileName = document.getElementById('file-name');
         const fileSize = document.getElementById('file-size');
         const fileInput = document.getElementById('branch-file-input');
         if (fileInput) fileInput.value = '';
-
-        if (branch.cert_path) {
-            if (uploadTrigger) uploadTrigger.classList.add('hidden');
-            if (filePreview) {
-                filePreview.classList.remove('hidden');
-                filePreview.classList.add('flex');
-            }
-            if (fileName) fileName.textContent = branch.cert_path.split('/').pop();
-            if (fileSize) fileSize.textContent = 'Existing Certificate Attached';
-        } else {
-            if (uploadTrigger) uploadTrigger.classList.remove('hidden');
-            if (filePreview) {
-                filePreview.classList.add('hidden');
-                filePreview.classList.remove('flex');
-            }
+        if (uploadTrigger) uploadTrigger.classList.remove('hidden');
+        if (filePreview) {
+            filePreview.classList.add('hidden');
+            filePreview.classList.remove('flex');
         }
+        if (fileName) fileName.textContent = '';
+        if (fileSize) fileSize.textContent = '';
 
         openModal('addBranchModal');
     }
@@ -940,24 +931,56 @@
         document.getElementById('view-staff-count').textContent = branch.staff_count || 0;
         document.getElementById('view-txn-count').textContent = branch.txn_count || 0;
 
-        const certContainer = document.getElementById('view-cert-container');
-        const certEmpty = document.getElementById('view-cert-empty');
-        const certUrl = branch.cert_url || resolveUrl(branch.cert_path, 'branch-certs');
+        // 1. Branch Creation Document (Initial registration certificate)
+        const createDocContainer = document.getElementById('view-create-doc-container');
+        const createDocEmpty = document.getElementById('view-create-doc-empty');
+        const createDocUrl = branch.creation_doc_url || branch.cert_url || resolveUrl(branch.creation_doc || branch.cert_path, 'branch-certs');
 
-        if (certUrl) {
-            certContainer.classList.remove('hidden');
-            certContainer.classList.add('flex');
-            certEmpty.classList.add('hidden');
-            document.getElementById('view-cert-name').textContent = branch.cert_path ? branch.cert_path.split('/').pop() : 'branch_certificate.pdf';
-            const dlLink = document.getElementById('view-cert-download');
-            dlLink.href = certUrl;
+        if (createDocUrl) {
+            if (createDocContainer) {
+                createDocContainer.classList.remove('hidden');
+                createDocContainer.classList.add('flex');
+            }
+            if (createDocEmpty) createDocEmpty.classList.add('hidden');
+            const docName = (branch.creation_doc || branch.cert_path || 'creation_document.pdf').split('/').pop();
+            const nameEl = document.getElementById('view-create-doc-name');
+            if (nameEl) nameEl.textContent = docName;
+            const dlLink = document.getElementById('view-create-doc-download');
+            if (dlLink) dlLink.href = createDocUrl;
         } else {
-            certContainer.classList.add('hidden');
-            certContainer.classList.remove('flex');
-            certEmpty.classList.remove('hidden');
+            if (createDocContainer) {
+                createDocContainer.classList.add('hidden');
+                createDocContainer.classList.remove('flex');
+            }
+            if (createDocEmpty) createDocEmpty.classList.remove('hidden');
+        }
+
+        // 2. Latest Branch Edit Document
+        const editDocContainer = document.getElementById('view-edit-doc-container');
+        const editDocEmpty = document.getElementById('view-edit-doc-empty');
+        const editDocUrl = branch.latest_edit_doc_url || (branch.latest_edit_doc ? resolveUrl(branch.latest_edit_doc, 'branch-certs') : null);
+
+        if (editDocUrl) {
+            if (editDocContainer) {
+                editDocContainer.classList.remove('hidden');
+                editDocContainer.classList.add('flex');
+            }
+            if (editDocEmpty) editDocEmpty.classList.add('hidden');
+            const editDocName = branch.latest_edit_doc.split('/').pop();
+            const nameEl = document.getElementById('view-edit-doc-name');
+            if (nameEl) nameEl.textContent = editDocName;
+            const dlLink = document.getElementById('view-edit-doc-download');
+            if (dlLink) dlLink.href = editDocUrl;
+        } else {
+            if (editDocContainer) {
+                editDocContainer.classList.add('hidden');
+                editDocContainer.classList.remove('flex');
+            }
+            if (editDocEmpty) editDocEmpty.classList.remove('hidden');
         }
 
         document.getElementById('view-branch-desc').textContent = branch.clean_description || branch.description || 'No specialized description provided.';
+
 
         // Status Toggle button in View modal
         const statusToggleBtn = document.getElementById('view-btn-toggle-status');
