@@ -145,14 +145,15 @@ ob_start();
     </div>
 
     <!-- ADVANCED FILTER BAR -->
-    <div class="p-5 sm:p-6 border-b border-border-subtle bg-background/60 backdrop-blur-xl relative z-10 print:hidden">
+    <div class="p-5 sm:p-6 border-b border-border-subtle bg-background/60 backdrop-blur-xl relative z-10">
+        <input type="hidden" id="filter-actor-role" value="all">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-4 items-end">
             <!-- Search -->
-            <div class="lg:col-span-4">
+            <div class="sm:col-span-2 lg:col-span-6">
                 <label for="filter-search" class="fin-label mb-2 block text-[10px] font-black text-text-secondary uppercase tracking-widest">Search Events</label>
                 <div class="relative group">
                     <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-text-secondary group-focus-within:text-primary transition-colors text-[18px]" aria-hidden="true">search</span>
-                    <input type="text" id="filter-search" placeholder="Search Actor, Entity, Event ID, IP, details..." class="fin-input pl-10 pr-9 w-full text-xs transition-all focus:ring-2 focus:ring-primary/20">
+                    <input type="text" id="filter-search" placeholder="Search by Actor ID, Name, Entity ID, Event ID, IP, or details..." class="fin-input pl-10 pr-9 w-full text-xs transition-all focus:ring-2 focus:ring-primary/20">
                     <button id="clear-search-btn" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-text-secondary hover:text-text-primary transition-colors">
                         <span class="material-symbols-outlined text-[16px]">close</span>
                     </button>
@@ -160,7 +161,7 @@ ob_start();
             </div>
 
             <!-- Action Type Dropdown -->
-            <div class="lg:col-span-2">
+            <div class="sm:col-span-1 lg:col-span-3">
                 <label for="filter-action-type" class="fin-label mb-2 block text-[10px] font-black text-text-secondary uppercase tracking-widest">Action Type</label>
                 <div class="finzo-dropdown w-full" id="action-type-dropdown">
                     <div class="finzo-dropdown-trigger fin-input !flex items-center justify-between w-full !py-2 cursor-pointer">
@@ -178,60 +179,16 @@ ob_start();
                 </div>
             </div>
 
-            <!-- Actor Role Dropdown -->
-            <div class="lg:col-span-2">
-                <label for="filter-actor-role" class="fin-label mb-2 block text-[10px] font-black text-text-secondary uppercase tracking-widest">Actor Role</label>
-                <div class="finzo-dropdown w-full" id="actor-role-dropdown">
-                    <div class="finzo-dropdown-trigger fin-input !flex items-center justify-between w-full !py-2 cursor-pointer">
-                        <div class="flex items-center gap-2 truncate">
-                            <span class="material-symbols-outlined text-[16px] text-text-secondary" aria-hidden="true">group</span>
-                            <span class="dropdown-label font-bold text-xs text-text-primary truncate">All Roles</span>
-                        </div>
-                        <span class="material-symbols-outlined chevron transition-transform duration-300 text-[18px]" aria-hidden="true">expand_more</span>
-                    </div>
-                    <div class="finzo-dropdown-menu !z-[3000] !w-full">
-                        <div class="finzo-dropdown-option is-selected text-xs" data-value="all">All Roles</div>
-                        <div class="finzo-dropdown-option text-xs" data-value="admin">Admin</div>
-                        <div class="finzo-dropdown-option text-xs" data-value="staff">Staff</div>
-                        <div class="finzo-dropdown-option text-xs" data-value="user">Customer / User</div>
-                        <div class="finzo-dropdown-option text-xs" data-value="system">System</div>
-                    </div>
-                    <input type="hidden" id="filter-actor-role" value="all">
+            <!-- Date Range: From & To -->
+            <div class="sm:col-span-1 lg:col-span-3 grid grid-cols-2 gap-3">
+                <div>
+                    <label for="date-from" class="fin-label mb-2 block text-[10px] font-black text-text-secondary uppercase tracking-widest">From Date</label>
+                    <input type="date" id="date-from" class="fin-input w-full text-xs !py-2">
                 </div>
-            </div>
-
-            <!-- Status Dropdown -->
-            <div class="lg:col-span-2">
-                <label for="filter-status" class="fin-label mb-2 block text-[10px] font-black text-text-secondary uppercase tracking-widest">Status</label>
-                <div class="finzo-dropdown w-full" id="status-dropdown">
-                    <div class="finzo-dropdown-trigger fin-input !flex items-center justify-between w-full !py-2 cursor-pointer">
-                        <div class="flex items-center gap-2 truncate">
-                            <span class="material-symbols-outlined text-[16px] text-text-secondary" aria-hidden="true">check_circle</span>
-                            <span class="dropdown-label font-bold text-xs text-text-primary truncate">All Status</span>
-                        </div>
-                        <span class="material-symbols-outlined chevron transition-transform duration-300 text-[18px]" aria-hidden="true">expand_more</span>
-                    </div>
-                    <div class="finzo-dropdown-menu !z-[3000] !w-full">
-                        <div class="finzo-dropdown-option is-selected text-xs" data-value="all">All Status</div>
-                        <div class="finzo-dropdown-option text-xs" data-value="success">Success</div>
-                        <div class="finzo-dropdown-option text-xs" data-value="failure">Failure / Rejected</div>
-                        <div class="finzo-dropdown-option text-xs" data-value="warning">Warning</div>
-                        <div class="finzo-dropdown-option text-xs" data-value="pending">Pending</div>
-                    </div>
-                    <input type="hidden" id="filter-status" value="all">
+                <div>
+                    <label for="date-to" class="fin-label mb-2 block text-[10px] font-black text-text-secondary uppercase tracking-widest">To Date</label>
+                    <input type="date" id="date-to" class="fin-input w-full text-xs !py-2">
                 </div>
-            </div>
-
-            <!-- Date Range: From -->
-            <div class="lg:col-span-1">
-                <label for="date-from" class="fin-label mb-2 block text-[10px] font-black text-text-secondary uppercase tracking-widest">From Date</label>
-                <input type="date" id="date-from" class="fin-input w-full text-xs !py-2">
-            </div>
-
-            <!-- Date Range: To -->
-            <div class="lg:col-span-1">
-                <label for="date-to" class="fin-label mb-2 block text-[10px] font-black text-text-secondary uppercase tracking-widest">To Date</label>
-                <input type="date" id="date-to" class="fin-input w-full text-xs !py-2">
             </div>
         </div>
     </div>

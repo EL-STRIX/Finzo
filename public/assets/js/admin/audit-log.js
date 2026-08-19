@@ -4,6 +4,9 @@
  */
 
 (function() {
+    'use strict';
+
+    let currentRole = 'all';
     let currentPage = 1;
     let rowsPerPage = 25;
     let actionTypesPopulated = false;
@@ -12,8 +15,6 @@
     function getFilterParams() {
         const searchInput = document.getElementById('filter-search');
         const actionInput = document.getElementById('filter-action-type');
-        const roleInput = document.getElementById('filter-actor-role');
-        const statusInput = document.getElementById('filter-status');
         const dateFrom = document.getElementById('date-from');
         const dateTo = document.getElementById('date-to');
         const perPageSelect = document.getElementById('rows-per-page');
@@ -25,8 +26,7 @@
         return {
             search: searchInput ? searchInput.value.trim() : '',
             action_type: actionInput ? actionInput.value : 'all',
-            actor_role: roleInput ? roleInput.value : 'all',
-            status: statusInput ? statusInput.value : 'all',
+            actor_role: currentRole || 'all',
             from_date: dateFrom ? dateFrom.value : '',
             to_date: dateTo ? dateTo.value : '',
             page: currentPage,
@@ -34,31 +34,71 @@
         };
     }
 
-    // Load Audit Log
+    // Load Audit Log from Backend API
     async function loadAuditLog() {
         const tbody = document.getElementById('audit-log-tbody');
-        if (tbody) tbody.style.opacity = '0.4';
+        if (tbody) {
+            renderSkeletonTable();
+        }
 
         try {
             const params = getFilterParams();
             const response = await window.api.get('/admin/audit-logs', params);
 
             if (response && response.success) {
-                renderTable(response.entries || [], response.total || 0, response.pages || 1);
-                updateStats(response);
-                if (!actionTypesPopulated && response.action_types) {
-                    populateActionTypes(response.action_types);
+                const data = response.data || response;
+                const entries = data.entries || response.entries || [];
+                const total = data.total !== undefined ? data.total : (response.total || 0);
+                const pages = data.pages !== undefined ? data.pages : (response.pages || 1);
+                const stats = data.stats || response.stats || {};
+                const actionTypes = data.action_types || response.action_types || [];
+
+                renderTable(entries, total, pages);
+                updateStats(stats, total);
+
+                if (!actionTypesPopulated && actionTypes.length > 0) {
+                    populateActionTypes(actionTypes);
                     actionTypesPopulated = true;
                 }
             } else {
-                renderError(response?.message || 'Failed to load audit logs. Please try again.');
+                renderError(response?.message || 'Failed to load audit records.');
             }
         } catch (error) {
             console.error('[AuditLog] Error fetching audit trail:', error);
             renderError('Unable to connect to server. Please check your network connection.');
-        } finally {
-            if (tbody) tbody.style.opacity = '1';
         }
+    }
+
+    // Render Skeleton Loading Table
+    function renderSkeletonTable() {
+        const tbody = document.getElementById('audit-log-tbody');
+        if (!tbody) return;
+
+        let skeletonHtml = '';
+        for (let i = 0; i < 5; i++) {
+            skeletonHtml += `
+            <tr class="animate-pulse">
+                <td class="py-4 px-4 text-center"><div class="h-3 w-4 bg-border-subtle rounded mx-auto"></div></td>
+                <td class="py-4 px-4"><div class="h-3.5 w-24 bg-border-subtle rounded"></div></td>
+                <td class="py-4 px-4">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-7 h-7 rounded-full bg-border-subtle shrink-0"></div>
+                        <div class="space-y-1.5 w-full">
+                            <div class="h-3 w-24 bg-border-subtle rounded"></div>
+                            <div class="h-2 w-14 bg-border-subtle rounded"></div>
+                        </div>
+                    </div>
+                </td>
+                <td class="py-4 px-4"><div class="h-5 w-20 bg-border-subtle rounded-md"></div></td>
+                <td class="py-4 px-4"><div class="h-3.5 w-24 bg-border-subtle rounded"></div></td>
+                <td class="py-4 px-4"><div class="h-3 w-20 bg-border-subtle rounded"></div></td>
+                <td class="py-4 px-4 text-center"><div class="h-5 w-16 bg-border-subtle rounded-full mx-auto"></div></td>
+                <td class="py-4 px-4"><div class="h-3 w-40 bg-border-subtle rounded"></div></td>
+                <td class="py-4 px-4"><div class="h-3 w-20 bg-border-subtle rounded"></div></td>
+                <td class="py-4 px-6 text-right"><div class="h-7 w-7 bg-border-subtle rounded-lg ml-auto"></div></td>
+            </tr>`;
+        }
+        tbody.innerHTML = skeletonHtml;
     }
 
     // Render Table Rows
@@ -149,7 +189,7 @@
             `;
 
             // Click listener to open record details
-            tr.addEventListener('click', (e) => {
+            tr.addEventListener('click', () => {
                 openDetailModal(entry);
             });
 
@@ -238,9 +278,9 @@
     }
 
     // Update Top Metric Stat Cards
-    function updateStats(data) {
-        const stats = data.stats || {};
-        const total = data.total || stats.total || 0;
+    function updateStats(stats, total) {
+        stats = stats || {};
+        const totalCount = total !== undefined ? total : (stats.total || 0);
         
         const elTotal = document.getElementById('stat-total');
         const elAdmin = document.getElementById('stat-admin');
@@ -250,7 +290,7 @@
 
         const fmt = (num) => Number(num || 0).toLocaleString();
 
-        if (elTotal) elTotal.textContent = fmt(total);
+        if (elTotal) elTotal.textContent = fmt(totalCount);
         if (elAdmin) elAdmin.textContent = fmt(stats.admin);
         if (elStaff) elStaff.textContent = fmt(stats.staff);
         if (elUser) elUser.textContent = fmt(stats.user);
@@ -415,29 +455,17 @@
 
     // Set Role Filter (called by role pills or stat cards)
     window.setRoleFilter = function(role) {
+        currentRole = role || 'all';
+
         const roleInput = document.getElementById('filter-actor-role');
-        const roleDropdown = document.getElementById('actor-role-dropdown');
-
         if (roleInput) {
-            roleInput.value = role;
-            roleInput.dispatchEvent(new Event('change', { bubbles: true }));
-        }
-
-        if (roleDropdown) {
-            const triggerLabel = roleDropdown.querySelector('.dropdown-label');
-            const opt = roleDropdown.querySelector(`.finzo-dropdown-option[data-value="${role}"]`);
-            if (triggerLabel && opt) {
-                triggerLabel.textContent = opt.textContent.trim();
-            }
-            roleDropdown.querySelectorAll('.finzo-dropdown-option').forEach(o => {
-                o.classList.toggle('is-selected', o.dataset.value === role);
-            });
+            roleInput.value = currentRole;
         }
 
         // Update active role pill styles
         document.querySelectorAll('.role-pill').forEach(pill => {
             const pillRole = pill.dataset.role;
-            if (pillRole === role) {
+            if (pillRole === currentRole) {
                 pill.className = 'role-pill px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all duration-200 bg-primary text-text-inverse shadow-md shadow-primary/20';
             } else {
                 pill.className = 'role-pill px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all duration-200 bg-surface border border-border-subtle text-text-secondary hover:text-text-primary hover:bg-surface-hover';
@@ -450,10 +478,12 @@
 
     // Reset All Filters
     window.resetAuditFilters = function() {
+        currentRole = 'all';
+        currentPage = 1;
+
         const searchInput = document.getElementById('filter-search');
         const actionInput = document.getElementById('filter-action-type');
         const roleInput = document.getElementById('filter-actor-role');
-        const statusInput = document.getElementById('filter-status');
         const dateFrom = document.getElementById('date-from');
         const dateTo = document.getElementById('date-to');
         const clearBtn = document.getElementById('clear-search-btn');
@@ -462,6 +492,7 @@
         if (clearBtn) clearBtn.classList.add('hidden');
         if (dateFrom) dateFrom.value = '';
         if (dateTo) dateTo.value = '';
+        if (roleInput) roleInput.value = 'all';
 
         if (actionInput) {
             actionInput.value = 'all';
@@ -473,27 +504,7 @@
             }
         }
 
-        if (roleInput) {
-            roleInput.value = 'all';
-            const d = document.getElementById('actor-role-dropdown');
-            if (d) {
-                const lbl = d.querySelector('.dropdown-label');
-                if (lbl) lbl.textContent = 'All Roles';
-                d.querySelectorAll('.finzo-dropdown-option').forEach(o => o.classList.toggle('is-selected', o.dataset.value === 'all'));
-            }
-        }
-
-        if (statusInput) {
-            statusInput.value = 'all';
-            const d = document.getElementById('status-dropdown');
-            if (d) {
-                const lbl = d.querySelector('.dropdown-label');
-                if (lbl) lbl.textContent = 'All Status';
-                d.querySelectorAll('.finzo-dropdown-option').forEach(o => o.classList.toggle('is-selected', o.dataset.value === 'all'));
-            }
-        }
-
-        // Reset pills
+        // Reset role pills
         document.querySelectorAll('.role-pill').forEach(pill => {
             if (pill.dataset.role === 'all') {
                 pill.className = 'role-pill px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all duration-200 bg-primary text-text-inverse shadow-md shadow-primary/20';
@@ -502,7 +513,6 @@
             }
         });
 
-        currentPage = 1;
         loadAuditLog();
 
         if (window.utils && window.utils.showToast) {
@@ -559,8 +569,6 @@
         const searchInput = document.getElementById('filter-search');
         const clearSearchBtn = document.getElementById('clear-search-btn');
         const actionInput = document.getElementById('filter-action-type');
-        const roleInput = document.getElementById('filter-actor-role');
-        const statusInput = document.getElementById('filter-status');
         const dateFrom = document.getElementById('date-from');
         const dateTo = document.getElementById('date-to');
         const perPageSelect = document.getElementById('rows-per-page');
@@ -605,8 +613,6 @@
         };
 
         if (actionInput) actionInput.addEventListener('change', triggerUpdate);
-        if (roleInput) roleInput.addEventListener('change', triggerUpdate);
-        if (statusInput) statusInput.addEventListener('change', triggerUpdate);
         if (dateFrom) dateFrom.addEventListener('change', triggerUpdate);
         if (dateTo) dateTo.addEventListener('change', triggerUpdate);
 
