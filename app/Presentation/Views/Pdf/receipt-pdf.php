@@ -5,237 +5,458 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Transaction Receipt - <?= htmlspecialchars($txn['txn_id']) ?></title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
         @page {
             size: A4 portrait;
             margin: 15mm 15mm 15mm 15mm;
         }
         body {
-            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-            background-color: #f8fafc;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #0f172a;
             color: #0f172a;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 24px 16px;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
         }
-        .receipt-container {
-            max-width: 620px;
-            margin: 0 auto;
+        .action-bar {
+            width: 100%;
+            max-width: 580px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+        .action-bar-title {
+            color: #94a3b8;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        .action-bar-buttons {
+            display: flex;
+            gap: 8px;
+        }
+        .btn {
+            border: none;
+            outline: none;
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+        .btn-print {
+            background-color: #0284c7;
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+        }
+        .btn-print:hover {
+            background-color: #0369a1;
+        }
+        .btn-close {
+            background-color: #334155;
+            color: #f8fafc;
+        }
+        .btn-close:hover {
+            background-color: #475569;
         }
         .receipt-card {
-            background: #ffffff;
-            border-radius: 24px;
+            background-color: #ffffff;
+            width: 100%;
+            max-width: 580px;
+            border-radius: 20px;
             border: 1px solid #e2e8f0;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            padding: 36px 32px;
             position: relative;
             overflow: hidden;
         }
         .watermark {
             position: absolute;
-            top: 50%;
+            top: 52%;
             left: 50%;
             transform: translate(-50%, -50%) rotate(-30deg);
-            font-size: 72px;
+            font-size: 64px;
             font-weight: 900;
-            color: rgba(15, 23, 42, 0.025);
+            color: rgba(15, 23, 42, 0.03);
             white-space: nowrap;
             pointer-events: none;
             z-index: 0;
-            letter-spacing: 0.1em;
+            letter-spacing: 0.12em;
             user-select: none;
         }
-        .receipt-row {
+        .content {
+            position: relative;
+            z-index: 10;
+        }
+        .header {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            padding: 12px 0;
-            border-bottom: 1px dashed #e2e8f0;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #002645;
+            margin-bottom: 22px;
         }
-        .receipt-row:last-child {
+        .logo-title {
+            font-size: 28px;
+            font-weight: 900;
+            color: #002645;
+            letter-spacing: -0.5px;
+            line-height: 1;
+        }
+        .logo-subtitle {
+            font-size: 11px;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-top: 5px;
+        }
+        .logo-contact {
+            font-size: 10px;
+            color: #94a3b8;
+            margin-top: 2px;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 8px;
+            font-weight: 800;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .status-completed {
+            background-color: #ecfdf5;
+            color: #059669;
+            border: 1px solid #a7f3d0;
+        }
+        .status-reversed {
+            background-color: #fff1f2;
+            color: #e11d48;
+            border: 1px solid #fecdd3;
+        }
+        .status-pending {
+            background-color: #fffbeb;
+            color: #d97706;
+            border: 1px solid #fde68a;
+        }
+        .amount-box {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .amount-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 4px;
+        }
+        .amount-val {
+            font-size: 34px;
+            font-weight: 900;
+            color: #002645;
+            letter-spacing: -0.5px;
+            line-height: 1.1;
+        }
+        .type-pill {
+            display: inline-block;
+            padding: 3px 12px;
+            border-radius: 20px;
+            background-color: #e2e8f0;
+            color: #334155;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-top: 6px;
+        }
+        .flow-banner {
+            background-color: #f0f9ff;
+            border: 1px solid #bae6fd;
+            border-radius: 12px;
+            padding: 10px 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            font-weight: 700;
+            color: #0369a1;
+            margin-bottom: 18px;
+        }
+        .flow-arrow {
+            font-size: 14px;
+            color: #0284c7;
+            font-weight: 900;
+        }
+        .table-rows {
+            margin-bottom: 20px;
+        }
+        .row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 10px 0;
+            border-bottom: 1px dashed #e2e8f0;
+            font-size: 12px;
+        }
+        .row:last-child {
             border-bottom: none;
         }
-        .mono {
-            font-family: 'JetBrains Mono', monospace;
+        .row-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            flex-shrink: 0;
+            margin-right: 12px;
         }
-        
+        .row-value {
+            font-weight: 700;
+            color: #0f172a;
+            text-align: right;
+            word-break: break-word;
+        }
+        .row-staff {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 8px 12px;
+            margin: 6px 0;
+        }
+        .mono {
+            font-family: monospace, Courier, monospace;
+            font-size: 12px;
+        }
+        .sub-val {
+            font-size: 10px;
+            color: #64748b;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+        .footer {
+            border-top: 1px solid #e2e8f0;
+            padding-top: 16px;
+            text-align: center;
+        }
+        .footer-note {
+            font-size: 10px;
+            color: #94a3b8;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            line-height: 1.5;
+        }
+        .footer-date {
+            font-size: 9px;
+            color: #cbd5e1;
+            font-family: monospace;
+            margin-top: 4px;
+        }
+
         @media print {
             body {
-                background: #ffffff !important;
+                background-color: #ffffff !important;
                 padding: 0 !important;
             }
-            .no-print {
+            .action-bar {
                 display: none !important;
             }
-            .receipt-container {
-                max-width: 100% !important;
-                margin: 0 auto !important;
-            }
             .receipt-card {
-                border: 1px solid #cbd5e1 !important;
                 box-shadow: none !important;
-                border-radius: 16px !important;
-                padding: 28px !important;
+                border: 1px solid #94a3b8 !important;
+                max-width: 100% !important;
+                border-radius: 12px !important;
+                padding: 24px !important;
             }
         }
     </style>
 </head>
-<body class="p-4 sm:p-8 min-h-screen flex flex-col items-center justify-center">
+<body>
     
     <!-- Action Bar (Hidden during Print) -->
-    <div class="receipt-container w-full mb-5 no-print flex items-center justify-between gap-3">
-        <div class="text-xs font-bold text-slate-500 uppercase tracking-widest">
-            Receipt Preview
-        </div>
-        <div class="flex items-center gap-2">
-            <button onclick="window.print()" class="bg-[#002645] hover:bg-slate-800 text-white px-5 py-2 rounded-xl font-bold text-xs shadow-md hover:shadow-lg transition-all flex items-center gap-1.5 cursor-pointer">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
-                <span>Print Receipt</span>
+    <div class="action-bar">
+        <div class="action-bar-title">Official Receipt Preview</div>
+        <div class="action-bar-buttons">
+            <button onclick="window.print()" class="btn btn-print">
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                Print Receipt
             </button>
-            <button onclick="window.close()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-4 py-2 rounded-xl font-bold text-xs transition-all cursor-pointer">
-                Close
-            </button>
+            <button onclick="window.close()" class="btn btn-close">Close</button>
         </div>
     </div>
 
-    <!-- Official Bank Receipt Card -->
-    <div class="receipt-container w-full">
-        <div class="receipt-card p-8 sm:p-10 relative">
-            <div class="watermark">FINZO OFFICIAL</div>
-            
-            <div class="relative z-10">
-                <!-- Header: Finzo Branding & Receipt Status -->
-                <div class="flex justify-between items-start pb-6 border-b border-slate-200 mb-6">
+    <!-- Official Receipt Card -->
+    <div class="receipt-card">
+        <div class="watermark">FINZO OFFICIAL</div>
+        
+        <div class="content">
+            <!-- Header -->
+            <div class="header">
+                <div>
+                    <div class="logo-title">Finzo</div>
+                    <div class="logo-subtitle">Official Banking Transaction Receipt</div>
+                    <div class="logo-contact">Finzo Enterprise Core Banking • 1800-FINZO-BANK</div>
+                </div>
+                <div>
+                    <?php
+                        $st = strtolower($txn['status'] ?? 'completed');
+                        $badgeClass = 'status-completed';
+                        if ($st === 'reversed' || $st === 'failed') $badgeClass = 'status-reversed';
+                        elseif ($st === 'pending') $badgeClass = 'status-pending';
+                    ?>
+                    <span class="status-badge <?= $badgeClass ?>"><?= htmlspecialchars($txn['status']) ?></span>
+                </div>
+            </div>
+
+            <!-- Amount Box -->
+            <div class="amount-box">
+                <div class="amount-label">Transaction Amount</div>
+                <div class="amount-val"><?= $formattedAmount ?></div>
+                <span class="type-pill"><?= htmlspecialchars(str_replace('_', ' ', $txn['type'])) ?></span>
+            </div>
+
+            <!-- Transfer Account-to-Account Flow Banner -->
+            <?php if ($txn['type'] === 'transfer' && !empty($txn['from_account_no']) && !empty($txn['to_account_no'])) : ?>
+                <div class="flow-banner">
                     <div>
-                        <div class="flex items-center gap-2">
-                            <div class="text-3xl font-black text-[#002645] tracking-tight">Finzo</div>
-                        </div>
-                        <div class="text-[11px] font-bold text-slate-500 tracking-wider uppercase mt-1">Official Banking Transaction Receipt</div>
-                        <div class="text-[11px] text-slate-400 mt-0.5">Finzo Global Banking Ltd. • Support: 1800-FINZO-BANK</div>
+                        <span style="font-size:9px;text-transform:uppercase;color:#64748b;display:block;">Sender Account</span>
+                        <span class="mono" style="color:#0f172a;"><?= htmlspecialchars($txn['from_account_no']) ?></span>
                     </div>
-                    <div class="text-right">
-                        <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Status</div>
-                        <div class="inline-block px-3 py-1 rounded-lg border font-black text-xs uppercase tracking-widest <?= $statusColor ?>">
-                            <?= htmlspecialchars($txn['status']) ?>
-                        </div>
+                    <div class="flow-arrow">➔</div>
+                    <div style="text-align:right;">
+                        <span style="font-size:9px;text-transform:uppercase;color:#64748b;display:block;">Beneficiary Account</span>
+                        <span class="mono" style="color:#0f172a;"><?= htmlspecialchars($txn['to_account_no']) ?></span>
                     </div>
                 </div>
+            <?php endif; ?>
 
-                <!-- Transaction Amount Box (Centered) -->
-                <div class="bg-slate-50/80 rounded-2xl p-6 mb-6 text-center border border-slate-100">
-                    <div class="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Transaction Amount</div>
-                    <div class="text-3xl sm:text-4xl font-black text-[#002645] tracking-tight mb-2"><?= $formattedAmount ?></div>
-                    <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-black uppercase tracking-wider bg-slate-200/70 text-slate-700">
-                        <?= htmlspecialchars(str_replace('_', ' ', $txn['type'])) ?>
-                    </div>
+            <!-- Details Rows -->
+            <div class="table-rows">
+                <div class="row">
+                    <span class="row-label">Transaction ID</span>
+                    <span class="row-value mono"><?= htmlspecialchars($txn['txn_id']) ?></span>
                 </div>
 
-                <!-- Transaction Details Grid -->
-                <div class="space-y-1 text-xs mb-6">
-                    <div class="receipt-row">
-                        <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Transaction ID</span>
-                        <span class="font-bold mono text-slate-900"><?= htmlspecialchars($txn['txn_id']) ?></span>
-                    </div>
-
-                    <div class="receipt-row">
-                        <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Date & Time</span>
-                        <span class="font-bold text-slate-900"><?= date('d M Y, h:i:s A', strtotime($txn['created_at'])) ?></span>
-                    </div>
-                    
-                    <?php if ($txn['type'] === 'transfer') : ?>
-                        <div class="receipt-row">
-                            <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">From Account (Sender)</span>
-                            <div class="text-right">
-                                <div class="font-bold text-slate-900"><?= htmlspecialchars($txn['from_name'] === 'N/A' ? 'Internal Settlement' : $txn['from_name']) ?></div>
-                                <div class="font-mono text-[11px] text-slate-500 font-semibold mt-0.5"><?= htmlspecialchars($txn['from_account_no'] ?? 'N/A') ?></div>
-                            </div>
-                        </div>
-                        <div class="receipt-row">
-                            <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">To Account (Beneficiary)</span>
-                            <div class="text-right">
-                                <div class="font-bold text-slate-900"><?= htmlspecialchars($txn['to_name'] === 'N/A' ? 'Internal Settlement' : $txn['to_name']) ?></div>
-                                <div class="font-mono text-[11px] text-slate-500 font-semibold mt-0.5"><?= htmlspecialchars($txn['to_account_no'] ?? 'N/A') ?></div>
-                            </div>
-                        </div>
-                    <?php elseif ($txn['type'] === 'deposit' || $txn['type'] === 'interest_credit') : ?>
-                        <div class="receipt-row">
-                            <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Source Channel</span>
-                            <div class="text-right font-bold text-slate-900">
-                                <?php if (!empty($txn['staff_name']) || !empty($txn['staff_id'])) : ?>
-                                    OTC Branch Deposit
-                                <?php elseif ($txn['type'] === 'interest_credit') : ?>
-                                    Finzo Automated Treasury Interest
-                                <?php else : ?>
-                                    Electronic Direct Inflow
-                                <?php endif; ?>
-                            </div>
-                        </div>
-                        <div class="receipt-row">
-                            <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Credited Account</span>
-                            <div class="text-right">
-                                <div class="font-bold text-slate-900"><?= htmlspecialchars($txn['to_name'] === 'N/A' ? 'Settlement Account' : $txn['to_name']) ?></div>
-                                <div class="font-mono text-[11px] text-slate-500 font-semibold mt-0.5"><?= htmlspecialchars($txn['to_account_no'] ?? 'N/A') ?></div>
-                            </div>
-                        </div>
-                    <?php elseif ($txn['type'] === 'withdrawal') : ?>
-                        <div class="receipt-row">
-                            <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Debited Account</span>
-                            <div class="text-right">
-                                <div class="font-bold text-slate-900"><?= htmlspecialchars($txn['from_name'] === 'N/A' ? 'Settlement Account' : $txn['from_name']) ?></div>
-                                <div class="font-mono text-[11px] text-slate-500 font-semibold mt-0.5"><?= htmlspecialchars($txn['from_account_no'] ?? 'N/A') ?></div>
-                            </div>
-                        </div>
-                        <div class="receipt-row">
-                            <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Payout Method</span>
-                            <div class="text-right font-bold text-slate-900">
-                                <?= !empty($txn['staff_name']) || !empty($txn['staff_id']) ? 'OTC Branch Cash Payout' : 'ATM / Direct Cash Withdrawal' ?>
-                            </div>
-                        </div>
-                    <?php endif; ?>
-
-                    <!-- Staff & Branch Processing Information -->
-                    <?php if (!empty($txn['staff_name']) || !empty($txn['staff_id'])) : ?>
-                        <div class="receipt-row bg-slate-50/50 p-2 rounded-lg my-1">
-                            <span class="text-[11px] font-bold text-slate-600 uppercase tracking-wider">Processed By Staff</span>
-                            <div class="text-right">
-                                <div class="font-bold text-slate-900"><?= htmlspecialchars($txn['staff_name'] ?: 'Branch Staff') ?> (<?= htmlspecialchars($txn['staff_id']) ?>)</div>
-                                <?php if (!empty($txn['branch_name'])) : ?>
-                                    <div class="text-[11px] text-slate-500 font-semibold mt-0.5"><?= htmlspecialchars($txn['branch_name']) ?> Branch</div>
-                                <?php endif; ?>
-                            </div>
-                        </div>
-                    <?php endif; ?>
-
-                    <?php if (!empty($txn['description'])) : ?>
-                    <div class="receipt-row">
-                        <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Description</span>
-                        <span class="font-semibold text-slate-900 text-right max-w-[280px]"><?= htmlspecialchars($txn['description']) ?></span>
-                    </div>
-                    <?php endif; ?>
-
-                    <?php if (!empty($txn['reference_note'])) : ?>
-                    <div class="receipt-row">
-                        <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Audit / Reference Note</span>
-                        <span class="font-mono text-slate-700 text-right text-[11px] max-w-[280px]"><?= htmlspecialchars($txn['reference_note']) ?></span>
-                    </div>
-                    <?php endif; ?>
-                    
-                    <?php if ($txn['balance_after'] !== null) : ?>
-                    <div class="receipt-row">
-                        <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Ledger Balance After</span>
-                        <span class="font-black text-slate-900"><?= CURRENCY_SYMBOL . ' ' . number_format($txn['balance_after'], 2) ?></span>
-                    </div>
-                    <?php endif; ?>
+                <div class="row">
+                    <span class="row-label">Date & Time</span>
+                    <span class="row-value"><?= date('d M Y, h:i:s A', strtotime($txn['created_at'])) ?></span>
                 </div>
+                
+                <?php if ($txn['type'] === 'transfer') : ?>
+                    <div class="row">
+                        <span class="row-label">From Account</span>
+                        <div class="row-value">
+                            <div><?= htmlspecialchars($txn['from_name'] === 'N/A' ? 'Settlement Core' : $txn['from_name']) ?></div>
+                            <div class="mono sub-val"><?= htmlspecialchars($txn['from_account_no'] ?? 'N/A') ?></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <span class="row-label">To Account</span>
+                        <div class="row-value">
+                            <div><?= htmlspecialchars($txn['to_name'] === 'N/A' ? 'Settlement Core' : $txn['to_name']) ?></div>
+                            <div class="mono sub-val"><?= htmlspecialchars($txn['to_account_no'] ?? 'N/A') ?></div>
+                        </div>
+                    </div>
+                <?php elseif ($txn['type'] === 'deposit' || $txn['type'] === 'interest_credit') : ?>
+                    <div class="row">
+                        <span class="row-label">Source Channel</span>
+                        <div class="row-value">
+                            <?php if (!empty($txn['staff_name']) || !empty($txn['staff_id'])) : ?>
+                                OTC Branch Desk
+                            <?php elseif ($txn['type'] === 'interest_credit') : ?>
+                                Finzo Treasury Pool
+                            <?php else : ?>
+                                Electronic Inflow
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <span class="row-label">Credited To</span>
+                        <div class="row-value">
+                            <div><?= htmlspecialchars($txn['to_name'] === 'N/A' ? 'Settlement Account' : $txn['to_name']) ?></div>
+                            <div class="mono sub-val"><?= htmlspecialchars($txn['to_account_no'] ?? 'N/A') ?></div>
+                        </div>
+                    </div>
+                <?php elseif ($txn['type'] === 'withdrawal') : ?>
+                    <div class="row">
+                        <span class="row-label">Debited From</span>
+                        <div class="row-value">
+                            <div><?= htmlspecialchars($txn['from_name'] === 'N/A' ? 'Settlement Account' : $txn['from_name']) ?></div>
+                            <div class="mono sub-val"><?= htmlspecialchars($txn['from_account_no'] ?? 'N/A') ?></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <span class="row-label">Payout Channel</span>
+                        <div class="row-value">
+                            <?= (!empty($txn['staff_name']) || !empty($txn['staff_id'])) ? 'OTC Branch Cash Payout' : 'ATM / Direct Cash Withdrawal' ?>
+                        </div>
+                    </div>
+                <?php endif; ?>
 
-                <!-- Footer Disclaimer -->
-                <div class="border-t border-slate-200 pt-5 text-center">
-                    <p class="text-[10px] text-slate-400 font-semibold uppercase tracking-widest leading-relaxed">
-                        This is an official computer-generated banking record.<br>Finzo Enterprise Core Banking Authentication Verified.
-                    </p>
-                    <p class="text-[10px] text-slate-400 mt-1.5 font-mono">
-                        Generated on <?= date('d M Y, h:i:s A') ?>
-                    </p>
+                <!-- Staff & Branch Processing Information -->
+                <?php if (!empty($txn['staff_name']) || !empty($txn['staff_id'])) : ?>
+                    <div class="row row-staff">
+                        <span class="row-label">Processed By Staff</span>
+                        <div class="row-value">
+                            <div><?= htmlspecialchars($txn['staff_name'] ?: 'Branch Staff') ?> (<?= htmlspecialchars($txn['staff_id']) ?>)</div>
+                            <?php if (!empty($txn['branch_name'])) : ?>
+                                <div class="sub-val"><?= htmlspecialchars($txn['branch_name']) ?> Branch</div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                <?php endif; ?>
+
+                <?php if (!empty($txn['description'])) : ?>
+                <div class="row">
+                    <span class="row-label">Description</span>
+                    <span class="row-value" style="max-width:280px;"><?= htmlspecialchars($txn['description']) ?></span>
+                </div>
+                <?php endif; ?>
+
+                <?php if (!empty($txn['reference_note'])) : ?>
+                <div class="row">
+                    <span class="row-label">Reference / Note</span>
+                    <span class="row-value mono" style="font-size:11px;max-width:280px;"><?= htmlspecialchars($txn['reference_note']) ?></span>
+                </div>
+                <?php endif; ?>
+                
+                <?php if ($txn['balance_after'] !== null) : ?>
+                <div class="row">
+                    <span class="row-label">Balance After</span>
+                    <span class="row-value" style="font-size:14px;font-weight:900;color:#002645;"><?= CURRENCY_SYMBOL . ' ' . number_format($txn['balance_after'], 2) ?></span>
+                </div>
+                <?php endif; ?>
+            </div>
+
+            <!-- Footer -->
+            <div class="footer">
+                <div class="footer-note">
+                    This is an official computer-generated banking receipt.<br>Finzo Enterprise Core Banking Authentication Verified.
+                </div>
+                <div class="footer-date">
+                    Generated on <?= date('d M Y, h:i:s A') ?>
                 </div>
             </div>
         </div>
