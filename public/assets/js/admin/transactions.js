@@ -257,7 +257,7 @@
                     statusBadgeHtml = `<span class="badge badge-neutral !text-[10px]">${status.toUpperCase()}</span>`;
             }
 
-            // Determine From Account (Source / Sender) HTML
+            // Determine From Account (Source / Sender / Processing Staff) HTML
             let fromAccountHtml = '';
             if (typeClass === 'deposit') {
                 if (r.processed_by || r.processed_by_name) {
@@ -332,7 +332,7 @@
                 </div>`;
             }
 
-            // Determine To Account (Destination / Beneficiary) HTML
+            // Determine To Account (Destination / Beneficiary / Payout Staff) HTML
             let toAccountHtml = '';
             if (typeClass === 'withdrawal') {
                 if (r.processed_by || r.processed_by_name) {
@@ -548,14 +548,14 @@
                 const toAcc = txn.to_account_no && txn.to_account_no !== 'N/A' ? txn.to_account_no : 'Settlement Flow';
                 flowBanner.classList.remove('hidden');
                 flowBanner.innerHTML = `
-                    <div class="flex items-center justify-between gap-2 text-xs font-bold text-sky-600 dark:text-sky-400 bg-sky-500/10 border border-sky-500/20 px-3.5 py-2 rounded-xl">
+                    <div class="flex items-center justify-between gap-2 text-xs font-bold text-sky-600 dark:text-sky-400 bg-sky-500/10 border border-sky-500/20 px-3.5 py-2.5 rounded-xl">
                         <div class="flex items-center gap-1.5 truncate">
-                            <span class="text-[10px] font-black uppercase tracking-wider text-text-secondary">Source:</span>
+                            <span class="text-[10px] font-black uppercase tracking-wider text-text-secondary">Sender Account:</span>
                             <span class="font-mono text-text-primary">${fromAcc}</span>
                         </div>
                         <span class="material-symbols-outlined text-base shrink-0">arrow_forward</span>
                         <div class="flex items-center gap-1.5 truncate">
-                            <span class="text-[10px] font-black uppercase tracking-wider text-text-secondary">Destination:</span>
+                            <span class="text-[10px] font-black uppercase tracking-wider text-text-secondary">Beneficiary Account:</span>
                             <span class="font-mono text-text-primary">${toAcc}</span>
                         </div>
                     </div>`;
@@ -565,37 +565,73 @@
             }
         }
 
-        // Sender Info
+        // Element references
+        const fromTitleEl = document.getElementById('modal-from-title');
+        const fromIconEl = document.getElementById('modal-from-icon');
         const fromAvatarEl = document.getElementById('modal-from-avatar');
+        const toTitleEl = document.getElementById('modal-to-title');
+        const toIconEl = document.getElementById('modal-to-icon');
+        const toAvatarEl = document.getElementById('modal-to-avatar');
+
+        // Configure Left Card (Source / Sender / Depositing Staff)
         if (typeClass === 'deposit') {
+            if (fromTitleEl) fromTitleEl.textContent = 'Source / Processed By Staff';
+            if (fromIconEl) fromIconEl.textContent = 'badge';
+
             if (txn.processed_by || txn.processed_by_name) {
                 const staffName = txn.processed_by_name || txn.processed_by;
                 const branch = txn.branch_name ? `${txn.branch_name} Branch` : 'OTC Branch Desk';
-                document.getElementById('modal-from-name').textContent = 'OTC Cash Inflow';
-                document.getElementById('modal-from-acc').textContent = `Staff: ${staffName} (${txn.processed_by})`;
-                document.getElementById('modal-from-email').textContent = branch;
+                document.getElementById('modal-from-name').textContent = `Staff: ${staffName}`;
+                document.getElementById('modal-from-acc').textContent = `Staff Code: ${txn.processed_by}`;
+                document.getElementById('modal-from-email').textContent = `${branch} • OTC Deposit`;
                 if (fromAvatarEl) fromAvatarEl.innerHTML = '<span class="material-symbols-outlined text-emerald-500">badge</span>';
             } else {
-                document.getElementById('modal-from-name').textContent = 'Electronic Inflow';
-                document.getElementById('modal-from-acc').textContent = 'Direct Channel Deposit';
-                document.getElementById('modal-from-email').textContent = 'Initial Funding / Web Inflow';
+                document.getElementById('modal-from-name').textContent = 'Electronic Direct Inflow';
+                document.getElementById('modal-from-acc').textContent = 'Web / Direct Inflow';
+                document.getElementById('modal-from-email').textContent = 'Online Channel Deposit';
                 if (fromAvatarEl) fromAvatarEl.innerHTML = '<span class="material-symbols-outlined text-primary">account_balance_wallet</span>';
             }
-        } else if (typeClass === 'interest_credit') {
-            document.getElementById('modal-from-name').textContent = 'Finzo Core Treasury';
-            document.getElementById('modal-from-acc').textContent = 'Automated Interest Pool';
-            document.getElementById('modal-from-email').textContent = 'System Core Banking Calculation';
-            if (fromAvatarEl) fromAvatarEl.innerHTML = '<span class="material-symbols-outlined text-amber-500">account_balance</span>';
-        } else if (typeClass === 'transfer' && (!txn.from_account_no || txn.from_account_no === 'N/A')) {
-            document.getElementById('modal-from-name').textContent = 'Finzo Settlement Core';
-            document.getElementById('modal-from-acc').textContent = 'Reversal Ledger Offset';
-            document.getElementById('modal-from-email').textContent = 'Administrative Adjustment';
-            if (fromAvatarEl) fromAvatarEl.innerHTML = '<span class="material-symbols-outlined text-purple-500">account_balance</span>';
-        } else {
-            const senderName = txn.from_user_name && txn.from_user_name !== 'N/A' ? txn.from_user_name : 'Sender User';
+        } else if (typeClass === 'withdrawal') {
+            if (fromTitleEl) fromTitleEl.textContent = 'Debited Customer Account';
+            if (fromIconEl) fromIconEl.textContent = 'upload';
+
+            const senderName = txn.from_user_name && txn.from_user_name !== 'N/A' ? txn.from_user_name : 'Customer';
             document.getElementById('modal-from-name').textContent = senderName;
             document.getElementById('modal-from-acc').textContent = txn.from_account_no || 'N/A';
-            document.getElementById('modal-from-email').textContent = txn.from_user_email || (txn.from_customer_id ? `ID: ${txn.from_customer_id}` : 'Account Holder');
+            document.getElementById('modal-from-email').textContent = txn.from_user_email || (txn.from_customer_id ? `Customer ID: ${txn.from_customer_id}` : 'Debited Account');
+            if (fromAvatarEl) {
+                const initials = senderName.split(' ').filter(w => /^[a-zA-Z]/.test(w)).map(w => w[0]).join('').toUpperCase().substring(0, 2) || 'U';
+                if (txn.from_user_avatar) {
+                    fromAvatarEl.innerHTML = `<img src="${txn.from_user_avatar.startsWith('http') ? txn.from_user_avatar : `/Finzo/public/assets/${txn.from_user_avatar}`}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+                } else {
+                    fromAvatarEl.textContent = initials;
+                }
+            }
+        } else if (typeClass === 'interest_credit') {
+            if (fromTitleEl) fromTitleEl.textContent = 'Finzo Treasury Source';
+            if (fromIconEl) fromIconEl.textContent = 'account_balance';
+
+            document.getElementById('modal-from-name').textContent = 'Finzo Core Treasury';
+            document.getElementById('modal-from-acc').textContent = 'Automated Interest Pool';
+            document.getElementById('modal-from-email').textContent = 'System Interest Calculation';
+            if (fromAvatarEl) fromAvatarEl.innerHTML = '<span class="material-symbols-outlined text-amber-500">account_balance</span>';
+        } else if (typeClass === 'transfer' && (!txn.from_account_no || txn.from_account_no === 'N/A')) {
+            if (fromTitleEl) fromTitleEl.textContent = 'Ledger Settlement Source';
+            if (fromIconEl) fromIconEl.textContent = 'undo';
+
+            document.getElementById('modal-from-name').textContent = 'Admin Reversal Settlement';
+            document.getElementById('modal-from-acc').textContent = 'Core Treasury Offset';
+            document.getElementById('modal-from-email').textContent = 'Administrative Reversal Action';
+            if (fromAvatarEl) fromAvatarEl.innerHTML = '<span class="material-symbols-outlined text-purple-500">account_balance</span>';
+        } else {
+            // Customer-to-Customer Transfer Sender
+            if (fromTitleEl) fromTitleEl.textContent = 'Sender Customer Account';
+            if (fromIconEl) fromIconEl.textContent = 'person';
+
+            const senderName = txn.from_user_name && txn.from_user_name !== 'N/A' ? txn.from_user_name : 'Sender Customer';
+            document.getElementById('modal-from-name').textContent = senderName;
+            document.getElementById('modal-from-acc').textContent = txn.from_account_no || 'N/A';
+            document.getElementById('modal-from-email').textContent = txn.from_user_email || (txn.from_customer_id ? `Customer ID: ${txn.from_customer_id}` : 'Sender Account');
             if (fromAvatarEl) {
                 const initials = senderName.split(' ').filter(w => /^[a-zA-Z]/.test(w)).map(w => w[0]).join('').toUpperCase().substring(0, 2) || 'U';
                 if (txn.from_user_avatar) {
@@ -606,32 +642,41 @@
             }
         }
 
-        // Beneficiary Info
-        const toAvatarEl = document.getElementById('modal-to-avatar');
+        // Configure Right Card (Destination / Beneficiary / Payout Staff)
         if (typeClass === 'withdrawal') {
+            if (toTitleEl) toTitleEl.textContent = 'Destination / Payout Staff';
+            if (toIconEl) toIconEl.textContent = 'badge';
+
             if (txn.processed_by || txn.processed_by_name) {
                 const staffName = txn.processed_by_name || txn.processed_by;
                 const branch = txn.branch_name ? `${txn.branch_name} Branch` : 'OTC Branch Desk';
-                document.getElementById('modal-to-name').textContent = 'OTC Cash Payout';
-                document.getElementById('modal-to-acc').textContent = `Staff: ${staffName} (${txn.processed_by})`;
-                document.getElementById('modal-to-email').textContent = branch;
+                document.getElementById('modal-to-name').textContent = `Staff: ${staffName}`;
+                document.getElementById('modal-to-acc').textContent = `Staff Code: ${txn.processed_by}`;
+                document.getElementById('modal-to-email').textContent = `${branch} • OTC Cash Payout`;
                 if (toAvatarEl) toAvatarEl.innerHTML = '<span class="material-symbols-outlined text-rose-500">badge</span>';
             } else {
-                document.getElementById('modal-to-name').textContent = 'ATM / Cash Outflow';
-                document.getElementById('modal-to-acc').textContent = 'Direct Cash Withdrawal';
+                document.getElementById('modal-to-name').textContent = 'ATM / Direct Cash Payout';
+                document.getElementById('modal-to-acc').textContent = 'Cash Dispensation';
                 document.getElementById('modal-to-email').textContent = 'Terminal Outflow';
                 if (toAvatarEl) toAvatarEl.innerHTML = '<span class="material-symbols-outlined text-rose-500">atm</span>';
             }
         } else if (typeClass === 'transfer' && (!txn.to_account_no || txn.to_account_no === 'N/A')) {
+            if (toTitleEl) toTitleEl.textContent = 'Ledger Settlement Target';
+            if (toIconEl) toIconEl.textContent = 'undo';
+
             document.getElementById('modal-to-name').textContent = 'Finzo Settlement Core';
-            document.getElementById('modal-to-acc').textContent = 'Reversal Ledger Offset';
-            document.getElementById('modal-to-email').textContent = 'Administrative Adjustment';
+            document.getElementById('modal-to-acc').textContent = 'Reversal Offset Target';
+            document.getElementById('modal-to-email').textContent = 'Administrative Reversal Target';
             if (toAvatarEl) toAvatarEl.innerHTML = '<span class="material-symbols-outlined text-purple-500">account_balance</span>';
         } else {
-            const receiverName = txn.to_user_name && txn.to_user_name !== 'N/A' ? txn.to_user_name : 'Beneficiary User';
+            // Customer Beneficiary Account (for Deposit, Interest, and Transfers)
+            if (toTitleEl) toTitleEl.textContent = 'Beneficiary Customer Account';
+            if (toIconEl) toIconEl.textContent = 'download';
+
+            const receiverName = txn.to_user_name && txn.to_user_name !== 'N/A' ? txn.to_user_name : 'Beneficiary Customer';
             document.getElementById('modal-to-name').textContent = receiverName;
             document.getElementById('modal-to-acc').textContent = txn.to_account_no || 'N/A';
-            document.getElementById('modal-to-email').textContent = txn.to_user_email || (txn.to_customer_id ? `ID: ${txn.to_customer_id}` : 'Account Holder');
+            document.getElementById('modal-to-email').textContent = txn.to_user_email || (txn.to_customer_id ? `Customer ID: ${txn.to_customer_id}` : 'Credited Account');
             if (toAvatarEl) {
                 const initials = receiverName.split(' ').filter(w => /^[a-zA-Z]/.test(w)).map(w => w[0]).join('').toUpperCase().substring(0, 2) || 'U';
                 if (txn.to_user_avatar) {
@@ -642,31 +687,15 @@
             }
         }
 
-        // Channel & Processing Information
-        let channel = 'Online Banking / Web Portal';
-        let processor = 'System Engine';
-        if (txn.processed_by || txn.processed_by_name) {
-            const staffName = txn.processed_by_name || 'Branch Staff';
-            const branchText = txn.branch_name ? ` (${txn.branch_name} Branch)` : '';
-            channel = `OTC Branch Desk${branchText}`;
-            processor = `Staff: ${staffName} [${txn.processed_by}]`;
-        } else if (typeClass === 'interest_credit') {
-            channel = 'Core Treasury Engine';
-            processor = 'Automated System Scheduler';
-        } else if (txn.description && txn.description.includes('Reversal')) {
-            channel = 'Admin Operations Console';
-            processor = 'Super Admin Audit Action';
-        }
-
-        document.getElementById('modal-channel').textContent = channel;
-        document.getElementById('modal-processed-by').textContent = processor;
-        document.getElementById('modal-description').textContent = txn.description || 'Standard financial ledger transaction';
-
+        // Description & Reference Notes (Single clean card)
         const refContainer = document.getElementById('modal-reference-container');
+        const descEl = document.getElementById('modal-description');
+        const refEl = document.getElementById('modal-reference');
         if (refContainer) {
-            if (txn.reference_note) {
+            if (txn.description || txn.reference_note) {
                 refContainer.classList.remove('hidden');
-                document.getElementById('modal-reference').textContent = txn.reference_note;
+                if (descEl) descEl.textContent = txn.description || 'Standard transaction processing';
+                if (refEl) refEl.textContent = txn.reference_note ? `Note / Reason: ${txn.reference_note}` : '';
             } else {
                 refContainer.classList.add('hidden');
             }

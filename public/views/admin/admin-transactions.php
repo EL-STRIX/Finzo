@@ -433,65 +433,44 @@ ob_start();
 
             <!-- Sender & Beneficiary Grid -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <!-- Source / Sender Card -->
+                <!-- Source / Sender / Processing Staff Card -->
                 <div class="p-4 rounded-xl bg-surface border border-border-subtle">
                     <div class="text-[10px] font-black text-text-secondary uppercase tracking-widest mb-3 flex items-center gap-1.5">
-                        <span class="material-symbols-outlined text-sm text-primary">upload</span>
-                        <span>Source / Sender</span>
+                        <span id="modal-from-icon" class="material-symbols-outlined text-sm text-primary">upload</span>
+                        <span id="modal-from-title">Source / Sender</span>
                     </div>
                     <div class="flex items-center gap-3">
                         <div id="modal-from-avatar" class="admin-avatar sm uppercase">U</div>
-                        <div class="overflow-hidden">
+                        <div class="overflow-hidden w-full">
                             <div id="modal-from-name" class="font-bold text-sm text-text-primary truncate">Customer Name</div>
-                            <div id="modal-from-acc" class="text-xs font-mono font-semibold text-text-secondary mt-0.5">FNZ000000000</div>
+                            <div id="modal-from-acc" class="text-xs font-mono font-semibold text-text-secondary mt-0.5 truncate">FNZ000000000</div>
                             <div id="modal-from-email" class="text-[11px] text-text-muted truncate mt-0.5">email@example.com</div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Destination / Beneficiary Card -->
+                <!-- Destination / Beneficiary / Payout Staff Card -->
                 <div class="p-4 rounded-xl bg-surface border border-border-subtle">
                     <div class="text-[10px] font-black text-text-secondary uppercase tracking-widest mb-3 flex items-center gap-1.5">
-                        <span class="material-symbols-outlined text-sm text-emerald-500">download</span>
-                        <span>Destination / Beneficiary</span>
+                        <span id="modal-to-icon" class="material-symbols-outlined text-sm text-emerald-500">download</span>
+                        <span id="modal-to-title">Destination / Beneficiary</span>
                     </div>
                     <div class="flex items-center gap-3">
                         <div id="modal-to-avatar" class="admin-avatar sm uppercase">U</div>
-                        <div class="overflow-hidden">
+                        <div class="overflow-hidden w-full">
                             <div id="modal-to-name" class="font-bold text-sm text-text-primary truncate">Customer Name</div>
-                            <div id="modal-to-acc" class="text-xs font-mono font-semibold text-text-secondary mt-0.5">FNZ000000000</div>
+                            <div id="modal-to-acc" class="text-xs font-mono font-semibold text-text-secondary mt-0.5 truncate">FNZ000000000</div>
                             <div id="modal-to-email" class="text-[11px] text-text-muted truncate mt-0.5">email@example.com</div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Processing & Ledger Audit Details -->
-            <div class="p-4 rounded-xl bg-surface border border-border-subtle space-y-3">
-                <div class="text-[10px] font-black text-text-secondary uppercase tracking-widest mb-2 flex items-center gap-1.5">
-                    <span class="material-symbols-outlined text-sm text-info">history</span>
-                    <span>Audit & Channel Information</span>
-                </div>
-
-                <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs">
-                    <div>
-                        <span class="text-[10px] font-bold text-text-secondary uppercase tracking-wider block">Channel / Method</span>
-                        <span id="modal-channel" class="font-semibold text-text-primary">Online Banking</span>
-                    </div>
-                    <div>
-                        <span class="text-[10px] font-bold text-text-secondary uppercase tracking-wider block">Processed By</span>
-                        <span id="modal-processed-by" class="font-semibold text-text-primary">Automated System</span>
-                    </div>
-                    <div>
-                        <span class="text-[10px] font-bold text-text-secondary uppercase tracking-wider block">Description</span>
-                        <span id="modal-description" class="font-semibold text-text-primary truncate block">---</span>
-                    </div>
-                </div>
-
-                <div id="modal-reference-container" class="pt-2 border-t border-border-subtle hidden">
-                    <span class="text-[10px] font-bold text-text-secondary uppercase tracking-wider block">Reference / Notes</span>
-                    <p id="modal-reference" class="text-xs text-text-primary mt-0.5 italic">---</p>
-                </div>
+            <!-- Notes & Description (if available) -->
+            <div id="modal-reference-container" class="p-4 rounded-xl bg-surface-subtle border border-border-subtle text-xs space-y-1 hidden">
+                <div class="text-[10px] font-black text-text-secondary uppercase tracking-widest">Transaction Note / Description</div>
+                <div id="modal-description" class="font-semibold text-text-primary">---</div>
+                <div id="modal-reference" class="font-mono text-text-secondary text-[11px] mt-0.5 italic"></div>
             </div>
         </div>
 
