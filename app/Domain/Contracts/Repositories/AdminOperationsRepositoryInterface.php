@@ -12,6 +12,7 @@ interface AdminOperationsRepositoryInterface
     public function getAuditLogs(array $filters, int $perPage, int $offset);
     public function getAuditLogActionTypes();
     public function getAuditLogStats(array $filters);
+    public function exportAuditLogsGenerator(array $filters): \Generator;
     public function getSingleStat(string $sql, array $params = []);
     public function getDashboardRecentUsers();
     public function getMonthlyChartDataRow(string $monthDate);

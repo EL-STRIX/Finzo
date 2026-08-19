@@ -5,6 +5,7 @@ namespace App\Domain\Contracts\Services;
 interface AdminOperationsServiceInterface
 {
     public function getAuditLog(array $filters, int $page, int $perPage): array;
+    public function exportAuditLogs(array $filters): array|\Generator;
     public function getDashboardData(int $adminId): array;
     public function getDeletedUsers(array $filters, int $page, int $perPage): array;
     public function getInterestData(): array;

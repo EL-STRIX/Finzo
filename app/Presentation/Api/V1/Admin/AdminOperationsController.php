@@ -26,12 +26,42 @@ class AdminOperationsController
             'search'      => $this->security->cleanInput($_GET['search'] ?? ''),
             'action_type' => $this->security->cleanInput($_GET['action_type'] ?? 'all'),
             'actor_role'  => $this->security->cleanInput($_GET['actor_role'] ?? 'all'),
+            'status'      => $this->security->cleanInput($_GET['status'] ?? 'all'),
             'from_date'   => $this->security->cleanInput($_GET['from_date'] ?? ''),
             'to_date'     => $this->security->cleanInput($_GET['to_date'] ?? '')
         ];
 
+        $export = $this->security->cleanInput($_GET['export'] ?? '');
+        if ($export === 'csv') {
+            $generator = $this->service->exportAuditLogs($filters);
+
+            if (ob_get_level()) {
+                ob_end_clean();
+            }
+
+            header('Cache-Control: no-cache, no-store, must-revalidate');
+            header('Content-Type: text/csv; charset=utf-8');
+            header('Content-Disposition: attachment; filename="finzo_audit_logs_' . date('Y-m-d') . '.csv"');
+            header('X-Accel-Buffering: no');
+
+            $output = fopen('php://output', 'w');
+            $headerWritten = false;
+            foreach ($generator as $row) {
+                if (!$headerWritten) {
+                    fputcsv($output, array_keys($row), ',', '"', "\\");
+                    $headerWritten = true;
+                }
+                fputcsv($output, $row, ',', '"', "\\");
+            }
+            fclose($output);
+            if (defined('FINZO_TESTING') && FINZO_TESTING) {
+                throw new \Exception('Exit called after export');
+            }
+            exit;
+        }
+
         $page     = max(1, intval($_GET['page'] ?? 1));
-        $per_page = min(100, max(10, intval($_GET['per_page'] ?? 25)));
+        $per_page = min(100, max(5, intval($_GET['per_page'] ?? 25)));
 
         $data = $this->service->getAuditLog($filters, $page, $per_page);
         $data['success'] = true;

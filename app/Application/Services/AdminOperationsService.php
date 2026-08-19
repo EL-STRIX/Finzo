@@ -34,7 +34,7 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
     {
         $total = $this->repository->countAuditLogs($filters);
 
-        $pages  = max(1, ceil($total / $perPage));
+        $pages  = max(1, (int)ceil($total / $perPage));
         $offset = ($page - 1) * $perPage;
 
         $entries = $this->repository->getAuditLogs($filters, $perPage, $offset);
@@ -49,11 +49,26 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
             'per_page'     => $perPage,
             'action_types' => $action_types,
             'stats'        => [
-                'admin'  => (int)($stats['admin_count'] ?? 0),
-                'staff'  => (int)($stats['staff_count'] ?? 0),
-                'user'   => (int)($stats['user_count'] ?? 0)
+                'total'    => $total,
+                'admin'    => (int)($stats['admin_count'] ?? 0),
+                'staff'    => (int)($stats['staff_count'] ?? 0),
+                'user'     => (int)($stats['user_count'] ?? 0),
+                'system'   => (int)($stats['system_count'] ?? 0),
+                'success'  => (int)($stats['success_count'] ?? 0),
+                'failure'  => (int)($stats['failure_count'] ?? 0)
             ]
         ];
+    }
+
+    /**
+     * Export Audit Logs as CSV generator.
+     *
+     * @param array $filters
+     * @return \Generator
+     */
+    public function exportAuditLogs(array $filters): \Generator
+    {
+        return $this->repository->exportAuditLogsGenerator($filters);
     }
     /**
      * Get Dashboard Data.

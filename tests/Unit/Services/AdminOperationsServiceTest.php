@@ -49,6 +49,23 @@ class AdminOperationsServiceTest extends TestCase {
         $this->assertArrayHasKey('entries', $result);
         $this->assertEquals(1, $result['total']);
         $this->assertEquals('ADM999', $result['entries'][0]['actor_id']);
+        $this->assertArrayHasKey('stats', $result);
+    }
+
+    public function testExportAuditLogsReturnsGenerator() {
+        $filters = ['search' => '', 'action_type' => 'all', 'actor_role' => 'all'];
+        $generatorFunc = function() {
+            yield ['Log ID' => 1, 'Action Type' => 'LOGIN'];
+        };
+        $this->repoMock->expects($this->once())
+            ->method('exportAuditLogsGenerator')
+            ->willReturn($generatorFunc());
+
+        $generator = $this->service->exportAuditLogs($filters);
+        $this->assertInstanceOf(\Generator::class, $generator);
+        $rows = iterator_to_array($generator);
+        $this->assertCount(1, $rows);
+        $this->assertEquals('LOGIN', $rows[0]['Action Type']);
     }
 
     public function testGetLockedAccounts() {
