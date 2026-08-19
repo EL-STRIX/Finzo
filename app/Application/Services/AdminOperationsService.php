@@ -1294,7 +1294,7 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
 
         switch ($action) {
             case 'suspend':
-                if (function_exists('check_admin_permission') && isset($pdo)) {
+                if ($this->security !== null && function_exists('check_admin_permission') && isset($pdo)) {
                     $this->security->checkAdminPermission($adminId, 'suspend_user');
                 }
                 if ($user['status'] === \App\Domain\Enums\AccountStatusEnum::SUSPENDED->value) {
@@ -1317,7 +1317,7 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
                 return ['success' => true, 'message' => 'User suspended successfully'];
 
             case 'reinstate':
-                if (function_exists('check_admin_permission') && isset($pdo)) {
+                if ($this->security !== null && function_exists('check_admin_permission') && isset($pdo)) {
                     $this->security->checkAdminPermission($adminId, 'reinstate_user');
                 }
                 if ($user['status'] === \App\Domain\Enums\AccountStatusEnum::ACTIVE->value) {
@@ -1340,7 +1340,7 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
                 return ['success' => true, 'message' => 'User reinstated successfully'];
 
             case 'delete':
-                if (function_exists('check_admin_permission') && isset($pdo)) {
+                if ($this->security !== null && function_exists('check_admin_permission') && isset($pdo)) {
                     $this->security->checkAdminPermission($adminId, 'soft_delete_user');
                 }
                 if ($user['is_deleted']) {
@@ -1357,7 +1357,7 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
                 return ['success' => true, 'message' => 'User deleted successfully'];
 
             case 'recover':
-                if (function_exists('check_admin_permission') && isset($pdo)) {
+                if ($this->security !== null && function_exists('check_admin_permission') && isset($pdo)) {
                     $this->security->checkAdminPermission($adminId, 'soft_delete_user');
                 }
                 if (!$user['is_deleted']) {
@@ -1396,7 +1396,7 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
                 return ['success' => true, 'message' => 'User recovered successfully'];
 
             case 'hard_delete':
-                if (function_exists('check_admin_permission') && isset($pdo)) {
+                if ($this->security !== null && function_exists('check_admin_permission') && isset($pdo)) {
                     $this->security->checkAdminPermission($adminId, 'soft_delete_user');
                 }
                 $this->repository->hardDeleteUserAccount($userId, $user['customer_id']);
@@ -1408,7 +1408,7 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
                 return ['success' => true, 'message' => 'User permanently deleted'];
 
             case 'delete_account_only':
-                if (function_exists('check_admin_permission') && isset($pdo)) {
+                if ($this->security !== null && function_exists('check_admin_permission') && isset($pdo)) {
                     $this->security->checkAdminPermission($adminId, 'soft_delete_user');
                 }
                 $this->repository->deleteAccountOnly($user['customer_id']);

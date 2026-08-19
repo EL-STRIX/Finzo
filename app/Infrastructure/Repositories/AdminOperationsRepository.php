@@ -479,7 +479,7 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
                     WHERE action_type = 'user_suspended' AND entity_type = 'user'
                     GROUP BY entity_id
                 ) log2 ON log1.id = log2.max_id
-            ) l ON u.customer_id = l.entity_id
+            ) l ON u.id = l.entity_id
             WHERE {$whereSql}
         ";
         return (int)$this->fetchOne($sql, $params)['count'] ?? 0;
@@ -503,7 +503,7 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
                     WHERE action_type = 'user_suspended' AND entity_type = 'user'
                     GROUP BY entity_id
                 ) log2 ON log1.id = log2.max_id
-            ) l ON u.customer_id = l.entity_id
+            ) l ON u.id = l.entity_id
             WHERE {$whereSql}
             ORDER BY raw_suspended_at DESC
             LIMIT {$perPage} OFFSET {$offset}
@@ -670,10 +670,10 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
         $stmt = $this->db->prepare("
             SELECT details, created_at, actor_id
             FROM audit_log
-            WHERE action_type = 'user_suspended' AND entity_id = ?
+            WHERE action_type = 'user_suspended' AND (entity_id = ? OR entity_id = (SELECT id FROM users WHERE customer_id = ?))
             ORDER BY id DESC LIMIT 1
         ");
-        $stmt->execute([$customerId]);
+        $stmt->execute([$customerId, $customerId]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
