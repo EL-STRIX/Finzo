@@ -537,7 +537,9 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
                 COALESCE(tu.customer_id, '') as to_customer_id,
                 tu.profile_picture as to_user_avatar,
                 COALESCE(s.staff_id, '') as processed_by,
-                COALESCE(s.full_name, '') as processed_by_name
+                COALESCE(s.full_name, '') as processed_by_name,
+                COALESCE(b.name, '') as branch_name,
+                COALESCE(b.branch_code, '') as branch_code
             {$baseSql}
             ORDER BY {$orderSql}
             LIMIT {$perPage} OFFSET {$offset}

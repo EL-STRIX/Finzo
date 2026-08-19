@@ -972,6 +972,7 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
             LEFT JOIN accounts ta ON t.to_account_id = ta.id
             LEFT JOIN users tu ON ta.user_id = tu.customer_id
             LEFT JOIN staff s ON t.processed_by_staff_id = s.id
+            LEFT JOIN branches b ON s.branch_id = b.id
             WHERE {$where_sql}
         ";
 

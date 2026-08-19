@@ -428,6 +428,9 @@ ob_start();
                 </div>
             </div>
 
+            <!-- Transfer Account-to-Account Flow Banner -->
+            <div id="modal-flow-banner" class="hidden"></div>
+
             <!-- Sender & Beneficiary Grid -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <!-- Source / Sender Card -->
