@@ -135,19 +135,11 @@ ob_start();
     </div>
 </div>
 
-<!-- TOP PAGE HEADER & ACTION BAR -->
-<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 relative z-10 print:hidden">
+<!-- TOP PAGE HEADER -->
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 relative z-10">
     <div>
         <h1 class="text-2xl font-headline font-black text-text-primary tracking-tight">Global Transactions</h1>
         <p class="text-xs font-bold text-text-secondary uppercase tracking-widest mt-1">Real-time ledger audit, multi-channel flow monitor, and transaction reversal control</p>
-    </div>
-    
-    <div class="flex items-center gap-3">
-        <!-- Print Statement / Passbook Button -->
-        <button id="print-statement-btn" class="btn btn-primary px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider flex items-center gap-2 shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all group" title="Print Filtered Statement / Passbook">
-            <span class="material-symbols-outlined text-[18px] transition-transform group-hover:scale-110" aria-hidden="true">print</span>
-            <span>Print Statement</span>
-        </button>
     </div>
 </div>
 

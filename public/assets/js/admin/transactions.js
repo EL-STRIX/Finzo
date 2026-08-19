@@ -1,6 +1,6 @@
 /**
  * Finzo Admin — Global Transactions Controller
- * Manages table rendering, filters, statistics, reversal workflows, and official statement/passbook printing.
+ * Manages table rendering, filters, statistics, reversal workflows, and transaction audit modals.
  */
 
 (function() {
@@ -205,16 +205,16 @@
             let typeBadgeHtml = '';
             switch (typeClass) {
                 case 'deposit':
-                    typeBadgeHtml = `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider bg-emerald-500/10 text-emerald-500 border border-emerald-500/20"><span class="material-symbols-outlined text-[13px] print:hidden">south_west</span> Deposit</span>`;
+                    typeBadgeHtml = `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider bg-emerald-500/10 text-emerald-500 border border-emerald-500/20"><span class="material-symbols-outlined text-[13px]">south_west</span> Deposit</span>`;
                     break;
                 case 'withdrawal':
-                    typeBadgeHtml = `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider bg-rose-500/10 text-rose-500 border border-rose-500/20"><span class="material-symbols-outlined text-[13px] print:hidden">north_east</span> Withdrawal</span>`;
+                    typeBadgeHtml = `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider bg-rose-500/10 text-rose-500 border border-rose-500/20"><span class="material-symbols-outlined text-[13px]">north_east</span> Withdrawal</span>`;
                     break;
                 case 'transfer':
-                    typeBadgeHtml = `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider bg-sky-500/10 text-sky-500 border border-sky-500/20"><span class="material-symbols-outlined text-[13px] print:hidden">sync_alt</span> Transfer</span>`;
+                    typeBadgeHtml = `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider bg-sky-500/10 text-sky-500 border border-sky-500/20"><span class="material-symbols-outlined text-[13px]">sync_alt</span> Transfer</span>`;
                     break;
                 case 'interest_credit':
-                    typeBadgeHtml = `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider bg-amber-500/10 text-amber-500 border border-amber-500/20"><span class="material-symbols-outlined text-[13px] print:hidden">percent</span> Interest</span>`;
+                    typeBadgeHtml = `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider bg-amber-500/10 text-amber-500 border border-amber-500/20"><span class="material-symbols-outlined text-[13px]">percent</span> Interest</span>`;
                     break;
                 default:
                     typeBadgeHtml = `<span class="badge badge-info">${typeClass.toUpperCase()}</span>`;
@@ -246,7 +246,7 @@
                 if (r.description && (r.description.includes('Initial Deposit') || r.description.includes('Account Opening'))) {
                     fromAccountHtml = `
                     <div class="flex items-center gap-3">
-                        <div class="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center border border-primary/20 shrink-0 print:hidden"><span class="material-symbols-outlined text-sm" aria-hidden="true">rocket_launch</span></div>
+                        <div class="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center border border-primary/20 shrink-0"><span class="material-symbols-outlined text-sm" aria-hidden="true">rocket_launch</span></div>
                         <div class="overflow-hidden">
                             <div class="font-bold text-xs text-text-primary truncate">Account Opening</div>
                             <div class="text-[10px] font-bold text-text-secondary uppercase tracking-wider">Initial Funding</div>
@@ -255,7 +255,7 @@
                 } else if (r.processed_by) {
                     fromAccountHtml = `
                     <div class="flex items-center gap-3">
-                        <div class="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center border border-primary/20 shrink-0 print:hidden"><span class="material-symbols-outlined text-sm" aria-hidden="true">badge</span></div>
+                        <div class="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center border border-primary/20 shrink-0"><span class="material-symbols-outlined text-sm" aria-hidden="true">badge</span></div>
                         <div class="overflow-hidden">
                             <div class="font-bold text-xs text-text-primary truncate">OTC Branch Deposit</div>
                             <div class="text-[10px] font-bold text-text-secondary uppercase tracking-wider">Staff: ${r.processed_by}</div>
@@ -264,7 +264,7 @@
                 } else {
                     fromAccountHtml = `
                     <div class="flex items-center gap-3">
-                        <div class="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center border border-primary/20 shrink-0 print:hidden"><span class="material-symbols-outlined text-sm" aria-hidden="true">account_balance_wallet</span></div>
+                        <div class="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center border border-primary/20 shrink-0"><span class="material-symbols-outlined text-sm" aria-hidden="true">account_balance_wallet</span></div>
                         <div class="overflow-hidden">
                             <div class="font-bold text-xs text-text-primary truncate">Direct Deposit</div>
                             <div class="text-[10px] font-bold text-text-secondary uppercase tracking-wider">Electronic Inflow</div>
@@ -274,7 +274,7 @@
             } else if (typeClass === 'interest_credit') {
                 fromAccountHtml = `
                 <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-amber-500/10 text-amber-500 flex items-center justify-center border border-amber-500/20 shrink-0 print:hidden"><span class="material-symbols-outlined text-sm" aria-hidden="true">account_balance</span></div>
+                    <div class="w-8 h-8 rounded-full bg-amber-500/10 text-amber-500 flex items-center justify-center border border-amber-500/20 shrink-0"><span class="material-symbols-outlined text-sm" aria-hidden="true">account_balance</span></div>
                     <div class="overflow-hidden">
                         <div class="font-bold text-xs text-text-primary truncate">Finzo Treasury</div>
                         <div class="text-[10px] font-bold text-text-secondary uppercase tracking-wider">Automated Interest</div>
@@ -291,12 +291,12 @@
                 
                 fromAccountHtml = `
                 <div class="flex items-center gap-3">
-                    <div class="admin-avatar sm uppercase shrink-0 print:hidden">${avatarContent}</div>
+                    <div class="admin-avatar sm uppercase shrink-0">${avatarContent}</div>
                     <div class="overflow-hidden">
                         <div class="font-bold text-xs text-text-primary truncate" title="${senderName}">${senderName}</div>
                         <div class="text-[11px] font-mono font-semibold text-text-secondary flex items-center gap-1">
                             <span>${r.from_account_no}</span>
-                            <button onclick="window.copyText('${r.from_account_no}')" class="opacity-40 hover:opacity-100 transition-opacity print:hidden" title="Copy Account No">
+                            <button onclick="window.copyText('${r.from_account_no}')" class="opacity-40 hover:opacity-100 transition-opacity" title="Copy Account No">
                                 <span class="material-symbols-outlined text-[12px]">content_copy</span>
                             </button>
                         </div>
@@ -310,7 +310,7 @@
                 if (r.processed_by) {
                     toAccountHtml = `
                     <div class="flex items-center gap-3">
-                        <div class="w-8 h-8 rounded-full bg-rose-500/10 text-rose-500 flex items-center justify-center border border-rose-500/20 shrink-0 print:hidden"><span class="material-symbols-outlined text-sm" aria-hidden="true">badge</span></div>
+                        <div class="w-8 h-8 rounded-full bg-rose-500/10 text-rose-500 flex items-center justify-center border border-rose-500/20 shrink-0"><span class="material-symbols-outlined text-sm" aria-hidden="true">badge</span></div>
                         <div class="overflow-hidden">
                             <div class="font-bold text-xs text-text-primary truncate">OTC Cash Payout</div>
                             <div class="text-[10px] font-bold text-text-secondary uppercase tracking-wider">Staff: ${r.processed_by}</div>
@@ -319,7 +319,7 @@
                 } else if (r.description && r.description.includes('Restore Charge')) {
                     toAccountHtml = `
                     <div class="flex items-center gap-3">
-                        <div class="w-8 h-8 rounded-full bg-rose-500/10 text-rose-500 flex items-center justify-center border border-rose-500/20 shrink-0 print:hidden"><span class="material-symbols-outlined text-sm" aria-hidden="true">settings_backup_restore</span></div>
+                        <div class="w-8 h-8 rounded-full bg-rose-500/10 text-rose-500 flex items-center justify-center border border-rose-500/20 shrink-0"><span class="material-symbols-outlined text-sm" aria-hidden="true">settings_backup_restore</span></div>
                         <div class="overflow-hidden">
                             <div class="font-bold text-xs text-text-primary truncate">Admin Fee</div>
                             <div class="text-[10px] font-bold text-text-secondary uppercase tracking-wider">Account Charge</div>
@@ -328,7 +328,7 @@
                 } else {
                     toAccountHtml = `
                     <div class="flex items-center gap-3">
-                        <div class="w-8 h-8 rounded-full bg-rose-500/10 text-rose-500 flex items-center justify-center border border-rose-500/20 shrink-0 print:hidden"><span class="material-symbols-outlined text-sm" aria-hidden="true">atm</span></div>
+                        <div class="w-8 h-8 rounded-full bg-rose-500/10 text-rose-500 flex items-center justify-center border border-rose-500/20 shrink-0"><span class="material-symbols-outlined text-sm" aria-hidden="true">atm</span></div>
                         <div class="overflow-hidden">
                             <div class="font-bold text-xs text-text-primary truncate">ATM / Cash Outflow</div>
                             <div class="text-[10px] font-bold text-text-secondary uppercase tracking-wider">Direct Withdrawal</div>
@@ -346,12 +346,12 @@
                 
                 toAccountHtml = `
                 <div class="flex items-center gap-3">
-                    <div class="admin-avatar sm uppercase shrink-0 print:hidden">${receiverAvatarContent}</div>
+                    <div class="admin-avatar sm uppercase shrink-0">${receiverAvatarContent}</div>
                     <div class="overflow-hidden">
                         <div class="font-bold text-xs text-text-primary truncate" title="${receiverName}">${receiverName}</div>
                         <div class="text-[11px] font-mono font-semibold text-text-secondary flex items-center gap-1">
                             <span>${r.to_account_no}</span>
-                            <button onclick="window.copyText('${r.to_account_no}')" class="opacity-40 hover:opacity-100 transition-opacity print:hidden" title="Copy Account No">
+                            <button onclick="window.copyText('${r.to_account_no}')" class="opacity-40 hover:opacity-100 transition-opacity" title="Copy Account No">
                                 <span class="material-symbols-outlined text-[12px]">content_copy</span>
                             </button>
                         </div>
@@ -365,7 +365,7 @@
                 <td class="py-3.5 px-4">
                     <div class="flex items-center gap-1.5">
                         <span class="text-xs font-mono font-bold text-primary">${r.txn_id}</span>
-                        <button onclick="event.stopPropagation(); window.copyText('${r.txn_id}')" class="opacity-0 group-hover:opacity-100 text-text-secondary hover:text-text-primary transition-all p-0.5 print:hidden" title="Copy ID">
+                        <button onclick="event.stopPropagation(); window.copyText('${r.txn_id}')" class="opacity-0 group-hover:opacity-100 text-text-secondary hover:text-text-primary transition-all p-0.5" title="Copy ID">
                             <span class="material-symbols-outlined text-[13px]">content_copy</span>
                         </button>
                     </div>
@@ -376,7 +376,7 @@
                 <td class="py-3.5 px-4 text-sm font-black ${amountColorClass}">${amountFormatted}</td>
                 <td class="py-3.5 px-4 text-xs font-semibold text-text-secondary whitespace-nowrap">${r.created_at}</td>
                 <td class="py-3.5 px-4 text-center">${statusBadgeHtml}</td>
-                <td class="py-3.5 px-6 text-right print:hidden" onclick="event.stopPropagation()">
+                <td class="py-3.5 px-6 text-right" onclick="event.stopPropagation()">
                     <div class="flex items-center justify-end gap-1.5">
                         <button onclick="window.openTransactionDetails('${r.txn_id}')" class="btn btn-secondary !p-1.5 rounded-lg text-text-secondary hover:text-primary hover:bg-surface-hover" title="View Breakdown">
                             <span class="material-symbols-outlined text-[16px]">visibility</span>
@@ -464,114 +464,6 @@
             const combinedInternal = (parseFloat(summary.total_transfers) || 0) + (parseFloat(summary.total_interest) || 0);
             totalTransfersEl.textContent = formatCompactCurrency(combinedInternal);
             totalTransfersEl.classList.remove('skeleton');
-        }
-
-        // Update Print Header Summary Metrics
-        const printCreditsEl = document.getElementById('print-credits');
-        const printDebitsEl = document.getElementById('print-debits');
-        const printVolumeEl = document.getElementById('print-volume');
-        const printCountEl = document.getElementById('print-count');
-
-        if (printCreditsEl) {
-            printCreditsEl.textContent = `₹${(parseFloat(summary.total_deposits) || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
-        }
-        if (printDebitsEl) {
-            printDebitsEl.textContent = `₹${(parseFloat(summary.total_withdrawals) || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
-        }
-        if (printVolumeEl) {
-            printVolumeEl.textContent = `₹${(parseFloat(summary.total_amount) || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
-        }
-        if (printCountEl) {
-            printCountEl.textContent = (summary.total_count || 0).toLocaleString();
-        }
-    }
-
-    /**
-     * Print Filtered Ledger Statement / Passbook (Fetches all filtered matching records for print)
-     */
-    async function printStatement() {
-        const printBtn = document.getElementById('print-statement-btn');
-        const originalHtml = printBtn ? printBtn.innerHTML : '';
-
-        if (printBtn) {
-            printBtn.disabled = true;
-            printBtn.innerHTML = '<span class="material-symbols-outlined animate-spin text-[16px]">autorenew</span> <span>Preparing Statement...</span>';
-        }
-
-        try {
-            const filters = getActiveFilters();
-            
-            // Format Statement Period Title
-            const periodEl = document.getElementById('print-period');
-            let periodText = 'All Transactions';
-            if (filters.from_date && filters.to_date) {
-                periodText = `${filters.from_date} to ${filters.to_date}`;
-            } else if (filters.from_date) {
-                periodText = `From ${filters.from_date}`;
-            } else if (filters.to_date) {
-                periodText = `Up to ${filters.to_date}`;
-            }
-
-            if (currentType !== 'all') {
-                periodText += ` (${currentType.toUpperCase()} ONLY)`;
-            }
-
-            if (periodEl) periodEl.textContent = `Period: ${periodText}`;
-            
-            const genEl = document.getElementById('print-generated');
-            if (genEl) genEl.textContent = new Date().toLocaleString('en-IN', {
-                day: '2-digit',
-                month: 'short',
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: true
-            });
-
-            // Fetch full matching records (up to 1000) for the print statement
-            const printParams = {
-                ...filters,
-                page: 1,
-                per_page: 1000
-            };
-
-            const response = await window.api.get('/transactions', printParams);
-
-            if (response && response.success) {
-                const data = response.data || response;
-                const allMatchingTransactions = data.transactions || [];
-                const summary = data.summary || response.summary || {};
-
-                // Render all filtered rows into table
-                renderTable(allMatchingTransactions, allMatchingTransactions.length, 1);
-                updateStats(summary);
-
-                // Small delay to ensure DOM is fully repainted before opening browser print dialog
-                setTimeout(() => {
-                    window.print();
-                }, 150);
-
-                // Restore paginated view once printing is done
-                const restoreHandler = () => {
-                    renderTable(activeTransactionsData, activeSummaryData.total_count || 0, Math.ceil((activeSummaryData.total_count || 0) / rowsPerPage));
-                    updateStats(activeSummaryData);
-                    window.removeEventListener('afterprint', restoreHandler);
-                };
-                window.addEventListener('afterprint', restoreHandler);
-
-                // Fallback restoration in case afterprint does not fire
-                setTimeout(restoreHandler, 2500);
-            } else {
-                if (window.showToast) window.showToast('Failed to load full statement data for printing', 'error');
-            }
-        } catch (error) {
-            console.error('Print Statement error:', error);
-            if (window.showToast) window.showToast('Error generating print statement', 'error');
-        } finally {
-            if (printBtn) {
-                printBtn.disabled = false;
-                printBtn.innerHTML = originalHtml;
-            }
         }
     }
 
@@ -955,9 +847,6 @@
         // Reset Filters Button
         const resetBtn = document.getElementById('reset-filters-btn');
         if (resetBtn) resetBtn.addEventListener('click', window.resetTransactionFilters);
-
-        // Print Statement Button
-        document.getElementById('print-statement-btn')?.addEventListener('click', printStatement);
 
         // Pagination Clicks
         document.addEventListener('click', (e) => {
