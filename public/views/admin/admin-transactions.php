@@ -306,7 +306,6 @@ ob_start();
                         <div class="finzo-dropdown-option text-xs" data-value="completed">Completed</div>
                         <div class="finzo-dropdown-option text-xs" data-value="pending">Pending</div>
                         <div class="finzo-dropdown-option text-xs" data-value="failed">Failed</div>
-                        <div class="finzo-dropdown-option text-xs" data-value="reversed">Reversed</div>
                     </div>
                     <input type="hidden" id="filter-status" value="all">
                 </div>
@@ -475,86 +474,13 @@ ob_start();
         </div>
 
         <!-- Modal Footer Actions -->
-        <div class="p-5 border-t border-border-subtle bg-surface-subtle/50 flex flex-wrap items-center justify-between gap-3">
-            <div id="modal-reversal-action">
-                <!-- Dynamic Reverse Button if eligible -->
-            </div>
-            <div class="flex items-center gap-2 ml-auto">
-                <button id="modal-receipt-btn" class="btn btn-secondary px-4 py-2 text-xs font-bold uppercase tracking-wider rounded-xl flex items-center gap-1.5 hover:bg-primary hover:text-white transition-all">
-                    <span class="material-symbols-outlined text-[16px]">receipt_long</span>
-                    <span>Official Receipt PDF</span>
-                </button>
-                <button id="close-details-btn" class="btn btn-outline px-4 py-2 text-xs font-bold uppercase tracking-wider rounded-xl">
-                    <span>Close</span>
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- ========================================================================= -->
-<!-- TRANSACTION REVERSAL MODAL                                                -->
-<!-- ========================================================================= -->
-<div id="txn-reversal-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm hidden p-4 transition-opacity opacity-0 print:hidden">
-    <div class="ds-card w-full max-w-lg bg-surface border border-border-subtle rounded-2xl shadow-2xl overflow-hidden transform scale-95 transition-all duration-300">
-        <div class="p-6 border-b border-border-subtle bg-surface-subtle/50 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-rose-500/10 text-rose-500 flex items-center justify-center border border-rose-500/20">
-                    <span class="material-symbols-outlined text-xl" aria-hidden="true">undo</span>
-                </div>
-                <div>
-                    <h3 class="text-lg font-headline font-black text-text-primary tracking-tight">Reverse Transaction</h3>
-                    <p class="text-[10px] font-bold text-rose-500 uppercase tracking-widest">Irreversible Admin Action</p>
-                </div>
-            </div>
-            <button id="close-reversal-modal" class="p-2 rounded-xl text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all">
-                <span class="material-symbols-outlined text-xl">close</span>
-            </button>
-        </div>
-
-        <div class="p-6 space-y-4">
-            <!-- Warning Banner -->
-            <div class="p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 text-xs font-semibold space-y-1">
-                <div class="flex items-center gap-2 font-bold text-sm">
-                    <span class="material-symbols-outlined text-base">warning</span>
-                    <span>Confirm Ledger Balance Reversal</span>
-                </div>
-                <p class="text-[11px] opacity-90">This action will debit the recipient account, restore funds to the source account, mark the transaction status as <strong>REVERSED</strong>, and record a permanent audit entry.</p>
-            </div>
-
-            <!-- Transaction Summary -->
-            <div class="p-3.5 rounded-xl bg-surface-subtle border border-border-subtle flex items-center justify-between text-xs">
-                <div>
-                    <div class="text-[10px] font-bold text-text-secondary uppercase">Transaction Ref</div>
-                    <div id="reversal-txn-id" class="font-mono font-black text-text-primary text-sm mt-0.5">TXN---</div>
-                </div>
-                <div class="text-right">
-                    <div class="text-[10px] font-bold text-text-secondary uppercase">Amount to Reverse</div>
-                    <div id="reversal-txn-amount" class="font-black text-rose-500 text-base mt-0.5">₹0.00</div>
-                </div>
-            </div>
-
-            <!-- Reason Input Field -->
-            <div>
-                <label for="reversal-reason" class="fin-label mb-1.5 block text-[10px] font-black text-text-secondary uppercase tracking-widest">
-                    Reversal Reason <span class="text-rose-500">*</span>
-                </label>
-                <textarea id="reversal-reason" rows="3" placeholder="Enter reason for audit record (e.g., Customer dispute, Duplicate transfer, Fraudulent request)..." class="fin-input w-full text-xs p-3 focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500" required></textarea>
-                <div class="flex justify-between items-center text-[10px] text-text-secondary mt-1">
-                    <span>Required for compliance audit</span>
-                    <span id="reversal-char-count">0 / 255</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Modal Footer -->
         <div class="p-5 border-t border-border-subtle bg-surface-subtle/50 flex items-center justify-end gap-3">
-            <button id="cancel-reversal-btn" class="btn btn-secondary px-4 py-2 text-xs font-bold uppercase tracking-wider rounded-xl">
-                Cancel
+            <button id="modal-receipt-btn" class="btn btn-secondary px-4 py-2 text-xs font-bold uppercase tracking-wider rounded-xl flex items-center gap-1.5 hover:bg-primary hover:text-white transition-all">
+                <span class="material-symbols-outlined text-[16px]">receipt_long</span>
+                <span>Official Receipt PDF</span>
             </button>
-            <button id="confirm-reversal-btn" class="btn btn-primary !bg-rose-600 hover:!bg-rose-700 text-white px-5 py-2 text-xs font-black uppercase tracking-wider rounded-xl shadow-lg shadow-rose-600/20 transition-all flex items-center gap-2">
-                <span class="material-symbols-outlined text-[16px]">undo</span>
-                <span>Confirm & Reverse</span>
+            <button id="close-details-btn" class="btn btn-outline px-4 py-2 text-xs font-bold uppercase tracking-wider rounded-xl">
+                <span>Close</span>
             </button>
         </div>
     </div>

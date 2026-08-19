@@ -1,6 +1,6 @@
 /**
  * Finzo Admin — Global Transactions Controller
- * Manages table rendering, filters, statistics, reversal workflows, and transaction audit modals.
+ * Manages table rendering, filters, statistics, and transaction audit details.
  */
 
 (function() {
@@ -13,7 +13,6 @@
     let isModalOpen = false;
     let activeTransactionsData = [];
     let activeSummaryData = {};
-    let pendingReversalTxnId = null;
 
     /**
      * Format currency in Indian Rupees format (₹)
@@ -250,22 +249,19 @@
                 case 'failed':
                     statusBadgeHtml = `<span class="badge badge-error !text-[10px]">FAILED</span>`;
                     break;
-                case 'reversed':
-                    statusBadgeHtml = `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-rose-500/10 text-rose-500 border border-rose-500/20">REVERSED</span>`;
-                    break;
                 default:
                     statusBadgeHtml = `<span class="badge badge-neutral !text-[10px]">${status.toUpperCase()}</span>`;
             }
 
             // -------------------------------------------------------------
-            // 1. FROM Column (Source / Staff / Sender)
+            // 1. FROM Column (Sender: Staff if Deposit/Withdrawal, Customer if Transfer)
             // -------------------------------------------------------------
             let fromAccountHtml = '';
 
-            if (r.processed_by || r.processed_by_name) {
-                // If processed by Staff (Deposit or Withdrawal OTC), show Staff in FROM column
-                const staffName = r.processed_by_name || 'Staff Member';
-                const staffCode = r.processed_by || 'Staff';
+            if (typeClass === 'deposit' || typeClass === 'withdrawal') {
+                // In Finzo, all deposits and withdrawals are processed by Branch Staff
+                const staffName = r.processed_by_name || (r.processed_by ? `Staff ${r.processed_by}` : 'Branch Staff');
+                const staffCode = r.processed_by || 'STF';
                 const staffInitials = staffName.split(' ').filter(w => /^[a-zA-Z]/.test(w)).map(w => w[0]).join('').toUpperCase().substring(0, 2) || 'ST';
                 const branchText = r.branch_name ? ` • ${r.branch_name}` : '';
 
@@ -281,30 +277,6 @@
                         </div>
                     </div>
                 </div>`;
-            } else if (typeClass === 'deposit') {
-                // Direct / Online Deposit without staff
-                fromAccountHtml = `
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center border border-primary/20 shrink-0">
-                        <span class="material-symbols-outlined text-sm">account_balance_wallet</span>
-                    </div>
-                    <div class="overflow-hidden">
-                        <div class="font-bold text-xs text-text-primary truncate">Direct Deposit</div>
-                        <div class="text-[11px] text-text-secondary font-medium truncate">Online Inflow</div>
-                    </div>
-                </div>`;
-            } else if (typeClass === 'withdrawal') {
-                // ATM / Direct Withdrawal without staff
-                fromAccountHtml = `
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-rose-500/10 text-rose-500 flex items-center justify-center border border-rose-500/20 shrink-0">
-                        <span class="material-symbols-outlined text-sm">atm</span>
-                    </div>
-                    <div class="overflow-hidden">
-                        <div class="font-bold text-xs text-text-primary truncate">ATM Withdrawal</div>
-                        <div class="text-[11px] text-text-secondary font-medium truncate">Cash Dispenser</div>
-                    </div>
-                </div>`;
             } else if (typeClass === 'interest_credit') {
                 fromAccountHtml = `
                 <div class="flex items-center gap-3">
@@ -313,23 +285,12 @@
                     </div>
                     <div class="overflow-hidden">
                         <div class="font-bold text-xs text-text-primary truncate">Finzo Treasury</div>
-                        <div class="text-[11px] text-amber-500 font-semibold truncate">Interest Credit</div>
-                    </div>
-                </div>`;
-            } else if (typeClass === 'transfer' && (!r.from_account_no || r.from_account_no === 'N/A')) {
-                fromAccountHtml = `
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-purple-500/10 text-purple-500 flex items-center justify-center border border-purple-500/20 shrink-0">
-                        <span class="material-symbols-outlined text-sm">undo</span>
-                    </div>
-                    <div class="overflow-hidden">
-                        <div class="font-bold text-xs text-text-primary truncate">Finzo Settlement</div>
-                        <div class="text-[11px] text-purple-500 font-semibold truncate">Reversal Offset</div>
+                        <div class="text-[11px] text-amber-500 font-semibold truncate">Interest Pool</div>
                     </div>
                 </div>`;
             } else {
                 // Customer-to-Customer Transfer Sender
-                const senderName = r.from_user_name && r.from_user_name !== 'N/A' ? r.from_user_name : 'Sender';
+                const senderName = r.from_user_name && r.from_user_name !== 'N/A' ? r.from_user_name : 'Sender Customer';
                 const senderInitials = senderName.split(' ').filter(w => /^[a-zA-Z]/.test(w)).map(w => w[0]).join('').toUpperCase().substring(0, 2) || 'U';
                 let avatarContent = senderInitials;
                 if (r.from_user_avatar) {
@@ -353,12 +314,12 @@
             }
 
             // -------------------------------------------------------------
-            // 2. TO Column (Destination / Beneficiary / Debited Customer)
+            // 2. TO Column (Receiver: Customer Account)
             // -------------------------------------------------------------
             let toAccountHtml = '';
 
             if (typeClass === 'withdrawal') {
-                // For withdrawal, the debited customer is in from_user_name / from_account_no (or to_ if reversed)
+                // For withdrawal, the customer account being debited
                 const custName = (r.from_user_name && r.from_user_name !== 'N/A') ? r.from_user_name : (r.to_user_name !== 'N/A' ? r.to_user_name : 'Customer');
                 const custAcc = (r.from_account_no && r.from_account_no !== 'N/A') ? r.from_account_no : (r.to_account_no !== 'N/A' ? r.to_account_no : 'N/A');
                 const custInitials = custName.split(' ').filter(w => /^[a-zA-Z]/.test(w)).map(w => w[0]).join('').toUpperCase().substring(0, 2) || 'U';
@@ -382,19 +343,8 @@
                         </div>
                     </div>
                 </div>`;
-            } else if (typeClass === 'transfer' && (!r.to_account_no || r.to_account_no === 'N/A')) {
-                toAccountHtml = `
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-purple-500/10 text-purple-500 flex items-center justify-center border border-purple-500/20 shrink-0">
-                        <span class="material-symbols-outlined text-sm">undo</span>
-                    </div>
-                    <div class="overflow-hidden">
-                        <div class="font-bold text-xs text-text-primary truncate">Finzo Settlement</div>
-                        <div class="text-[11px] text-purple-500 font-semibold truncate">Reversal Target</div>
-                    </div>
-                </div>`;
             } else {
-                // Deposit, Interest, and Transfer destination
+                // Deposit, Interest, and Transfer destination customer account
                 const receiverName = r.to_user_name && r.to_user_name !== 'N/A' ? r.to_user_name : (r.from_user_name !== 'N/A' ? r.from_user_name : 'Customer');
                 const receiverAcc = r.to_account_no && r.to_account_no !== 'N/A' ? r.to_account_no : (r.from_account_no !== 'N/A' ? r.from_account_no : 'N/A');
                 const receiverInitials = receiverName.split(' ').filter(w => /^[a-zA-Z]/.test(w)).map(w => w[0]).join('').toUpperCase().substring(0, 2) || 'U';
@@ -446,10 +396,6 @@
                         <button onclick="window.openReceipt('${r.txn_id}')" class="btn btn-secondary !p-1.5 rounded-lg text-text-secondary hover:text-primary hover:bg-surface-hover" title="Official Receipt PDF">
                             <span class="material-symbols-outlined text-[16px]">receipt_long</span>
                         </button>
-                        ${status === 'completed' ? `
-                        <button onclick="window.openReversalModal('${r.txn_id}')" class="btn btn-secondary !p-1.5 rounded-lg text-rose-500 hover:bg-rose-500 hover:text-white" title="Reverse Transaction">
-                            <span class="material-symbols-outlined text-[16px]">undo</span>
-                        </button>` : ''}
                     </div>
                 </td>
             </tr>`;
@@ -557,16 +503,16 @@
 
         const status = (txn.status || '').toLowerCase();
         let statusBadge = `<span class="badge badge-success uppercase">${status}</span>`;
-        if (status === 'reversed') statusBadge = `<span class="badge badge-error">REVERSED</span>`;
         if (status === 'pending') statusBadge = `<span class="badge badge-warning">PENDING</span>`;
+        if (status === 'failed') statusBadge = `<span class="badge badge-error">FAILED</span>`;
         document.getElementById('modal-status-badge').innerHTML = statusBadge;
 
         // Transfer / Flow Direction Banner
         const flowBanner = document.getElementById('modal-flow-banner');
         if (flowBanner) {
             if (typeClass === 'transfer') {
-                const fromAcc = txn.from_account_no && txn.from_account_no !== 'N/A' ? txn.from_account_no : 'Settlement';
-                const toAcc = txn.to_account_no && txn.to_account_no !== 'N/A' ? txn.to_account_no : 'Settlement';
+                const fromAcc = txn.from_account_no && txn.from_account_no !== 'N/A' ? txn.from_account_no : 'Sender Account';
+                const toAcc = txn.to_account_no && txn.to_account_no !== 'N/A' ? txn.to_account_no : 'Receiver Account';
                 flowBanner.classList.remove('hidden');
                 flowBanner.innerHTML = `
                     <div class="flex items-center justify-between gap-2 text-xs font-bold text-sky-600 dark:text-sky-400 bg-sky-500/10 border border-sky-500/20 px-3.5 py-2.5 rounded-xl">
@@ -597,13 +543,13 @@
         // -------------------------------------------------------------
         // Modal Left Card (Source / Staff / Sender)
         // -------------------------------------------------------------
-        if (txn.processed_by || txn.processed_by_name) {
-            // Processed by Staff (Deposit or Withdrawal)
-            if (fromTitleEl) fromTitleEl.textContent = 'Processed By Staff';
+        if (typeClass === 'deposit' || typeClass === 'withdrawal') {
+            // Processed by Staff
+            if (fromTitleEl) fromTitleEl.textContent = `Processing Staff (${typeClass === 'deposit' ? 'Deposit' : 'Payout'})`;
             if (fromIconEl) fromIconEl.textContent = 'badge';
 
-            const staffName = txn.processed_by_name || 'Staff Member';
-            const staffCode = txn.processed_by || 'Staff';
+            const staffName = txn.processed_by_name || (txn.processed_by ? `Staff ${txn.processed_by}` : 'Branch Staff');
+            const staffCode = txn.processed_by || 'STF';
             const staffInitials = staffName.split(' ').filter(w => /^[a-zA-Z]/.test(w)).map(w => w[0]).join('').toUpperCase().substring(0, 2) || 'ST';
             const branch = txn.branch_name ? `${txn.branch_name} Branch` : 'Branch Counter';
 
@@ -611,22 +557,6 @@
             document.getElementById('modal-from-acc').textContent = `Staff ID: ${staffCode}`;
             document.getElementById('modal-from-email').textContent = branch;
             if (fromAvatarEl) fromAvatarEl.textContent = staffInitials;
-        } else if (typeClass === 'deposit') {
-            if (fromTitleEl) fromTitleEl.textContent = 'Deposit Source';
-            if (fromIconEl) fromIconEl.textContent = 'account_balance_wallet';
-
-            document.getElementById('modal-from-name').textContent = 'Direct Deposit';
-            document.getElementById('modal-from-acc').textContent = 'Online / Inflow';
-            document.getElementById('modal-from-email').textContent = 'Electronic Channel';
-            if (fromAvatarEl) fromAvatarEl.innerHTML = '<span class="material-symbols-outlined text-primary">account_balance_wallet</span>';
-        } else if (typeClass === 'withdrawal') {
-            if (fromTitleEl) fromTitleEl.textContent = 'Withdrawal Source';
-            if (fromIconEl) fromIconEl.textContent = 'atm';
-
-            document.getElementById('modal-from-name').textContent = 'ATM Cash Outflow';
-            document.getElementById('modal-from-acc').textContent = 'Direct Withdrawal';
-            document.getElementById('modal-from-email').textContent = 'Terminal Outflow';
-            if (fromAvatarEl) fromAvatarEl.innerHTML = '<span class="material-symbols-outlined text-rose-500">atm</span>';
         } else if (typeClass === 'interest_credit') {
             if (fromTitleEl) fromTitleEl.textContent = 'Finzo Treasury Source';
             if (fromIconEl) fromIconEl.textContent = 'account_balance';
@@ -635,17 +565,9 @@
             document.getElementById('modal-from-acc').textContent = 'Automated Interest Pool';
             document.getElementById('modal-from-email').textContent = 'System Interest Calculation';
             if (fromAvatarEl) fromAvatarEl.innerHTML = '<span class="material-symbols-outlined text-amber-500">account_balance</span>';
-        } else if (typeClass === 'transfer' && (!txn.from_account_no || txn.from_account_no === 'N/A')) {
-            if (fromTitleEl) fromTitleEl.textContent = 'Ledger Settlement Source';
-            if (fromIconEl) fromIconEl.textContent = 'undo';
-
-            document.getElementById('modal-from-name').textContent = 'Finzo Settlement Core';
-            document.getElementById('modal-from-acc').textContent = 'Reversal Ledger Offset';
-            document.getElementById('modal-from-email').textContent = 'Administrative Action';
-            if (fromAvatarEl) fromAvatarEl.innerHTML = '<span class="material-symbols-outlined text-purple-500">account_balance</span>';
         } else {
-            // Customer Transfer Sender
-            if (fromTitleEl) fromTitleEl.textContent = 'Sender Account';
+            // Customer-to-Customer Transfer Sender
+            if (fromTitleEl) fromTitleEl.textContent = 'Sender Customer Account';
             if (fromIconEl) fromIconEl.textContent = 'person';
 
             const senderName = txn.from_user_name && txn.from_user_name !== 'N/A' ? txn.from_user_name : 'Sender Customer';
@@ -663,7 +585,7 @@
         }
 
         // -------------------------------------------------------------
-        // Modal Right Card (Beneficiary / Debited Customer)
+        // Modal Right Card (Beneficiary / Debited Customer Account)
         // -------------------------------------------------------------
         if (typeClass === 'withdrawal') {
             if (toTitleEl) toTitleEl.textContent = 'Debited Customer Account';
@@ -685,17 +607,9 @@
                     toAvatarEl.textContent = initials;
                 }
             }
-        } else if (typeClass === 'transfer' && (!txn.to_account_no || txn.to_account_no === 'N/A')) {
-            if (toTitleEl) toTitleEl.textContent = 'Ledger Settlement Target';
-            if (toIconEl) toIconEl.textContent = 'undo';
-
-            document.getElementById('modal-to-name').textContent = 'Finzo Settlement Core';
-            document.getElementById('modal-to-acc').textContent = 'Reversal Target';
-            document.getElementById('modal-to-email').textContent = 'Administrative Target';
-            if (toAvatarEl) toAvatarEl.innerHTML = '<span class="material-symbols-outlined text-purple-500">account_balance</span>';
         } else {
-            // Deposit, Interest, and Transfer Beneficiary
-            if (toTitleEl) toTitleEl.textContent = 'Beneficiary Account';
+            // Deposit, Interest, and Transfer Beneficiary Account
+            if (toTitleEl) toTitleEl.textContent = 'Beneficiary Customer Account';
             if (toIconEl) toIconEl.textContent = 'person';
 
             const receiverName = txn.to_user_name && txn.to_user_name !== 'N/A' ? txn.to_user_name : (txn.from_user_name !== 'N/A' ? txn.from_user_name : 'Customer');
@@ -723,7 +637,7 @@
             if (txn.description || txn.reference_note) {
                 refContainer.classList.remove('hidden');
                 if (descEl) descEl.textContent = txn.description || 'Standard transaction processing';
-                if (refEl) refEl.textContent = txn.reference_note ? `Note / Reason: ${txn.reference_note}` : '';
+                if (refEl) refEl.textContent = txn.reference_note ? `Note: ${txn.reference_note}` : '';
             } else {
                 refContainer.classList.add('hidden');
             }
@@ -733,19 +647,6 @@
         const receiptBtn = document.getElementById('modal-receipt-btn');
         if (receiptBtn) {
             receiptBtn.onclick = () => window.openReceipt(txn.txn_id);
-        }
-
-        const reversalContainer = document.getElementById('modal-reversal-action');
-        if (reversalContainer) {
-            if (status === 'completed') {
-                reversalContainer.innerHTML = `
-                <button onclick="window.closeTransactionDetails(); window.openReversalModal('${txn.txn_id}')" class="btn btn-secondary text-rose-500 hover:bg-rose-500 hover:text-white px-4 py-2 text-xs font-bold uppercase tracking-wider rounded-xl flex items-center gap-1.5 transition-all">
-                    <span class="material-symbols-outlined text-[16px]">undo</span>
-                    <span>Reverse Transaction</span>
-                </button>`;
-            } else {
-                reversalContainer.innerHTML = '';
-            }
         }
 
         // Show Modal
@@ -772,95 +673,6 @@
             isModalOpen = false;
         }, 200);
     };
-
-    /**
-     * Open Reversal Modal
-     */
-    window.openReversalModal = function(txnId) {
-        pendingReversalTxnId = txnId;
-        const txn = activeTransactionsData.find(t => t.txn_id === txnId);
-        
-        const modal = document.getElementById('txn-reversal-modal');
-        if (!modal) return;
-
-        isModalOpen = true;
-        document.getElementById('reversal-txn-id').textContent = txnId;
-        const amount = txn ? parseFloat(txn.amount) : 0;
-        document.getElementById('reversal-txn-amount').textContent = `₹${amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
-        
-        const reasonInput = document.getElementById('reversal-reason');
-        if (reasonInput) reasonInput.value = '';
-        const charCount = document.getElementById('reversal-char-count');
-        if (charCount) charCount.textContent = '0 / 255';
-
-        modal.classList.remove('hidden');
-        setTimeout(() => {
-            modal.classList.remove('opacity-0');
-            modal.querySelector('.ds-card').classList.remove('scale-95');
-            modal.querySelector('.ds-card').classList.add('scale-100');
-            if (reasonInput) reasonInput.focus();
-        }, 10);
-    };
-
-    /**
-     * Close Reversal Modal
-     */
-    window.closeReversalModal = function() {
-        const modal = document.getElementById('txn-reversal-modal');
-        if (!modal) return;
-
-        modal.classList.add('opacity-0');
-        modal.querySelector('.ds-card').classList.remove('scale-100');
-        modal.querySelector('.ds-card').classList.add('scale-95');
-        setTimeout(() => {
-            modal.classList.add('hidden');
-            pendingReversalTxnId = null;
-            isModalOpen = false;
-        }, 200);
-    };
-
-    /**
-     * Submit Reversal Action
-     */
-    async function submitReversal() {
-        if (!pendingReversalTxnId) return;
-
-        const reasonInput = document.getElementById('reversal-reason');
-        const reason = reasonInput ? reasonInput.value.trim() : '';
-
-        if (!reason) {
-            if (window.showToast) window.showToast('Please provide a mandatory reversal reason', 'error');
-            if (reasonInput) reasonInput.focus();
-            return;
-        }
-
-        const confirmBtn = document.getElementById('confirm-reversal-btn');
-        if (window.api && window.api.setButtonLoading) {
-            window.api.setButtonLoading(confirmBtn, true, 'Reversing...');
-        }
-
-        try {
-            const response = await window.api.post(`/transactions/${pendingReversalTxnId}/reverse`, {
-                transaction_id: pendingReversalTxnId,
-                reason: reason
-            });
-
-            if (response && response.success) {
-                if (window.showToast) window.showToast('Transaction successfully reversed and ledger updated.', 'success');
-                window.closeReversalModal();
-                loadTransactions();
-            } else {
-                if (window.showToast) window.showToast((response && response.message) || 'Failed to reverse transaction', 'error');
-            }
-        } catch (error) {
-            console.error('Reversal error:', error);
-            if (window.showToast) window.showToast('Server error processing reversal', 'error');
-        } finally {
-            if (window.api && window.api.setButtonLoading) {
-                window.api.setButtonLoading(confirmBtn, false);
-            }
-        }
-    }
 
     /**
      * Open official Receipt PDF
@@ -1051,25 +863,10 @@
         document.getElementById('close-details-modal')?.addEventListener('click', window.closeTransactionDetails);
         document.getElementById('close-details-btn')?.addEventListener('click', window.closeTransactionDetails);
 
-        // Reversal Modal Buttons
-        document.getElementById('close-reversal-modal')?.addEventListener('click', window.closeReversalModal);
-        document.getElementById('cancel-reversal-btn')?.addEventListener('click', window.closeReversalModal);
-        document.getElementById('confirm-reversal-btn')?.addEventListener('click', submitReversal);
-
-        // Reversal textarea character counter
-        const reasonInput = document.getElementById('reversal-reason');
-        if (reasonInput) {
-            reasonInput.addEventListener('input', function() {
-                const count = document.getElementById('reversal-char-count');
-                if (count) count.textContent = `${this.value.length} / 255`;
-            });
-        }
-
         // Keyboard escape to close modals
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && isModalOpen) {
                 window.closeTransactionDetails();
-                window.closeReversalModal();
             }
         });
     }

@@ -13,7 +13,7 @@
         }
         @page {
             size: A4 portrait;
-            margin: 15mm 15mm 15mm 15mm;
+            margin: 12mm 15mm 12mm 15mm;
         }
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -30,21 +30,31 @@
         }
         .action-bar {
             width: 100%;
-            max-width: 580px;
+            max-width: 560px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 14px;
+            background: rgba(30, 41, 59, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 10px 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
         }
         .action-bar-title {
-            color: #94a3b8;
-            font-size: 12px;
-            font-weight: 700;
+            color: #e2e8f0;
+            font-size: 11px;
+            font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: 0.1em;
+            letter-spacing: 0.12em;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
         .action-bar-buttons {
             display: flex;
+            align-items: center;
             gap: 8px;
         }
         .btn {
@@ -58,30 +68,36 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            transition: all 0.2s ease;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .btn:active {
+            transform: scale(0.97);
         }
         .btn-print {
             background-color: #0284c7;
             color: #ffffff;
-            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+            box-shadow: 0 4px 14px rgba(2, 132, 199, 0.4);
         }
         .btn-print:hover {
             background-color: #0369a1;
+            box-shadow: 0 6px 18px rgba(2, 132, 199, 0.5);
         }
         .btn-close {
             background-color: #334155;
-            color: #f8fafc;
+            color: #f1f5f9;
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
         .btn-close:hover {
             background-color: #475569;
+            color: #ffffff;
         }
         .receipt-card {
             background-color: #ffffff;
             width: 100%;
-            max-width: 580px;
-            border-radius: 20px;
+            max-width: 560px;
+            border-radius: 24px;
             border: 1px solid #e2e8f0;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
             padding: 36px 32px;
             position: relative;
             overflow: hidden;
@@ -91,7 +107,7 @@
             top: 52%;
             left: 50%;
             transform: translate(-50%, -50%) rotate(-30deg);
-            font-size: 64px;
+            font-size: 60px;
             font-weight: 900;
             color: rgba(15, 23, 42, 0.03);
             white-space: nowrap;
@@ -108,9 +124,9 @@
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            padding-bottom: 20px;
+            padding-bottom: 18px;
             border-bottom: 2px solid #002645;
-            margin-bottom: 22px;
+            margin-bottom: 20px;
         }
         .logo-title {
             font-size: 28px;
@@ -121,8 +137,8 @@
         }
         .logo-subtitle {
             font-size: 11px;
-            font-weight: 700;
-            color: #64748b;
+            font-weight: 800;
+            color: #475569;
             text-transform: uppercase;
             letter-spacing: 0.08em;
             margin-top: 5px;
@@ -146,30 +162,30 @@
             color: #059669;
             border: 1px solid #a7f3d0;
         }
-        .status-reversed {
-            background-color: #fff1f2;
-            color: #e11d48;
-            border: 1px solid #fecdd3;
-        }
         .status-pending {
             background-color: #fffbeb;
             color: #d97706;
             border: 1px solid #fde68a;
         }
+        .status-failed {
+            background-color: #fff1f2;
+            color: #e11d48;
+            border: 1px solid #fecdd3;
+        }
         .amount-box {
             background-color: #f8fafc;
             border: 1px solid #e2e8f0;
             border-radius: 16px;
-            padding: 20px;
+            padding: 18px;
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 18px;
         }
         .amount-label {
-            font-size: 11px;
-            font-weight: 700;
+            font-size: 10px;
+            font-weight: 800;
             color: #64748b;
             text-transform: uppercase;
-            letter-spacing: 0.1em;
+            letter-spacing: 0.12em;
             margin-bottom: 4px;
         }
         .amount-val {
@@ -202,7 +218,7 @@
             font-size: 11px;
             font-weight: 700;
             color: #0369a1;
-            margin-bottom: 18px;
+            margin-bottom: 16px;
         }
         .flow-arrow {
             font-size: 14px;
@@ -210,13 +226,13 @@
             font-weight: 900;
         }
         .table-rows {
-            margin-bottom: 20px;
+            margin-bottom: 18px;
         }
         .row {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            padding: 10px 0;
+            padding: 9px 0;
             border-bottom: 1px dashed #e2e8f0;
             font-size: 12px;
         }
@@ -257,7 +273,7 @@
         }
         .footer {
             border-top: 1px solid #e2e8f0;
-            padding-top: 16px;
+            padding-top: 14px;
             text-align: center;
         }
         .footer-note {
@@ -266,7 +282,7 @@
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.08em;
-            line-height: 1.5;
+            line-height: 1.4;
         }
         .footer-date {
             font-size: 9px;
@@ -297,7 +313,10 @@
     
     <!-- Action Bar (Hidden during Print) -->
     <div class="action-bar">
-        <div class="action-bar-title">Official Receipt Preview</div>
+        <div class="action-bar-title">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+            Receipt Preview
+        </div>
         <div class="action-bar-buttons">
             <button onclick="window.print()" class="btn btn-print">
                 <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
@@ -317,13 +336,13 @@
                 <div>
                     <div class="logo-title">Finzo</div>
                     <div class="logo-subtitle">Official Banking Transaction Receipt</div>
-                    <div class="logo-contact">Finzo Enterprise Core Banking • 1800-FINZO-BANK</div>
+                    <div class="logo-contact">Finzo Core Banking System • 1800-FINZO-BANK</div>
                 </div>
                 <div>
                     <?php
                         $st = strtolower($txn['status'] ?? 'completed');
                         $badgeClass = 'status-completed';
-                        if ($st === 'reversed' || $st === 'failed') $badgeClass = 'status-reversed';
+                        if ($st === 'failed') $badgeClass = 'status-failed';
                         elseif ($st === 'pending') $badgeClass = 'status-pending';
                     ?>
                     <span class="status-badge <?= $badgeClass ?>"><?= htmlspecialchars($txn['status']) ?></span>
@@ -366,64 +385,63 @@
                 
                 <?php if ($txn['type'] === 'transfer') : ?>
                     <div class="row">
-                        <span class="row-label">From Account</span>
+                        <span class="row-label">From Account (Sender)</span>
                         <div class="row-value">
-                            <div><?= htmlspecialchars($txn['from_name'] === 'N/A' ? 'Settlement Core' : $txn['from_name']) ?></div>
+                            <div><?= htmlspecialchars($txn['from_name'] === 'N/A' ? 'Sender Customer' : $txn['from_name']) ?></div>
                             <div class="mono sub-val"><?= htmlspecialchars($txn['from_account_no'] ?? 'N/A') ?></div>
                         </div>
                     </div>
                     <div class="row">
-                        <span class="row-label">To Account</span>
+                        <span class="row-label">To Account (Beneficiary)</span>
                         <div class="row-value">
-                            <div><?= htmlspecialchars($txn['to_name'] === 'N/A' ? 'Settlement Core' : $txn['to_name']) ?></div>
+                            <div><?= htmlspecialchars($txn['to_name'] === 'N/A' ? 'Beneficiary Customer' : $txn['to_name']) ?></div>
                             <div class="mono sub-val"><?= htmlspecialchars($txn['to_account_no'] ?? 'N/A') ?></div>
                         </div>
                     </div>
-                <?php elseif ($txn['type'] === 'deposit' || $txn['type'] === 'interest_credit') : ?>
+                <?php elseif ($txn['type'] === 'deposit') : ?>
                     <div class="row">
-                        <span class="row-label">Source Channel</span>
+                        <span class="row-label">Processed By Staff</span>
                         <div class="row-value">
-                            <?php if (!empty($txn['staff_name']) || !empty($txn['staff_id'])) : ?>
-                                OTC Branch Desk
-                            <?php elseif ($txn['type'] === 'interest_credit') : ?>
-                                Finzo Treasury Pool
-                            <?php else : ?>
-                                Electronic Inflow
+                            <div><?= htmlspecialchars($txn['staff_name'] ?: 'Branch Staff') ?> (<?= htmlspecialchars($txn['staff_id'] ?: 'STF') ?>)</div>
+                            <?php if (!empty($txn['branch_name'])) : ?>
+                                <div class="sub-val"><?= htmlspecialchars($txn['branch_name']) ?> Branch</div>
                             <?php endif; ?>
                         </div>
                     </div>
                     <div class="row">
-                        <span class="row-label">Credited To</span>
+                        <span class="row-label">Credited Account</span>
                         <div class="row-value">
-                            <div><?= htmlspecialchars($txn['to_name'] === 'N/A' ? 'Settlement Account' : $txn['to_name']) ?></div>
+                            <div><?= htmlspecialchars($txn['to_name'] === 'N/A' ? 'Customer Account' : $txn['to_name']) ?></div>
                             <div class="mono sub-val"><?= htmlspecialchars($txn['to_account_no'] ?? 'N/A') ?></div>
                         </div>
                     </div>
                 <?php elseif ($txn['type'] === 'withdrawal') : ?>
                     <div class="row">
-                        <span class="row-label">Debited From</span>
-                        <div class="row-value">
-                            <div><?= htmlspecialchars($txn['from_name'] === 'N/A' ? 'Settlement Account' : $txn['from_name']) ?></div>
-                            <div class="mono sub-val"><?= htmlspecialchars($txn['from_account_no'] ?? 'N/A') ?></div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <span class="row-label">Payout Channel</span>
-                        <div class="row-value">
-                            <?= (!empty($txn['staff_name']) || !empty($txn['staff_id'])) ? 'OTC Branch Cash Payout' : 'ATM / Direct Cash Withdrawal' ?>
-                        </div>
-                    </div>
-                <?php endif; ?>
-
-                <!-- Staff & Branch Processing Information -->
-                <?php if (!empty($txn['staff_name']) || !empty($txn['staff_id'])) : ?>
-                    <div class="row row-staff">
                         <span class="row-label">Processed By Staff</span>
                         <div class="row-value">
-                            <div><?= htmlspecialchars($txn['staff_name'] ?: 'Branch Staff') ?> (<?= htmlspecialchars($txn['staff_id']) ?>)</div>
+                            <div><?= htmlspecialchars($txn['staff_name'] ?: 'Branch Staff') ?> (<?= htmlspecialchars($txn['staff_id'] ?: 'STF') ?>)</div>
                             <?php if (!empty($txn['branch_name'])) : ?>
                                 <div class="sub-val"><?= htmlspecialchars($txn['branch_name']) ?> Branch</div>
                             <?php endif; ?>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <span class="row-label">Debited Account</span>
+                        <div class="row-value">
+                            <div><?= htmlspecialchars($txn['from_name'] === 'N/A' ? ($txn['to_name'] === 'N/A' ? 'Customer Account' : $txn['to_name']) : $txn['from_name']) ?></div>
+                            <div class="mono sub-val"><?= htmlspecialchars($txn['from_account_no'] !== 'N/A' ? $txn['from_account_no'] : ($txn['to_account_no'] ?? 'N/A')) ?></div>
+                        </div>
+                    </div>
+                <?php elseif ($txn['type'] === 'interest_credit') : ?>
+                    <div class="row">
+                        <span class="row-label">Source</span>
+                        <div class="row-value">Finzo Core Treasury</div>
+                    </div>
+                    <div class="row">
+                        <span class="row-label">Credited Account</span>
+                        <div class="row-value">
+                            <div><?= htmlspecialchars($txn['to_name']) ?></div>
+                            <div class="mono sub-val"><?= htmlspecialchars($txn['to_account_no']) ?></div>
                         </div>
                     </div>
                 <?php endif; ?>
@@ -437,7 +455,7 @@
 
                 <?php if (!empty($txn['reference_note'])) : ?>
                 <div class="row">
-                    <span class="row-label">Reference / Note</span>
+                    <span class="row-label">Reference Note</span>
                     <span class="row-value mono" style="font-size:11px;max-width:280px;"><?= htmlspecialchars($txn['reference_note']) ?></span>
                 </div>
                 <?php endif; ?>
