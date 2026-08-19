@@ -28,7 +28,11 @@ class PdfController
         $statusColor = $txn['status'] === 'completed' ? 'text-emerald-600 bg-emerald-50 border-emerald-200' : 'text-amber-600 bg-amber-50 border-amber-200';
         $formattedAmount = CURRENCY_SYMBOL . ' ' . number_format($txn['amount'], 2);
 
+        header('Content-Type: text/html; charset=utf-8');
+        header("Content-Security-Policy: default-src 'self' 'unsafe-inline' https: data:; style-src 'self' 'unsafe-inline' https:; script-src 'self' 'unsafe-inline';");
+
         require FINZO_ROOT . '/app/Presentation/Views/Pdf/receipt-pdf.php';
+        exit;
     }
 
     public function staffStatement()
@@ -49,7 +53,11 @@ class PdfController
         $staff = $data['staff'];
         $transactions = $data['transactions'];
 
+        header('Content-Type: text/html; charset=utf-8');
+        header("Content-Security-Policy: default-src 'self' 'unsafe-inline' https: data:; style-src 'self' 'unsafe-inline' https:; script-src 'self' 'unsafe-inline';");
+
         require FINZO_ROOT . '/app/Presentation/Views/Pdf/staff-statement.php';
+        exit;
     }
 
     public function statement()
@@ -73,6 +81,10 @@ class PdfController
         $account = $data['account'];
         $transactions = $data['transactions'];
 
+        header('Content-Type: text/html; charset=utf-8');
+        header("Content-Security-Policy: default-src 'self' 'unsafe-inline' https: data:; style-src 'self' 'unsafe-inline' https:; script-src 'self' 'unsafe-inline';");
+
         require FINZO_ROOT . '/app/Presentation/Views/Pdf/statement.php';
+        exit;
     }
 }

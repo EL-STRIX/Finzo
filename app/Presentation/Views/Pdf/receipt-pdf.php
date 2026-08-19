@@ -34,13 +34,13 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background: rgba(30, 41, 59, 0.85);
+            background: rgba(30, 41, 59, 0.95);
             backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.12);
             border-radius: 16px;
             padding: 10px 16px;
             margin-bottom: 16px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
         }
         .action-bar-title {
             color: #e2e8f0;
@@ -68,7 +68,7 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.2s ease;
         }
         .btn:active {
             transform: scale(0.97);
@@ -254,13 +254,6 @@
             text-align: right;
             word-break: break-word;
         }
-        .row-staff {
-            background-color: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 10px;
-            padding: 8px 12px;
-            margin: 6px 0;
-        }
         .mono {
             font-family: monospace, Courier, monospace;
             font-size: 12px;
@@ -318,11 +311,11 @@
             Receipt Preview
         </div>
         <div class="action-bar-buttons">
-            <button onclick="window.print()" class="btn btn-print">
+            <button id="btn-print-receipt" onclick="window.print()" class="btn btn-print">
                 <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
                 Print Receipt
             </button>
-            <button onclick="window.close()" class="btn btn-close">Close</button>
+            <button id="btn-close-receipt" onclick="window.close()" class="btn btn-close">Close</button>
         </div>
     </div>
 
@@ -481,6 +474,13 @@
     </div>
 
     <script>
+        document.getElementById('btn-print-receipt')?.addEventListener('click', function() {
+            window.print();
+        });
+        document.getElementById('btn-close-receipt')?.addEventListener('click', function() {
+            window.close();
+        });
+
         // Automatic print prompt when loaded
         window.addEventListener('DOMContentLoaded', function() {
             setTimeout(function() {
