@@ -22,8 +22,10 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
         return $this->fetchAll("
             SELECT al.id, al.uuid, al.event_id, al.correlation_id, al.request_id,
                    al.module, al.action_type, al.entity_id, al.entity_type,
-                   al.actor_id, al.actor_role, al.details, al.ip_address, al.status,
+                   al.actor_id, al.actor_role, al.branch_id, al.session_id, al.device_info,
+                   al.details, al.ip_address, al.status,
                    al.previous_values, al.new_values, al.created_at,
+                   b.name as branch_name,
                    al.actor_id as actor_display_id,
                    CASE 
                        WHEN al.actor_role != '' THEN al.actor_role
@@ -48,6 +50,7 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
             LEFT JOIN users u ON (al.entity_type = 'user' AND (u.id = al.entity_id OR u.customer_id = al.entity_id)) OR (al.actor_role = 'user' AND (u.id = al.actor_id OR u.customer_id = al.actor_id))
             LEFT JOIN staff s ON (al.entity_type = 'staff' AND (s.id = al.entity_id OR s.staff_id = al.entity_id)) OR (al.actor_role = 'staff' AND (s.id = al.actor_id OR s.staff_id = al.actor_id))
             LEFT JOIN admin_users a ON (al.entity_type = 'admin' AND (a.id = al.entity_id OR a.admin_id = al.entity_id)) OR (al.actor_role = 'admin' AND (a.id = al.actor_id OR a.admin_id = al.actor_id))
+            LEFT JOIN branches b ON (al.branch_id = b.id OR al.branch_id = b.branch_code)
             WHERE {$whereSql}
             ORDER BY al.created_at DESC
             LIMIT {$perPage} OFFSET {$offset}

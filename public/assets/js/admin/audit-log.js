@@ -394,7 +394,24 @@
         document.getElementById('detail-module').textContent = (entry.module || 'SYSTEM').toUpperCase();
         document.getElementById('detail-entity-type').textContent = (entry.entity_type || 'N/A').toUpperCase();
         document.getElementById('detail-entity-id').textContent = entry.entity_display_id || entry.entity_id || '-';
-        document.getElementById('detail-request-id').textContent = entry.request_id || entry.correlation_id || entry.session_id || 'None';
+        document.getElementById('detail-correlation-id').textContent = entry.correlation_id || 'None';
+        document.getElementById('detail-request-id').textContent = entry.request_id || entry.session_id || 'None';
+
+        // Branch info
+        const branchRow = document.getElementById('detail-branch-row');
+        const branchEl = document.getElementById('detail-branch');
+        if (entry.branch_name || entry.branch_id) {
+            if (branchRow) branchRow.classList.remove('hidden');
+            if (branchEl) branchEl.textContent = entry.branch_name ? `${entry.branch_name} (${entry.branch_id})` : entry.branch_id;
+        } else {
+            if (branchRow) branchRow.classList.add('hidden');
+        }
+
+        // Client & Environment Context
+        const uuidEl = document.getElementById('detail-uuid');
+        const devEl = document.getElementById('detail-device');
+        if (uuidEl) uuidEl.textContent = entry.uuid || 'N/A';
+        if (devEl) devEl.textContent = entry.device_info || 'Browser / Standard Web Client';
 
         // Details Description
         document.getElementById('detail-details').textContent = entry.details || 'No additional narrative recorded for this event.';

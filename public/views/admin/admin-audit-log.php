@@ -299,7 +299,7 @@ ob_start();
                         <span class="material-symbols-outlined text-sm text-primary">person</span>
                         <span>Actor Information</span>
                     </div>
-                    <div class="space-y-2">
+                    <div class="space-y-2.5">
                         <div class="flex items-center justify-between text-xs">
                             <span class="text-text-secondary">Role:</span>
                             <span id="detail-actor-role" class="font-bold text-text-primary">--</span>
@@ -316,6 +316,10 @@ ob_start();
                             <span class="text-text-secondary">IP Address:</span>
                             <span id="detail-ip" class="font-mono text-text-primary">--</span>
                         </div>
+                        <div class="flex items-center justify-between text-xs" id="detail-branch-row">
+                            <span class="text-text-secondary">Branch:</span>
+                            <span id="detail-branch" class="font-bold text-text-primary">--</span>
+                        </div>
                     </div>
                 </div>
 
@@ -325,7 +329,7 @@ ob_start();
                         <span class="material-symbols-outlined text-sm text-info">category</span>
                         <span>Target Entity & Scope</span>
                     </div>
-                    <div class="space-y-2">
+                    <div class="space-y-2.5">
                         <div class="flex items-center justify-between text-xs">
                             <span class="text-text-secondary">Module:</span>
                             <span id="detail-module" class="font-bold text-text-primary uppercase">--</span>
@@ -339,9 +343,31 @@ ob_start();
                             <span id="detail-entity-id" class="font-mono font-bold text-text-primary">--</span>
                         </div>
                         <div class="flex items-center justify-between text-xs">
-                            <span class="text-text-secondary">Correlation / Req:</span>
-                            <span id="detail-request-id" class="font-mono text-xs text-text-secondary truncate max-w-[150px]">--</span>
+                            <span class="text-text-secondary">Correlation ID:</span>
+                            <span id="detail-correlation-id" class="font-mono text-xs text-text-secondary truncate max-w-[160px]">--</span>
                         </div>
+                        <div class="flex items-center justify-between text-xs">
+                            <span class="text-text-secondary">Request ID:</span>
+                            <span id="detail-request-id" class="font-mono text-xs text-text-secondary truncate max-w-[160px]">--</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Device & Network Card -->
+            <div class="p-4 rounded-xl bg-surface border border-border-subtle" id="detail-device-card">
+                <div class="text-[10px] font-black text-text-secondary uppercase tracking-widest mb-2 flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-sm text-primary">devices</span>
+                    <span>Client & Environment Context</span>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                    <div class="flex items-center justify-between">
+                        <span class="text-text-secondary">System UUID:</span>
+                        <span id="detail-uuid" class="font-mono text-[11px] text-text-primary truncate max-w-[180px]">--</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-text-secondary">User Agent / Device:</span>
+                        <span id="detail-device" class="font-mono text-[11px] text-text-primary truncate max-w-[180px]">--</span>
                     </div>
                 </div>
             </div>
