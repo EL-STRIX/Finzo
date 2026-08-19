@@ -46,7 +46,7 @@
         if (!tbody) return;
 
         if (!users.length) {
-            tbody.innerHTML = '<tr><td colspan=\"7\" class=\"py-12 text-center\"><div class=\"flex flex-col items-center justify-center\"><span class=\"material-symbols-outlined text-4xl text-text-muted/30 mb-3\">inventory_2</span><div class=\"text-sm font-bold text-text-muted uppercase tracking-widest\">No users found.</div></div></td></tr>';
+            tbody.innerHTML = '<tr><td colspan="7" class="py-12 text-center"><div class="flex flex-col items-center justify-center"><span class="material-symbols-outlined text-4xl text-text-muted/30 mb-3">inventory_2</span><div class="text-sm font-bold text-text-muted uppercase tracking-widest">No users found.</div></div></td></tr>';
             return;
         }
 
@@ -65,8 +65,21 @@
             
             const fallbackAvatar = `<div class="admin-avatar !w-10 !h-10 !rounded-xl text-[12px] font-bold text-white flex items-center justify-center shadow-inner" style="background: ${gradient}">${initials}</div>`;
             const avatarUrl = u.profile_picture_url || u.avatar_url;
+            // Build HTML entities programmatically so the source cannot be mangled by formatters (XSS prevention)
+            const AMP_CH = String.fromCharCode(38);   // &
+            const Q_CH = String.fromCharCode(34);     // "
+            const LT_CH = String.fromCharCode(60);    // <
+            const GT_CH = String.fromCharCode(62);    // >
+            const escHtml = function(s) {
+                return String(s)
+                    .replace(new RegExp(Q_CH, 'g'), AMP_CH + 'quot;')
+                    .replace(new RegExp(LT_CH, 'g'), AMP_CH + 'lt;')
+                    .replace(new RegExp(GT_CH, 'g'), AMP_CH + 'gt;');
+            };
+            const escapedFallback = escHtml(fallbackAvatar);
+            const escapedName = escHtml(name);
             const avatarHtml = avatarUrl 
-                ? `<img src="${avatarUrl}" class="admin-avatar !w-10 !h-10 !rounded-xl object-cover border border-border-subtle" alt="${name}" onerror="this.outerHTML='${fallbackAvatar.replace(/"/g, '&quot;')}'">` 
+                ? `<img src="${avatarUrl}" class="admin-avatar !w-10 !h-10 !rounded-xl object-cover border border-border-subtle" alt="${escapedName}" onerror="this.outerHTML='${escapedFallback}'">` 
                 : fallbackAvatar;
 
             const balanceStr = u.balance !== null && u.balance !== undefined ? '₹' + parseFloat(u.balance).toLocaleString('en-IN', {minimumFractionDigits: 2}) : '₹0.00';
@@ -167,15 +180,6 @@
                     currentPage = 1;
                     loadUsers();
                 }, 300);
-            });
-
-        }
-
-        const statusInput = document.getElementById('filter-status');
-        if (statusInput) {
-            statusInput.addEventListener('change', () => {
-                currentPage = 1;
-                loadUsers();
             });
         }
 
