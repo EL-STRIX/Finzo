@@ -23,9 +23,9 @@ interface AdminOperationsRepositoryInterface
     public function insertInterestRate(float $rate, string $applyFrom, string $applyDate, string $adminDisplayId): void;
     public function updateActiveSavingsInterestRate(float $rate): void;
     public function getActiveSavingsAccounts();
-    public function addTransaction(string $txnId, ?int $fromAccountId, int $toAccountId, string $type, float $amount, float $balanceAfter, string $description, string $referenceNote, string $status): void;
+    public function addTransaction(string $txnId, ?int $fromAccountId, ?int $toAccountId, string $type, float $amount, float $balanceAfter, string $description, string $referenceNote, string $status): void;
     public function updateAccountBalance(float $balance, int $accountId): void;
-    public function addNotification(int $userId, string $type, string $title, string $message): void;
+    public function addNotification(string|int $userId, string $type, string $title, string $message): void;
     public function getExportUsers(string $whereSql, array $params);
     public function exportUsersGenerator(string $whereSql, array $params): \Generator;
     public function countLockedAccounts(string $whereSql, array $params): int;

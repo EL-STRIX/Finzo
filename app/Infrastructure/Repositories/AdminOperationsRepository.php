@@ -202,7 +202,7 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
         return $this->fetchAll("SELECT id, user_id, balance FROM accounts WHERE account_type = 'savings' AND status = 'active' AND balance > 0", []);
     }
 
-    public function addTransaction(string $txnId, ?int $fromAccountId, int $toAccountId, string $type, float $amount, float $balanceAfter, string $description, string $referenceNote, string $status): void
+    public function addTransaction(string $txnId, ?int $fromAccountId, ?int $toAccountId, string $type, float $amount, float $balanceAfter, string $description, string $referenceNote, string $status): void
     {
         $this->execute("
             INSERT INTO transactions (txn_id, from_account_id, to_account_id, type, amount, balance_after, description, reference_note, status, created_at)
@@ -215,7 +215,7 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
         $this->execute("UPDATE accounts SET balance = ?, updated_at = NOW() WHERE id = ?", [$balance, $accountId]);
     }
 
-    public function addNotification(int $userId, string $type, string $title, string $message): void
+    public function addNotification(string|int $userId, string $type, string $title, string $message): void
     {
         $this->execute("
             INSERT INTO notifications (user_id, type, title, message, is_read, created_at)
@@ -231,7 +231,7 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
     public function getAccountForUpdate(int $accountId)
     {
         return $this->fetchOne("
-            SELECT a.id, a.account_no, a.balance, u.full_name, u.customer_id
+            SELECT a.id, a.account_no, a.balance, u.full_name, u.customer_id, u.id as user_id
             FROM accounts a
             JOIN users u ON a.user_id = u.customer_id
             WHERE a.id = ? AND a.status = 'active'

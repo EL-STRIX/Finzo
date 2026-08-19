@@ -1520,7 +1520,7 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
             }
 
             // Mark original as reversed
-            $pdo->prepare("UPDATE transactions SET status = 'reversed', updated_at = NOW() WHERE id = ?")->execute([$txn['id']]);
+            $pdo->prepare("UPDATE transactions SET status = 'reversed' WHERE id = ?")->execute([$txn['id']]);
 
             // Create Reversal transaction
             $revTxnId = generate_transaction_id();
@@ -1550,7 +1550,10 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
                     "Reversed transaction {$transactionId}. Reason: {$reason}"
                 );
             }
-            $this->repository->addNotification($txn['to_user_id'], 'transaction', 'Transaction Reversed', 'A transaction of ₹' . number_format($txn['amount'], 2) . ' was reversed by administration. Ref: ' . $transactionId);
+            $targetCustomerId = $dest ? ($dest['customer_id'] ?? null) : ($source ? ($source['customer_id'] ?? null) : null);
+            if ($targetCustomerId) {
+                $this->repository->addNotification($targetCustomerId, 'transaction', 'Transaction Reversed', 'A transaction of ₹' . number_format($txn['amount'], 2) . ' was reversed by administration. Ref: ' . $transactionId);
+            }
 
             $this->repository->commit();
             return ['success' => true, 'message' => 'Transaction reversed successfully', 'code' => 200];

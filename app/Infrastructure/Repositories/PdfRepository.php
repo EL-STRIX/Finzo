@@ -5,7 +5,7 @@ class PdfRepository extends BaseRepository implements \App\Domain\Contracts\Repo
 {
     public function getTransactionForReceipt(string $txnId): ?array
     {
-        $stmt = $this->pdo->prepare("
+        $stmt = $this->db->prepare("
             SELECT
                 t.txn_id, t.type, t.amount, t.balance_after, t.description,
                 t.reference_note, t.status, t.created_at, t.from_account_id, t.to_account_id,
@@ -32,20 +32,19 @@ class PdfRepository extends BaseRepository implements \App\Domain\Contracts\Repo
 
     public function getUserAccounts(int $userId): array
     {
-        $stmt = $this->pdo->prepare("SELECT a.id FROM accounts a JOIN users u ON a.user_id = u.customer_id WHERE u.id = ?");
+        $stmt = $this->db->prepare("SELECT a.id FROM accounts a JOIN users u ON a.user_id = u.customer_id WHERE u.id = ?");
         $stmt->execute([$userId]);
-        return $stmt->fetchAll(
-PTO::FETCH_COLUMN);
+        return $stmt->fetchAll(\PDO::FETCH_COLUMN);
     }
     
     public function getStaffStatementData(int $staffId): array
     {
-        $stmt = $this->pdo->prepare("SELECT staff_id as staff_code, full_name, personal_email as email, phone, created_at FROM staff WHERE id = ?");
+        $stmt = $this->db->prepare("SELECT staff_id as staff_code, full_name, personal_email as email, phone, created_at FROM staff WHERE id = ?");
         $stmt->execute([$staffId]);
         $staff = $stmt->fetch();
         if (!$staff) return [];
 
-        $txn_stmt = $this->pdo->prepare("
+        $txn_stmt = $this->db->prepare("
             SELECT
                 t.txn_id, t.type, t.amount, t.created_at, t.status, t.description, t.reference_note,
                 fa.account_no as from_acc, ta.account_no as to_acc,
@@ -68,7 +67,7 @@ PTO::FETCH_COLUMN);
     
     public function getStatementData(int $userId, string $fromDate, string $toDate): array
     {
-        $stmt = $this->pdo->prepare("
+        $stmt = $this->db->prepare("
             SELECT a.id, a.account_no, a.account_type, a.balance, u.full_name, u.email, u.phone
             FROM accounts a JOIN users u ON a.user_id = u.customer_id
             WHERE u.id = ? AND a.status = 'active' LIMIT 1
@@ -77,7 +76,7 @@ PTO::FETCH_COLUMN);
         $account = $stmt->fetch();
         if (!$account) return [];
 
-        $stmt = $this->pdo->prepare("
+        $stmt = $this->db->prepare("
             SELECT t.txn_id, t.type, t.amount, t.balance_after, t.description, t.created_at,
                    t.from_account_id, t.to_account_id
             FROM transactions t
