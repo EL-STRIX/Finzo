@@ -1,6 +1,6 @@
 /**
  * Finzo Admin — Audit Trail & Activity Log Handler
- * Enterprise compliance logging, interactive filtering, CSV export, and record inspection.
+ * Enterprise compliance logging, interactive filtering, and record inspection.
  */
 
 (function() {
@@ -141,7 +141,7 @@
                     <div class="text-[11px] font-bold text-text-primary">${formatDate(entry.created_at)}</div>
                     <div class="text-[10px] opacity-70 mt-0.5">${formatTime(entry.created_at)}</div>
                 </td>
-                <td class="py-3 px-6 text-right print:hidden">
+                <td class="py-3 px-6 text-right">
                     <button class="btn-view-detail p-1.5 rounded-lg text-text-secondary hover:text-primary hover:bg-primary/10 transition-colors" title="Inspect Record">
                         <span class="material-symbols-outlined text-[18px]">visibility</span>
                     </button>
@@ -237,7 +237,7 @@
         return `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-sky-50 text-sky-600 dark:bg-sky-950/40 dark:text-sky-400 border border-sky-200 dark:border-sky-800"><span class="w-1.5 h-1.5 rounded-full bg-sky-500"></span>${s.toUpperCase()}</span>`;
     }
 
-    // Update Top Metric Stat Cards & Print Headers
+    // Update Top Metric Stat Cards
     function updateStats(data) {
         const stats = data.stats || {};
         const total = data.total || stats.total || 0;
@@ -248,12 +248,6 @@
         const elUser = document.getElementById('stat-user');
         const elSystem = document.getElementById('stat-system');
 
-        const printTotal = document.getElementById('print-total');
-        const printAdmin = document.getElementById('print-admin');
-        const printStaff = document.getElementById('print-staff');
-        const printUser = document.getElementById('print-user');
-        const printSystem = document.getElementById('print-system');
-
         const fmt = (num) => Number(num || 0).toLocaleString();
 
         if (elTotal) elTotal.textContent = fmt(total);
@@ -261,12 +255,6 @@
         if (elStaff) elStaff.textContent = fmt(stats.staff);
         if (elUser) elUser.textContent = fmt(stats.user);
         if (elSystem) elSystem.textContent = fmt(stats.system);
-
-        if (printTotal) printTotal.textContent = fmt(total);
-        if (printAdmin) printAdmin.textContent = fmt(stats.admin);
-        if (printStaff) printStaff.textContent = fmt(stats.staff);
-        if (printUser) printUser.textContent = fmt(stats.user);
-        if (printSystem) printSystem.textContent = fmt(stats.system);
     }
 
     // Populate Dynamic Action Types in Filter Dropdown
@@ -425,24 +413,6 @@
         }, 200);
     }
 
-    // Export CSV Trigger
-    function exportAuditLogs() {
-        const params = getFilterParams();
-        params.export = 'csv';
-        const url = window.api.buildUrl('/admin/audit-logs', params);
-
-        if (window.utils && window.utils.showToast) {
-            window.utils.showToast('Generating audit report CSV export...', 'info');
-        }
-
-        const a = document.createElement('a');
-        a.href = url;
-        a.setAttribute('download', `finzo_audit_logs_${new Date().toISOString().slice(0, 10)}.csv`);
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-    }
-
     // Set Role Filter (called by role pills or stat cards)
     window.setRoleFilter = function(role) {
         const roleInput = document.getElementById('filter-actor-role');
@@ -540,32 +510,6 @@
         }
     };
 
-    // Print Audit Statement
-    window.printAuditLog = function() {
-        const printPeriod = document.getElementById('print-period');
-        const printGen = document.getElementById('print-generated');
-        const fromVal = document.getElementById('date-from')?.value;
-        const toVal = document.getElementById('date-to')?.value;
-
-        if (printPeriod) {
-            if (fromVal && toVal) {
-                printPeriod.textContent = `Period: ${fromVal} to ${toVal}`;
-            } else if (fromVal) {
-                printPeriod.textContent = `Period: From ${fromVal}`;
-            } else if (toVal) {
-                printPeriod.textContent = `Period: Up to ${toVal}`;
-            } else {
-                printPeriod.textContent = 'Scope: Full System Activity Audit';
-            }
-        }
-
-        if (printGen) {
-            printGen.textContent = new Date().toLocaleString();
-        }
-
-        window.print();
-    };
-
     // Helper: JSON Formatter
     function formatJson(val) {
         if (!val) return 'None';
@@ -620,8 +564,6 @@
         const dateFrom = document.getElementById('date-from');
         const dateTo = document.getElementById('date-to');
         const perPageSelect = document.getElementById('rows-per-page');
-        const refreshBtn = document.getElementById('refresh-btn');
-        const exportBtn = document.getElementById('export-btn');
         const resetBtn = document.getElementById('reset-filters-btn');
 
         // Debounced Search
@@ -683,20 +625,6 @@
                 window.setRoleFilter(role);
             });
         });
-
-        // Top Action Buttons
-        if (refreshBtn) {
-            refreshBtn.addEventListener('click', () => {
-                loadAuditLog();
-                if (window.utils && window.utils.showToast) {
-                    window.utils.showToast('Audit log updated', 'success');
-                }
-            });
-        }
-
-        if (exportBtn) {
-            exportBtn.addEventListener('click', exportAuditLogs);
-        }
 
         if (resetBtn) {
             resetBtn.addEventListener('click', window.resetAuditFilters);
