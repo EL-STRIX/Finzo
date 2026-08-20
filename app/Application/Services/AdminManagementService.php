@@ -432,12 +432,22 @@ class AdminManagementService implements \App\Domain\Contracts\Services\AdminMana
             return ['success' => true, 'message' => 'Password updated successfully'];
         }
 
+        if (isset($data['two_fa_enabled'])) {
+            $twoFa = !empty($data['two_fa_enabled']) ? 1 : 0;
+            $this->repository->updateProfileFields($adminId, ["two_fa_enabled = ?"], [$twoFa]);
+            \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
+                new \App\Application\Events\GenericAuditAction('admin_2fa_updated', $adminId, \App\Domain\Enums\RoleEnum::ADMIN->value, $adminId, \App\Domain\Enums\RoleEnum::ADMIN->value, 'Two-factor authentication setting modified')
+            );
+            return ['success' => true, 'message' => 'Two-Factor Authentication preference updated successfully'];
+        }
+
         $fullName = $this->security->cleanInput($data['full_name'] ?? '');
         $phone = $this->security->cleanInput($data['phone'] ?? '');
         $date_of_birth = $this->security->cleanInput($data['date_of_birth'] ?? '');
         $gender = $this->security->cleanInput($data['gender'] ?? '');
         $security_question = isset($data['security_question']) ? $this->security->cleanInput($data['security_question']) : null;
         $security_answer = $data['security_answer'] ?? '';
+
 
         if (strlen($fullName) < 2 || strlen($fullName) > 100) {
             throw new ApiException('Full name must be between 2 and 100 characters', 422, ['field' => 'full_name']);
