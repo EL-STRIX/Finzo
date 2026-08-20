@@ -35,7 +35,7 @@ ob_start();
                         <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-success/20 to-success/5 text-success flex items-center justify-center mb-4 border border-success/20 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]">
                             <span class="material-symbols-outlined text-2xl" aria-hidden="true">verified_user</span>
                         </div>
-                        <div class="text-xs font-bold text-text-secondary uppercase tracking-[0.15em] mb-2">Active Accounts</div>
+                        <div class="text-xs font-bold text-text-secondary uppercase tracking-[0.15em] mb-2">Active Users</div>
                         <div class="text-3xl font-black font-display tracking-tighter leading-none text-text-primary skeleton min-w-[40px]" id="stat-active-users">—</div>
                     </div>
                 </div>
@@ -75,7 +75,7 @@ ob_start();
             <div class="ds-card overflow-hidden mt-6">
                 <!-- Header / Filters -->
                 <div class="p-6 border-b border-border-subtle bg-background">
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4" id="filtersContainer">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="filtersContainer">
                         <div>
                             <label for="user-search" class="fin-label">Search User</label>
                             <div class="fin-input-wrapper relative">
@@ -84,17 +84,17 @@ ob_start();
                             </div>
                         </div>
                         <div>
-                            <label for="filter-status" class="fin-label">Account Status</label>
+                            <label for="filter-status" class="fin-label">User Status</label>
                             <div class="finzo-dropdown w-full" id="status-dropdown">
                                 <input type="hidden" id="filter-status" value="all">
                                 <div class="finzo-dropdown-trigger fin-input !flex items-center justify-between">
-                                    <span class="dropdown-label">All Accounts</span>
+                                    <span class="dropdown-label">All Users</span>
                                     <span class="material-symbols-outlined chevron transition-transform duration-300" aria-hidden="true">expand_more</span>
                                 </div>
                                 <div class="finzo-dropdown-menu z-50">
-                                    <div class="finzo-dropdown-option is-selected" data-value="all">All Accounts</div>
-                                    <div class="finzo-dropdown-option" data-value="active">Active Accounts</div>
-                                    <div class="finzo-dropdown-option" data-value="suspended">Suspended Accounts</div>
+                                    <div class="finzo-dropdown-option is-selected" data-value="all">All Users</div>
+                                    <div class="finzo-dropdown-option" data-value="active">Active</div>
+                                    <div class="finzo-dropdown-option" data-value="suspended">Suspended</div>
                                 </div>
                             </div>
                         </div>
@@ -114,22 +114,6 @@ ob_start();
                                 </div>
                             </div>
                         </div>
-                        <div>
-                            <label for="filter-balance" class="fin-label">Account Balance</label>
-                            <div class="finzo-dropdown w-full" id="balance-dropdown">
-                                <input type="hidden" id="filter-balance" value="all">
-                                <div class="finzo-dropdown-trigger fin-input !flex items-center justify-between">
-                                    <span class="dropdown-label">All Balances</span>
-                                    <span class="material-symbols-outlined chevron transition-transform duration-300" aria-hidden="true">expand_more</span>
-                                </div>
-                                <div class="finzo-dropdown-menu z-50">
-                                    <div class="finzo-dropdown-option is-selected" data-value="all">All Balances</div>
-                                    <div class="finzo-dropdown-option" data-value="premium">Premium (> ₹1L)</div>
-                                    <div class="finzo-dropdown-option" data-value="standard">Standard (> ₹0)</div>
-                                    <div class="finzo-dropdown-option" data-value="zero">Zero Balance</div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
 
@@ -141,8 +125,8 @@ ob_start();
                                 <th scope="col">User Name</th>
                                 <th scope="col">Email</th>
                                 <th scope="col">Phone</th>
-                                <th scope="col">Balance</th>
                                 <th scope="col">Status</th>
+                                <th scope="col">Joined Date</th>
                                 <th scope="col">Last Active</th>
                                 <th class="text-right" scope="col">Action</th>
                             </tr>
@@ -187,20 +171,20 @@ ob_start();
                     <div class="p-6 space-y-4">
                         <p class="text-xs text-text-secondary">Select export criteria to generate the CSV download:</p>
 
-                        <!-- 3 Filter Dropdowns in Modal with Stacking Context -->
+                        <!-- Filter Dropdowns in Modal with Stacking Context -->
                         <div class="space-y-3.5">
                             <div class="relative z-30">
-                                <label for="export-filter-status" class="fin-label">Account Status</label>
+                                <label for="export-filter-status" class="fin-label">User Status</label>
                                 <div class="finzo-dropdown w-full" id="export-status-dropdown">
                                     <input type="hidden" id="export-filter-status" value="all">
                                     <div class="finzo-dropdown-trigger fin-input !flex items-center justify-between">
-                                        <span class="dropdown-label">All Accounts</span>
+                                        <span class="dropdown-label">All Users</span>
                                         <span class="material-symbols-outlined chevron transition-transform duration-300" aria-hidden="true">expand_more</span>
                                     </div>
                                     <div class="finzo-dropdown-menu z-50">
-                                        <div class="finzo-dropdown-option is-selected" data-value="all">All Accounts</div>
-                                        <div class="finzo-dropdown-option" data-value="active">Active Accounts</div>
-                                        <div class="finzo-dropdown-option" data-value="suspended">Suspended Accounts</div>
+                                        <div class="finzo-dropdown-option is-selected" data-value="all">All Users</div>
+                                        <div class="finzo-dropdown-option" data-value="active">Active</div>
+                                        <div class="finzo-dropdown-option" data-value="suspended">Suspended</div>
                                     </div>
                                 </div>
                             </div>
@@ -218,23 +202,6 @@ ob_start();
                                         <div class="finzo-dropdown-option" data-value="recent">Recently Online (7 Days)</div>
                                         <div class="finzo-dropdown-option" data-value="inactive_30">Inactive (30+ Days)</div>
                                         <div class="finzo-dropdown-option" data-value="dormant">Dormant (90+ Days)</div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="relative z-10">
-                                <label for="export-filter-balance" class="fin-label">Account Balance</label>
-                                <div class="finzo-dropdown w-full" id="export-balance-dropdown">
-                                    <input type="hidden" id="export-filter-balance" value="all">
-                                    <div class="finzo-dropdown-trigger fin-input !flex items-center justify-between">
-                                        <span class="dropdown-label">All Balances</span>
-                                        <span class="material-symbols-outlined chevron transition-transform duration-300" aria-hidden="true">expand_more</span>
-                                    </div>
-                                    <div class="finzo-dropdown-menu z-50">
-                                        <div class="finzo-dropdown-option is-selected" data-value="all">All Balances</div>
-                                        <div class="finzo-dropdown-option" data-value="premium">Premium (> ₹1L)</div>
-                                        <div class="finzo-dropdown-option" data-value="standard">Standard (> ₹0)</div>
-                                        <div class="finzo-dropdown-option" data-value="zero">Zero Balance</div>
                                     </div>
                                 </div>
                             </div>

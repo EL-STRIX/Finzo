@@ -18,7 +18,6 @@
                 search: document.getElementById('user-search')?.value?.trim() || '',
                 status: document.getElementById('filter-status')?.value || 'all',
                 activity: document.getElementById('filter-activity')?.value || 'all',
-                balance: document.getElementById('filter-balance')?.value || 'all',
                 page: currentPage,
                 per_page: 10
             });
@@ -82,7 +81,7 @@
                 ? `<img src="${avatarUrl}" class="admin-avatar !w-10 !h-10 !rounded-xl object-cover border border-border-subtle" alt="${escapedName}" onerror="this.outerHTML='${escapedFallback}'">` 
                 : fallbackAvatar;
 
-            const balanceStr = u.balance !== null && u.balance !== undefined ? '₹' + parseFloat(u.balance).toLocaleString('en-IN', {minimumFractionDigits: 2}) : '₹0.00';
+            const joinedDate = u.created_at ? (window.FinzoUtils ? window.FinzoUtils.formatDate(u.created_at) : u.created_at) : '—';
             const lastActive = u.last_login_at ? (window.FinzoUtils ? window.FinzoUtils.formatDate(u.last_login_at) : u.last_login_at) : 'Never';
             
             rowsHtml += `
@@ -98,8 +97,8 @@
                 </td>
                 <td class="text-xs opacity-70">${u.email || '—'}</td>
                 <td class="text-xs">${u.phone || 'N/A'}</td>
-                <td class="text-xs font-mono font-bold">${balanceStr}</td>
                 <td><span class="status-badge ${statusClass}"><span class="status-dot"></span>${statusText}</span></td>
+                <td class="text-xs font-semibold opacity-70">${joinedDate}</td>
                 <td class="text-[11px] opacity-60 font-semibold">${lastActive}</td>
                 <td class="text-right">
                     <a href="admin-user-detail.php?id=${u.id}" class="btn btn-secondary px-4 py-2 text-[11px] uppercase tracking-wider font-bold rounded-xl inline-flex items-center gap-2">
@@ -183,7 +182,7 @@
             });
         }
 
-        ['filter-status', 'filter-activity', 'filter-balance'].forEach(id => {
+        ['filter-status', 'filter-activity'].forEach(id => {
             const el = document.getElementById(id);
             if (el) {
                 el.addEventListener('change', () => {
@@ -200,7 +199,6 @@
                 if(document.getElementById('user-search')) document.getElementById('user-search').value = '';
                 if(document.getElementById('filter-status')) document.getElementById('filter-status').value = 'all';
                 if(document.getElementById('filter-activity')) document.getElementById('filter-activity').value = 'all';
-                if(document.getElementById('filter-balance')) document.getElementById('filter-balance').value = 'all';
                 
                 // Reset custom dropdown labels
                 document.querySelectorAll('.dropdown-label').forEach(label => {
@@ -256,11 +254,9 @@
             // Sync modal dropdowns with current page filter values
             const curStatus = document.getElementById('filter-status')?.value || 'all';
             const curActivity = document.getElementById('filter-activity')?.value || 'all';
-            const curBalance = document.getElementById('filter-balance')?.value || 'all';
 
             setModalDropdownValue('export-status-dropdown', 'export-filter-status', curStatus);
             setModalDropdownValue('export-activity-dropdown', 'export-filter-activity', curActivity);
-            setModalDropdownValue('export-balance-dropdown', 'export-filter-balance', curBalance);
 
             exportModal.classList.remove('hidden');
             exportModal.style.display = 'flex';
@@ -330,10 +326,9 @@
                     const search = document.getElementById('user-search') ? document.getElementById('user-search').value.trim() : '';
                     const status = document.getElementById('export-filter-status') ? document.getElementById('export-filter-status').value : 'all';
                     const activity = document.getElementById('export-filter-activity') ? document.getElementById('export-filter-activity').value : 'all';
-                    const balance = document.getElementById('export-filter-balance') ? document.getElementById('export-filter-balance').value : 'all';
                     const sort = 'newest';
                     
-                    const params = { search, status, sort, activity, balance };
+                    const params = { search, status, sort, activity };
                     const basePath = window.location.pathname.includes('/public/') ? '/Finzo/public' : '/Finzo';
                     const exportUrl = window.api && typeof window.api.buildUrl === 'function'
                         ? window.api.buildUrl('/users/export', params)
