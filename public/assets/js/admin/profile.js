@@ -14,7 +14,31 @@
         }
     }
 
+    function resolvePhotoUrl(path) {
+        if (!path) return '';
+        if (path.startsWith('http') || path.startsWith('data:')) return path;
+        let clean = path.replace(/^\/+/, '');
+        if (clean.startsWith('Finzo/public/')) {
+            return '/' + clean;
+        }
+        if (clean.startsWith('uploads/') || clean.startsWith('assets/')) {
+            return '/Finzo/public/' + clean;
+        }
+        return '/Finzo/public/uploads/' + clean;
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+
     let currentAdminRole = null;
+
     let allActivityLogs = [];
     let activityData = [];
     let currentActivityPage = 1;
@@ -138,18 +162,7 @@
                 const avatarImg = document.getElementById('avatar-img-preview');
                 const avatarInitials = document.getElementById('avatar-initials');
                 if (admin.profile_photo) {
-                    let photoSrc = admin.profile_photo;
-                    if (!photoSrc.startsWith('http')) {
-                        if (photoSrc.startsWith('/Finzo/public/')) {
-                            // full
-                        } else if (photoSrc.startsWith('/uploads/') || photoSrc.startsWith('uploads/')) {
-                            photoSrc = '/Finzo/public/' + photoSrc.replace(/^\/+/, '');
-                        } else if (photoSrc.startsWith('/assets/') || photoSrc.startsWith('assets/')) {
-                            photoSrc = '/Finzo/public/' + photoSrc.replace(/^\/+/, '');
-                        } else {
-                            photoSrc = '/Finzo/public/uploads/' + photoSrc.replace(/^\/+/, '');
-                        }
-                    }
+                    const photoSrc = resolvePhotoUrl(admin.profile_photo);
                     if (avatarImg) {
                         avatarImg.src = photoSrc + '?v=' + Date.now();
                         avatarImg.classList.remove('hidden');
@@ -162,6 +175,7 @@
                         avatarInitials.classList.remove('hidden');
                     }
                 }
+
 
 
                 // Security Card Telemetry
@@ -403,9 +417,12 @@
                     statHtml = `<span class="px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest bg-rose-500/10 text-rose-600 border border-rose-500/20">• Suspended</span>`;
                 }
 
-                const photo = a.profile_photo
-                    ? `<img src="/Finzo/public/assets/${a.profile_photo}" class="w-9 h-9 rounded-xl object-cover shadow-sm ring-2 ring-primary/20">`
-                    : `<div class="w-9 h-9 rounded-xl bg-surface-subtle flex items-center justify-center text-xs font-black text-text-secondary border border-border-subtle">${(a.full_name || 'A').charAt(0).toUpperCase()}</div>`;
+                const initials = (a.full_name || 'A').split(' ').filter(Boolean).map(n => n[0]).join('').toUpperCase().substring(0, 2) || 'A';
+                const photoUrl = resolvePhotoUrl(a.profile_photo);
+                const photo = photoUrl
+                    ? `<img src="${photoUrl}" class="w-9 h-9 rounded-xl object-cover shadow-sm ring-2 ring-primary/20" alt="${escapeHtml(a.full_name || 'Admin')}" onerror="this.outerHTML='<div class=\\\'w-9 h-9 rounded-xl bg-surface-subtle flex items-center justify-center text-xs font-black text-text-secondary border border-border-subtle\\\'>${initials}</div>'">`
+                    : `<div class="w-9 h-9 rounded-xl bg-surface-subtle flex items-center justify-center text-xs font-black text-text-secondary border border-border-subtle">${initials}</div>`;
+
 
                 const formatDateLocal = (d) => {
                     if (!d) return '-';
