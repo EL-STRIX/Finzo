@@ -424,7 +424,7 @@
                             <div class="text-[10px] font-medium text-text-secondary mt-0.5">${formatDateLocal(a.created_at)}</div>
                         </td>
                         <td class="py-4 px-6 text-right">
-                            <a href="admin-detail.php?id=${a.id}" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-surface-subtle hover:bg-primary hover:text-white rounded-xl text-[10px] font-black uppercase tracking-widest text-text-primary transition-all border border-border-subtle shadow-sm">
+                            <a href="admin-detail.php?id=${a.id}" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-white text-zinc-900 hover:bg-black hover:text-white dark:bg-zinc-900 dark:text-white dark:hover:bg-white dark:hover:text-black rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border border-border-subtle shadow-sm cursor-pointer">
                                 <span>Inspect</span>
                                 <span class="material-symbols-outlined text-[14px]" aria-hidden="true">chevron_right</span>
                             </a>
@@ -500,9 +500,9 @@
                 const isCurrent = btn.dataset.tab === tabId;
                 btn.setAttribute('aria-selected', isCurrent ? 'true' : 'false');
                 if (isCurrent) {
-                    btn.className = 'profile-tab-btn flex items-center gap-2 px-5 py-3 rounded-t-xl text-xs font-black uppercase tracking-wider transition-all border-b-2 border-primary-base text-primary bg-surface shadow-sm';
+                    btn.className = 'profile-tab-btn flex items-center gap-2 px-5 py-3 rounded-t-xl text-xs font-black uppercase tracking-wider transition-all border-b-2 border-black dark:border-white text-black dark:text-white bg-surface shadow-sm cursor-pointer';
                 } else {
-                    btn.className = 'profile-tab-btn flex items-center gap-2 px-5 py-3 rounded-t-xl text-xs font-black uppercase tracking-wider transition-all border-b-2 border-transparent text-text-secondary hover:text-text-primary hover:bg-surface-hover';
+                    btn.className = 'profile-tab-btn flex items-center gap-2 px-5 py-3 rounded-t-xl text-xs font-black uppercase tracking-wider transition-all border-b-2 border-transparent text-text-secondary hover:text-text-primary hover:bg-surface-hover cursor-pointer';
                 }
             });
 
@@ -511,6 +511,7 @@
                 panel.classList.toggle('hidden', panel.id !== tabId);
             });
         },
+
 
         copyText: (text, label = 'Copied') => {
             if (!text || text === '---') return;

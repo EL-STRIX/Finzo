@@ -17,8 +17,8 @@ ob_start();
 <!-- ========================================== -->
 <div class="ds-card p-6 sm:p-8 mb-6 relative overflow-hidden bg-surface border border-border-subtle shadow-xl rounded-3xl">
     <!-- Ambient glowing backdrop -->
-    <div class="absolute -right-16 -top-16 w-80 h-80 bg-primary-base/10 dark:bg-primary-base/15 rounded-full blur-3xl pointer-events-none"></div>
-    <div class="absolute -left-16 -bottom-16 w-72 h-72 bg-accent/5 dark:bg-accent/10 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute -right-16 -top-16 w-80 h-80 bg-zinc-500/10 dark:bg-white/5 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute -left-16 -bottom-16 w-72 h-72 bg-zinc-500/5 dark:bg-white/5 rounded-full blur-3xl pointer-events-none"></div>
 
     <div class="relative z-10 flex flex-col md:flex-row items-center md:items-start justify-between gap-6 sm:gap-8">
         
@@ -26,7 +26,7 @@ ob_start();
         <div class="flex flex-col sm:flex-row items-center sm:items-start gap-6 text-center sm:text-left">
             <!-- Avatar with upload trigger & status badge -->
             <div class="relative group">
-                <div class="w-28 h-28 sm:w-32 sm:h-32 rounded-3xl bg-gradient-to-br from-primary-500/20 to-amber-500/10 dark:from-primary-500/30 dark:to-stone-900 border-2 border-primary-500/30 flex items-center justify-center text-3xl sm:text-4xl font-black text-primary shadow-2xl overflow-hidden relative" id="avatar-preview-container">
+                <div class="w-28 h-28 sm:w-32 sm:h-32 rounded-3xl bg-zinc-100 dark:bg-zinc-900 border-2 border-zinc-300 dark:border-zinc-700 flex items-center justify-center text-3xl sm:text-4xl font-black text-text-primary shadow-2xl overflow-hidden relative" id="avatar-preview-container">
                     <span id="avatar-initials" class="uppercase select-none">--</span>
                     <img loading="lazy" id="avatar-img-preview" src="" class="hidden w-full h-full object-cover" alt="Profile avatar">
                 </div>
@@ -37,8 +37,8 @@ ob_start();
                     <span class="relative inline-flex rounded-full h-4 w-4 bg-emerald-500 border-2 border-surface"></span>
                 </span>
 
-                <!-- Photo Change Button -->
-                <label for="photo-upload" class="absolute -bottom-2 -right-2 w-10 h-10 bg-primary-base hover:bg-primary-hover text-white rounded-2xl flex items-center justify-center cursor-pointer shadow-lg transition-transform hover:scale-110 active:scale-95 border-2 border-surface" title="Change Profile Photo">
+                <!-- Photo Change Button (Black in Light Mode, White in Dark Mode) -->
+                <label for="photo-upload" class="absolute -bottom-2 -right-2 w-10 h-10 bg-black text-white hover:bg-zinc-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200 rounded-2xl flex items-center justify-center cursor-pointer shadow-lg transition-transform hover:scale-110 active:scale-95 border-2 border-surface" title="Change Profile Photo">
                     <span class="material-symbols-outlined text-[18px]" aria-hidden="true">photo_camera</span>
                 </label>
                 <input type="file" id="photo-upload" accept="image/jpeg, image/png" class="hidden" onchange="window.AdminProfile.uploadPhoto(this)">
@@ -49,19 +49,19 @@ ob_start();
                 <div class="space-y-1">
                     <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2.5">
                         <h1 class="text-2xl sm:text-3xl font-headline font-black text-text-primary tracking-tight" id="profile-name-display">Loading...</h1>
-                        <span id="badge-role" class="px-3 py-1 rounded-xl text-[10px] font-black uppercase tracking-widest bg-primary-base text-white shadow-sm">—</span>
+                        <span id="badge-role" class="px-3 py-1 rounded-xl text-[10px] font-black uppercase tracking-widest bg-black text-white dark:bg-white dark:text-black shadow-sm">—</span>
                     </div>
                     <div class="flex flex-wrap items-center justify-center sm:justify-start gap-3 text-xs text-text-secondary font-medium">
                         <!-- Admin ID copy pill -->
                         <button type="button" onclick="window.AdminProfile.copyText(document.getElementById('profile-admin-id-input').value, 'Admin ID')" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-subtle hover:bg-surface-hover border border-border-subtle font-mono text-[11px] text-text-primary transition-colors group cursor-pointer" title="Click to copy Admin ID">
-                            <span class="material-symbols-outlined text-[14px] text-primary" aria-hidden="true">badge</span>
+                            <span class="material-symbols-outlined text-[14px] text-text-primary" aria-hidden="true">badge</span>
                             <span id="hero-admin-id-text">ID: ---</span>
                             <span class="material-symbols-outlined text-[12px] opacity-40 group-hover:opacity-100" aria-hidden="true">content_copy</span>
                         </button>
 
                         <!-- Email pill -->
                         <button type="button" onclick="window.AdminProfile.copyText(document.getElementById('profile-email-input').value, 'Email')" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-subtle hover:bg-surface-hover border border-border-subtle text-[11px] text-text-secondary hover:text-text-primary transition-colors group cursor-pointer" title="Click to copy Email">
-                            <span class="material-symbols-outlined text-[14px] text-info" aria-hidden="true">mail</span>
+                            <span class="material-symbols-outlined text-[14px] text-text-primary" aria-hidden="true">mail</span>
                             <span id="hero-email-text">admin@finzo.com</span>
                             <span class="material-symbols-outlined text-[12px] opacity-40 group-hover:opacity-100" aria-hidden="true">content_copy</span>
                         </button>
@@ -74,7 +74,7 @@ ob_start();
                         <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                         Active
                     </span>
-                    <span id="badge-access" class="px-3 py-1 rounded-lg bg-info-bg text-info border border-info-border text-[10px] font-black uppercase tracking-widest">
+                    <span id="badge-access" class="px-3 py-1 rounded-lg bg-surface-subtle text-text-primary border border-border-subtle text-[10px] font-black uppercase tracking-widest">
                         Full Access
                     </span>
                     <span id="badge-sq-status" class="px-3 py-1 rounded-lg bg-surface-subtle text-text-secondary border border-border-subtle text-[10px] font-black uppercase tracking-widest flex items-center gap-1">
@@ -86,12 +86,19 @@ ob_start();
         </div>
 
         <!-- Right: Quick Stat Metrics -->
-        <div class=" w-full md:w-auto shrink-0">
+        <div class="w-full md:w-auto shrink-0 flex gap-3">
             <div class="p-4 rounded-2xl bg-surface-subtle border border-border-subtle text-center sm:text-left min-w-[130px]">
                 <span class="text-[10px] font-black text-text-secondary uppercase tracking-widest block mb-1">Security Score</span>
                 <div class="flex items-center justify-center sm:justify-start gap-2">
                     <span class="text-xl font-headline font-black text-emerald-600 dark:text-emerald-400" id="hero-security-score">95%</span>
                     <span class="material-symbols-outlined text-emerald-500 text-lg" aria-hidden="true">verified_user</span>
+                </div>
+            </div>
+            <div class="p-4 rounded-2xl bg-surface-subtle border border-border-subtle text-center sm:text-left min-w-[130px]">
+                <span class="text-[10px] font-black text-text-secondary uppercase tracking-widest block mb-1">Auth Session</span>
+                <div class="flex items-center justify-center sm:justify-start gap-2">
+                    <span class="text-xs font-mono font-bold text-text-primary truncate" id="hero-session-status">Encrypted</span>
+                    <span class="material-symbols-outlined text-text-primary text-lg" aria-hidden="true">lock</span>
                 </div>
             </div>
         </div>
@@ -103,22 +110,22 @@ ob_start();
 <!-- 2. SECTION TABS NAVIGATION                 -->
 <!-- ========================================== -->
 <div class="flex items-center gap-2 mb-6 border-b border-border-subtle pb-px overflow-x-auto custom-scrollbar" role="tablist">
-    <button type="button" role="tab" aria-selected="true" data-tab="tab-overview" onclick="window.AdminProfile.switchTab('tab-overview')" class="profile-tab-btn flex items-center gap-2 px-5 py-3 rounded-t-xl text-xs font-black uppercase tracking-wider transition-all border-b-2 border-primary-base text-primary bg-surface shadow-sm">
+    <button type="button" role="tab" aria-selected="true" data-tab="tab-overview" onclick="window.AdminProfile.switchTab('tab-overview')" class="profile-tab-btn flex items-center gap-2 px-5 py-3 rounded-t-xl text-xs font-black uppercase tracking-wider transition-all border-b-2 border-black dark:border-white text-black dark:text-white bg-surface shadow-sm cursor-pointer">
         <span class="material-symbols-outlined text-[18px]" aria-hidden="true">person</span>
         <span>Account & Identity</span>
     </button>
 
-    <button type="button" role="tab" aria-selected="false" data-tab="tab-security" onclick="window.AdminProfile.switchTab('tab-security')" class="profile-tab-btn flex items-center gap-2 px-5 py-3 rounded-t-xl text-xs font-black uppercase tracking-wider transition-all border-b-2 border-transparent text-text-secondary hover:text-text-primary hover:bg-surface-hover">
+    <button type="button" role="tab" aria-selected="false" data-tab="tab-security" onclick="window.AdminProfile.switchTab('tab-security')" class="profile-tab-btn flex items-center gap-2 px-5 py-3 rounded-t-xl text-xs font-black uppercase tracking-wider transition-all border-b-2 border-transparent text-text-secondary hover:text-text-primary hover:bg-surface-hover cursor-pointer">
         <span class="material-symbols-outlined text-[18px]" aria-hidden="true">shield_lock</span>
         <span>Security & Password</span>
     </button>
 
-    <button type="button" role="tab" aria-selected="false" data-tab="tab-activity" onclick="window.AdminProfile.switchTab('tab-activity')" class="profile-tab-btn flex items-center gap-2 px-5 py-3 rounded-t-xl text-xs font-black uppercase tracking-wider transition-all border-b-2 border-transparent text-text-secondary hover:text-text-primary hover:bg-surface-hover">
+    <button type="button" role="tab" aria-selected="false" data-tab="tab-activity" onclick="window.AdminProfile.switchTab('tab-activity')" class="profile-tab-btn flex items-center gap-2 px-5 py-3 rounded-t-xl text-xs font-black uppercase tracking-wider transition-all border-b-2 border-transparent text-text-secondary hover:text-text-primary hover:bg-surface-hover cursor-pointer">
         <span class="material-symbols-outlined text-[18px]" aria-hidden="true">history</span>
         <span>Activity Log</span>
     </button>
 
-    <button type="button" role="tab" aria-selected="false" id="tab-btn-directory" data-tab="tab-directory" onclick="window.AdminProfile.switchTab('tab-directory')" class="profile-tab-btn hidden items-center gap-2 px-5 py-3 rounded-t-xl text-xs font-black uppercase tracking-wider transition-all border-b-2 border-transparent text-text-secondary hover:text-text-primary hover:bg-surface-hover">
+    <button type="button" role="tab" aria-selected="false" id="tab-btn-directory" data-tab="tab-directory" onclick="window.AdminProfile.switchTab('tab-directory')" class="profile-tab-btn hidden items-center gap-2 px-5 py-3 rounded-t-xl text-xs font-black uppercase tracking-wider transition-all border-b-2 border-transparent text-text-secondary hover:text-text-primary hover:bg-surface-hover cursor-pointer">
         <span class="material-symbols-outlined text-[18px]" aria-hidden="true">manage_accounts</span>
         <span>Admin Directory</span>
     </button>
@@ -138,7 +145,7 @@ ob_start();
                 <div class="flex items-center justify-between mb-6 pb-4 border-b border-border-subtle">
                     <div>
                         <h3 class="font-headline font-bold text-lg text-text-primary flex items-center gap-2">
-                            <span class="material-symbols-outlined text-primary" aria-hidden="true">badge</span>
+                            <span class="material-symbols-outlined text-text-primary" aria-hidden="true">badge</span>
                             Administrator Identity
                         </h3>
                         <p class="text-xs text-text-secondary mt-1">Official profile details recorded across all audit logs</p>
@@ -176,7 +183,7 @@ ob_start();
                         <!-- Standard Finzo Dropdown Component -->
                         <div class="finzo-dropdown" id="dropdown-gender">
                             <input type="hidden" id="profile-gender-input" value="">
-                            <button type="button" class="finzo-dropdown-trigger bg-surface text-text-primary border border-border-subtle rounded-xl px-4 py-3 flex items-center justify-between w-full text-sm font-medium hover:border-primary transition-colors focus:ring-2 focus:ring-primary focus:outline-none" aria-haspopup="listbox" aria-expanded="false">
+                            <button type="button" class="finzo-dropdown-trigger bg-surface text-text-primary border border-border-subtle rounded-xl px-4 py-3 flex items-center justify-between w-full text-sm font-medium hover:border-text-primary transition-colors focus:ring-2 focus:ring-text-primary focus:outline-none" aria-haspopup="listbox" aria-expanded="false">
                                 <div class="flex items-center gap-2.5">
                                     <span class="material-symbols-outlined text-text-secondary text-[18px]" aria-hidden="true">wc</span>
                                     <span class="dropdown-label text-text-primary">Select Gender</span>
@@ -214,7 +221,8 @@ ob_start();
                         <span class="material-symbols-outlined text-[16px] text-emerald-500" aria-hidden="true">check_circle</span>
                         Changes are saved instantly to database
                     </span>
-                    <button type="button" onclick="window.AdminProfile.saveProfile()" class="btn btn-primary px-8 py-3 rounded-xl text-xs font-black uppercase tracking-wider inline-flex items-center gap-2 shadow-lg shadow-amber-900/20 hover:scale-[1.02] active:scale-[0.98] transition-all">
+                    <!-- Save Profile Button (Black in Light Mode, White in Dark Mode) -->
+                    <button type="button" onclick="window.AdminProfile.saveProfile()" class="px-8 py-3 rounded-xl text-xs font-black uppercase tracking-wider inline-flex items-center gap-2 bg-black text-white hover:bg-zinc-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200 shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer">
                         <span class="material-symbols-outlined text-[18px]" aria-hidden="true">save</span>
                         <span>Save Profile</span>
                     </button>
@@ -226,7 +234,7 @@ ob_start();
         <div class="space-y-6">
             <div class="ds-card p-6 sm:p-8 bg-surface border border-border-subtle rounded-3xl shadow-lg space-y-5">
                 <div class="flex items-center gap-3 pb-4 border-b border-border-subtle">
-                    <div class="w-10 h-10 rounded-2xl bg-primary/10 text-primary flex items-center justify-center shadow-inner">
+                    <div class="w-10 h-10 rounded-2xl bg-surface-subtle text-text-primary flex items-center justify-center border border-border-subtle shadow-inner">
                         <span class="material-symbols-outlined text-[20px]" aria-hidden="true">security</span>
                     </div>
                     <div>
@@ -250,18 +258,19 @@ ob_start();
                     </div>
                     <div class="flex justify-between items-center py-2">
                         <span class="text-[10px] font-black text-text-secondary uppercase tracking-widest">Role Scope</span>
-                        <span class="text-xs font-bold text-primary" id="sec-role-scope">Super Administrator</span>
+                        <span class="text-xs font-bold text-text-primary" id="sec-role-scope">Super Administrator</span>
                     </div>
                 </div>
             </div>
 
-            <!-- Quick Security Status Card -->
+            <!-- Quick Security Status Card with Custom Toggle -->
             <div class="ds-card p-6 bg-surface-subtle border border-border-subtle rounded-3xl shadow-md space-y-4">
                 <div class="flex items-center justify-between">
                     <span class="text-xs font-black text-text-primary uppercase tracking-wider">Two-Factor Authentication</span>
                     <label class="relative inline-flex items-center cursor-pointer">
                         <input type="checkbox" id="sec-2fa-toggle" class="sr-only peer" onchange="window.AdminProfile.toggle2FA(this.checked)">
-                        <div class="w-11 h-6 bg-surface-hover peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-border-subtle after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                        <!-- 2FA Toggle Switch: Black in light mode, White in dark mode when active -->
+                        <div class="w-11 h-6 bg-zinc-300 dark:bg-zinc-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white dark:after:bg-zinc-900 after:border-border-subtle after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-black dark:peer-checked:bg-white dark:peer-checked:after:bg-black"></div>
                     </label>
                 </div>
                 <p class="text-[11px] text-text-secondary leading-relaxed">Require secondary authentication challenge on all sensitive operations and new device logins.</p>
@@ -281,7 +290,7 @@ ob_start();
         <!-- Change Password Card -->
         <div class="ds-card p-6 sm:p-8 bg-surface border border-border-subtle rounded-3xl shadow-lg space-y-6">
             <div class="flex items-center gap-3 pb-4 border-b border-border-subtle">
-                <div class="w-10 h-10 rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center">
+                <div class="w-10 h-10 rounded-2xl bg-surface-subtle text-text-primary flex items-center justify-center border border-border-subtle">
                     <span class="material-symbols-outlined text-[22px]" aria-hidden="true">password</span>
                 </div>
                 <div>
@@ -296,7 +305,7 @@ ob_start();
                     <div class="fin-input-wrapper relative">
                         <span class="material-symbols-outlined input-icon-left text-text-secondary">lock</span>
                         <input type="password" id="curr-pw" class="fin-input has-icon-left pr-10 bg-surface text-text-primary border-border-subtle" placeholder="Enter current password">
-                        <button type="button" onclick="window.AdminProfile.togglePW('curr-pw')" class="absolute right-3 text-text-secondary hover:text-text-primary focus:outline-none" title="Toggle Visibility">
+                        <button type="button" onclick="window.AdminProfile.togglePW('curr-pw')" class="absolute right-3 text-text-secondary hover:text-text-primary focus:outline-none cursor-pointer" title="Toggle Visibility">
                             <span class="material-symbols-outlined text-[18px]">visibility</span>
                         </button>
                     </div>
@@ -307,14 +316,14 @@ ob_start();
                     <div class="fin-input-wrapper relative">
                         <span class="material-symbols-outlined input-icon-left text-text-secondary">lock_open</span>
                         <input type="password" id="new-pw" class="fin-input has-icon-left pr-10 bg-surface text-text-primary border-border-subtle" placeholder="Minimum 8 characters" oninput="window.AdminProfile.checkStrength(this.value)">
-                        <button type="button" onclick="window.AdminProfile.togglePW('new-pw')" class="absolute right-3 text-text-secondary hover:text-text-primary focus:outline-none" title="Toggle Visibility">
+                        <button type="button" onclick="window.AdminProfile.togglePW('new-pw')" class="absolute right-3 text-text-secondary hover:text-text-primary focus:outline-none cursor-pointer" title="Toggle Visibility">
                             <span class="material-symbols-outlined text-[18px]">visibility</span>
                         </button>
                     </div>
                     <!-- Password strength bar -->
                     <div class="mt-2.5">
                         <div class="password-strength-bar w-full h-1.5 bg-surface-hover rounded-full overflow-hidden">
-                            <div class="password-strength-fill h-full transition-all duration-300 rounded-full" id="pw-bar" style="width:0%; background:var(--primary-base);"></div>
+                            <div class="password-strength-fill h-full transition-all duration-300 rounded-full" id="pw-bar" style="width:0%; background:var(--color-primary-base);"></div>
                         </div>
                         <div class="flex justify-between items-center mt-1">
                             <span class="text-[10px] text-text-secondary font-medium">Strength Indicator</span>
@@ -328,14 +337,15 @@ ob_start();
                     <div class="fin-input-wrapper relative">
                         <span class="material-symbols-outlined input-icon-left text-text-secondary">check_circle</span>
                         <input type="password" id="conf-pw" class="fin-input has-icon-left pr-10 bg-surface text-text-primary border-border-subtle" placeholder="Confirm new password">
-                        <button type="button" onclick="window.AdminProfile.togglePW('conf-pw')" class="absolute right-3 text-text-secondary hover:text-text-primary focus:outline-none" title="Toggle Visibility">
+                        <button type="button" onclick="window.AdminProfile.togglePW('conf-pw')" class="absolute right-3 text-text-secondary hover:text-text-primary focus:outline-none cursor-pointer" title="Toggle Visibility">
                             <span class="material-symbols-outlined text-[18px]">visibility</span>
                         </button>
                     </div>
                 </div>
 
                 <div class="pt-3">
-                    <button type="button" onclick="window.AdminProfile.updatePassword()" class="w-full btn btn-primary py-3 rounded-xl text-xs font-black uppercase tracking-wider shadow-lg shadow-amber-900/20 hover:scale-[1.01] active:scale-[0.99] transition-all">
+                    <!-- Change Password Button (Black in Light Mode, White in Dark Mode) -->
+                    <button type="button" onclick="window.AdminProfile.updatePassword()" class="w-full py-3 rounded-xl text-xs font-black uppercase tracking-wider bg-black text-white hover:bg-zinc-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200 shadow-lg hover:scale-[1.01] active:scale-[0.99] transition-all cursor-pointer">
                         Update Password
                     </button>
                 </div>
@@ -346,7 +356,7 @@ ob_start();
         <div class="ds-card p-6 sm:p-8 bg-surface border border-border-subtle rounded-3xl shadow-lg space-y-6">
             <div class="flex items-center justify-between pb-4 border-b border-border-subtle">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-2xl bg-info/10 text-info flex items-center justify-center">
+                    <div class="w-10 h-10 rounded-2xl bg-surface-subtle text-text-primary flex items-center justify-center border border-border-subtle">
                         <span class="material-symbols-outlined text-[22px]" aria-hidden="true">quiz</span>
                     </div>
                     <div>
@@ -373,7 +383,8 @@ ob_start();
                     <input type="password" id="sq-curr-pw" class="fin-input bg-surface text-text-primary border-border-subtle" placeholder="Authenticate changes" required>
                 </div>
                 <div class="pt-2 flex justify-end">
-                    <button type="submit" id="btn-save-sq" class="btn btn-secondary px-8 py-3 rounded-xl text-xs font-black uppercase tracking-wider shadow-sm transition-all">
+                    <!-- Set Security Question Button (Black in Light Mode, White in Dark Mode) -->
+                    <button type="submit" id="btn-save-sq" class="px-8 py-3 rounded-xl text-xs font-black uppercase tracking-wider bg-black text-white hover:bg-zinc-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200 shadow-sm transition-all cursor-pointer">
                         <span id="sq-btn-text">Set Security Question</span>
                     </button>
                 </div>
@@ -389,13 +400,14 @@ ob_start();
         <div class="p-6 border-b border-border-subtle flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-surface-subtle">
             <div>
                 <h3 class="font-headline font-bold text-lg text-text-primary flex items-center gap-2">
-                    <span class="material-symbols-outlined text-primary" aria-hidden="true">history</span>
+                    <span class="material-symbols-outlined text-text-primary" aria-hidden="true">history</span>
                     Personal Audit Trail
                 </h3>
                 <p class="text-xs text-text-secondary mt-0.5">Chronological record of administrative operations and session history</p>
             </div>
             <div class="flex items-center gap-3">
-                <button type="button" onclick="window.AdminProfile.exportActivityCSV()" class="btn btn-secondary !px-4 !py-2 !text-xs rounded-xl inline-flex items-center gap-2 shadow-sm">
+                <!-- Export CSV Button -->
+                <button type="button" onclick="window.AdminProfile.exportActivityCSV()" class="px-4 py-2 text-xs rounded-xl inline-flex items-center gap-2 font-bold bg-white text-zinc-900 hover:bg-zinc-100 border border-zinc-300 dark:bg-zinc-900 dark:text-white dark:hover:bg-black dark:border-zinc-700 shadow-sm cursor-pointer transition-colors">
                     <span class="material-symbols-outlined text-[16px]" aria-hidden="true">download</span>
                     <span>Export CSV</span>
                 </button>
@@ -421,8 +433,8 @@ ob_start();
         <div class="p-4 sm:p-6 border-t border-border-subtle flex flex-col sm:flex-row items-center justify-between gap-4 bg-surface-subtle" id="activity-pagination-container">
             <div class="text-[11px] font-black text-text-secondary uppercase tracking-widest" id="activity-pagination-info">Showing 0 to 0 of 0</div>
             <div class="flex gap-2">
-                <button id="activity-prev-btn" onclick="window.AdminProfile.prevActivityPage()" class="btn btn-secondary !px-4 !py-1.5 !text-xs rounded-xl">Prev</button>
-                <button id="activity-next-btn" onclick="window.AdminProfile.nextActivityPage()" class="btn btn-secondary !px-4 !py-1.5 !text-xs rounded-xl">Next</button>
+                <button id="activity-prev-btn" onclick="window.AdminProfile.prevActivityPage()" class="px-4 py-1.5 text-xs rounded-xl font-bold bg-white text-zinc-900 hover:bg-zinc-100 border border-zinc-300 dark:bg-zinc-900 dark:text-white dark:hover:bg-black dark:border-zinc-700 shadow-sm cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed transition-colors">Prev</button>
+                <button id="activity-next-btn" onclick="window.AdminProfile.nextActivityPage()" class="px-4 py-1.5 text-xs rounded-xl font-bold bg-white text-zinc-900 hover:bg-zinc-100 border border-zinc-300 dark:bg-zinc-900 dark:text-white dark:hover:bg-black dark:border-zinc-700 shadow-sm cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed transition-colors">Next</button>
             </div>
         </div>
     </div>
@@ -467,7 +479,7 @@ ob_start();
     <div id="admin-management-container" class="ds-card bg-surface border border-border-subtle rounded-3xl shadow-xl overflow-hidden">
         <div class="p-6 border-b border-border-subtle flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-surface-subtle">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-2xl bg-primary/10 text-primary flex items-center justify-center shadow-inner">
+                <div class="w-10 h-10 rounded-2xl bg-surface-subtle text-text-primary flex items-center justify-center border border-border-subtle shadow-inner">
                     <span class="material-symbols-outlined text-[22px]" aria-hidden="true">manage_accounts</span>
                 </div>
                 <div>
@@ -477,7 +489,8 @@ ob_start();
             </div>
             <div class="flex items-center gap-3">
                 <span id="management-count-badge" class="px-3 py-1.5 bg-surface text-text-secondary text-[10px] font-mono font-bold rounded-xl border border-border-subtle">0 Admins</span>
-                <button id="header-add-admin-btn" type="button" onclick="window.AdminProfile.showAddModal()" class="btn btn-primary px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider inline-flex items-center gap-2 shadow-lg shadow-amber-900/20 hover:scale-[1.02] active:scale-[0.98] transition-all">
+                <!-- Provision Admin Button (Black in Light Mode, White in Dark Mode) -->
+                <button id="header-add-admin-btn" type="button" onclick="window.AdminProfile.showAddModal()" class="px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider inline-flex items-center gap-2 bg-black text-white hover:bg-zinc-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200 shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer">
                     <span class="material-symbols-outlined text-[18px]" aria-hidden="true">person_add</span>
                     <span>Provision Admin</span>
                 </button>
@@ -541,7 +554,7 @@ ob_start();
         <!-- Header -->
         <div class="p-6 border-b border-border-subtle flex justify-between items-center sticky top-0 bg-surface z-10 shrink-0">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-2xl bg-primary/10 text-primary flex items-center justify-center">
+                <div class="w-10 h-10 rounded-2xl bg-surface-subtle text-text-primary flex items-center justify-center border border-border-subtle">
                     <span class="material-symbols-outlined text-[22px]" aria-hidden="true">person_add</span>
                 </div>
                 <div>
@@ -549,7 +562,7 @@ ob_start();
                     <p class="text-xs font-bold text-text-secondary uppercase tracking-wider mt-0.5">Create a credentialed enterprise admin account</p>
                 </div>
             </div>
-            <button type="button" onclick="window.AdminProfile.closeAddModal()" class="p-2 hover:bg-surface-hover rounded-xl transition-colors text-text-secondary hover:text-text-primary">
+            <button type="button" onclick="window.AdminProfile.closeAddModal()" class="p-2 hover:bg-surface-hover rounded-xl transition-colors text-text-secondary hover:text-text-primary cursor-pointer">
                 <span class="material-symbols-outlined" aria-hidden="true">close</span>
             </button>
         </div>
@@ -559,7 +572,7 @@ ob_start();
             
             <!-- SECTION 1: Personal & Contact Details -->
             <div>
-                <div class="text-xs font-black tracking-wider text-primary uppercase mb-4 py-1.5 border-b border-border-subtle flex items-center gap-2">
+                <div class="text-xs font-black tracking-wider text-text-primary uppercase mb-4 py-1.5 border-b border-border-subtle flex items-center gap-2">
                     <span class="material-symbols-outlined text-base" aria-hidden="true">badge</span>
                     1. Personal & Contact Details
                 </div>
@@ -583,7 +596,7 @@ ob_start();
                         <label class="fin-label mb-1 block text-[10px] font-black text-text-secondary uppercase tracking-widest">Gender *</label>
                         <div class="finzo-dropdown" id="dropdown-add-gender">
                             <input type="hidden" id="add-gender" value="">
-                            <button type="button" class="finzo-dropdown-trigger bg-surface text-text-primary border border-border-subtle rounded-xl px-4 py-3 flex items-center justify-between w-full text-sm font-medium hover:border-primary transition-colors focus:ring-2 focus:ring-primary focus:outline-none" aria-haspopup="listbox" aria-expanded="false">
+                            <button type="button" class="finzo-dropdown-trigger bg-surface text-text-primary border border-border-subtle rounded-xl px-4 py-3 flex items-center justify-between w-full text-sm font-medium hover:border-text-primary transition-colors focus:ring-2 focus:ring-text-primary focus:outline-none" aria-haspopup="listbox" aria-expanded="false">
                                 <span class="dropdown-label text-text-primary">Select Gender</span>
                                 <span class="material-symbols-outlined text-[18px] chevron transition-transform text-text-secondary" aria-hidden="true">expand_more</span>
                             </button>
@@ -611,7 +624,7 @@ ob_start();
 
             <!-- SECTION 2: Initial Credentials -->
             <div>
-                <div class="text-xs font-black tracking-wider text-primary uppercase mb-4 py-1.5 border-b border-border-subtle flex items-center gap-2">
+                <div class="text-xs font-black tracking-wider text-text-primary uppercase mb-4 py-1.5 border-b border-border-subtle flex items-center gap-2">
                     <span class="material-symbols-outlined text-base" aria-hidden="true">key</span>
                     2. Authentication Credentials
                 </div>
@@ -621,7 +634,7 @@ ob_start();
                         <label for="add-pw" class="fin-label mb-1 block text-[10px] font-black text-text-secondary uppercase tracking-widest">Initial Password *</label>
                         <input type="password" id="add-pw" class="fin-input bg-surface text-text-primary" placeholder="Min 8 characters" oninput="window.AdminProfile.checkAddStrength(this.value)">
                         <div class="password-strength-bar w-full h-1.5 bg-surface-hover rounded-full overflow-hidden mt-2">
-                            <div class="password-strength-fill h-full transition-all duration-300 rounded-full" id="add-pw-bar" style="width:0%; background:var(--primary-base);"></div>
+                            <div class="password-strength-fill h-full transition-all duration-300 rounded-full" id="add-pw-bar" style="width:0%; background:var(--color-primary-base);"></div>
                         </div>
                         <span id="err-add-pw" class="text-danger text-[11px] font-bold mt-1 hidden"></span>
                     </div>
@@ -635,7 +648,7 @@ ob_start();
 
             <!-- SECTION 3: Account Recovery & RBAC Role -->
             <div>
-                <div class="text-xs font-black tracking-wider text-primary uppercase mb-4 py-1.5 border-b border-border-subtle flex items-center gap-2">
+                <div class="text-xs font-black tracking-wider text-text-primary uppercase mb-4 py-1.5 border-b border-border-subtle flex items-center gap-2">
                     <span class="material-symbols-outlined text-base" aria-hidden="true">policy</span>
                     3. Recovery & Permissions Role
                 </div>
@@ -658,7 +671,7 @@ ob_start();
                         <label class="fin-label mb-1 block text-[10px] font-black text-text-secondary uppercase tracking-widest">Role Assignment *</label>
                         <div class="finzo-dropdown" id="dropdown-add-role">
                             <input type="hidden" id="add-role" value="" onchange="window.AdminProfile.updateRolePreview(this.value)">
-                            <button type="button" class="finzo-dropdown-trigger bg-surface text-text-primary border border-border-subtle rounded-xl px-4 py-3 flex items-center justify-between w-full text-sm font-medium hover:border-primary transition-colors focus:ring-2 focus:ring-primary focus:outline-none" aria-haspopup="listbox" aria-expanded="false">
+                            <button type="button" class="finzo-dropdown-trigger bg-surface text-text-primary border border-border-subtle rounded-xl px-4 py-3 flex items-center justify-between w-full text-sm font-medium hover:border-text-primary transition-colors focus:ring-2 focus:ring-text-primary focus:outline-none" aria-haspopup="listbox" aria-expanded="false">
                                 <span class="dropdown-label text-text-primary">Select Role</span>
                                 <span class="material-symbols-outlined text-[18px] chevron transition-transform text-text-secondary" aria-hidden="true">expand_more</span>
                             </button>
@@ -677,7 +690,7 @@ ob_start();
                         <label for="new-admin-photo" class="fin-label mb-1 block text-[10px] font-black text-text-secondary uppercase tracking-widest">Profile Photo (Optional)</label>
                         <input type="file" id="new-admin-photo" accept="image/jpeg, image/png" class="fin-input bg-surface text-text-primary" onchange="window.AdminProfile.previewNewPhoto(this)">
                         <div class="mt-3 flex items-center gap-3">
-                            <img id="new-avatar-preview" src="" class="w-14 h-14 rounded-2xl object-cover hidden border-2 border-primary/30 shadow-md" alt="Preview">
+                            <img id="new-avatar-preview" src="" class="w-14 h-14 rounded-2xl object-cover hidden border-2 border-text-primary/30 shadow-md" alt="Preview">
                         </div>
                     </div>
                 </div>
@@ -687,8 +700,8 @@ ob_start();
 
         <!-- Footer -->
         <div class="p-6 border-t border-border-subtle bg-surface-subtle flex justify-end gap-3 sticky bottom-0 z-10 shrink-0">
-            <button type="button" onclick="window.AdminProfile.closeAddModal()" class="btn btn-secondary px-6 py-2.5 rounded-xl text-xs font-bold">Cancel</button>
-            <button type="button" id="add-admin-submit-btn" onclick="window.AdminProfile.submitAddAdmin()" class="btn btn-primary px-8 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider flex items-center gap-2 shadow-lg shadow-amber-900/20">
+            <button type="button" onclick="window.AdminProfile.closeAddModal()" class="px-6 py-2.5 rounded-xl text-xs font-bold bg-white text-zinc-900 hover:bg-zinc-100 border border-zinc-300 dark:bg-zinc-900 dark:text-white dark:hover:bg-black dark:border-zinc-700 cursor-pointer transition-colors">Cancel</button>
+            <button type="button" id="add-admin-submit-btn" onclick="window.AdminProfile.submitAddAdmin()" class="px-8 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider flex items-center gap-2 bg-black text-white hover:bg-zinc-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200 shadow-lg cursor-pointer transition-all">
                 <span>Create Admin</span>
                 <span class="material-symbols-outlined animate-spin text-[16px] hidden" aria-hidden="true">progress_activity</span>
             </button>
@@ -711,8 +724,8 @@ ob_start();
         </div>
         <p id="unlock-confirm-msg" class="text-sm text-text-secondary leading-relaxed">Are you sure you want to restore access to this administrator account?</p>
         <div class="flex justify-end gap-3 pt-4 border-t border-border-subtle">
-            <button type="button" onclick="window.AdminProfile.closeUnlockConfirm()" class="btn btn-secondary px-5 py-2.5 rounded-xl text-xs font-bold">Cancel</button>
-            <button type="button" id="confirm-unlock-btn" onclick="window.AdminProfile.confirmUnlock()" class="btn btn-primary px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider shadow-lg shadow-amber-900/20">Confirm Unlock</button>
+            <button type="button" onclick="window.AdminProfile.closeUnlockConfirm()" class="px-5 py-2.5 rounded-xl text-xs font-bold bg-white text-zinc-900 hover:bg-zinc-100 border border-zinc-300 dark:bg-zinc-900 dark:text-white dark:hover:bg-black dark:border-zinc-700 cursor-pointer transition-colors">Cancel</button>
+            <button type="button" id="confirm-unlock-btn" onclick="window.AdminProfile.confirmUnlock()" class="px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider bg-black text-white hover:bg-zinc-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200 shadow-lg cursor-pointer transition-all">Confirm Unlock</button>
         </div>
     </div>
 </div>
