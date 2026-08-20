@@ -160,16 +160,42 @@ ob_start();
             </div>
         </div>
 
-        <!-- Privileges Matrix -->
+        <!-- Role Privileges & Access Control Matrix -->
         <div class="ds-card p-6">
-            <h5 class="text-[10px] font-black uppercase tracking-widest text-text-secondary mb-4 block flex items-center justify-between">
-                <span>Role Privileges</span>
-                <span id="privilege-role-label" class="text-primary font-bold">Administrator</span>
-            </h5>
-            <div id="privileges-list" class="space-y-2 text-xs font-bold text-text-primary">
-                <!-- Injected by admin-detail.js -->
+            <div class="flex items-center justify-between pb-4 mb-4 border-b border-border-subtle">
+                <div>
+                    <h5 class="text-xs font-black uppercase tracking-widest text-text-primary flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary text-[18px]">verified</span>
+                        <span>Role Privileges</span>
+                    </h5>
+                    <p class="text-[10px] font-bold text-text-secondary uppercase tracking-widest mt-0.5" id="privilege-level-sub">Access Control Matrix</p>
+                </div>
+                <span id="privilege-role-badge" class="px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest bg-primary/10 text-primary border border-primary/20">Administrator</span>
+            </div>
+
+            <!-- Granted Section -->
+            <div class="mb-4">
+                <div class="text-[10px] font-black uppercase tracking-widest text-emerald-600 dark:text-emerald-400 mb-2.5 flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                    <span>Granted Access (Authorized)</span>
+                </div>
+                <div id="privileges-granted" class="space-y-2">
+                    <!-- Dynamic Granted Badges -->
+                </div>
+            </div>
+
+            <!-- Restricted Section -->
+            <div class="pt-3 border-t border-border-subtle">
+                <div class="text-[10px] font-black uppercase tracking-widest text-rose-500 mb-2.5 flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+                    <span>Restricted Access (Forbidden)</span>
+                </div>
+                <div id="privileges-restricted" class="space-y-2">
+                    <!-- Dynamic Restricted Badges -->
+                </div>
             </div>
         </div>
+
 
         <!-- Security Insights -->
         <div class="p-6 bg-surface-subtle border border-border-subtle rounded-2xl overflow-hidden relative shadow-sm">

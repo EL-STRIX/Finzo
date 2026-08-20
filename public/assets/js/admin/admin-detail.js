@@ -195,63 +195,95 @@
                 }
             }
 
-            // Privileges Matrix
-            const privList = document.getElementById('privileges-list');
-            const privRoleLabel = document.getElementById('privilege-role-label');
-            if (privRoleLabel) {
-                privRoleLabel.textContent = admin.admin_role === 'super_admin' ? 'Super Administrator' : (admin.admin_role === 'moderator' ? 'Moderator' : 'System Admin');
-            }
-            if (privList) {
-                if (admin.admin_role === 'super_admin') {
-                    privList.innerHTML = `
-                        <div class="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
-                            <span class="material-symbols-outlined text-[16px]">check_circle</span>
-                            <span>Full Root System & Security Access</span>
-                        </div>
-                        <div class="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
-                            <span class="material-symbols-outlined text-[16px]">check_circle</span>
-                            <span>Provision & Manage Administrators</span>
-                        </div>
-                        <div class="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
-                            <span class="material-symbols-outlined text-[16px]">check_circle</span>
-                            <span>Financial Core & Global Ledger Oversight</span>
-                        </div>
-                    `;
-                } else if (admin.admin_role === 'admin') {
-                    privList.innerHTML = `
-                        <div class="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
-                            <span class="material-symbols-outlined text-[16px]">check_circle</span>
-                            <span>Executive Overview & Telemetry</span>
-                        </div>
-                        <div class="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
-                            <span class="material-symbols-outlined text-[16px]">check_circle</span>
-                            <span>User Management & Account Approvals</span>
-                        </div>
-                        <div class="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
-                            <span class="material-symbols-outlined text-[16px]">check_circle</span>
-                            <span>Staff Management & Branch Operations</span>
-                        </div>
-                        <div class="flex items-center gap-2 text-text-secondary opacity-60">
-                            <span class="material-symbols-outlined text-[16px]">cancel</span>
-                            <span>Modify Root Super Administrators</span>
-                        </div>
-                    `;
+            // Role Privileges Matrix (Granted vs Restricted)
+            const grantedContainer = document.getElementById('privileges-granted');
+            const restrictedContainer = document.getElementById('privileges-restricted');
+            const roleBadge = document.getElementById('privilege-role-badge');
+            const levelSub = document.getElementById('privilege-level-sub');
+
+            const isSuper = admin.admin_role === 'super_admin';
+            const isAdmin = admin.admin_role === 'admin';
+            const isMod = admin.admin_role === 'moderator';
+
+            if (roleBadge) {
+                if (isSuper) {
+                    roleBadge.textContent = 'Super Admin';
+                    roleBadge.className = 'px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest bg-purple-500/10 text-purple-600 border border-purple-500/20';
+                } else if (isAdmin) {
+                    roleBadge.textContent = 'Administrator';
+                    roleBadge.className = 'px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest bg-teal-500/10 text-teal-600 border border-teal-500/20';
                 } else {
-                    privList.innerHTML = `
-                        <div class="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
-                            <span class="material-symbols-outlined text-[16px]">check_circle</span>
-                            <span>Review & KYC Document Approvals</span>
-                        </div>
-                        <div class="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
-                            <span class="material-symbols-outlined text-[16px]">check_circle</span>
-                            <span>Support Ticket & Audit Log Viewing</span>
-                        </div>
-                        <div class="flex items-center gap-2 text-text-secondary opacity-60">
-                            <span class="material-symbols-outlined text-[16px]">cancel</span>
-                            <span>User Suspension or Deletion</span>
-                        </div>
-                    `;
+                    roleBadge.textContent = 'Moderator';
+                    roleBadge.className = 'px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest bg-amber-500/10 text-amber-600 border border-amber-500/20';
                 }
+            }
+
+            if (levelSub) {
+                levelSub.textContent = isSuper ? 'Full Root Authority' : (isAdmin ? 'Operational Authority (Full)' : 'Compliance Authority (Restricted)');
+            }
+
+            let granted = [];
+            let restricted = [];
+
+            if (isSuper) {
+                granted = [
+                    'Root System, Configuration & Security Oversight',
+                    'Create, Suspend & Manage All Administrators',
+                    'Financial Core, Global Ledger & Settlement Overrides',
+                    'Full User, Staff & Branch Administrative Powers',
+                    'Immutable Global Audit Trail & Compliance Access'
+                ];
+                restricted = [
+                    'None (Unrestricted Root Administrative Scope)'
+                ];
+            } else if (isAdmin) {
+                granted = [
+                    'User Management (Approve, Search, Review Profiles)',
+                    'Staff Operations (Create, Update, Assign Branches)',
+                    'Branch Management (Create, Edit, Suspend Branches)',
+                    'Global Transactions & Core Banking Telemetry',
+                    'Full System Audit Log Inspection'
+                ];
+                restricted = [
+                    'Modify or Suspend Root Super Administrators',
+                    'Direct System Database & Environment Reconfigurations',
+                    'Execute Manual Financial Core Ledger Adjustments',
+                    'Delete or Purge Immutable Audit Logs'
+                ];
+            } else {
+                // Moderator
+                granted = [
+                    'KYC Verification & Customer Document Approvals',
+                    'Read-Only Access to User Directory & Profiles',
+                    'Read-Only Staff & Branch Operations Directory',
+                    'Inspect System Audit Logs & Operational Activity'
+                ];
+                restricted = [
+                    'Customer Account Suspension or Permanent Deletion',
+                    'Create, Modify or Terminate Bank Staff Members',
+                    'Create, Edit or Suspend Banking Branches',
+                    'Execute Financial Transactions, Debits or Credits',
+                    'Create, Modify or Manage Other Administrators',
+                    'Access System Environment or Security Credentials'
+                ];
+            }
+
+            if (grantedContainer) {
+                grantedContainer.innerHTML = granted.map(item => `
+                    <div class="flex items-start gap-2.5 p-2.5 rounded-xl bg-surface-subtle border border-border-subtle">
+                        <span class="material-symbols-outlined text-emerald-500 text-[16px] shrink-0 mt-0.5" aria-hidden="true">check_circle</span>
+                        <div class="text-[11px] font-bold text-text-primary leading-snug">${escapeHtml(item)}</div>
+                    </div>
+                `).join('');
+            }
+
+            if (restrictedContainer) {
+                restrictedContainer.innerHTML = restricted.map(item => `
+                    <div class="flex items-start gap-2.5 p-2.5 rounded-xl bg-surface-subtle border border-border-subtle opacity-75">
+                        <span class="material-symbols-outlined text-rose-500 text-[16px] shrink-0 mt-0.5" aria-hidden="true">${isSuper ? 'lock_open' : 'block'}</span>
+                        <div class="text-[11px] font-bold text-text-secondary leading-snug">${escapeHtml(item)}</div>
+                    </div>
+                `).join('');
             }
 
             // View in Global Audit Log link
@@ -260,6 +292,7 @@
                 auditLink.href = `admin-audit-log.php?search=${encodeURIComponent(admin.admin_id)}`;
             }
         },
+
 
         /**
          * Render Activity Table
