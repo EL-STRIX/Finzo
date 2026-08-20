@@ -530,23 +530,46 @@ ob_start();
         <div class="p-4 sm:p-6 border-b border-border-subtle bg-surface flex flex-col sm:flex-row gap-4">
             <div class="fin-input-wrapper flex-1">
                 <span class="material-symbols-outlined input-icon-left text-text-secondary">search</span>
-                <input type="text" id="admin-search-input" placeholder="Search by name, email, or admin ID..." class="fin-input has-icon-left bg-surface text-text-primary border-border-subtle rounded-xl">
+                <input type="text" id="admin-search-input" placeholder="Search by name, email, or admin ID..." class="fin-input has-icon-left bg-surface text-text-primary border-border-subtle rounded-xl text-xs">
             </div>
             
-            <div class="flex gap-3">
-                <select id="admin-status-filter" class="fin-input w-40 bg-surface text-text-primary border border-border-subtle rounded-xl px-4 text-xs font-bold">
-                    <option value="all">All Statuses</option>
-                    <option value="active">Active</option>
-                    <option value="suspended">Suspended</option>
-                </select>
+            <div class="flex flex-wrap sm:flex-nowrap gap-3">
+                <!-- Status Filter Dropdown -->
+                <div class="finzo-dropdown min-w-[160px]" id="dropdown-admin-status-filter">
+                    <button type="button" class="finzo-dropdown-trigger bg-surface text-text-primary border border-border-subtle rounded-xl px-4 py-2.5 flex items-center justify-between w-full text-xs font-bold hover:border-text-primary transition-colors focus:ring-2 focus:ring-text-primary focus:outline-none cursor-pointer" aria-haspopup="listbox" aria-expanded="false">
+                        <div class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-[16px] text-text-secondary" aria-hidden="true">toggle_on</span>
+                            <span class="dropdown-label text-text-primary font-bold">All Statuses</span>
+                        </div>
+                        <span class="material-symbols-outlined text-[18px] chevron transition-transform text-text-secondary" aria-hidden="true">expand_more</span>
+                    </button>
+                    <div class="finzo-dropdown-menu bg-surface dark:bg-[#18181B] border border-border-subtle rounded-2xl shadow-2xl py-2 z-50 min-w-[160px]" role="listbox">
+                        <div class="finzo-dropdown-option is-selected px-4 py-2 text-xs font-bold text-text-primary hover:bg-surface-hover cursor-pointer transition-colors" data-value="all">All Statuses</div>
+                        <div class="finzo-dropdown-option px-4 py-2 text-xs font-bold text-text-primary hover:bg-surface-hover cursor-pointer transition-colors" data-value="active">Active</div>
+                        <div class="finzo-dropdown-option px-4 py-2 text-xs font-bold text-text-primary hover:bg-surface-hover cursor-pointer transition-colors" data-value="suspended">Suspended</div>
+                    </div>
+                    <input type="hidden" id="admin-status-filter" value="all">
+                </div>
 
-                <select id="admin-role-filter" class="fin-input w-40 bg-surface text-text-primary border border-border-subtle rounded-xl px-4 text-xs font-bold">
-                    <option value="all">All Roles</option>
-                    <option value="admin">Admin</option>
-                    <option value="moderator">Moderator</option>
-                </select>
+                <!-- Role Filter Dropdown -->
+                <div class="finzo-dropdown min-w-[160px]" id="dropdown-admin-role-filter">
+                    <button type="button" class="finzo-dropdown-trigger bg-surface text-text-primary border border-border-subtle rounded-xl px-4 py-2.5 flex items-center justify-between w-full text-xs font-bold hover:border-text-primary transition-colors focus:ring-2 focus:ring-text-primary focus:outline-none cursor-pointer" aria-haspopup="listbox" aria-expanded="false">
+                        <div class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-[16px] text-text-secondary" aria-hidden="true">shield_person</span>
+                            <span class="dropdown-label text-text-primary font-bold">All Roles</span>
+                        </div>
+                        <span class="material-symbols-outlined text-[18px] chevron transition-transform text-text-secondary" aria-hidden="true">expand_more</span>
+                    </button>
+                    <div class="finzo-dropdown-menu bg-surface dark:bg-[#18181B] border border-border-subtle rounded-2xl shadow-2xl py-2 z-50 min-w-[160px]" role="listbox">
+                        <div class="finzo-dropdown-option is-selected px-4 py-2 text-xs font-bold text-text-primary hover:bg-surface-hover cursor-pointer transition-colors" data-value="all">All Roles</div>
+                        <div class="finzo-dropdown-option px-4 py-2 text-xs font-bold text-text-primary hover:bg-surface-hover cursor-pointer transition-colors" data-value="admin">Admin</div>
+                        <div class="finzo-dropdown-option px-4 py-2 text-xs font-bold text-text-primary hover:bg-surface-hover cursor-pointer transition-colors" data-value="moderator">Moderator</div>
+                    </div>
+                    <input type="hidden" id="admin-role-filter" value="all">
+                </div>
             </div>
         </div>
+
 
         <!-- Directory Table -->
         <div class="ds-table-wrapper w-full border-0 shadow-none rounded-none bg-transparent overflow-x-auto">

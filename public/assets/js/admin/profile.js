@@ -442,16 +442,16 @@
 
     function filterAdminList() {
         const searchVal = (document.getElementById('admin-search-input')?.value || '').toLowerCase().trim();
-        const statusVal = document.getElementById('admin-status-filter')?.value || 'all';
-        const roleVal = document.getElementById('admin-role-filter')?.value || 'all';
+        const statusVal = (document.getElementById('admin-status-filter')?.value || 'all').toLowerCase().trim();
+        const roleVal = (document.getElementById('admin-role-filter')?.value || 'all').toLowerCase().trim();
 
         const filtered = allAdmins.filter(a => {
             if (searchVal) {
-                const haystack = `${a.full_name} ${a.email} ${a.admin_id}`.toLowerCase();
+                const haystack = `${a.full_name || ''} ${a.email || ''} ${a.admin_id || ''} ${a.phone || ''} ${a.admin_role || ''} ${a.status || ''}`.toLowerCase();
                 if (!haystack.includes(searchVal)) return false;
             }
-            if (statusVal !== 'all' && a.status !== statusVal) return false;
-            if (roleVal !== 'all' && a.admin_role !== roleVal) return false;
+            if (statusVal !== 'all' && (a.status || '').toLowerCase() !== statusVal) return false;
+            if (roleVal !== 'all' && (a.admin_role || '').toLowerCase() !== roleVal) return false;
             return true;
         });
 
@@ -465,6 +465,7 @@
 
         renderAdminTable(filtered);
     }
+
 
     async function loadAdminList() {
         try {
