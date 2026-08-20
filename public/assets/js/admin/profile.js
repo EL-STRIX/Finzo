@@ -875,12 +875,71 @@
             }
         },
 
+        checkAddStrength: (val) => {
+            const bar = document.getElementById('add-pw-bar');
+            if (!bar) return;
+            if (!val) {
+                bar.style.width = '0%';
+                return;
+            }
+            let score = 0;
+            if (val.length >= 8) score += 25;
+            if (/[A-Z]/.test(val)) score += 25;
+            if (/[0-9]/.test(val)) score += 25;
+            if (/[^A-Za-z0-9]/.test(val)) score += 25;
+
+            bar.style.width = score + '%';
+            if (score <= 25) {
+                bar.style.background = '#EF4444';
+            } else if (score <= 50) {
+                bar.style.background = '#F59E0B';
+            } else if (score <= 75) {
+                bar.style.background = '#3B82F6';
+            } else {
+                bar.style.background = '#10B981';
+            }
+        },
+
+        previewNewPhoto: (input) => {
+            const preview = document.getElementById('new-avatar-preview');
+            const errEl = document.getElementById('err-add-photo');
+            if (errEl) errEl.classList.add('hidden');
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                if (file.size > 10 * 1024 * 1024) {
+                    if (errEl) {
+                        errEl.textContent = 'File size exceeds 10MB limit';
+                        errEl.classList.remove('hidden');
+                    }
+                    input.value = '';
+                    if (preview) preview.classList.add('hidden');
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    if (preview) {
+                        preview.src = e.target.result;
+                        preview.classList.remove('hidden');
+                    }
+                };
+                reader.readAsDataURL(file);
+            } else {
+                if (preview) {
+                    preview.src = '';
+                    preview.classList.add('hidden');
+                }
+            }
+        },
+
         showAddModal: async () => {
             const modal = document.getElementById('add-admin-modal');
             if (modal) {
                 modal.classList.remove('hidden');
                 modal.classList.add('flex');
                 document.body.style.overflow = 'hidden';
+
+                // Reset error messages
+                document.querySelectorAll('[id^=err-add-]').forEach(el => el.classList.add('hidden'));
 
                 try {
                     const res = await window.api.get('/admins/next-id');
@@ -937,7 +996,15 @@
                 hasErr = true;
             }
 
-            if (hasErr) return;
+            if (hasErr) {
+                const firstErr = document.querySelector('[id^=err-add-]:not(.hidden)');
+                if (firstErr) {
+                    firstErr.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+                if (window.portal) window.portal.showToast('Please fill all required fields', 'warning');
+                return;
+            }
+
 
             if (btn) {
                 btn.disabled = true;
