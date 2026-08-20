@@ -746,7 +746,7 @@ class AdminStaffBranchRepository extends BaseRepository implements \App\Domain\C
               AND action_type NOT LIKE 'transaction_%'
               AND action_type NOT LIKE 'TRANSACTION_%'
               AND action_type NOT IN ('customer_cash_deposit', 'customer_cash_withdrawal')
-            ORDER BY created_at DESC
+            ORDER BY created_at DESC, id DESC
             LIMIT 10
         ");
         $actStmt->execute([(string)$staffId, $staff['staff_id'], (string)$staffId, $staff['staff_id']]);

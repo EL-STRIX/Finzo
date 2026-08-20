@@ -85,7 +85,7 @@ class AdminManagementRepository extends BaseRepository implements \App\Domain\Co
             SELECT action_type, details, ip_address, created_at, entity_id, entity_type
             FROM audit_log
             WHERE actor_id = ? AND actor_role IN ('Super Admin', 'Admin', 'Moderator', 'super_admin', 'admin', 'moderator')
-            ORDER BY created_at DESC LIMIT " . (int)$limit . "
+            ORDER BY created_at DESC, id DESC LIMIT " . (int)$limit . "
         ");
         $stmt->execute([$adminId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);

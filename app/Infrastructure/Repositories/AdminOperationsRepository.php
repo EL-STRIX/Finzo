@@ -52,7 +52,7 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
             LEFT JOIN admin_users a ON (al.entity_type = 'admin' AND (a.id = al.entity_id OR a.admin_id = al.entity_id)) OR (al.actor_role = 'admin' AND (a.id = al.actor_id OR a.admin_id = al.actor_id))
             LEFT JOIN branches b ON (al.branch_id = b.id OR al.branch_id = b.branch_code)
             WHERE {$whereSql}
-            ORDER BY al.created_at DESC
+            ORDER BY al.created_at DESC, al.id DESC
             LIMIT {$perPage} OFFSET {$offset}
         ", $params);
     }
@@ -102,7 +102,7 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
                    al.details
             FROM audit_log al
             WHERE {$whereSql}
-            ORDER BY al.created_at DESC
+            ORDER BY al.created_at DESC, al.id DESC
         ";
         $stmt = $this->db->prepare($sql);
         $stmt->execute($params);
