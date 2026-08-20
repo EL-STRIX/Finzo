@@ -6,6 +6,7 @@
 (function() {
     let currentAdminId = null;
     let currentAdminData = null;
+    let allActivities = [];
 
     function notify(msg, type = 'info') {
         if (window.portal && window.portal.showToast) {
@@ -193,17 +194,123 @@
                     noteText.textContent = '"Administrators possess elevated privileges. Every system modification and user override is recorded in the global audit log for institutional security."';
                 }
             }
+
+            // Privileges Matrix
+            const privList = document.getElementById('privileges-list');
+            const privRoleLabel = document.getElementById('privilege-role-label');
+            if (privRoleLabel) {
+                privRoleLabel.textContent = admin.admin_role === 'super_admin' ? 'Super Administrator' : (admin.admin_role === 'moderator' ? 'Moderator' : 'System Admin');
+            }
+            if (privList) {
+                if (admin.admin_role === 'super_admin') {
+                    privList.innerHTML = `
+                        <div class="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
+                            <span class="material-symbols-outlined text-[16px]">check_circle</span>
+                            <span>Full Root System & Security Access</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
+                            <span class="material-symbols-outlined text-[16px]">check_circle</span>
+                            <span>Provision & Manage Administrators</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
+                            <span class="material-symbols-outlined text-[16px]">check_circle</span>
+                            <span>Financial Core & Global Ledger Oversight</span>
+                        </div>
+                    `;
+                } else if (admin.admin_role === 'admin') {
+                    privList.innerHTML = `
+                        <div class="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
+                            <span class="material-symbols-outlined text-[16px]">check_circle</span>
+                            <span>Executive Overview & Telemetry</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
+                            <span class="material-symbols-outlined text-[16px]">check_circle</span>
+                            <span>User Management & Account Approvals</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
+                            <span class="material-symbols-outlined text-[16px]">check_circle</span>
+                            <span>Staff Management & Branch Operations</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-text-secondary opacity-60">
+                            <span class="material-symbols-outlined text-[16px]">cancel</span>
+                            <span>Modify Root Super Administrators</span>
+                        </div>
+                    `;
+                } else {
+                    privList.innerHTML = `
+                        <div class="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
+                            <span class="material-symbols-outlined text-[16px]">check_circle</span>
+                            <span>Review & KYC Document Approvals</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
+                            <span class="material-symbols-outlined text-[16px]">check_circle</span>
+                            <span>Support Ticket & Audit Log Viewing</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-text-secondary opacity-60">
+                            <span class="material-symbols-outlined text-[16px]">cancel</span>
+                            <span>User Suspension or Deletion</span>
+                        </div>
+                    `;
+                }
+            }
+
+            // View in Global Audit Log link
+            const auditLink = document.getElementById('view-audit-link');
+            if (auditLink) {
+                auditLink.href = `admin-audit-log.php?search=${encodeURIComponent(admin.admin_id)}`;
+            }
         },
 
         /**
          * Render Activity Table
          */
         renderActivity: function(activities) {
+            allActivities = activities || [];
+            this.filterActivity();
+        },
+
+        filterActivity: function() {
+            const query = (document.getElementById('activity-search-input')?.value || '').toLowerCase().trim();
             const tbody = document.getElementById('activity-tbody');
+            const countLabel = document.getElementById('activity-count-label');
             if (!tbody) return;
 
-            if (!activities || activities.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" class="py-12 text-center"><div class="flex flex-col items-center justify-center"><span class="material-symbols-outlined text-4xl text-text-secondary/30 mb-3" aria-hidden="true">inventory_2</span><div class="text-sm font-bold text-text-secondary">No activity recorded for this administrator.</div></div></td></tr>`;
+            const filtered = allActivities.filter(act => {
+                if (!query) return true;
+                const actType = (act.action_type || act.action || '').toLowerCase();
+                const details = (act.details || '').toLowerCase();
+                const ip = (act.ip_address || '').toLowerCase();
+                return actType.includes(query) || details.includes(query) || ip.includes(query);
+            });
+
+            if (countLabel) {
+                countLabel.textContent = `${filtered.length} total entries${query ? ' (filtered)' : ''}`;
+            }
+
+            if (filtered.length === 0) {
+                if (allActivities.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="4" class="py-12 text-center">
+                                <div class="flex flex-col items-center justify-center max-w-sm mx-auto">
+                                    <div class="w-12 h-12 rounded-2xl bg-surface-subtle border border-border-subtle flex items-center justify-center mb-3 text-text-secondary">
+                                        <span class="material-symbols-outlined text-2xl">history_toggle_off</span>
+                                    </div>
+                                    <div class="text-xs font-black text-text-primary uppercase tracking-wider mb-1">No Activity Logged Yet</div>
+                                    <div class="text-[11px] font-medium text-text-secondary">This administrator has not initiated any recorded actions or operations yet.</div>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                } else {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="4" class="py-10 text-center text-xs font-bold text-text-secondary">
+                                No activity records match "${escapeHtml(query)}"
+                            </td>
+                        </tr>
+                    `;
+                }
                 return;
             }
 
@@ -213,17 +320,18 @@
                 return isNaN(dt.getTime()) ? d : dt.toLocaleString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
             };
 
-            tbody.innerHTML = activities.map(act => `
-                <tr class="hover:bg-surface-subtle transition-colors">
-                    <td class="py-4 px-6 text-[11px] font-bold text-text-secondary">${formatDT(act.created_at)}</td>
-                    <td class="py-4 px-6">
-                        <span class="px-2.5 py-1 rounded-lg bg-surface-subtle border border-border-subtle text-[9px] font-black uppercase tracking-widest text-text-primary">${escapeHtml((act.action_type || act.action || '').replace(/_/g, ' '))}</span>
+            tbody.innerHTML = filtered.map(act => `
+                <tr class="hover:bg-surface-subtle transition-colors border-b border-border-subtle last:border-0">
+                    <td class="py-4 px-6 text-[11px] font-bold text-text-secondary whitespace-nowrap">${formatDT(act.created_at)}</td>
+                    <td class="py-4 px-6 whitespace-nowrap">
+                        <span class="px-2.5 py-1 rounded-lg bg-surface border border-border-subtle text-[9px] font-black uppercase tracking-widest text-text-primary">${escapeHtml((act.action_type || act.action || '').replace(/_/g, ' '))}</span>
                     </td>
                     <td class="py-4 px-6 text-[11px] font-medium text-text-primary">${escapeHtml(act.details || '-')}</td>
-                    <td class="py-4 px-6 text-right text-[10px] font-mono font-bold text-text-secondary">${escapeHtml(act.ip_address || '127.0.0.1')}</td>
+                    <td class="py-4 px-6 text-right text-[10px] font-mono font-bold text-text-secondary whitespace-nowrap">${escapeHtml(act.ip_address || '127.0.0.1')}</td>
                 </tr>
             `).join('');
         },
+
 
         /**
          * Administrative Actions

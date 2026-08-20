@@ -9,6 +9,7 @@ window.AdminPortal = {
         isLoaded: false
     },
 
+
     /**
      * Initial session check
      */
@@ -252,4 +253,18 @@ document.addEventListener('DOMContentLoaded', () => window.AdminPortal.init());
         applyTheme();
         
     });
+
+    window.portal = window.AdminPortal;
+
+    const initAdminPortal = () => {
+        if (window.AdminPortal && window.AdminPortal.init) {
+            window.AdminPortal.init();
+        }
+    };
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initAdminPortal);
+    } else {
+        initAdminPortal();
+    }
 })();
+

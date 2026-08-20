@@ -160,6 +160,17 @@ ob_start();
             </div>
         </div>
 
+        <!-- Privileges Matrix -->
+        <div class="ds-card p-6">
+            <h5 class="text-[10px] font-black uppercase tracking-widest text-text-secondary mb-4 block flex items-center justify-between">
+                <span>Role Privileges</span>
+                <span id="privilege-role-label" class="text-primary font-bold">Administrator</span>
+            </h5>
+            <div id="privileges-list" class="space-y-2 text-xs font-bold text-text-primary">
+                <!-- Injected by admin-detail.js -->
+            </div>
+        </div>
+
         <!-- Security Insights -->
         <div class="p-6 bg-surface-subtle border border-border-subtle rounded-2xl overflow-hidden relative shadow-sm">
             <div class="relative z-10">
@@ -169,6 +180,12 @@ ob_start();
                 <p id="security-note-text" class="text-xs leading-relaxed text-text-secondary font-medium italic">
                     "All administrative actions performed on this account are recorded in the global audit log and attributed to your session."
                 </p>
+                <div class="mt-4 pt-3 border-t border-border-subtle flex items-center justify-between">
+                    <a id="view-audit-link" href="admin-audit-log.php" class="text-xs font-bold text-primary hover:underline flex items-center gap-1">
+                        <span>View in Global Audit Log</span>
+                        <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+                    </a>
+                </div>
             </div>
         </div>
     </div>
@@ -176,10 +193,19 @@ ob_start();
 
 <!-- Activity Table -->
 <div class="ds-card overflow-hidden mt-8 relative z-10 shadow-2xl transition-all duration-300">
-    <div class="p-5 sm:p-6 border-b border-border-subtle bg-surface-subtle flex justify-between items-center">
-        <h4 class="font-bold text-xs uppercase tracking-widest flex items-center gap-2 text-text-primary">
-            <span class="material-symbols-outlined text-primary text-[18px]" aria-hidden="true">history</span> Activity Timeline
-        </h4>
+    <div class="p-5 sm:p-6 border-b border-border-subtle bg-surface-subtle flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+            <h4 class="font-bold text-xs uppercase tracking-widest flex items-center gap-2 text-text-primary">
+                <span class="material-symbols-outlined text-primary text-[18px]" aria-hidden="true">history</span> Activity Timeline
+            </h4>
+            <p class="text-[10px] font-bold text-text-secondary uppercase tracking-widest mt-0.5" id="activity-count-label">0 total entries</p>
+        </div>
+        <div class="flex items-center gap-3">
+            <div class="relative">
+                <input type="text" id="activity-search-input" onkeyup="window.AdminDetail.filterActivity()" placeholder="Search activities..." class="bg-surface text-text-primary text-xs font-bold px-3.5 py-2 pl-9 rounded-xl border border-border-subtle focus:border-text-primary focus:ring-2 focus:ring-text-primary focus:outline-none w-48 sm:w-64">
+                <span class="material-symbols-outlined absolute left-2.5 top-2.5 text-text-secondary text-[16px]">search</span>
+            </div>
+        </div>
     </div>
     <div class="overflow-x-auto">
         <table class="ds-table w-full text-left">
@@ -197,6 +223,7 @@ ob_start();
         </table>
     </div>
 </div>
+
 
 <!-- Reset Password Modal -->
 <div id="reset-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 backdrop-blur-sm px-4">
