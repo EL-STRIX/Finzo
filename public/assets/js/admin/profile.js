@@ -92,8 +92,13 @@
     async function loadAdminProfile() {
         try {
             const response = await window.api.get('/admins/profile');
-            if (response.success) {
-                const admin = response.profile;
+            if (response && (response.success || response.status === 200 || response.data)) {
+                const payload = response.data || response;
+                const admin = payload.profile || response.profile || payload;
+                if (!admin || !admin.full_name) {
+                    console.error('Invalid profile data:', response);
+                    return;
+                }
                 currentAdminRole = admin.admin_role;
 
                 // Topbar & Subtitle handling with safe null checks
@@ -178,11 +183,11 @@
                 }
 
                 // Avatar handling
-                const initials = (admin.full_name || 'AD').split(' ').map(n => n[0]).join('').substring(0, 2);
+                const initials = (admin.full_name || 'AD').split(' ').filter(Boolean).map(n => n[0]).join('').toUpperCase().substring(0, 2);
                 const avatarImg = document.getElementById('avatar-img-preview');
                 const avatarInitials = document.getElementById('avatar-initials');
                 if (admin.profile_photo) {
-                    const photoSrc = admin.profile_photo.startsWith('/') ? '/Finzo/public' + admin.profile_photo : '/Finzo/public/' + admin.profile_photo;
+                    const photoSrc = admin.profile_photo.startsWith('/') ? '/Finzo/public' + admin.profile_photo : (admin.profile_photo.startsWith('http') ? admin.profile_photo : '/Finzo/public/assets/' + admin.profile_photo);
                     if (avatarImg) {
                         avatarImg.src = photoSrc;
                         avatarImg.classList.remove('hidden');
@@ -205,8 +210,9 @@
                 if (secPwd) secPwd.textContent = admin.last_password_changed ? (window.FinzoUtils ? window.FinzoUtils.timeAgo(admin.last_password_changed) : admin.last_password_changed) : 'Recently';
 
                 // Recent Activity
-                if (response.activity && response.activity.length > 0) {
-                    activityData = response.activity;
+                const activityList = payload.activity || response.activity || [];
+                if (activityList && activityList.length > 0) {
+                    activityData = activityList;
                     currentActivityPage = 1;
                     renderActivityPage();
                 } else {
@@ -257,7 +263,7 @@
                 }
 
             } else {
-                if (window.portal) window.portal.showToast(response.message || 'Failed to load profile', 'error');
+                if (window.portal) window.portal.showToast(response?.message || 'Failed to load profile', 'error');
             }
         } catch (error) {
             console.error('Failed to load profile:', error);
@@ -272,13 +278,22 @@
     async function loadLockedAdmins() {
         try {
             const res = await window.api.get('/admins/locked');
-            if (!res.success || res.total === 0) {
-                document.getElementById('locked-admins-container').classList.add('hidden');
+            if (!res || (!res.success && !res.data)) {
+                document.getElementById('locked-admins-container')?.classList.add('hidden');
+                return;
+            }
+            const payload = res.data || res;
+            const lockedList = payload.locked_admins || payload.locked || (Array.isArray(payload) ? payload : []);
+            const total = payload.total ?? lockedList.length;
+
+            if (total === 0 || lockedList.length === 0) {
+                document.getElementById('locked-admins-container')?.classList.add('hidden');
                 return;
             }
 
-            document.getElementById('locked-admins-container').classList.remove('hidden');
-            document.getElementById('locked-count-badge').textContent = `${res.total} Locked`;
+            document.getElementById('locked-admins-container')?.classList.remove('hidden');
+            const badge = document.getElementById('locked-count-badge');
+            if (badge) badge.textContent = `${total} Locked`;
 
             const formatDT = (d) => {
                 if (!d) return '-';
@@ -286,34 +301,36 @@
             };
 
             const tbody = document.getElementById('locked-admins-body');
-            tbody.innerHTML = res.locked_admins.map(a => {
-                const lockReasonLabel = a.lock_reason === 'failed_password'
-                    ? `<span class="px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-widest bg-rose-50 text-rose-600 border border-rose-100">Wrong Password (3x)</span>`
-                    : `<span class="px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-widest bg-amber-50 text-amber-600 border border-amber-100">Wrong Answer (5x)</span>`;
+            if (tbody) {
+                tbody.innerHTML = lockedList.map(a => {
+                    const lockReasonLabel = a.lock_reason === 'failed_password'
+                        ? `<span class="px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-widest bg-rose-50 text-rose-600 border border-rose-100">Wrong Password (3x)</span>`
+                        : `<span class="px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-widest bg-amber-50 text-amber-600 border border-amber-100">Wrong Answer (5x)</span>`;
 
-                const attemptsColor = a.answer_attempts >= 3 ? 'text-rose-600 font-bold' : 'text-slate-600 dark:text-slate-300';
-                const sqHtml = a.security_question_set
-                    ? `<span class="text-emerald-600 text-xs font-bold">Yes</span>`
-                    : `<span class="text-rose-500 text-xs font-bold">No</span>`;
+                    const attemptsColor = a.answer_attempts >= 3 ? 'text-rose-600 font-bold' : 'text-slate-600 dark:text-slate-300';
+                    const sqHtml = a.security_question_set
+                        ? `<span class="text-emerald-600 text-xs font-bold">Yes</span>`
+                        : `<span class="text-rose-500 text-xs font-bold">No</span>`;
 
-                return `<tr class="hover:bg-rose-50/30 dark:hover:bg-rose-500/5 transition-colors border-b border-slate-50 dark:border-white/5 last:border-0">
-                    <td class="py-4 px-6">
-                        <div class="text-xs font-black dark:text-white tracking-tight">${a.full_name}</div>
-                        <div class="text-[9px] font-bold text-slate-400 mt-0.5">${a.email}</div>
-                    </td>
-                    <td class="py-4 px-4"><span class="px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-widest bg-teal-500/10 text-teal-600 border border-teal-500/20">${a.admin_role}</span></td>
-                    <td class="py-4 px-4 text-[11px] text-slate-500 dark:text-slate-400 font-medium">${formatDT(a.locked_at)}</td>
-                    <td class="py-4 px-4">${lockReasonLabel}</td>
-                    <td class="py-4 px-4 text-[11px] font-bold ${attemptsColor}">${a.answer_attempts} / 5</td>
-                    <td class="py-4 px-4">${sqHtml}</td>
-                    <td class="py-4 px-4">
-                        <button onclick="window.AdminProfile.showUnlockConfirm(${a.id}, '${a.full_name.replace(/'/g, "\\'")}')"
-                            class="px-3 py-1.5 bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white border border-emerald-200 rounded-lg text-[10px] font-black uppercase tracking-widest transition-colors">
-                            Unlock
-                        </button>
-                    </td>
-                </tr>`;
-            }).join('');
+                    return `<tr class="hover:bg-rose-50/30 dark:hover:bg-rose-500/5 transition-colors border-b border-border-subtle last:border-0">
+                        <td class="py-4 px-6">
+                            <div class="text-xs font-black dark:text-white tracking-tight">${a.full_name}</div>
+                            <div class="text-[9px] font-bold text-slate-400 mt-0.5">${a.email}</div>
+                        </td>
+                        <td class="py-4 px-4"><span class="px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-widest bg-teal-500/10 text-teal-600 border border-teal-500/20">${a.admin_role}</span></td>
+                        <td class="py-4 px-4 text-[11px] text-slate-500 dark:text-slate-400 font-medium">${formatDT(a.locked_at)}</td>
+                        <td class="py-4 px-4">${lockReasonLabel}</td>
+                        <td class="py-4 px-4 text-[11px] font-bold ${attemptsColor}">${a.answer_attempts} / 5</td>
+                        <td class="py-4 px-4">${sqHtml}</td>
+                        <td class="py-4 px-4 text-right">
+                            <button onclick="window.AdminProfile.showUnlockConfirm(${a.id}, '${(a.full_name || '').replace(/'/g, "\\'")}')"
+                                class="px-3 py-1.5 bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white border border-emerald-200 rounded-lg text-[10px] font-black uppercase tracking-widest transition-colors">
+                                Unlock
+                            </button>
+                        </td>
+                    </tr>`;
+                }).join('');
+            }
         } catch (err) {
             console.error('Error loading locked admins:', err);
         }
@@ -416,18 +433,21 @@
     }
 
     async function loadAdminList() {
-
         try {
             const res = await window.api.get('/admins');
-            if (res.success) {
-                allAdmins = res.admins || [];
-                document.getElementById('management-count-badge').textContent = `${res.total} Admins`;
+            if (res && (res.success || res.status === 200 || res.data)) {
+                const payload = res.data || res;
+                allAdmins = payload.admins || (Array.isArray(payload) ? payload : []);
+                const total = payload.total ?? allAdmins.length;
+                const countBadge = document.getElementById('management-count-badge');
+                if (countBadge) countBadge.textContent = `${total} Admins`;
                 renderAdminTable(allAdmins);
             }
         } catch (e) {
-            console.error(e);
+            console.error('Error loading admin list:', e);
         }
     }
+
 
     // Wire up filter controls using event delegation (bulletproof approach)
     // Wire up filter controls directly
@@ -679,8 +699,13 @@
                 // Fetch prospective Admin ID
                 try {
                     const res = await window.api.get('/admins/next-id');
-                    if (res.success) {
-                        document.getElementById('add-admin-id').value = res.next_id;
+                    if (res && (res.success || res.data)) {
+                        const payload = res.data || res;
+                        const nextId = payload.next_id || res.next_id;
+                        if (nextId) {
+                            const idInput = document.getElementById('add-admin-id');
+                            if (idInput) idInput.value = nextId;
+                        }
                     }
                 } catch (e) {
                     console.error('Failed to fetch next admin ID');
@@ -707,26 +732,34 @@
             let hasErr = false;
 
             fields.forEach(f => {
-                vals[f] = document.getElementById('add-' + f).value;
+                const el = document.getElementById('add-' + f);
+                vals[f] = el ? el.value.trim() : '';
                 if (!vals[f]) {
                     const e = document.getElementById('err-add-' + f);
-                    e.textContent = 'This field is required';
-                    e.classList.remove('hidden');
+                    if (e) {
+                        e.textContent = 'This field is required';
+                        e.classList.remove('hidden');
+                    }
                     hasErr = true;
                 }
             });
 
-            if (vals.pw !== vals['conf-pw']) {
+            if (vals.pw && vals['conf-pw'] && vals.pw !== vals['conf-pw']) {
                 const e = document.getElementById('err-add-conf-pw');
-                e.textContent = 'Passwords do not match';
-                e.classList.remove('hidden');
+                if (e) {
+                    e.textContent = 'Passwords do not match';
+                    e.classList.remove('hidden');
+                }
                 hasErr = true;
             }
 
             if (hasErr) return;
 
-            btn.disabled = true;
-            btn.querySelector('span:last-child').classList.remove('hidden');
+            if (btn) {
+                btn.disabled = true;
+                const spinner = btn.querySelector('span:last-child');
+                if (spinner) spinner.classList.remove('hidden');
+            }
 
             const formData = new FormData();
             formData.append('full_name', vals.name);
@@ -741,42 +774,35 @@
             formData.append('admin_role', vals.role);
 
             const fileInput = document.getElementById('new-admin-photo');
-            if (fileInput.files.length > 0) {
+            if (fileInput && fileInput.files.length > 0) {
                 formData.append('profile_photo', fileInput.files[0]);
             }
 
             try {
                 const response = await window.api.upload('/admins', formData);
-                if (response.success) {
+                const payload = response ? (response.data || response) : {};
+                if (response && (response.success || response.status === 200 || response.status === 201 || payload.success)) {
                     window.AdminProfile.closeAddModal();
 
                     // Clear form
                     fields.forEach(f => {
                         const input = document.getElementById('add-' + f);
-                        if (input) {
-                            input.value = '';
-                            // Reset custom dropdown labels if applicable
-                            const dropdown = input.closest('.finzo-dropdown');
-                            if (dropdown) {
-                                const label = dropdown.querySelector('.dropdown-label');
-                                if (label) {
-                                    if (f === 'gender') label.textContent = 'Select Gender';
-                                    else if (f === 'role') label.textContent = 'Select Role';
-                                    else label.textContent = 'Select Option';
-                                }
-                                dropdown.querySelectorAll('.finzo-dropdown-option').forEach(opt => opt.classList.remove('is-selected'));
-                            }
-                        }
+                        if (input) input.value = '';
                     });
-                    document.getElementById('new-avatar-preview').src = '';
-                    document.getElementById('new-avatar-preview').classList.add('hidden');
-                    document.getElementById('role-preview-box').classList.add('hidden');
-                    document.getElementById('add-pw-bar').style.width = '0%';
+                    const photoPrev = document.getElementById('new-avatar-preview');
+                    if (photoPrev) { photoPrev.src = ''; photoPrev.classList.add('hidden'); }
+                    const roleBox = document.getElementById('role-preview-box');
+                    if (roleBox) roleBox.classList.add('hidden');
+                    const pwBar = document.getElementById('add-pw-bar');
+                    if (pwBar) pwBar.style.width = '0%';
 
-                    window.portal.showToast(`Admin ${response.admin_name} has been added successfully`, 'success');
+                    const createdName = payload.admin_name || vals.name;
+                    window.portal.showToast(payload.message || `Admin ${createdName} provisioned successfully`, 'success');
                     loadAdminList(); // Refresh list automatically
                 } else {
-                    if (response.field) {
+                    const errMsg = payload.message || response?.message || 'Provisioning failed';
+                    if (payload.field || response?.field) {
+                        const fieldKey = payload.field || response.field;
                         const fieldMap = {
                             'full_name': 'name',
                             'date_of_birth': 'dob',
@@ -789,28 +815,32 @@
                             'security_answer': 'seq-a',
                             'admin_role': 'role'
                         };
-                        const targetId = 'err-add-' + (fieldMap[response.field] || response.field);
+                        const targetId = 'err-add-' + (fieldMap[fieldKey] || fieldKey);
                         const e = document.getElementById(targetId);
                         if (e) {
-                            e.textContent = response.message;
+                            e.textContent = errMsg;
                             e.classList.remove('hidden');
                         } else {
-                            window.portal.showToast(response.message, 'error');
+                            window.portal.showToast(errMsg, 'error');
                         }
                     } else {
-                        window.portal.showToast(response.message || 'Operation failed', 'error');
+                        window.portal.showToast(errMsg, 'error');
                     }
                 }
             } catch (err) {
-                window.portal.showToast('System error adding admin', 'error');
+                window.portal.showToast('System error provisioning admin', 'error');
             } finally {
-                btn.disabled = false;
-                btn.querySelector('span:last-child').classList.add('hidden');
+                if (btn) {
+                    btn.disabled = false;
+                    const spinner = btn.querySelector('span:last-child');
+                    if (spinner) spinner.classList.add('hidden');
+                }
             }
         },
 
         // Admin List Filtering
         filterAdminList: filterAdminList,
+
 
         // Activity Pagination
         prevActivityPage: () => {
