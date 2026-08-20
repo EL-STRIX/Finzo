@@ -1,29 +1,30 @@
 <?php
 $portal = 'admin';
 $pageTitle = 'Admin Dossier';
-$pageHeader = '
-<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+ob_start();
+?>
+<!-- Top Page Header -->
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 relative z-10">
     <div>
         <div class="flex items-center gap-3">
-            <a href="admin-profile.php" class="w-8 h-8 rounded-xl bg-surface border border-border-subtle hover:bg-surface-hover flex items-center justify-center text-text-secondary hover:text-text-primary transition-colors cursor-pointer mr-1" title="Back to Directory">
-                <span class="material-symbols-outlined text-[18px]" aria-hidden="true">arrow_back</span>
+            <a href="admin-profile.php" class="w-9 h-9 rounded-xl bg-surface border border-border-subtle hover:bg-surface-hover flex items-center justify-center text-text-secondary hover:text-text-primary transition-colors cursor-pointer" title="Back to Directory">
+                <span class="material-symbols-outlined text-[20px]" aria-hidden="true">arrow_back</span>
             </a>
-            <h1 id="header-admin-name" class="text-xl font-display font-black text-text-primary tracking-tight">Loading...</h1>
+            <h1 id="header-admin-name" class="text-2xl font-headline font-black text-text-primary tracking-tight">Admin Dossier</h1>
             <span id="header-status-badge" class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-widest hidden"></span>
         </div>
-        <p class="text-xs font-bold text-text-secondary uppercase tracking-widest mt-1 ml-10">Admin Profile & Access Control</p>
+        <p class="text-xs font-bold text-text-secondary uppercase tracking-widest mt-1 ml-12">Admin Profile & Access Control</p>
     </div>
     <div class="flex items-center gap-2">
-        <a href="admin-profile.php" class="btn btn-secondary px-4 py-2 text-xs font-bold flex items-center gap-1.5">
+        <a href="admin-profile.php" class="btn btn-secondary px-4 py-2 text-xs font-bold flex items-center gap-1.5 cursor-pointer">
             <span class="material-symbols-outlined text-[16px]" aria-hidden="true">group</span>
             <span>All Admins</span>
         </a>
     </div>
 </div>
-';
-ob_start();
-?>
+
 <div class="flex flex-col lg:grid lg:grid-cols-12 gap-8">
+
     
     <!-- Left Column: Details -->
     <div class="lg:col-span-8 space-y-8">

@@ -61,17 +61,35 @@
          * Fetch data from API
          */
         loadAdminData: async function() {
+            // Guarantee window.api is initialized
+            let attempts = 0;
+            while ((!window.api || typeof window.api.get !== 'function') && attempts < 25) {
+                await new Promise(r => setTimeout(r, 80));
+                attempts++;
+            }
+
+            if (!window.api || typeof window.api.get !== 'function') {
+                console.error('API module unavailable');
+                return;
+            }
+
             try {
                 const response = await window.api.get(`/admins/${currentAdminId}`);
-                if (response && (response.success || response.admin)) {
-                    const payload = response.data || response;
-                    const admin = payload.admin || response.admin;
-                    const activity = payload.activity || response.activity || [];
+                if (!response) {
+                    notify('No response from server', 'error');
+                    return;
+                }
+
+                const payload = response.data || response;
+                const admin = payload.admin || response.admin;
+                const activity = payload.activity || response.activity || [];
+
+                if (admin) {
                     currentAdminData = admin;
                     this.renderUI(admin);
                     this.renderActivity(activity);
                 } else {
-                    notify(response?.message || 'Error loading admin dossier', 'error');
+                    notify(response?.message || payload?.message || 'Error loading admin dossier', 'error');
                     setTimeout(() => window.location.href = 'admin-profile.php', 2000);
                 }
             } catch (error) {
@@ -79,6 +97,7 @@
                 notify('Network error loading detail', 'error');
             }
         },
+
 
         /**
          * Populate UI elements
