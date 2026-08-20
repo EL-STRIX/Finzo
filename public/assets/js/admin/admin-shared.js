@@ -53,8 +53,20 @@ window.AdminPortal = {
         // Update topbar admin avatar
         document.querySelectorAll('header .header-avatar').forEach(el => {
             if (admin.profile_photo) {
+                let photoSrc = admin.profile_photo;
+                if (!photoSrc.startsWith('http')) {
+                    if (photoSrc.startsWith('/Finzo/public/')) {
+                        // already full
+                    } else if (photoSrc.startsWith('/uploads/') || photoSrc.startsWith('uploads/')) {
+                        photoSrc = '/Finzo/public/' + photoSrc.replace(/^\/+/, '');
+                    } else if (photoSrc.startsWith('/assets/') || photoSrc.startsWith('assets/')) {
+                        photoSrc = '/Finzo/public/' + photoSrc.replace(/^\/+/, '');
+                    } else {
+                        photoSrc = '/Finzo/public/uploads/' + photoSrc.replace(/^\/+/, '');
+                    }
+                }
                 const cacheBuster = '?v=' + new Date().getTime();
-                const src = (admin.profile_photo.startsWith('http') ? admin.profile_photo : `/Finzo/public/assets/${admin.profile_photo}`) + cacheBuster;
+                const src = photoSrc + cacheBuster;
                 el.innerHTML = `<img src="${src}" alt="${name}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
                 el.style.background = 'none';
             } else {
@@ -62,6 +74,7 @@ window.AdminPortal = {
                 if (window.FinzoUtils) el.style.background = window.FinzoUtils.getAvatarGradient(initials);
             }
         });
+
     },
 
     /**

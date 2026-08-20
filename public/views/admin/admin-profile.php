@@ -86,7 +86,7 @@ ob_start();
         </div>
 
         <!-- Right: Quick Stat Metrics -->
-        <div class="grid grid-cols-2 sm:grid-cols-2 gap-3 w-full md:w-auto shrink-0">
+        <div class=" w-full md:w-auto shrink-0">
             <div class="p-4 rounded-2xl bg-surface-subtle border border-border-subtle text-center sm:text-left min-w-[130px]">
                 <span class="text-[10px] font-black text-text-secondary uppercase tracking-widest block mb-1">Security Score</span>
                 <div class="flex items-center justify-center sm:justify-start gap-2">

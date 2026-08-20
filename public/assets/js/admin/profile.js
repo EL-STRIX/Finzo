@@ -125,9 +125,20 @@
                 const avatarImg = document.getElementById('avatar-img-preview');
                 const avatarInitials = document.getElementById('avatar-initials');
                 if (admin.profile_photo) {
-                    const photoSrc = admin.profile_photo.startsWith('/') ? '/Finzo/public' + admin.profile_photo : (admin.profile_photo.startsWith('http') ? admin.profile_photo : '/Finzo/public/assets/' + admin.profile_photo);
+                    let photoSrc = admin.profile_photo;
+                    if (!photoSrc.startsWith('http')) {
+                        if (photoSrc.startsWith('/Finzo/public/')) {
+                            // full
+                        } else if (photoSrc.startsWith('/uploads/') || photoSrc.startsWith('uploads/')) {
+                            photoSrc = '/Finzo/public/' + photoSrc.replace(/^\/+/, '');
+                        } else if (photoSrc.startsWith('/assets/') || photoSrc.startsWith('assets/')) {
+                            photoSrc = '/Finzo/public/' + photoSrc.replace(/^\/+/, '');
+                        } else {
+                            photoSrc = '/Finzo/public/uploads/' + photoSrc.replace(/^\/+/, '');
+                        }
+                    }
                     if (avatarImg) {
-                        avatarImg.src = photoSrc;
+                        avatarImg.src = photoSrc + '?v=' + Date.now();
                         avatarImg.classList.remove('hidden');
                     }
                     if (avatarInitials) avatarInitials.classList.add('hidden');
@@ -138,6 +149,7 @@
                         avatarInitials.classList.remove('hidden');
                     }
                 }
+
 
                 // Security Card Telemetry
                 const secLogin = document.getElementById('sec-last-login');
@@ -554,6 +566,7 @@
                     const payload = response ? (response.data || response) : {};
                     if (response && (response.success || response.status === 200 || payload.success)) {
                         if (window.portal) window.portal.showToast(payload.message || 'Profile photo updated successfully', 'success');
+                        await loadAdminProfile();
                         if (window.AdminPortal) window.AdminPortal.init();
                     } else {
                         if (window.portal) window.portal.showToast(payload.message || 'Upload failed', 'error');
@@ -561,6 +574,7 @@
                 } catch (error) {
                     if (window.portal) window.portal.showToast('System error uploading photo', 'error');
                 }
+
             }
         },
 

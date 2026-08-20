@@ -334,24 +334,16 @@ class AdminManagementService implements \App\Domain\Contracts\Services\AdminMana
         $mime = finfo_file($finfo, $file['tmp_name']);
 
         if (!in_array($mime, $allowed_types)) {
-            throw new ApiException($isProfileEndpoint ? 'Invalid file type. Only JPG, PNG, and WEBP are allowed.' : 'Profile photo must be JPG or PNG', 422);
+            throw new ApiException('Invalid file type. Only JPG, PNG, and WEBP are allowed.', 422);
         }
 
         $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-        if (!$isProfileEndpoint) {
-            if (!in_array($ext, ['jpg', 'jpeg', 'png']) || !in_array($file['type'], ['image/jpeg', 'image/png'])) {
-                throw new ApiException('Profile photo must be JPG or PNG', 422);
-            }
-            if ($file['size'] > 10 * 1024 * 1024) {
-                throw new ApiException('Profile photo max size is 10MB', 422);
-            }
+        if ($file['size'] > 10 * 1024 * 1024) {
+            throw new ApiException('Profile photo max size is 10MB', 422);
         }
 
         $filename = 'admin_' . $adminId . '_' . time() . '.' . $ext;
-
-        // upload-admin-photo uses admin-photos, profile uses avatars
-        $dir = $isProfileEndpoint ? '/uploads/avatars/' : '/uploads/admin-photos/';
-        $upload_dir = dirname(__DIR__, 2) . $dir;
+        $upload_dir = defined('UPLOAD_ADMIN_PHOTOS_PATH') ? UPLOAD_ADMIN_PHOTOS_PATH : (dirname(__DIR__, 3) . '/public/uploads/admin-photos/');
         if (!is_dir($upload_dir)) {
             mkdir($upload_dir, 0755, true);
         }
@@ -360,25 +352,35 @@ class AdminManagementService implements \App\Domain\Contracts\Services\AdminMana
 
         if (move_uploaded_file($file['tmp_name'], $target_path)) {
             $admin = $this->repository->getAdminById($adminId);
-            $old_avatar = $admin['profile_photo'];
+            $old_avatar = $admin['profile_photo'] ?? null;
 
-            if ($old_avatar && file_exists(dirname(__DIR__, 2) . '/' . ltrim($old_avatar, '/'))) {
-                @unlink(dirname(__DIR__, 2) . '/' . ltrim($old_avatar, '/'));
+            if ($old_avatar) {
+                $old_full_path = dirname(__DIR__, 3) . '/public' . (str_starts_with($old_avatar, '/') ? $old_avatar : '/' . $old_avatar);
+                if (file_exists($old_full_path)) {
+                    @unlink($old_full_path);
+                }
             }
 
-            $relative_path = ($isProfileEndpoint ? 'uploads/avatars/' : '/uploads/admin-photos/') . $filename;
+            $relative_path = '/uploads/admin-photos/' . $filename;
             $this->repository->updateAdminProfileField($adminId, 'profile_photo', $relative_path);
 
             $_SESSION['admin_profile_photo'] = $relative_path;
 
-            if ($isProfileEndpoint) {
-                return ['success' => true, 'message' => 'Profile photo updated successfully', 'avatar_url' => $relative_path];
-            } else {
-                return ['success' => true, 'photo_url' => $relative_path];
-            }
+            \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
+                new \App\Application\Events\GenericAuditAction('admin_photo_updated', $adminId, \App\Domain\Enums\RoleEnum::ADMIN->value, $adminId, \App\Domain\Enums\RoleEnum::ADMIN->value, 'Profile photo updated')
+            );
+
+            return [
+                'success' => true,
+                'message' => 'Profile photo updated successfully',
+                'photo_url' => $relative_path,
+                'avatar_url' => $relative_path,
+                'profile_photo' => $relative_path
+            ];
         }
         throw new ApiException('Failed to move uploaded file', 500);
     }
+
 
 
     /**
