@@ -21,6 +21,12 @@ class QueueManager
 
     public function dispatch(JobInterface $job, string $queue = 'default'): void
     {
+        $connection = defined('QUEUE_CONNECTION') ? QUEUE_CONNECTION : 'sync';
+        if ($connection === 'sync') {
+            $this->processJobSync($job);
+            return;
+        }
+
         try {
             $pdo = \App\Shared\Core\Database::getInstance();
             $stmt = $pdo->prepare("INSERT INTO jobs (queue, payload, attempts, available_at, created_at) VALUES (?, ?, ?, ?, ?)");
