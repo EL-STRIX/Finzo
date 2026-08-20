@@ -96,105 +96,113 @@
                 const admin = response.profile;
                 currentAdminRole = admin.admin_role;
 
-                // Topbar & Subtitle handling
-                if (!admin.profile_photo) {
-                    document.getElementById('topbar-avatar').textContent = admin.full_name.charAt(0);
+                // Topbar & Subtitle handling with safe null checks
+                const topbarAvatar = document.getElementById('topbar-avatar');
+                if (topbarAvatar && !admin.profile_photo) {
+                    topbarAvatar.textContent = admin.full_name.charAt(0);
                 }
+                const headerName = document.getElementById('header-profile-name');
+                if (headerName) headerName.textContent = admin.full_name;
+                const headerId = document.getElementById('header-profile-id');
+                if (headerId) headerId.textContent = 'ID: ' + (admin.admin_id || '#' + admin.id);
 
                 // Profile Card bindings
-                document.getElementById('profile-name-display').textContent = admin.full_name;
-                document.getElementById('profile-admin-id-input').value = admin.admin_id || '---';
-                document.getElementById('profile-name-input').value = admin.full_name;
-                document.getElementById('profile-dob-input').value = admin.date_of_birth || '';
+                const nameDisplay = document.getElementById('profile-name-display');
+                if (nameDisplay) nameDisplay.textContent = admin.full_name;
+
+                const adminIdInput = document.getElementById('profile-admin-id-input');
+                if (adminIdInput) adminIdInput.value = admin.admin_id || '---';
+
+                const nameInput = document.getElementById('profile-name-input');
+                if (nameInput) nameInput.value = admin.full_name;
+
+                const dobInput = document.getElementById('profile-dob-input');
+                if (dobInput) dobInput.value = admin.date_of_birth || '';
 
                 // Gender Dropdown sync
                 const genderVal = admin.gender || '';
                 const genderInput = document.getElementById('profile-gender-input');
-                genderInput.value = genderVal;
-                const genderDropdown = genderInput.closest('.finzo-dropdown');
-                if (genderDropdown && genderVal) {
-                    const label = genderDropdown.querySelector('.dropdown-label');
-                    if (label) label.textContent = genderVal;
+                if (genderInput) {
+                    genderInput.value = genderVal;
+                    const genderDropdown = genderInput.closest('.finzo-dropdown');
+                    if (genderDropdown && genderVal) {
+                        const label = genderDropdown.querySelector('.dropdown-label');
+                        if (label) label.textContent = genderVal;
+                    }
                 }
-                document.getElementById('profile-phone-input').value = admin.phone || '';
-                document.getElementById('profile-email-input').value = admin.email;
+
+                const phoneInput = document.getElementById('profile-phone-input');
+                if (phoneInput) phoneInput.value = admin.phone || '';
+
+                const emailInput = document.getElementById('profile-email-input');
+                if (emailInput) emailInput.value = admin.email;
 
                 const qField = document.getElementById('profile-seq-q-input');
                 if (qField) qField.value = admin.security_question || '';
 
                 // Badges
-                const baseBadgeClass = 'px-3.5 py-1.5 text-[10px] font-black rounded-xl uppercase tracking-widest transition-colors';
+                const baseBadgeClass = 'px-3 py-1 rounded text-[10px] font-black uppercase tracking-widest transition-colors';
 
                 const roleBadge = document.getElementById('badge-role');
-                if (admin.admin_role === 'super_admin') {
-                    roleBadge.textContent = 'Super Admin';
-                    roleBadge.className = `${baseBadgeClass} bg-primary-base text-white shadow-sm`;
-                } else if (admin.admin_role === 'admin') {
-                    roleBadge.textContent = 'Admin';
-                    roleBadge.className = `${baseBadgeClass} bg-teal-50 text-teal-600 dark:bg-teal-500/10 dark:text-teal-400`;
-                } else {
-                    roleBadge.textContent = 'Moderator';
-                    roleBadge.className = `${baseBadgeClass} bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400`;
-                }
-
-                const accessBadge = document.getElementById('badge-access');
-                accessBadge.textContent = admin.access_level;
-                accessBadge.className = admin.access_level === 'full'
-                    ? `${baseBadgeClass} bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400`
-                    : `${baseBadgeClass} bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400`;
-
-                const statusBadge = document.getElementById('badge-status');
-                statusBadge.textContent = admin.status;
-                if (admin.status === 'active') {
-                    statusBadge.className = `${baseBadgeClass} bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400`;
-                } else if (admin.status === 'suspended') {
-                    statusBadge.className = `${baseBadgeClass} bg-red-50 text-red-600 dark:bg-red-900/30 dark:text-red-400`;
-                } else {
-                    statusBadge.className = `${baseBadgeClass} bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400`;
-                }
-
-                // Avatar handling
-                const initials = admin.full_name.split(' ').map(n => n[0]).join('').substring(0, 2);
-                if (admin.profile_photo) {
-                    document.getElementById('avatar-img-preview').src = '/Finzo/public/assets/' + admin.profile_photo;
-                    document.getElementById('avatar-img-preview').classList.remove('hidden');
-                    document.getElementById('avatar-initials').classList.add('hidden');
-                } else {
-                    document.getElementById('avatar-img-preview').classList.add('hidden');
-                    document.getElementById('avatar-initials').textContent = initials;
-                    document.getElementById('avatar-initials').classList.remove('hidden');
-                }
-
-                // Security Card bindings
-                document.getElementById('sec-last-login').textContent = window.FinzoUtils.timeAgo(admin.last_login_at);
-                document.getElementById('sec-last-ip').textContent = admin.last_login_ip || '-';
-                document.getElementById('sec-last-pwd').textContent = window.FinzoUtils.timeAgo(admin.last_password_changed);
-
-                // Recovery Status handling
-                const recoveryCard = document.getElementById('sec-recovery-card');
-                const recoveryIcon = document.getElementById('sec-recovery-icon');
-                const recoveryText = document.getElementById('sec-recovery-text');
-                if (recoveryCard && recoveryIcon && recoveryText) {
-                    const recoveryLabel = recoveryCard.querySelector('label');
-                    if (admin.security_question_set == 1) {
-                        recoveryCard.className = "bg-emerald-50 dark:bg-emerald-500/5 rounded-2xl p-5 border border-emerald-100 dark:border-emerald-500/10 relative overflow-hidden group hover:border-emerald-300 transition-colors";
-                        recoveryIcon.textContent = "verified_user";
-                        recoveryIcon.className = "material-symbols-outlined text-emerald-500 opacity-80 mb-3 relative z-10 text-[28px]";
-                        if (recoveryLabel) recoveryLabel.className = "block text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1 relative z-10";
-                        recoveryText.textContent = "✓ Configured";
-                        recoveryText.className = "font-bold text-[13px] tracking-wide text-emerald-700 dark:text-emerald-400 relative z-10 truncate";
+                if (roleBadge) {
+                    if (admin.admin_role === 'super_admin') {
+                        roleBadge.textContent = 'Super Admin';
+                        roleBadge.className = `${baseBadgeClass} bg-primary-base text-white shadow-sm`;
+                    } else if (admin.admin_role === 'admin') {
+                        roleBadge.textContent = 'Admin';
+                        roleBadge.className = `${baseBadgeClass} bg-teal-50 text-teal-600 dark:bg-teal-500/10 dark:text-teal-400 border border-teal-200/50`;
                     } else {
-                        recoveryCard.className = "bg-rose-50 dark:bg-rose-500/5 rounded-2xl p-5 border border-rose-100 dark:border-rose-500/10 relative overflow-hidden group hover:border-rose-300 transition-colors";
-                        recoveryIcon.textContent = "gpp_maybe";
-                        recoveryIcon.className = "material-symbols-outlined text-rose-500 opacity-80 mb-3 relative z-10 text-[28px]";
-                        if (recoveryLabel) recoveryLabel.className = "block text-[10px] font-black text-rose-600 dark:text-rose-400 uppercase tracking-widest mb-1 relative z-10";
-                        recoveryText.textContent = "⚠ Action Required";
-                        recoveryText.className = "font-bold text-[13px] tracking-wide text-rose-700 dark:text-rose-400 relative z-10 truncate";
+                        roleBadge.textContent = 'Moderator';
+                        roleBadge.className = `${baseBadgeClass} bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400 border border-amber-200/50`;
                     }
                 }
 
-                // 2FA is currently a placeholder
-                // document.getElementById('sec-2fa-toggle').checked = (admin.two_fa_enabled == 1);
+                const accessBadge = document.getElementById('badge-access');
+                if (accessBadge) {
+                    accessBadge.textContent = admin.access_level || 'full';
+                    accessBadge.className = admin.access_level === 'full'
+                        ? `${baseBadgeClass} bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400 border border-emerald-200/50`
+                        : `${baseBadgeClass} bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400 border border-slate-200/50`;
+                }
+
+                const statusBadge = document.getElementById('badge-status');
+                if (statusBadge) {
+                    statusBadge.textContent = admin.status || 'active';
+                    if (admin.status === 'active') {
+                        statusBadge.className = `${baseBadgeClass} bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400 border border-emerald-200/50`;
+                    } else if (admin.status === 'suspended') {
+                        statusBadge.className = `${baseBadgeClass} bg-red-50 text-red-600 dark:bg-red-900/30 dark:text-red-400 border border-red-200/50`;
+                    } else {
+                        statusBadge.className = `${baseBadgeClass} bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400 border border-slate-200/50`;
+                    }
+                }
+
+                // Avatar handling
+                const initials = (admin.full_name || 'AD').split(' ').map(n => n[0]).join('').substring(0, 2);
+                const avatarImg = document.getElementById('avatar-img-preview');
+                const avatarInitials = document.getElementById('avatar-initials');
+                if (admin.profile_photo) {
+                    const photoSrc = admin.profile_photo.startsWith('/') ? '/Finzo/public' + admin.profile_photo : '/Finzo/public/' + admin.profile_photo;
+                    if (avatarImg) {
+                        avatarImg.src = photoSrc;
+                        avatarImg.classList.remove('hidden');
+                    }
+                    if (avatarInitials) avatarInitials.classList.add('hidden');
+                } else {
+                    if (avatarImg) avatarImg.classList.add('hidden');
+                    if (avatarInitials) {
+                        avatarInitials.textContent = initials;
+                        avatarInitials.classList.remove('hidden');
+                    }
+                }
+
+                // Security Card bindings
+                const secLogin = document.getElementById('sec-last-login');
+                if (secLogin) secLogin.textContent = admin.last_login_at ? (window.FinzoUtils ? window.FinzoUtils.timeAgo(admin.last_login_at) : admin.last_login_at) : 'Never';
+                const secIp = document.getElementById('sec-last-ip');
+                if (secIp) secIp.textContent = admin.last_login_ip || '-';
+                const secPwd = document.getElementById('sec-last-pwd');
+                if (secPwd) secPwd.textContent = admin.last_password_changed ? (window.FinzoUtils ? window.FinzoUtils.timeAgo(admin.last_password_changed) : admin.last_password_changed) : 'Recently';
 
                 // Recent Activity
                 if (response.activity && response.activity.length > 0) {
@@ -213,7 +221,8 @@
                     if (addBtn) addBtn.classList.remove('hidden');
 
                     // Show Management Card
-                    document.getElementById('admin-management-container').classList.remove('hidden');
+                    const adminMgmt = document.getElementById('admin-management-container');
+                    if (adminMgmt) adminMgmt.classList.remove('hidden');
                     loadAdminList();
                     loadLockedAdmins();
                 }
@@ -248,13 +257,14 @@
                 }
 
             } else {
-                window.portal.showToast(response.message || 'Failed to load profile', 'error');
+                if (window.portal) window.portal.showToast(response.message || 'Failed to load profile', 'error');
             }
         } catch (error) {
             console.error('Failed to load profile:', error);
-            window.portal.showToast('Network error loading profile', 'error');
+            if (window.portal) window.portal.showToast('Network error loading profile', 'error');
         }
     }
+
 
     let pendingUnlockAdminId = null;
     let pendingUnlockName = '';
@@ -562,32 +572,30 @@
         },
 
         saveProfile: async () => {
-            const payload = {
-                full_name: document.getElementById('profile-name-input').value,
-                date_of_birth: document.getElementById('profile-dob-input').value,
-                gender: document.getElementById('profile-gender-input').value,
-                phone: document.getElementById('profile-phone-input').value
-            };
+            const nameInput = document.getElementById('profile-name-input');
+            const dobInput = document.getElementById('profile-dob-input');
+            const genderInput = document.getElementById('profile-gender-input');
+            const phoneInput = document.getElementById('profile-phone-input');
 
-            const qField = document.getElementById('profile-seq-q-input');
-            const aField = document.getElementById('profile-seq-a-input');
-            if (qField) payload.security_question = qField.value;
-            if (aField) payload.security_answer = aField.value;
+            const payload = {
+                full_name: nameInput ? nameInput.value.trim() : '',
+                date_of_birth: dobInput ? dobInput.value : '',
+                gender: genderInput ? genderInput.value : '',
+                phone: phoneInput ? phoneInput.value.trim() : ''
+            };
 
             if (!payload.full_name) {
                 window.portal.showToast('Full Name is required', 'error');
                 return;
             }
 
-            const btn = document.querySelector('button[onclick="window.AdminProfile.saveProfile()"]') || document.activeElement;
+            const btn = document.querySelector('button[onclick*="saveProfile"]') || document.activeElement;
 
             try {
                 if (btn) window.api.setButtonLoading(btn, true, 'Saving...');
                 const res = await window.api.post('/admins/profile', payload);
                 if (res.success) {
                     window.portal.showToast(res.message, 'success');
-                    const aField = document.getElementById('profile-seq-a-input');
-                    if (aField) aField.value = '';
                     loadAdminProfile();
                 } else {
                     window.portal.showToast(res.message, 'error');
@@ -598,6 +606,7 @@
                 if (btn) window.api.setButtonLoading(btn, false);
             }
         },
+
 
         toggle2FA: async (enabled) => {
             try {
@@ -931,10 +940,12 @@
         // Escape keys
         window.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
-                window.AdminProfile.closeAddModal();
-                window.AdminProfile.closeDeleteModal();
+                if (window.AdminProfile.closeAddModal) window.AdminProfile.closeAddModal();
+                if (window.AdminProfile.closeUnlockConfirm) window.AdminProfile.closeUnlockConfirm();
+                if (window.AdminProfile.closeDeleteModal) window.AdminProfile.closeDeleteModal();
             }
         });
     });
 
 })();
+
