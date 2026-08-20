@@ -5,12 +5,14 @@
 
 (function() {
     let currentAdminRole = null;
+    let allActivityLogs = [];
     let activityData = [];
     let currentActivityPage = 1;
     const ACTIVITY_PER_PAGE = 8;
     let allAdmins = [];
     let pendingUnlockAdminId = null;
     let pendingUnlockName = '';
+
 
     /**
      * Load Admin profile data from API
@@ -208,14 +210,15 @@
 
                 // Activity Trail
                 const activityList = payload.activity || response.activity || [];
-                if (activityList && activityList.length > 0) {
-                    activityData = activityList;
-                    currentActivityPage = 1;
-                    renderActivityPage();
-                } else {
-                    activityData = [];
-                    renderActivityPage();
-                }
+                allActivityLogs = Array.isArray(activityList) ? activityList : [];
+                activityData = [...allActivityLogs];
+                currentActivityPage = 1;
+                
+                const countBadge = document.getElementById('activity-count-badge');
+                if (countBadge) countBadge.textContent = `${allActivityLogs.length} Logs`;
+                
+                renderActivityPage();
+
 
                 // Super Admin Exclusive Privileges
                 if (admin.admin_role === 'super_admin') {
@@ -479,7 +482,7 @@
         }
     }
 
-    // Attach search and filter listeners
+    // Attach search and filter listeners for directory
     const searchInput = document.getElementById('admin-search-input');
     if (searchInput) searchInput.addEventListener('input', filterAdminList);
 
@@ -488,6 +491,17 @@
 
     const roleFilter = document.getElementById('admin-role-filter');
     if (roleFilter) roleFilter.addEventListener('change', filterAdminList);
+
+    // Attach real-time listeners for activity log
+    const activitySearch = document.getElementById('activity-search-input');
+    if (activitySearch) activitySearch.addEventListener('input', () => window.AdminProfile.applyActivityFilter());
+
+    const fromDateInput = document.getElementById('activity-from-date');
+    if (fromDateInput) fromDateInput.addEventListener('change', () => window.AdminProfile.applyActivityFilter());
+
+    const toDateInput = document.getElementById('activity-to-date');
+    if (toDateInput) toDateInput.addEventListener('change', () => window.AdminProfile.applyActivityFilter());
+
 
     // ==========================================
     // EXPORTED OBJECT TO GLOBAL SCOPE
@@ -522,30 +536,96 @@
             });
         },
 
+        applyActivityFilter: () => {
+            const searchVal = (document.getElementById('activity-search-input')?.value || '').toLowerCase().trim();
+            const fromDateVal = document.getElementById('activity-from-date')?.value || '';
+            const toDateVal = document.getElementById('activity-to-date')?.value || '';
+
+            activityData = allActivityLogs.filter(a => {
+                if (searchVal) {
+                    const haystack = `${a.action || ''} ${a.action_type || ''} ${a.details || ''} ${a.ip_address || ''} ${a.entity_type || ''} ${a.entity_id || ''}`.toLowerCase();
+                    if (!haystack.includes(searchVal)) return false;
+                }
+                if (fromDateVal && a.created_at) {
+                    const logDate = a.created_at.substring(0, 10);
+                    if (logDate < fromDateVal) return false;
+                }
+                if (toDateVal && a.created_at) {
+                    const logDate = a.created_at.substring(0, 10);
+                    if (logDate > toDateVal) return false;
+                }
+                return true;
+            });
+
+            currentActivityPage = 1;
+            const isFiltered = Boolean(searchVal || fromDateVal || toDateVal);
+            const countBadge = document.getElementById('activity-count-badge');
+            if (countBadge) {
+                countBadge.textContent = isFiltered
+                    ? `${activityData.length} of ${allActivityLogs.length} Logs`
+                    : `${allActivityLogs.length} Logs`;
+            }
+            renderActivityPage();
+        },
+
+        resetActivityFilter: () => {
+            const searchInput = document.getElementById('activity-search-input');
+            const fromInput = document.getElementById('activity-from-date');
+            const toInput = document.getElementById('activity-to-date');
+
+            if (searchInput) searchInput.value = '';
+            if (fromInput) fromInput.value = '';
+            if (toInput) toInput.value = '';
+
+            activityData = [...allActivityLogs];
+            currentActivityPage = 1;
+            const countBadge = document.getElementById('activity-count-badge');
+            if (countBadge) countBadge.textContent = `${allActivityLogs.length} Logs`;
+            renderActivityPage();
+            if (window.portal) window.portal.showToast('Activity filters reset', 'info');
+        },
+
         exportActivityCSV: () => {
             if (!activityData || activityData.length === 0) {
-                if (window.portal) window.portal.showToast('No activity data to export', 'error');
+                if (window.portal) window.portal.showToast('No activity logs found for the selected criteria', 'error');
                 return;
             }
 
-            const headers = ['Action', 'Details', 'IP Address', 'Timestamp'];
-            const rows = activityData.map(a => [
-                `"${(a.action || '').replace(/"/g, '""')}"`,
+            const fromDateVal = document.getElementById('activity-from-date')?.value;
+            const toDateVal = document.getElementById('activity-to-date')?.value;
+
+            const headers = ['Log #', 'Operation / Action', 'Details & Context', 'IP Address', 'Entity Type', 'Entity ID', 'Timestamp'];
+            const rows = activityData.map((a, idx) => [
+                idx + 1,
+                `"${(a.action || a.action_type || 'System Event').replace(/"/g, '""')}"`,
                 `"${(a.details || '').replace(/"/g, '""')}"`,
                 `"${a.ip_address || '127.0.0.1'}"`,
+                `"${a.entity_type || 'admin'}"`,
+                `"${a.entity_id || 'ADM001'}"`,
                 `"${a.created_at || ''}"`
             ]);
 
-            const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+            const csvContent = 'data:text/csv;charset=utf-8,\uFEFF' + [headers.join(','), ...rows.map(r => r.join(','))].join('\r\n');
             const encodedUri = encodeURI(csvContent);
             const link = document.createElement('a');
             link.setAttribute('href', encodedUri);
-            link.setAttribute('download', `Finzo_Admin_Activity_${new Date().toISOString().slice(0, 10)}.csv`);
+
+            let dateLabel = new Date().toISOString().slice(0, 10);
+            if (fromDateVal && toDateVal) {
+                dateLabel = `${fromDateVal}_to_${toDateVal}`;
+            } else if (fromDateVal) {
+                dateLabel = `from_${fromDateVal}`;
+            } else if (toDateVal) {
+                dateLabel = `upto_${toDateVal}`;
+            }
+
+            link.setAttribute('download', `Finzo_Admin_Audit_Trail_${dateLabel}.csv`);
             document.body.appendChild(link);
             link.click();
             link.remove();
-            if (window.portal) window.portal.showToast('Activity log exported as CSV', 'success');
+            if (window.portal) window.portal.showToast(`Exported ${activityData.length} activity records as CSV`, 'success');
         },
+
 
         uploadPhoto: async (input) => {
             if (input.files && input.files[0]) {

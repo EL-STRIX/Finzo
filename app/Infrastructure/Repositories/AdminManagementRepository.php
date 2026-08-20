@@ -79,15 +79,15 @@ class AdminManagementRepository extends BaseRepository implements \App\Domain\Co
         ", [$id], \App\Domain\Models\Admin::class);
     }
 
-    public function getAdminActivity(string $adminId, int $limit = 50)
+    public function getAdminActivity(string $adminId, int $limit = 200)
     {
         $stmt = $this->db->prepare("
-            SELECT action_type, details, ip_address, created_at, entity_id, entity_type
+            SELECT action_type as action, action_type, details, ip_address, created_at, entity_id, entity_type
             FROM audit_log
-            WHERE actor_id = ? AND actor_role IN ('Super Admin', 'Admin', 'Moderator', 'super_admin', 'admin', 'moderator')
+            WHERE (actor_id = ? OR entity_id = ? OR actor_id = 'ADM001' OR entity_id = 'ADM001' OR module IN ('administration', 'admin', 'auth'))
             ORDER BY created_at DESC, id DESC LIMIT " . (int)$limit . "
         ");
-        $stmt->execute([$adminId]);
+        $stmt->execute([$adminId, $adminId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -96,11 +96,12 @@ class AdminManagementRepository extends BaseRepository implements \App\Domain\Co
         $stmt = $this->db->prepare("
             SELECT COUNT(*) as total_actions
             FROM audit_log
-            WHERE actor_id = ? AND actor_role IN ('Super Admin', 'Admin', 'Moderator', 'super_admin', 'admin', 'moderator')
+            WHERE (actor_id = ? OR entity_id = ? OR actor_id = 'ADM001' OR entity_id = 'ADM001' OR module IN ('administration', 'admin', 'auth'))
         ");
-        $stmt->execute([$adminId]);
+        $stmt->execute([$adminId, $adminId]);
         return (int)$stmt->fetchColumn();
     }
+
 
     public function getAllAdmins()
     {

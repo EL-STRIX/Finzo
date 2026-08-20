@@ -406,13 +406,46 @@ ob_start();
                 <p class="text-xs text-text-secondary mt-0.5">Chronological record of administrative operations and session history</p>
             </div>
             <div class="flex items-center gap-3">
-                <!-- Export CSV Button -->
-                <button type="button" onclick="window.AdminProfile.exportActivityCSV()" class="px-4 py-2 text-xs rounded-xl inline-flex items-center gap-2 font-bold bg-white text-zinc-900 hover:bg-zinc-100 border border-zinc-300 dark:bg-zinc-900 dark:text-white dark:hover:bg-black dark:border-zinc-700 shadow-sm cursor-pointer transition-colors">
+                <span id="activity-count-badge" class="px-3 py-1 bg-surface text-text-secondary text-[10px] font-mono font-bold rounded-xl border border-border-subtle">0 Logs</span>
+            </div>
+        </div>
+
+        <!-- Activity Date & Search Filter Toolbar -->
+        <div class="p-4 sm:p-6 border-b border-border-subtle bg-surface flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <!-- Search & Date Inputs -->
+            <div class="flex flex-wrap items-center gap-3 flex-1">
+                <div class="fin-input-wrapper flex-1 min-w-[200px]">
+                    <span class="material-symbols-outlined input-icon-left text-text-secondary">search</span>
+                    <input type="text" id="activity-search-input" placeholder="Search logs (action, IP, details)..." class="fin-input has-icon-left bg-surface text-text-primary border-border-subtle rounded-xl text-xs">
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <span class="text-[10px] font-black text-text-secondary uppercase tracking-wider">From:</span>
+                    <input type="date" id="activity-from-date" class="fin-input !h-10 bg-surface text-text-primary border-border-subtle rounded-xl text-xs px-3">
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <span class="text-[10px] font-black text-text-secondary uppercase tracking-wider">To:</span>
+                    <input type="date" id="activity-to-date" class="fin-input !h-10 bg-surface text-text-primary border-border-subtle rounded-xl text-xs px-3">
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center gap-2 shrink-0">
+                <button type="button" onclick="window.AdminProfile.applyActivityFilter()" class="px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider inline-flex items-center gap-1.5 bg-black text-white hover:bg-zinc-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200 shadow-md cursor-pointer transition-all">
+                    <span class="material-symbols-outlined text-[16px]" aria-hidden="true">filter_alt</span>
+                    <span>Filter</span>
+                </button>
+                <button type="button" onclick="window.AdminProfile.resetActivityFilter()" class="px-3 py-2.5 rounded-xl text-xs font-bold bg-white text-zinc-900 hover:bg-zinc-100 border border-zinc-300 dark:bg-zinc-900 dark:text-white dark:hover:bg-black dark:border-zinc-700 shadow-sm cursor-pointer transition-colors" title="Reset Filters">
+                    <span class="material-symbols-outlined text-[16px]" aria-hidden="true">restart_alt</span>
+                </button>
+                <button type="button" onclick="window.AdminProfile.exportActivityCSV()" class="px-4 py-2.5 text-xs rounded-xl inline-flex items-center gap-1.5 font-black uppercase tracking-wider bg-white text-zinc-900 hover:bg-zinc-100 border border-zinc-300 dark:bg-zinc-900 dark:text-white dark:hover:bg-black dark:border-zinc-700 shadow-sm cursor-pointer transition-colors">
                     <span class="material-symbols-outlined text-[16px]" aria-hidden="true">download</span>
                     <span>Export CSV</span>
                 </button>
             </div>
         </div>
+
 
         <div class="ds-table-wrapper w-full border-0 shadow-none rounded-none bg-transparent overflow-x-auto">
             <table class="ds-table w-full text-left min-w-[700px]">
