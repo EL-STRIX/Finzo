@@ -269,7 +269,8 @@ class AdminOperationsController
             exit;
         }
 
-        $absolute_path = dirname(__DIR__, 3) . '/' . $path;
+        $root = defined('FINZO_ROOT') ? FINZO_ROOT : dirname(__DIR__, 5);
+        $absolute_path = $root . '/' . $path;
 
         if (!file_exists($absolute_path)) {
             http_response_code(404);

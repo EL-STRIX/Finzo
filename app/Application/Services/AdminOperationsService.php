@@ -620,24 +620,26 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
         $account = $this->repository->getAccountPreferences($user['customer_id']);
 
         $id_front_url = null;
-        if ($user['id_front_path']) {
+        if (!empty($user['id_front_path'])) {
             $id_front_url = str_starts_with($user['id_front_path'], 'storage/')
-                ? APP_URL . '/api/Admin/view-kyc-document.php?path=' . urlencode($user['id_front_path'])
-                : APP_URL . '/' . $user['id_front_path'];
+                ? APP_URL . '/api/v1/users/' . $user['id'] . '/kyc?path=' . urlencode($user['id_front_path'])
+                : (str_starts_with($user['id_front_path'], 'http') ? $user['id_front_path'] : APP_URL . '/' . ltrim($user['id_front_path'], '/'));
         }
 
         $id_back_url = null;
-        if ($user['id_back_path']) {
+        if (!empty($user['id_back_path'])) {
             $id_back_url = str_starts_with($user['id_back_path'], 'storage/')
-                ? APP_URL . '/api/Admin/view-kyc-document.php?path=' . urlencode($user['id_back_path'])
-                : APP_URL . '/' . $user['id_back_path'];
+                ? APP_URL . '/api/v1/users/' . $user['id'] . '/kyc?path=' . urlencode($user['id_back_path'])
+                : (str_starts_with($user['id_back_path'], 'http') ? $user['id_back_path'] : APP_URL . '/' . ltrim($user['id_back_path'], '/'));
         }
 
-        $profile_pic_url = $user['profile_picture'] ? APP_URL . '/' . $user['profile_picture'] : null;
+        $profile_pic_url = !empty($user['profile_picture'])
+            ? (str_starts_with($user['profile_picture'], 'http') ? $user['profile_picture'] : APP_URL . '/' . ltrim($user['profile_picture'], '/'))
+            : null;
         if (!$profile_pic_url) {
-            $avatar_path = 'uploads/avatars/user_' . $user['id'] . '.jpg';
+            $avatar_path = 'public/uploads/avatars/user_' . $user['id'] . '.jpg';
             if (file_exists(FINZO_ROOT . '/' . $avatar_path)) {
-                $profile_pic_url = APP_URL . '/' . $avatar_path;
+                $profile_pic_url = APP_URL . '/uploads/avatars/user_' . $user['id'] . '.jpg';
             }
         }
         $user['profile_picture_url'] = $profile_pic_url;
@@ -1171,9 +1173,18 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
             }
         }
 
-        $base_avatar_dir = UPLOAD_AVATARS_PATH;
-        $avatar_path = $base_avatar_dir . 'user_' . $userId . '.jpg';
-        $avatar_url = file_exists($avatar_path) ? APP_URL . '/uploads/avatars/user_' . $userId . '.jpg?t=' . filemtime($avatar_path) : null;
+        $avatar_url = null;
+        if (!empty($user['profile_picture'])) {
+            $avatar_url = str_starts_with($user['profile_picture'], 'http')
+                ? $user['profile_picture']
+                : APP_URL . '/' . ltrim($user['profile_picture'], '/');
+        } else {
+            $base_avatar_dir = UPLOAD_AVATARS_PATH;
+            $avatar_path = $base_avatar_dir . 'user_' . $userId . '.jpg';
+            if (file_exists($avatar_path)) {
+                $avatar_url = APP_URL . '/uploads/avatars/user_' . $userId . '.jpg?t=' . filemtime($avatar_path);
+            }
+        }
 
         $formatted_user = [
             'id' => $user['id'],
@@ -1445,9 +1456,29 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
             $transactions = $this->repository->getAccountsRecentTransactions($account_ids, 20);
         }
 
-        $id_front_url = $user['id_front_path'] ? APP_URL . '/' . $user['id_front_path'] : null;
-        $id_back_url  = $user['id_back_path'] ? APP_URL . '/' . $user['id_back_path'] : null;
-        $avatar_url = !empty($user['profile_picture']) ? APP_URL . '/' . $user['profile_picture'] : null;
+        $id_front_url = null;
+        if (!empty($user['id_front_path'])) {
+            $id_front_url = str_starts_with($user['id_front_path'], 'storage/')
+                ? APP_URL . '/api/v1/users/' . $user['id'] . '/kyc?path=' . urlencode($user['id_front_path'])
+                : (str_starts_with($user['id_front_path'], 'http') ? $user['id_front_path'] : APP_URL . '/' . ltrim($user['id_front_path'], '/'));
+        }
+
+        $id_back_url = null;
+        if (!empty($user['id_back_path'])) {
+            $id_back_url = str_starts_with($user['id_back_path'], 'storage/')
+                ? APP_URL . '/api/v1/users/' . $user['id'] . '/kyc?path=' . urlencode($user['id_back_path'])
+                : (str_starts_with($user['id_back_path'], 'http') ? $user['id_back_path'] : APP_URL . '/' . ltrim($user['id_back_path'], '/'));
+        }
+
+        $avatar_url = !empty($user['profile_picture'])
+            ? (str_starts_with($user['profile_picture'], 'http') ? $user['profile_picture'] : APP_URL . '/' . ltrim($user['profile_picture'], '/'))
+            : null;
+        if (!$avatar_url) {
+            $avatar_path = 'public/uploads/avatars/user_' . $user['id'] . '.jpg';
+            if (file_exists(FINZO_ROOT . '/' . $avatar_path)) {
+                $avatar_url = APP_URL . '/uploads/avatars/user_' . $user['id'] . '.jpg';
+            }
+        }
 
         return [
             'success' => true,
