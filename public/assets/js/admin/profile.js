@@ -4,6 +4,16 @@
  */
 
 (function() {
+    function notify(msg, type = 'info') {
+        if (window.portal && window.portal.showToast) {
+            window.portal.showToast(msg, type);
+        } else if (window.utils && window.utils.showToast) {
+            window.utils.showToast(msg, type);
+        } else {
+            console.log(`[Toast ${type}]: ${msg}`);
+        }
+    }
+
     let currentAdminRole = null;
     let allActivityLogs = [];
     let activityData = [];
@@ -12,6 +22,7 @@
     let allAdmins = [];
     let pendingUnlockAdminId = null;
     let pendingUnlockName = '';
+
 
 
     /**
@@ -711,27 +722,8 @@
             }
         },
 
-        checkAddStrength: (pw) => {
-            const pwBar = document.getElementById('add-pw-bar');
-            if (!pwBar) return;
-            let strength = 0;
-            if (pw.length >= 8) strength++;
-            if (/[A-Z]/.test(pw)) strength++;
-            if (/[0-9]/.test(pw)) strength++;
-            if (/[^A-Za-z0-9]/.test(pw)) strength++;
-
-            if (strength === 0) {
-                pwBar.style.width = '0%';
-            } else if (strength <= 2) {
-                pwBar.style.width = '33%'; pwBar.style.background = '#ef4444';
-            } else if (strength === 3) {
-                pwBar.style.width = '66%'; pwBar.style.background = '#f39c12';
-            } else {
-                pwBar.style.width = '100%'; pwBar.style.background = '#10b981';
-            }
-        },
-
         updatePassword: async () => {
+
             const curr = document.getElementById('curr-pw').value;
             const nw = document.getElementById('new-pw').value;
             const conf = document.getElementById('conf-pw').value;
@@ -938,8 +930,14 @@
                 modal.classList.add('flex');
                 document.body.style.overflow = 'hidden';
 
-                // Reset error messages
-                document.querySelectorAll('[id^=err-add-]').forEach(el => el.classList.add('hidden'));
+                // Reset error messages and borders
+                document.querySelectorAll('[id^=err-add-]').forEach(el => {
+                    el.textContent = '';
+                    el.classList.add('hidden');
+                });
+                document.querySelectorAll('[id^=add-]').forEach(el => {
+                    el.classList.remove('!border-danger');
+                });
 
                 try {
                     const res = await window.api.get('/admins/next-id');
@@ -968,7 +966,15 @@
 
         submitAddAdmin: async () => {
             const btn = document.getElementById('add-admin-submit-btn');
-            document.querySelectorAll('[id^=err-add-]').forEach(el => el.classList.add('hidden'));
+            
+            // Clear prior errors
+            document.querySelectorAll('[id^=err-add-]').forEach(el => {
+                el.textContent = '';
+                el.classList.add('hidden');
+            });
+            document.querySelectorAll('[id^=add-]').forEach(el => {
+                el.classList.remove('!border-danger');
+            });
 
             const fields = ['name', 'dob', 'gender', 'phone', 'email', 'pw', 'conf-pw', 'seq-q', 'seq-a', 'role'];
             const vals = {};
@@ -983,6 +989,7 @@
                         e.textContent = 'This field is required';
                         e.classList.remove('hidden');
                     }
+                    if (el) el.classList.add('!border-danger');
                     hasErr = true;
                 }
             });
@@ -993,6 +1000,8 @@
                     e.textContent = 'Passwords do not match';
                     e.classList.remove('hidden');
                 }
+                const confEl = document.getElementById('add-conf-pw');
+                if (confEl) confEl.classList.add('!border-danger');
                 hasErr = true;
             }
 
@@ -1001,10 +1010,9 @@
                 if (firstErr) {
                     firstErr.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }
-                if (window.portal) window.portal.showToast('Please fill all required fields', 'warning');
+                notify('Please fill all required fields', 'warning');
                 return;
             }
-
 
             if (btn) {
                 btn.disabled = true;
@@ -1025,14 +1033,16 @@
             formData.append('admin_role', vals.role);
 
             const fileInput = document.getElementById('new-admin-photo');
-            if (fileInput && fileInput.files.length > 0) {
+            if (fileInput && fileInput.files && fileInput.files.length > 0) {
                 formData.append('profile_photo', fileInput.files[0]);
             }
 
             try {
                 const response = await window.api.upload('/admins', formData);
                 const payload = response ? (response.data || response) : {};
-                if (response && (response.success || response.status === 200 || response.status === 201 || payload.success)) {
+                const isSuccess = response && (response.success === true || response.status === 200 || response.status === 201 || payload.success === true);
+
+                if (isSuccess) {
                     window.AdminProfile.closeAddModal();
 
                     fields.forEach(f => {
@@ -1041,13 +1051,15 @@
                     });
                     const photoPrev = document.getElementById('new-avatar-preview');
                     if (photoPrev) { photoPrev.src = ''; photoPrev.classList.add('hidden'); }
+                    const photoInput = document.getElementById('new-admin-photo');
+                    if (photoInput) photoInput.value = '';
                     const roleBox = document.getElementById('role-preview-box');
                     if (roleBox) roleBox.classList.add('hidden');
                     const pwBar = document.getElementById('add-pw-bar');
                     if (pwBar) pwBar.style.width = '0%';
 
                     const createdName = payload.admin_name || vals.name;
-                    if (window.portal) window.portal.showToast(payload.message || `Admin ${createdName} provisioned successfully`, 'success');
+                    notify(payload.message || `Admin ${createdName} provisioned successfully`, 'success');
                     loadAdminList();
                 } else {
                     const errMsg = payload.message || response?.message || 'Provisioning failed';
@@ -1074,12 +1086,14 @@
                         if (e) {
                             e.textContent = errors[fieldKey] || errMsg;
                             e.classList.remove('hidden');
+                            e.scrollIntoView({ behavior: 'smooth', block: 'center' });
                         }
                     }
-                    if (window.portal) window.portal.showToast(errMsg, 'error');
+                    notify(errMsg, 'error');
                 }
             } catch (err) {
-                if (window.portal) window.portal.showToast('System error provisioning admin', 'error');
+                console.error('[Provision Admin Error]:', err);
+                notify('System error provisioning admin. Please try again.', 'error');
             } finally {
                 if (btn) {
                     btn.disabled = false;
@@ -1087,10 +1101,10 @@
                     if (spinner) spinner.classList.add('hidden');
                 }
             }
-
         },
 
         // Activity Pagination
+
         prevActivityPage: () => {
             if (currentActivityPage > 1) {
                 currentActivityPage--;
@@ -1215,6 +1229,19 @@
                 if (window.AdminProfile.closeUnlockConfirm) window.AdminProfile.closeUnlockConfirm();
             }
         });
+
+        // Clear error indicators on user interaction
+        document.querySelectorAll('#add-admin-modal input').forEach(input => {
+            const clearErr = () => {
+                input.classList.remove('!border-danger');
+                const errId = input.id.replace('add-', 'err-add-');
+                const err = document.getElementById(errId);
+                if (err) err.classList.add('hidden');
+            };
+            input.addEventListener('input', clearErr);
+            input.addEventListener('change', clearErr);
+        });
     });
 
 })();
+
