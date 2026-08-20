@@ -196,8 +196,13 @@
             return;
         }
 
+        const sortVal = document.getElementById('filter-sort')?.value || 'newest';
+        const isOldestSort = sortVal === 'oldest';
+
         tbody.innerHTML = transactions.map((r, index) => {
-            const rowNumber = (currentPage - 1) * rowsPerPage + index + 1;
+            const rowNumber = isOldestSort
+                ? (((currentPage - 1) * rowsPerPage) + index + 1)
+                : (total ? (total - (((currentPage - 1) * rowsPerPage) + index)) : (index + 1));
             const rowNumStr = String(rowNumber).padStart(2, '0');
             const typeClass = (r.type || 'transfer').toLowerCase();
             
