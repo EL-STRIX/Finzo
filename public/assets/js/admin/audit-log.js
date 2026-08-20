@@ -521,6 +521,19 @@
             }
         }
 
+        const perPageInput = document.getElementById('rows-per-page');
+        if (perPageInput) {
+            perPageInput.value = '25';
+            rowsPerPage = 25;
+            const d = document.getElementById('dropdown-rows-per-page');
+            if (d) {
+                const lbl = d.querySelector('.dropdown-label');
+                if (lbl) lbl.textContent = '25';
+                d.querySelectorAll('.finzo-dropdown-option').forEach(o => o.classList.toggle('is-selected', o.dataset.value === '25'));
+            }
+        }
+
+
         // Reset role pills
         document.querySelectorAll('.role-pill').forEach(pill => {
             if (pill.dataset.role === 'all') {
@@ -531,6 +544,7 @@
         });
 
         loadAuditLog();
+
 
         if (window.utils && window.utils.showToast) {
             window.utils.showToast('All filters have been reset', 'info');
