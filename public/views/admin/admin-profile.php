@@ -77,7 +77,7 @@ ob_start();
                             </div>
                         </div>
                         <div class="mt-8 pt-6 border-t border-border-subtle flex justify-end">
-                            <button data-action="window.AdminProfile.saveProfile()" class="btn btn-primary px-8">Save Profile</button>
+                            <button onclick="window.AdminProfile.saveProfile()" data-action="window.AdminProfile.saveProfile()" class="btn btn-primary px-8">Save Profile</button>
                         </div>
                     </div>
 
@@ -136,8 +136,8 @@ ob_start();
                         <div class="p-4 border-t border-border-subtle flex items-center justify-between bg-surface-subtle hidden" id="activity-pagination-container">
                             <div class="text-[10px] font-black text-text-secondary uppercase tracking-widest" id="activity-pagination-info">Showing 0 to 0 of 0</div>
                             <div class="flex gap-2">
-                                <button id="activity-prev-btn" data-action="window.AdminProfile.prevActivityPage()" class="btn btn-secondary !px-3 !py-1.5 !text-xs">Prev</button>
-                                <button id="activity-next-btn" data-action="window.AdminProfile.nextActivityPage()" class="btn btn-secondary !px-3 !py-1.5 !text-xs">Next</button>
+                                <button id="activity-prev-btn" onclick="window.AdminProfile.prevActivityPage()" data-action="window.AdminProfile.prevActivityPage()" class="btn btn-secondary !px-3 !py-1.5 !text-xs">Prev</button>
+                                <button id="activity-next-btn" onclick="window.AdminProfile.nextActivityPage()" data-action="window.AdminProfile.nextActivityPage()" class="btn btn-secondary !px-3 !py-1.5 !text-xs">Next</button>
                             </div>
                         </div>
                     </div>
@@ -151,7 +151,7 @@ ob_start();
                             </h3>
                             <div class="flex gap-3">
                                 <span id="management-count-badge" class="px-3 py-1 bg-white/20 text-warning text-[10px] font-black rounded uppercase tracking-widest border border-warning-border">0 Admins</span>
-                                <button id="header-add-admin-btn" data-action="window.AdminProfile.showAddModal()" class="btn btn-primary !px-4 !py-1 !text-xs">Add Admin</button>
+                                <button id="header-add-admin-btn" onclick="window.AdminProfile.showAddModal()" data-action="window.AdminProfile.showAddModal()" class="btn btn-primary !px-4 !py-1 !text-xs">Add Admin</button>
                             </div>
                         </div>
                         <!-- Filters -->
@@ -253,7 +253,7 @@ ob_start();
                                     <input type="password" id="conf-pw" class="fin-input has-icon-left" placeholder="Confirm new password">
                                 </div>
                             </div>
-                            <button data-action="window.AdminProfile.updatePassword()" class="w-full btn btn-primary mt-4">Change Password</button>
+                            <button onclick="window.AdminProfile.updatePassword()" data-action="window.AdminProfile.updatePassword()" class="w-full btn btn-primary mt-4">Change Password</button>
                         </div>
                     </div>
 
@@ -278,6 +278,135 @@ ob_start();
                     </div>
                 </div>
 
+            </div>
+
+            <!-- ADD ADMIN MODAL (Super Admin) -->
+            <div id="add-admin-modal" class="fixed inset-0 z-[2000] hidden items-center justify-center p-4" role="dialog" aria-modal="true">
+                <div class="absolute inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-sm transition-all" onclick="window.AdminProfile.closeAddModal()"></div>
+                <div class="relative w-full max-w-2xl bg-surface text-text-primary rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh] border border-border-subtle animate-modal-enter z-10">
+                    <div class="p-6 border-b border-border-subtle flex justify-between items-center sticky top-0 bg-surface z-10 shrink-0">
+                        <div>
+                            <h3 class="font-black text-xl text-text-primary tracking-tight">Provision New Administrator</h3>
+                            <p class="text-xs font-bold uppercase tracking-wider text-text-secondary mt-1">Create an administrative account with RBAC roles</p>
+                        </div>
+                        <button type="button" onclick="window.AdminProfile.closeAddModal()" class="p-2 hover:bg-surface-hover rounded-full transition-colors text-text-secondary hover:text-text-primary">
+                            <span class="material-symbols-outlined" aria-hidden="true">close</span>
+                        </button>
+                    </div>
+
+                    <div class="p-6 sm:p-8 overflow-y-auto flex-1 space-y-6">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label for="add-admin-id" class="fin-label mb-1 block text-[10px] font-black text-text-secondary uppercase tracking-widest">Admin ID</label>
+                                <input type="text" id="add-admin-id" class="fin-input opacity-70 bg-surface-subtle font-mono" readonly>
+                            </div>
+                            <div>
+                                <label for="add-name" class="fin-label mb-1 block text-[10px] font-black text-text-secondary uppercase tracking-widest">Full Name *</label>
+                                <input type="text" id="add-name" class="fin-input" placeholder="e.g. John Doe">
+                                <span id="err-add-name" class="text-danger text-[11px] font-bold mt-1 hidden"></span>
+                            </div>
+                            <div>
+                                <label for="add-dob" class="fin-label mb-1 block text-[10px] font-black text-text-secondary uppercase tracking-widest">Date of Birth *</label>
+                                <input type="date" id="add-dob" class="fin-input">
+                                <span id="err-add-dob" class="text-danger text-[11px] font-bold mt-1 hidden"></span>
+                            </div>
+                            <div>
+                                <label for="add-gender" class="fin-label mb-1 block text-[10px] font-black text-text-secondary uppercase tracking-widest">Gender *</label>
+                                <select id="add-gender" class="fin-input">
+                                    <option value="">Select Gender</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Other">Other</option>
+                                    <option value="Prefer not to say">Prefer not to say</option>
+                                </select>
+                                <span id="err-add-gender" class="text-danger text-[11px] font-bold mt-1 hidden"></span>
+                            </div>
+                            <div>
+                                <label for="add-phone" class="fin-label mb-1 block text-[10px] font-black text-text-secondary uppercase tracking-widest">Phone Number *</label>
+                                <input type="text" id="add-phone" class="fin-input" placeholder="10 digit phone">
+                                <span id="err-add-phone" class="text-danger text-[11px] font-bold mt-1 hidden"></span>
+                            </div>
+                            <div>
+                                <label for="add-email" class="fin-label mb-1 block text-[10px] font-black text-text-secondary uppercase tracking-widest">Email Address *</label>
+                                <input type="email" id="add-email" class="fin-input" placeholder="admin@finzo.com">
+                                <span id="err-add-email" class="text-danger text-[11px] font-bold mt-1 hidden"></span>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-border-subtle">
+                            <div>
+                                <label for="add-pw" class="fin-label mb-1 block text-[10px] font-black text-text-secondary uppercase tracking-widest">Initial Password *</label>
+                                <input type="password" id="add-pw" class="fin-input" placeholder="Min 8 characters" oninput="window.AdminProfile.checkAddStrength(this.value)">
+                                <div class="password-strength-bar w-full h-1 bg-surface-hover rounded overflow-hidden mt-1.5">
+                                    <div class="password-strength-fill h-full transition-all duration-300" id="add-pw-bar" style="width:0%; background:var(--primary-base);"></div>
+                                </div>
+                                <span id="err-add-pw" class="text-danger text-[11px] font-bold mt-1 hidden"></span>
+                            </div>
+                            <div>
+                                <label for="add-conf-pw" class="fin-label mb-1 block text-[10px] font-black text-text-secondary uppercase tracking-widest">Confirm Password *</label>
+                                <input type="password" id="add-conf-pw" class="fin-input" placeholder="Confirm password">
+                                <span id="err-add-conf-pw" class="text-danger text-[11px] font-bold mt-1 hidden"></span>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-border-subtle">
+                            <div>
+                                <label for="add-seq-q" class="fin-label mb-1 block text-[10px] font-black text-text-secondary uppercase tracking-widest">Security Question *</label>
+                                <input type="text" id="add-seq-q" class="fin-input" placeholder="e.g. What was the name of your first school?">
+                                <span id="err-add-seq-q" class="text-danger text-[11px] font-bold mt-1 hidden"></span>
+                            </div>
+                            <div>
+                                <label for="add-seq-a" class="fin-label mb-1 block text-[10px] font-black text-text-secondary uppercase tracking-widest">Security Answer *</label>
+                                <input type="password" id="add-seq-a" class="fin-input" placeholder="Secret recovery answer">
+                                <span id="err-add-seq-a" class="text-danger text-[11px] font-bold mt-1 hidden"></span>
+                            </div>
+                        </div>
+
+                        <div class="pt-4 border-t border-border-subtle space-y-4">
+                            <div>
+                                <label for="add-role" class="fin-label mb-1 block text-[10px] font-black text-text-secondary uppercase tracking-widest">Role Assignment *</label>
+                                <select id="add-role" class="fin-input" onchange="window.AdminProfile.updateRolePreview(this.value)">
+                                    <option value="">Select Role</option>
+                                    <option value="admin">Administrator (Full operational access)</option>
+                                    <option value="moderator">Moderator (KYC & Pending approvals only)</option>
+                                </select>
+                                <span id="err-add-role" class="text-danger text-[11px] font-bold mt-1 hidden"></span>
+                            </div>
+                            <div id="role-preview-box" class="p-4 rounded-xl bg-surface-subtle border border-border-subtle text-xs text-text-secondary hidden"></div>
+                            <div>
+                                <label for="new-admin-photo" class="fin-label mb-1 block text-[10px] font-black text-text-secondary uppercase tracking-widest">Profile Photo (Optional)</label>
+                                <input type="file" id="new-admin-photo" accept="image/jpeg, image/png" class="fin-input" onchange="window.AdminProfile.previewNewPhoto(this)">
+                                <div class="mt-2 flex items-center gap-3">
+                                    <img id="new-avatar-preview" src="" class="w-12 h-12 rounded-xl object-cover hidden border border-border-subtle" alt="Preview">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-6 border-t border-border-subtle bg-surface-subtle flex justify-end gap-3 sticky bottom-0 z-10 shrink-0">
+                        <button type="button" onclick="window.AdminProfile.closeAddModal()" class="btn btn-secondary px-6">Cancel</button>
+                        <button type="button" id="add-admin-submit-btn" onclick="window.AdminProfile.submitAddAdmin()" class="btn btn-primary px-8 flex items-center gap-2">
+                            <span>Create Admin</span>
+                            <span class="material-symbols-outlined animate-spin text-[16px] hidden" aria-hidden="true">progress_activity</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- UNLOCK CONFIRM OVERLAY -->
+            <div id="unlock-confirm-overlay" class="fixed inset-0 z-[2100] hidden items-center justify-center p-4" role="dialog" aria-modal="true">
+                <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="window.AdminProfile.closeUnlockConfirm()"></div>
+                <div class="relative w-full max-w-md bg-surface text-text-primary rounded-2xl p-6 shadow-2xl border border-border-subtle z-10 space-y-4">
+                    <div class="flex items-center gap-3 text-warning">
+                        <span class="material-symbols-outlined text-2xl" aria-hidden="true">lock_open</span>
+                        <h4 class="font-bold text-lg text-text-primary">Unlock Admin Account</h4>
+                    </div>
+                    <p id="unlock-confirm-msg" class="text-sm text-text-secondary">Are you sure you want to unlock this administrator account?</p>
+                    <div class="flex justify-end gap-3 pt-4 border-t border-border-subtle">
+                        <button type="button" onclick="window.AdminProfile.closeUnlockConfirm()" class="btn btn-secondary px-5">Cancel</button>
+                        <button type="button" id="confirm-unlock-btn" onclick="window.AdminProfile.confirmUnlock()" class="btn btn-primary px-6">Confirm Unlock</button>
+                    </div>
+                </div>
             </div>
 <?php
 $extraScripts = '<script defer src="/Finzo/public/assets/js/admin/profile.js"></script>';
