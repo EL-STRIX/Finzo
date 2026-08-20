@@ -223,25 +223,24 @@ ob_start();
 
     <!-- PAGINATION (Web Mode) -->
     <div class="p-4 sm:p-6 bg-surface-subtle border-t border-border-subtle flex flex-col sm:flex-row justify-between items-center gap-4 print:hidden">
-        <div class="flex items-center gap-3">
-            <div id="pagination-info" class="text-[10px] font-bold text-text-secondary uppercase tracking-widest">Showing 0-0 of 0 Records</div>
-            <div class="flex items-center gap-2 text-xs text-text-secondary">
-                <span class="text-[10px] uppercase font-black tracking-widest text-text-secondary">Per page:</span>
+        <div class="flex flex-wrap items-center gap-4">
+            <div id="pagination-info" class="text-[10px] font-black text-text-secondary uppercase tracking-widest whitespace-nowrap">Showing 0-0 of 0 Records</div>
+            <div class="flex items-center gap-2 text-xs text-text-secondary shrink-0">
+                <span class="text-[10px] uppercase font-black tracking-widest text-text-secondary whitespace-nowrap">Per page:</span>
                 <div class="finzo-dropdown relative inline-block" id="dropdown-rows-per-page">
-                    <button type="button" class="finzo-dropdown-trigger bg-surface text-text-primary border border-border-subtle rounded-xl px-3 py-1.5 flex items-center justify-between gap-2 text-xs font-bold hover:border-text-primary transition-colors focus:ring-2 focus:ring-text-primary focus:outline-none cursor-pointer" aria-haspopup="listbox" aria-expanded="false">
+                    <button type="button" class="finzo-dropdown-trigger bg-surface text-text-primary border border-border-subtle rounded-xl px-3.5 py-2 flex items-center justify-between gap-3 text-xs font-bold hover:border-text-primary transition-colors focus:ring-2 focus:ring-text-primary focus:outline-none cursor-pointer min-w-[80px]" aria-haspopup="listbox" aria-expanded="false">
                         <span class="dropdown-label text-text-primary font-bold">25</span>
                         <span class="material-symbols-outlined text-[16px] chevron transition-transform text-text-secondary" aria-hidden="true">expand_more</span>
                     </button>
-                    <div class="finzo-dropdown-menu bg-surface dark:bg-[#18181B] border border-border-subtle rounded-2xl shadow-2xl py-1.5 z-50 min-w-[75px]" role="listbox">
-                        <div class="finzo-dropdown-option px-3.5 py-2 text-xs font-bold text-text-primary hover:bg-surface-hover cursor-pointer transition-colors" data-value="10">10</div>
-                        <div class="finzo-dropdown-option is-selected px-3.5 py-2 text-xs font-bold text-text-primary hover:bg-surface-hover cursor-pointer transition-colors" data-value="25">25</div>
-                        <div class="finzo-dropdown-option px-3.5 py-2 text-xs font-bold text-text-primary hover:bg-surface-hover cursor-pointer transition-colors" data-value="50">50</div>
-                        <div class="finzo-dropdown-option px-3.5 py-2 text-xs font-bold text-text-primary hover:bg-surface-hover cursor-pointer transition-colors" data-value="100">100</div>
+                    <div class="finzo-dropdown-menu bg-surface dark:bg-[#18181B] border border-border-subtle rounded-2xl shadow-2xl py-1.5 z-50 min-w-[90px]" role="listbox">
+                        <div class="finzo-dropdown-option px-4 py-2 text-xs font-bold text-text-primary hover:bg-surface-hover cursor-pointer transition-colors" data-value="10">10</div>
+                        <div class="finzo-dropdown-option is-selected px-4 py-2 text-xs font-bold text-text-primary hover:bg-surface-hover cursor-pointer transition-colors" data-value="25">25</div>
+                        <div class="finzo-dropdown-option px-4 py-2 text-xs font-bold text-text-primary hover:bg-surface-hover cursor-pointer transition-colors" data-value="50">50</div>
+                        <div class="finzo-dropdown-option px-4 py-2 text-xs font-bold text-text-primary hover:bg-surface-hover cursor-pointer transition-colors" data-value="100">100</div>
                     </div>
                     <input type="hidden" id="rows-per-page" value="25">
                 </div>
             </div>
-
         </div>
         <div class="flex items-center gap-2">
             <button id="prev-btn" class="btn btn-secondary px-4 !py-2 !text-xs font-bold disabled:opacity-50 disabled:cursor-not-allowed">Previous</button>
@@ -251,6 +250,7 @@ ob_start();
             <button id="next-btn" class="btn btn-secondary px-4 !py-2 !text-xs font-bold disabled:opacity-50 disabled:cursor-not-allowed">Next</button>
         </div>
     </div>
+
 </div>
 
 <!-- ========================================================================= -->
