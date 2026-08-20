@@ -56,10 +56,10 @@
             let avatarHtml = `<div class="admin-avatar premium-gradient-primary uppercase">${initials}</div>`;
             if (app.profile_picture_url) {
                 let url = app.profile_picture_url;
-                if (!url.startsWith('http://') && !url.startsWith('https://') && !url.startsWith('/')) {
-                    url = '/Finzo/public/assets/' + url;
+                if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                    url = url.startsWith('/') ? url : '/Finzo/' + url.replace(/^\//, '');
                 }
-                avatarHtml = `<img src="${url}" class="admin-avatar object-cover border border-slate-200 dark:border-white/10" alt="${app.full_name}">`;
+                avatarHtml = `<img src="${url}" class="admin-avatar object-cover border border-slate-200 dark:border-white/10" alt="${app.full_name}" onerror="this.outerHTML='<div class=\\'admin-avatar premium-gradient-primary uppercase\\'>${initials}</div>'">`;
             }
 
             return `

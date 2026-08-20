@@ -55,8 +55,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const profilePlaceholder = document.getElementById('profile-photo-placeholder');
         if (profilePhoto && user.profile_picture_url) {
             let url = user.profile_picture_url;
-            if (!url.startsWith('http://') && !url.startsWith('https://') && !url.startsWith('/')) {
-                url = '/Finzo/public/assets/' + url;
+            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                url = url.startsWith('/') ? url : '/Finzo/' + url.replace(/^\//, '');
             }
             profilePhoto.src = url;
             profilePhoto.classList.remove('hidden');
@@ -115,17 +115,17 @@ document.addEventListener('DOMContentLoaded', () => {
             const docBlocks = document.querySelectorAll('.ds-card .aspect-video');
             if (data.id_documents.front_url && docBlocks.length > 0) {
                 let url = data.id_documents.front_url;
-                if (!url.startsWith('http://') && !url.startsWith('https://') && !url.startsWith('/')) {
-                    url = '/Finzo/public/assets/' + url;
+                if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                    url = url.startsWith('/') ? url : '/Finzo/' + url.replace(/^\//, '');
                 }
-                docBlocks[0].innerHTML = `<img src="${url}" class="w-full h-full object-cover rounded-xl shadow-lg border border-slate-200" alt="Front Side">`;
+                docBlocks[0].innerHTML = `<img src="${url}" class="w-full h-full object-cover rounded-xl shadow-lg border border-slate-200" alt="Front Side" onerror="this.parentElement.innerHTML='<div class=\\'flex flex-col items-center justify-center p-6 text-center text-text-secondary\\'><span class=\\'material-symbols-outlined text-3xl opacity-30 mb-1\\'>broken_image</span><span class=\\'text-xs\\'>Preview unavailable</span></div>'">`;
             }
             if (data.id_documents.back_url && docBlocks.length > 1) {
                 let url = data.id_documents.back_url;
-                if (!url.startsWith('http://') && !url.startsWith('https://') && !url.startsWith('/')) {
-                    url = '/Finzo/public/assets/' + url;
+                if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                    url = url.startsWith('/') ? url : '/Finzo/' + url.replace(/^\//, '');
                 }
-                docBlocks[1].innerHTML = `<img src="${url}" class="w-full h-full object-cover rounded-xl shadow-lg border border-slate-200" alt="Back Side">`;
+                docBlocks[1].innerHTML = `<img src="${url}" class="w-full h-full object-cover rounded-xl shadow-lg border border-slate-200" alt="Back Side" onerror="this.parentElement.innerHTML='<div class=\\'flex flex-col items-center justify-center p-6 text-center text-text-secondary\\'><span class=\\'material-symbols-outlined text-3xl opacity-30 mb-1\\'>broken_image</span><span class=\\'text-xs\\'>Preview unavailable</span></div>'">`;
             }
         }
 

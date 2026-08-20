@@ -295,7 +295,7 @@
         }
 
         // Front Document Card
-        const frontUrl = idDocuments.front_url || (user.id_front_path ? (user.id_front_path.startsWith('http') ? user.id_front_path : `/Finzo/${user.id_front_path}`) : null);
+        const frontUrl = idDocuments.front_url || (user.id_front_path ? (user.id_front_path.startsWith('http') ? user.id_front_path : (user.id_front_path.startsWith('storage/') ? `/Finzo/api/v1/users/${user.id}/kyc?path=${encodeURIComponent(user.id_front_path)}` : `/Finzo/${user.id_front_path.replace(/^\//, '')}`)) : null);
         const frontPreview = document.getElementById('front-doc-preview');
         const frontActions = document.getElementById('front-doc-actions');
         const frontFilename = document.getElementById('front-doc-filename');
@@ -348,7 +348,7 @@
         }
 
         // Back Document Card
-        const backUrl = idDocuments.back_url || (user.id_back_path ? (user.id_back_path.startsWith('http') ? user.id_back_path : `/Finzo/${user.id_back_path}`) : null);
+        const backUrl = idDocuments.back_url || (user.id_back_path ? (user.id_back_path.startsWith('http') ? user.id_back_path : (user.id_back_path.startsWith('storage/') ? `/Finzo/api/v1/users/${user.id}/kyc?path=${encodeURIComponent(user.id_back_path)}` : `/Finzo/${user.id_back_path.replace(/^\//, '')}`)) : null);
         const backPreview = document.getElementById('back-doc-preview');
         const backActions = document.getElementById('back-doc-actions');
         const backFilename = document.getElementById('back-doc-filename');

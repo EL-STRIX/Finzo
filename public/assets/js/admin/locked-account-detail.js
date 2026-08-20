@@ -44,7 +44,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const avatarEl = document.getElementById('d-avatar');
         if (avatarEl) {
             if (user.profile_picture) {
-                avatarEl.innerHTML = `<img src="/Finzo/public/assets/${user.profile_picture}" class="w-full h-full object-cover rounded-2xl" alt="${user.full_name}">`;
+                const photoSrc = user.profile_picture.startsWith('http') ? user.profile_picture : (user.profile_picture.startsWith('/') ? user.profile_picture : `/Finzo/${user.profile_picture}`);
+                avatarEl.innerHTML = `<img src="${photoSrc}" class="w-full h-full object-cover rounded-2xl" alt="${user.full_name}" onerror="this.parentElement.textContent='${user.initials || '??'}'">`;
             } else {
                 avatarEl.textContent = user.initials || '??';
             }

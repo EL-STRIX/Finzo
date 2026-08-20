@@ -294,8 +294,8 @@
                 const senderInitials = senderName.split(' ').filter(w => /^[a-zA-Z]/.test(w)).map(w => w[0]).join('').toUpperCase().substring(0, 2) || 'U';
                 let avatarContent = senderInitials;
                 if (r.from_user_avatar) {
-                    const src = (r.from_user_avatar.startsWith('http') ? r.from_user_avatar : `/Finzo/public/assets/${r.from_user_avatar}`) + '?v=' + new Date().getTime();
-                    avatarContent = `<img src="${src}" alt="${senderName}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+                    const src = (r.from_user_avatar.startsWith('http') ? r.from_user_avatar : (r.from_user_avatar.startsWith('/') ? r.from_user_avatar : `/Finzo/${r.from_user_avatar}`)) + '?v=' + new Date().getTime();
+                    avatarContent = `<img src="${src}" alt="${senderName}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.parentElement.textContent='${senderInitials}'">`;
                 }
                 
                 fromAccountHtml = `
@@ -326,8 +326,8 @@
                 let avatarContent = custInitials;
                 if (r.from_user_avatar || r.to_user_avatar) {
                     const avatarUrl = r.from_user_avatar || r.to_user_avatar;
-                    const src = (avatarUrl.startsWith('http') ? avatarUrl : `/Finzo/public/assets/${avatarUrl}`) + '?v=' + new Date().getTime();
-                    avatarContent = `<img src="${src}" alt="${custName}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+                    const src = (avatarUrl.startsWith('http') ? avatarUrl : (avatarUrl.startsWith('/') ? avatarUrl : `/Finzo/${avatarUrl}`)) + '?v=' + new Date().getTime();
+                    avatarContent = `<img src="${src}" alt="${custName}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.parentElement.textContent='${custInitials}'">`;
                 }
 
                 toAccountHtml = `
@@ -350,8 +350,8 @@
                 const receiverInitials = receiverName.split(' ').filter(w => /^[a-zA-Z]/.test(w)).map(w => w[0]).join('').toUpperCase().substring(0, 2) || 'U';
                 let receiverAvatarContent = receiverInitials;
                 if (r.to_user_avatar) {
-                    const src = (r.to_user_avatar.startsWith('http') ? r.to_user_avatar : `/Finzo/public/assets/${r.to_user_avatar}`) + '?v=' + new Date().getTime();
-                    receiverAvatarContent = `<img src="${src}" alt="${receiverName}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+                    const src = (r.to_user_avatar.startsWith('http') ? r.to_user_avatar : (r.to_user_avatar.startsWith('/') ? r.to_user_avatar : `/Finzo/${r.to_user_avatar}`)) + '?v=' + new Date().getTime();
+                    receiverAvatarContent = `<img src="${src}" alt="${receiverName}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.parentElement.textContent='${receiverInitials}'">`;
                 }
                 
                 toAccountHtml = `
@@ -577,7 +577,8 @@
             if (fromAvatarEl) {
                 const initials = senderName.split(' ').filter(w => /^[a-zA-Z]/.test(w)).map(w => w[0]).join('').toUpperCase().substring(0, 2) || 'U';
                 if (txn.from_user_avatar) {
-                    fromAvatarEl.innerHTML = `<img src="${txn.from_user_avatar.startsWith('http') ? txn.from_user_avatar : `/Finzo/public/assets/${txn.from_user_avatar}`}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+                    const src = txn.from_user_avatar.startsWith('http') ? txn.from_user_avatar : (txn.from_user_avatar.startsWith('/') ? txn.from_user_avatar : `/Finzo/${txn.from_user_avatar}`);
+                    fromAvatarEl.innerHTML = `<img src="${src}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.parentElement.textContent='${initials}'">`;
                 } else {
                     fromAvatarEl.textContent = initials;
                 }
@@ -602,7 +603,8 @@
                 const initials = custName.split(' ').filter(w => /^[a-zA-Z]/.test(w)).map(w => w[0]).join('').toUpperCase().substring(0, 2) || 'U';
                 const avatarUrl = txn.from_user_avatar || txn.to_user_avatar;
                 if (avatarUrl) {
-                    toAvatarEl.innerHTML = `<img src="${avatarUrl.startsWith('http') ? avatarUrl : `/Finzo/public/assets/${avatarUrl}`}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+                    const src = avatarUrl.startsWith('http') ? avatarUrl : (avatarUrl.startsWith('/') ? avatarUrl : `/Finzo/${avatarUrl}`);
+                    toAvatarEl.innerHTML = `<img src="${src}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.parentElement.textContent='${initials}'">`;
                 } else {
                     toAvatarEl.textContent = initials;
                 }
@@ -622,7 +624,8 @@
             if (toAvatarEl) {
                 const initials = receiverName.split(' ').filter(w => /^[a-zA-Z]/.test(w)).map(w => w[0]).join('').toUpperCase().substring(0, 2) || 'U';
                 if (txn.to_user_avatar) {
-                    toAvatarEl.innerHTML = `<img src="${txn.to_user_avatar.startsWith('http') ? txn.to_user_avatar : `/Finzo/public/assets/${txn.to_user_avatar}`}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+                    const src = txn.to_user_avatar.startsWith('http') ? txn.to_user_avatar : (txn.to_user_avatar.startsWith('/') ? txn.to_user_avatar : `/Finzo/${txn.to_user_avatar}`);
+                    toAvatarEl.innerHTML = `<img src="${src}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.parentElement.textContent='${initials}'">`;
                 } else {
                     toAvatarEl.textContent = initials;
                 }
