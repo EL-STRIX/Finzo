@@ -33,23 +33,27 @@ class AdminStaffController
             $branchId = intval($_POST['branch_id']);
         }
 
+        $clean = function($val) {
+            return $this->security ? $this->security->cleanInput($val) : trim((string)$val);
+        };
+
         $data = [
-            'full_name' => $this->security->cleanInput($_POST['full_name'] ?? ''),
-            'date_of_birth' => $this->security->cleanInput($_POST['date_of_birth'] ?? ''),
-            'gender' => $this->security->cleanInput($_POST['gender'] ?? ''),
-            'personal_email' => $this->security->cleanInput($_POST['personal_email'] ?? ''),
-            'phone' => $this->security->cleanInput($_POST['phone'] ?? ''),
-            'emergency_contact_name' => $this->security->cleanInput($_POST['emergency_contact_name'] ?? ''),
-            'emergency_contact_phone' => $this->security->cleanInput($_POST['emergency_contact_phone'] ?? ''),
-            'designation' => $this->security->cleanInput($_POST['designation'] ?? 'Teller'),
+            'full_name' => $clean($_POST['full_name'] ?? ''),
+            'date_of_birth' => $clean($_POST['date_of_birth'] ?? ''),
+            'gender' => $clean($_POST['gender'] ?? ''),
+            'personal_email' => $clean($_POST['personal_email'] ?? ''),
+            'phone' => $clean($_POST['phone'] ?? ''),
+            'emergency_contact_name' => $clean($_POST['emergency_contact_name'] ?? ''),
+            'emergency_contact_phone' => $clean($_POST['emergency_contact_phone'] ?? ''),
+            'designation' => $clean($_POST['designation'] ?? 'Teller'),
             'branch_id' => $branchId,
-            'date_of_joining' => $this->security->cleanInput($_POST['date_of_joining'] ?? date('Y-m-d')),
-            'street' => $this->security->cleanInput($_POST['street'] ?? ''),
-            'city' => $this->security->cleanInput($_POST['city'] ?? ''),
-            'state' => $this->security->cleanInput($_POST['state'] ?? ''),
-            'pincode' => $this->security->cleanInput($_POST['pincode'] ?? ''),
-            'id_type' => $this->security->cleanInput($_POST['id_type'] ?? ''),
-            'id_number' => $this->security->cleanInput($_POST['id_number'] ?? ''),
+            'date_of_joining' => $clean($_POST['date_of_joining'] ?? date('Y-m-d')),
+            'street' => $clean($_POST['street'] ?? ''),
+            'city' => $clean($_POST['city'] ?? ''),
+            'state' => $clean($_POST['state'] ?? ''),
+            'pincode' => $clean($_POST['pincode'] ?? ''),
+            'id_type' => $clean($_POST['id_type'] ?? ''),
+            'id_number' => $clean($_POST['id_number'] ?? ''),
             'password' => $_POST['password'] ?? ''
         ];
 
@@ -121,8 +125,11 @@ class AdminStaffController
     {
         $input = json_decode(file_get_contents('php://input'), true) ?? [];
         $staffId = intval($input['staff_id'] ?? ($id ?? $_POST['staff_id'] ?? null) ?? 0);
-        $action = $this->security->cleanInput($input['action'] ?? $_POST['action'] ?? '');
-        $reason = $this->security->cleanInput($input['reason'] ?? $_POST['reason'] ?? '');
+        $clean = function($val) {
+            return $this->security ? $this->security->cleanInput($val) : trim((string)$val);
+        };
+        $action = $clean($input['action'] ?? $_POST['action'] ?? '');
+        $reason = $clean($input['reason'] ?? $_POST['reason'] ?? '');
         $password = $input['password'] ?? $_POST['password'] ?? '';
 
         $admin = \App\Shared\Security\Auth::user();
@@ -186,12 +193,15 @@ class AdminStaffController
 
     public function getStaffList(?string $id = null, ?string $extra = null): array
     {
+        $clean = function($val) {
+            return $this->security ? $this->security->cleanInput($val) : trim((string)$val);
+        };
         $filters = [
-            'search'    => $this->security->cleanInput($_GET['search'] ?? ''),
-            'status'    => $this->security->cleanInput($_GET['status'] ?? 'all'),
-            'role'      => $this->security->cleanInput($_GET['role'] ?? ($_GET['designation'] ?? 'all')),
+            'search'    => $clean($_GET['search'] ?? ''),
+            'status'    => $clean($_GET['status'] ?? 'all'),
+            'role'      => $clean($_GET['role'] ?? ($_GET['designation'] ?? 'all')),
             'branch_id' => intval($_GET['branch_id'] ?? 0),
-            'filter'    => $this->security->cleanInput($_GET['filter'] ?? '')
+            'filter'    => $clean($_GET['filter'] ?? '')
         ];
 
         $page = max(1, intval($_GET['page'] ?? 1));
@@ -202,12 +212,15 @@ class AdminStaffController
 
     public function exportStaff(): void
     {
+        $clean = function($val) {
+            return $this->security ? $this->security->cleanInput($val) : trim((string)$val);
+        };
         $filters = [
-            'search'    => $this->security->cleanInput($_GET['search'] ?? ''),
-            'status'    => $this->security->cleanInput($_GET['status'] ?? 'all'),
-            'role'      => $this->security->cleanInput($_GET['role'] ?? ($_GET['designation'] ?? 'all')),
+            'search'    => $clean($_GET['search'] ?? ''),
+            'status'    => $clean($_GET['status'] ?? 'all'),
+            'role'      => $clean($_GET['role'] ?? ($_GET['designation'] ?? 'all')),
             'branch_id' => intval($_GET['branch_id'] ?? 0),
-            'filter'    => $this->security->cleanInput($_GET['filter'] ?? '')
+            'filter'    => $clean($_GET['filter'] ?? '')
         ];
 
         $generator = $this->service->exportStaff($filters);
@@ -240,8 +253,11 @@ class AdminStaffController
 
     public function getSuspendedStaff(?string $id = null, ?string $extra = null): array
     {
+        $clean = function($val) {
+            return $this->security ? $this->security->cleanInput($val) : trim((string)$val);
+        };
         $filters = [
-            'search'    => $this->security->cleanInput($_GET['search'] ?? ''),
+            'search'    => $clean($_GET['search'] ?? ''),
             'status'    => 'suspended',
             'branch_id' => intval($_GET['branch_id'] ?? 0)
         ];

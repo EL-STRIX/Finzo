@@ -307,7 +307,7 @@
             branch_id: branchId === 'all' ? '0' : branchId
         });
 
-        const exportUrl = `/Finzo/api/v1/staff/export?${params.toString()}`;
+        const exportUrl = window.api.buildUrl('/staff/export', Object.fromEntries(params));
         
         const downloadLink = document.createElement('a');
         downloadLink.href = exportUrl;

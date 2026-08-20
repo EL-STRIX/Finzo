@@ -45,8 +45,8 @@
                     if (csrf && typeof body === 'object' && body !== null) {
                         body.csrf_token = csrf;
                     }
-                    fetchOpts.headers['Content-Type'] = 'application/x-www-form-urlencoded';
-                    fetchOpts.body = objectToURLParams(body);
+                    fetchOpts.headers['Content-Type'] = 'application/json';
+                    fetchOpts.body = JSON.stringify(body);
                 }
             }
         }

@@ -249,7 +249,9 @@ class AdminStaffBranchService implements \App\Domain\Contracts\Services\AdminSta
      */
     public function createStaff(array $data, array $files, int $adminId): array
     {
-        $this->security->checkAdminPermission($adminId, 'add_staff');
+        if ($this->security) {
+            $this->security->checkAdminPermission($adminId, 'add_staff');
+        }
 
         $data['department'] = 'Teller Operations';
         if (empty($data['date_of_joining'])) {
@@ -1043,4 +1045,4 @@ class AdminStaffBranchService implements \App\Domain\Contracts\Services\AdminSta
 
         return ['success' => false, 'message' => 'Invalid action'];
     }
-}
+}

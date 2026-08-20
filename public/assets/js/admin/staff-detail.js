@@ -576,6 +576,16 @@
         }
     }
 
+    function closeLightbox() {
+        const modal = document.getElementById('lightbox-modal');
+        if (modal) {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            modal.style.display = 'none';
+            document.body.classList.remove('overflow-hidden');
+        }
+    }
+
     window.openLightbox = openLightbox;
     window.closeLightbox = closeLightbox;
     window.openGovernanceModal = openGovernanceModal;
