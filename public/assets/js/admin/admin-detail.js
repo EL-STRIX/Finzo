@@ -1,6 +1,6 @@
 /* ═══════════════════════════════════════════
    FINZO — Admin Detail Controller
-   Handles fetching and managing specific admin data.
+   Handles fetching, managing, and rendering admin dossier data.
    ═══════════════════════════════════════════ */
 
 (function() {
@@ -9,9 +9,9 @@
     let allActivities = [];
 
     function notify(msg, type = 'info') {
-        if (window.portal && window.portal.showToast) {
+        if (window.portal && typeof window.portal.showToast === 'function') {
             window.portal.showToast(msg, type);
-        } else if (window.utils && window.utils.showToast) {
+        } else if (window.utils && typeof window.utils.showToast === 'function') {
             window.utils.showToast(msg, type);
         } else {
             console.log(`[Toast ${type}]: ${msg}`);
@@ -61,15 +61,14 @@
          * Fetch data from API
          */
         loadAdminData: async function() {
-            // Guarantee window.api is initialized
             let attempts = 0;
-            while ((!window.api || typeof window.api.get !== 'function') && attempts < 25) {
-                await new Promise(r => setTimeout(r, 80));
+            while ((!window.api || typeof window.api.get !== 'function') && attempts < 30) {
+                await new Promise(r => setTimeout(r, 60));
                 attempts++;
             }
 
             if (!window.api || typeof window.api.get !== 'function') {
-                console.error('API module unavailable');
+                console.error('Finzo API client is unavailable.');
                 return;
             }
 
@@ -90,7 +89,7 @@
                     this.renderActivity(activity);
                 } else {
                     notify(response?.message || payload?.message || 'Error loading admin dossier', 'error');
-                    setTimeout(() => window.location.href = 'admin-profile.php', 2000);
+                    setTimeout(() => window.location.href = 'admin-profile.php', 2500);
                 }
             } catch (error) {
                 console.error('Failed to load admin detail:', error);
@@ -98,18 +97,17 @@
             }
         },
 
-
         /**
          * Populate UI elements
          */
         renderUI: function(admin) {
             if (!admin) return;
 
-            // Header
+            // 1. Header
             const headerName = document.getElementById('header-admin-name');
             if (headerName) headerName.textContent = admin.full_name || 'Admin Dossier';
             
-            // Status Badge Topbar
+            // 2. Status Badge Topbar
             const statusBox = document.getElementById('header-status-badge');
             if (statusBox) {
                 statusBox.classList.remove('hidden');
@@ -133,7 +131,7 @@
                 }
             }
 
-            // Photo
+            // 3. Photo & Monogram
             const initials = (admin.full_name || 'AD').split(' ').filter(Boolean).map(n => n[0]).join('').toUpperCase().substring(0, 2);
             const photoContainer = document.getElementById('admin-photo-container');
             if (photoContainer) {
@@ -145,10 +143,10 @@
                 }
             }
 
-            // Info Grid
+            // 4. Info Grid Fields
             const setTxt = (id, val) => {
                 const el = document.getElementById(id);
-                if (el) el.textContent = val || '---';
+                if (el) el.textContent = (val !== null && val !== undefined && val !== '') ? val : '---';
             };
 
             setTxt('info-name', admin.full_name);
@@ -174,22 +172,22 @@
             setTxt('info-dob', formatDate(admin.date_of_birth));
             setTxt('info-joined-date', formatDate(admin.created_at));
 
-            // Badges
-            const roleBadge = document.getElementById('info-role-badge');
-            if (roleBadge) {
+            // 5. Badges
+            const infoRoleBadge = document.getElementById('info-role-badge');
+            if (infoRoleBadge) {
                 const isMod = admin.admin_role === 'moderator';
-                roleBadge.textContent = isMod ? 'Moderator' : 'Administrator';
-                roleBadge.className = `px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest ${isMod ? 'bg-amber-500/10 text-amber-600 border border-amber-500/20' : 'bg-teal-500/10 text-teal-600 border border-teal-500/20'}`;
+                infoRoleBadge.textContent = isMod ? 'Moderator' : (admin.admin_role === 'super_admin' ? 'Super Admin' : 'Administrator');
+                infoRoleBadge.className = `px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest ${isMod ? 'bg-amber-500/10 text-amber-600 border border-amber-500/20' : 'bg-teal-500/10 text-teal-600 border border-teal-500/20'}`;
             }
 
-            const accessBadge = document.getElementById('info-access-badge');
-            if (accessBadge) {
+            const infoAccessBadge = document.getElementById('info-access-badge');
+            if (infoAccessBadge) {
                 const isFull = admin.access_level === 'full';
-                accessBadge.textContent = isFull ? 'Full Access' : 'Restricted';
-                accessBadge.className = `px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest ${isFull ? 'bg-emerald-500/10 text-emerald-600 border border-emerald-500/20' : 'bg-surface-subtle text-text-secondary border border-border-subtle'}`;
+                infoAccessBadge.textContent = isFull ? 'Full Access' : 'Restricted';
+                infoAccessBadge.className = `px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest ${isFull ? 'bg-emerald-500/10 text-emerald-600 border border-emerald-500/20' : 'bg-surface-subtle text-text-secondary border border-border-subtle'}`;
             }
 
-            // System Audit
+            // 6. System Audit Telemetry
             setTxt('sys-last-login', admin.last_login_at ? timeAgo(admin.last_login_at) : 'Never');
             setTxt('sys-last-ip', admin.last_login_ip || 'No Record');
             setTxt('sys-pwd-change', admin.last_password_changed ? timeAgo(admin.last_password_changed) : 'Never');
@@ -204,7 +202,7 @@
             setTxt('sys-created-by', admin.created_by_name || 'System');
             setTxt('sys-id', admin.admin_id);
 
-            // Role-based Security Note
+            // 7. Security Policy Note
             const noteText = document.getElementById('security-note-text');
             if (noteText) {
                 if (admin.admin_role === 'moderator') {
@@ -214,26 +212,26 @@
                 }
             }
 
-            // Role Privileges Matrix (Granted vs Restricted)
+            // 8. Role Privileges Matrix (Granted vs Restricted)
             const grantedContainer = document.getElementById('privileges-granted');
             const restrictedContainer = document.getElementById('privileges-restricted');
-            const roleBadge = document.getElementById('privilege-role-badge');
+            const privilegeRoleBadge = document.getElementById('privilege-role-badge');
             const levelSub = document.getElementById('privilege-level-sub');
 
             const isSuper = admin.admin_role === 'super_admin';
             const isAdmin = admin.admin_role === 'admin';
             const isMod = admin.admin_role === 'moderator';
 
-            if (roleBadge) {
+            if (privilegeRoleBadge) {
                 if (isSuper) {
-                    roleBadge.textContent = 'Super Admin';
-                    roleBadge.className = 'px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest bg-purple-500/10 text-purple-600 border border-purple-500/20';
+                    privilegeRoleBadge.textContent = 'Super Admin';
+                    privilegeRoleBadge.className = 'px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest bg-purple-500/10 text-purple-600 border border-purple-500/20';
                 } else if (isAdmin) {
-                    roleBadge.textContent = 'Administrator';
-                    roleBadge.className = 'px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest bg-teal-500/10 text-teal-600 border border-teal-500/20';
+                    privilegeRoleBadge.textContent = 'Administrator';
+                    privilegeRoleBadge.className = 'px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest bg-teal-500/10 text-teal-600 border border-teal-500/20';
                 } else {
-                    roleBadge.textContent = 'Moderator';
-                    roleBadge.className = 'px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest bg-amber-500/10 text-amber-600 border border-amber-500/20';
+                    privilegeRoleBadge.textContent = 'Moderator';
+                    privilegeRoleBadge.className = 'px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest bg-amber-500/10 text-amber-600 border border-amber-500/20';
                 }
             }
 
@@ -270,7 +268,6 @@
                     'Delete or Purge Immutable Audit Logs'
                 ];
             } else {
-                // Moderator
                 granted = [
                     'KYC Verification & Customer Document Approvals',
                     'Read-Only Access to User Directory & Profiles',
@@ -305,13 +302,12 @@
                 `).join('');
             }
 
-            // View in Global Audit Log link
+            // 9. View in Global Audit Log link
             const auditLink = document.getElementById('view-audit-link');
             if (auditLink) {
                 auditLink.href = `admin-audit-log.php?search=${encodeURIComponent(admin.admin_id)}`;
             }
         },
-
 
         /**
          * Render Activity Table
@@ -383,7 +379,6 @@
                 </tr>
             `).join('');
         },
-
 
         /**
          * Administrative Actions
@@ -556,4 +551,3 @@
         initDossier();
     }
 })();
-
