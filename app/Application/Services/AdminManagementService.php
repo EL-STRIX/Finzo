@@ -464,9 +464,83 @@ class AdminManagementService implements \App\Domain\Contracts\Services\AdminMana
 
         $this->repository->updateProfileFields($adminId, $fields, $params);
         \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('admin_profile_updated', $adminId, \App\Domain\Enums\RoleEnum::ADMIN->value, $adminId, \App\Domain\Enums\RoleEnum::ADMIN->value, 'Profile information updated')
-);
+            new \App\Application\Events\GenericAuditAction('admin_profile_updated', $adminId, \App\Domain\Enums\RoleEnum::ADMIN->value, $adminId, \App\Domain\Enums\RoleEnum::ADMIN->value, 'Profile information updated')
+        );
 
         return ['success' => true, 'message' => 'Profile updated successfully'];
     }
+
+    /**
+     * Update Security Question.
+     *
+     * @param int $adminId
+     * @param array $data
+     * @return array
+     */
+    public function updateSecurityQuestion(int $adminId, array $data): array
+    {
+        $question = $this->security->cleanInput($data['security_question'] ?? '');
+        $answer = $data['security_answer'] ?? '';
+        $current_pwd = $data['current_password'] ?? '';
+
+        if (strlen($question) < 10) {
+            throw new ApiException('Security question must be at least 10 characters', 422, ['field' => 'security_question']);
+        }
+        if (strlen($answer) < 3) {
+            throw new ApiException('Security answer must be at least 3 characters', 422, ['field' => 'security_answer']);
+        }
+        if (empty($current_pwd)) {
+            throw new ApiException('Current password is required to update security settings', 422, ['field' => 'current_password']);
+        }
+
+        $admin = $this->repository->getAdminById($adminId);
+        if (!$admin || !password_verify($current_pwd, $admin['password_hash'])) {
+            throw new ApiException('Incorrect current password', 422, ['field' => 'current_password']);
+        }
+
+        $answerHash = password_hash(strtolower(trim($answer)), PASSWORD_BCRYPT);
+        $this->repository->updateSecurityQuestion($adminId, $question, $answerHash);
+
+        \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
+            new \App\Application\Events\GenericAuditAction('admin_security_question_updated', $adminId, \App\Domain\Enums\RoleEnum::ADMIN->value, $adminId, \App\Domain\Enums\RoleEnum::ADMIN->value, 'Security recovery question updated')
+        );
+
+        return ['success' => true, 'message' => 'Security question configured successfully'];
+    }
+
+    /**
+     * Unlock Locked Admin.
+     *
+     * @param int $targetAdminId
+     * @return array
+     */
+    public function unlockAdmin(int $targetAdminId): array
+    {
+        $this->security->enforcePermission('manage_admins');
+
+        if ($targetAdminId <= 0) {
+            throw new ApiException('Invalid target admin ID', 400);
+        }
+
+        $target = $this->repository->getAdminById($targetAdminId);
+        if (!$target) {
+            throw new ApiException('Admin not found', 404);
+        }
+
+        if ($target['admin_role'] === 'super_admin' && (int)$_SESSION['admin_id'] !== $targetAdminId) {
+            throw new ApiException('Cannot manage another Super Admin account', 403);
+        }
+
+        $this->repository->unlockAdmin($targetAdminId);
+
+        \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
+            new \App\Application\Events\GenericAuditAction('admin_unlocked', $target['admin_id'], \App\Domain\Enums\RoleEnum::ADMIN->value, $_SESSION['admin_id'], \App\Domain\Enums\RoleEnum::ADMIN->value, "Manually unlocked admin account: {$target['full_name']}")
+        );
+
+        return [
+            'success' => true,
+            'message' => "Admin account for {$target['full_name']} has been successfully unlocked."
+        ];
+    }
 }
+

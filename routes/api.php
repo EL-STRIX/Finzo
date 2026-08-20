@@ -41,9 +41,12 @@ $router->get('/api/v1/admins/locked', [AdminManagementController::class, 'getLoc
 $router->get('/api/v1/admins/next-id', [AdminManagementController::class, 'getNextAdminId'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->get('/api/v1/admins/profile', [AdminManagementController::class, 'getAdminProfile'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->post('/api/v1/admins/profile', [AdminManagementController::class, 'updateAdminProfile'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]); // PUT/PATCH preferred, but forms use POST
+$router->post('/api/v1/admins/profile/security', [AdminManagementController::class, 'updateSecurityQuestion'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->post('/api/v1/admins/profile/photo', [AdminManagementController::class, 'uploadAdminPhoto'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
+$router->post('/api/v1/admins/unlock', [AdminManagementController::class, 'unlockAdmin'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->get('/api/v1/admins/{id}', [AdminManagementController::class, 'getAdminDetail'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->patch('/api/v1/admins/{id}', [AdminManagementController::class, 'adminAction'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
+
 $router->get('/api/v1/admin/auth/session', [AdminOperationsController::class, 'session'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->get('/api/v1/admin/dashboard', [AdminOperationsController::class, 'dashboard'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->get('/api/v1/admin/audit-logs', [AdminOperationsController::class, 'auditLog'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);

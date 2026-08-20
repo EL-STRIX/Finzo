@@ -112,7 +112,7 @@ class AdminManagementRepository extends BaseRepository implements \App\Domain\Co
             FROM admin_users a
             WHERE a.admin_role != 'super_admin'
             ORDER BY a.created_at DESC
-        ", \App\Domain\Models\Admin::class);
+        ", [], \App\Domain\Models\Admin::class);
     }
 
     public function getLockedAdmins()
@@ -123,8 +123,9 @@ class AdminManagementRepository extends BaseRepository implements \App\Domain\Co
             FROM admin_users
             WHERE account_locked = 1
             ORDER BY locked_at DESC
-        ", \App\Domain\Models\Admin::class);
+        ", [], \App\Domain\Models\Admin::class);
     }
+
 
     public function updateAdminProfileField(int $id, string $field, $value)
     {
@@ -159,4 +160,35 @@ class AdminManagementRepository extends BaseRepository implements \App\Domain\Co
     {
         return $this->execute("UPDATE admin_users SET two_fa_enabled = ? WHERE id = ?", [$enabled, $id]);
     }
+
+    public function unlockAdmin(int $id)
+    {
+        return $this->execute("
+            UPDATE admin_users 
+            SET account_locked = 0,
+                locked_at = NULL,
+                lock_reason = NULL,
+                locked_until = NULL,
+                answer_attempts = 0,
+                answer_locked_until = NULL,
+                failed_attempts = 0,
+                updated_at = NOW()
+            WHERE id = ?
+        ", [$id]);
+    }
+
+    public function updateSecurityQuestion(int $id, string $question, string $answerHash)
+    {
+        return $this->execute("
+            UPDATE admin_users 
+            SET security_question = ?, 
+                security_answer_hash = ?, 
+                security_question_set = 1,
+                answer_attempts = 0,
+                answer_locked_until = NULL,
+                updated_at = NOW()
+            WHERE id = ?
+        ", [$question, $answerHash, $id]);
+    }
 }
+

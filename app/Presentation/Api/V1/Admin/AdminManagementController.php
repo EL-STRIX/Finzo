@@ -116,5 +116,37 @@ class AdminManagementController
     {
         return $this->service->getAdminProfileForUser(\App\Shared\Security\Auth::user()['id']);
     }
+
+    public function updateSecurityQuestion(?string $id = null, ?string $extra = null): array
+    {
+        $is_json = (\App\Shared\Core\Validation\Validator::isSet($_SERVER['CONTENT_TYPE']) && strpos($_SERVER['CONTENT_TYPE'], 'application/json') !== false);
+        if ($is_json) {
+            $json_input = json_decode(file_get_contents('php://input'), true);
+            if ($json_input !== null) {
+                $_POST = array_merge($_POST, $json_input);
+            }
+        }
+
+        $result = $this->service->updateSecurityQuestion(\App\Shared\Security\Auth::user()['id'], $_POST);
+        unset($result['code']);
+        return $result;
+    }
+
+    public function unlockAdmin(?string $id = null, ?string $extra = null): array
+    {
+        $is_json = (\App\Shared\Core\Validation\Validator::isSet($_SERVER['CONTENT_TYPE']) && strpos($_SERVER['CONTENT_TYPE'], 'application/json') !== false);
+        if ($is_json) {
+            $json_input = json_decode(file_get_contents('php://input'), true);
+            if ($json_input !== null) {
+                $_POST = array_merge($_POST, $json_input);
+            }
+        }
+
+        $target_id = (int)($id ?? $_POST['target_admin_id'] ?? $_POST['admin_id'] ?? 0);
+        $result = $this->service->unlockAdmin($target_id);
+        unset($result['code']);
+        return $result;
+    }
 }
+
 

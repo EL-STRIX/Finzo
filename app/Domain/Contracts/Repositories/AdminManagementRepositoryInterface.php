@@ -22,4 +22,7 @@ interface AdminManagementRepositoryInterface
     public function updateProfileFields(int $id, array $fields, array $params);
     public function getAdminProfile(int $id);
     public function updateTwoFa(int $id, int $enabled);
+    public function unlockAdmin(int $id);
+    public function updateSecurityQuestion(int $id, string $question, string $answerHash);
 }
+
