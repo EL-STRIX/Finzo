@@ -717,11 +717,13 @@ ob_start();
 
                     <div>
                         <label for="new-admin-photo" class="fin-label mb-1 block text-[10px] font-black text-text-secondary uppercase tracking-widest">Profile Photo (Optional)</label>
-                        <input type="file" id="new-admin-photo" accept="image/jpeg, image/png" class="fin-input bg-surface text-text-primary" onchange="window.AdminProfile.previewNewPhoto(this)">
+                        <input type="file" id="new-admin-photo" accept="image/jpeg, image/png, image/webp" class="fin-input bg-surface text-text-primary" onchange="window.AdminProfile.previewNewPhoto(this)">
+                        <span id="err-add-photo" class="text-danger text-[11px] font-bold mt-1 hidden"></span>
                         <div class="mt-3 flex items-center gap-3">
                             <img id="new-avatar-preview" src="" class="w-14 h-14 rounded-2xl object-cover hidden border-2 border-text-primary/30 shadow-md" alt="Preview">
                         </div>
                     </div>
+
                 </div>
             </div>
 

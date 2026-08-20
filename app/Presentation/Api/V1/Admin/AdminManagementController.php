@@ -22,21 +22,15 @@ class AdminManagementController
 
     public function addAdmin(?string $id = null, ?string $extra = null): array
     {
-
         $this->security->enforcePermission('manage_admins');
 
         $file = (\App\Shared\Core\Validation\Validator::isSet($_FILES['profile_photo']) && $_FILES['profile_photo']['error'] === UPLOAD_ERR_OK) ? $_FILES['profile_photo'] : null;
         $result = $this->service->addAdmin($_POST, $file);
 
-        $code = $result['code'] ?? 200;
         unset($result['code']);
-
-        if ($code === 201) {
-            json_response($result, 201);
-        }
-
         return $result;
     }
+
 
     public function adminAction(?string $id = null, ?string $extra = null): array
     {

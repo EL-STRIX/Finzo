@@ -983,31 +983,32 @@
                     loadAdminList();
                 } else {
                     const errMsg = payload.message || response?.message || 'Provisioning failed';
-                    if (payload.field || response?.field) {
-                        const fieldKey = payload.field || response.field;
-                        const fieldMap = {
-                            'full_name': 'name',
-                            'date_of_birth': 'dob',
-                            'gender': 'gender',
-                            'phone': 'phone',
-                            'email': 'email',
-                            'password': 'pw',
-                            'confirm_password': 'conf-pw',
-                            'security_question': 'seq-q',
-                            'security_answer': 'seq-a',
-                            'admin_role': 'role'
-                        };
+                    const errors = payload.errors || response?.errors || {};
+                    const fieldKey = payload.field || response?.field || (Object.keys(errors).length > 0 ? Object.keys(errors)[0] : null);
+
+                    const fieldMap = {
+                        'full_name': 'name',
+                        'date_of_birth': 'dob',
+                        'gender': 'gender',
+                        'phone': 'phone',
+                        'email': 'email',
+                        'password': 'pw',
+                        'confirm_password': 'conf-pw',
+                        'security_question': 'seq-q',
+                        'security_answer': 'seq-a',
+                        'admin_role': 'role',
+                        'profile_photo': 'photo'
+                    };
+
+                    if (fieldKey) {
                         const targetId = 'err-add-' + (fieldMap[fieldKey] || fieldKey);
                         const e = document.getElementById(targetId);
                         if (e) {
-                            e.textContent = errMsg;
+                            e.textContent = errors[fieldKey] || errMsg;
                             e.classList.remove('hidden');
-                        } else {
-                            if (window.portal) window.portal.showToast(errMsg, 'error');
                         }
-                    } else {
-                        if (window.portal) window.portal.showToast(errMsg, 'error');
                     }
+                    if (window.portal) window.portal.showToast(errMsg, 'error');
                 }
             } catch (err) {
                 if (window.portal) window.portal.showToast('System error provisioning admin', 'error');
@@ -1018,6 +1019,7 @@
                     if (spinner) spinner.classList.add('hidden');
                 }
             }
+
         },
 
         // Activity Pagination
