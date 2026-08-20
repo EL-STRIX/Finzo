@@ -378,8 +378,7 @@ class AdminOperationsController
             'search'   => $this->security->cleanInput($_GET['search'] ?? ''),
             'status'   => $this->security->cleanInput($_GET['status'] ?? 'all'),
             'sort'     => $this->security->cleanInput($_GET['sort'] ?? 'newest'),
-            'activity' => $this->security->cleanInput($_GET['activity'] ?? 'all'),
-            'balance'  => $this->security->cleanInput($_GET['balance'] ?? 'all')
+            'activity' => $this->security->cleanInput($_GET['activity'] ?? 'all')
         ];
         $page     = max(1, intval($_GET['page'] ?? 1));
         $per_page = min(50, max(10, intval($_GET['per_page'] ?? 20)));
@@ -395,8 +394,7 @@ class AdminOperationsController
             'search'   => $this->security->cleanInput($_GET['search'] ?? ''),
             'status'   => $this->security->cleanInput($_GET['status'] ?? 'all'),
             'sort'     => $this->security->cleanInput($_GET['sort'] ?? 'newest'),
-            'activity' => $this->security->cleanInput($_GET['activity'] ?? 'all'),
-            'balance'  => $this->security->cleanInput($_GET['balance'] ?? 'all')
+            'activity' => $this->security->cleanInput($_GET['activity'] ?? 'all')
         ];
 
         $isAsync = filter_var($_GET['async'] ?? false, FILTER_VALIDATE_BOOLEAN);

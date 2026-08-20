@@ -338,11 +338,6 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
                 u.phone as 'Phone',
                 u.status as 'User Status',
                 CASE WHEN u.is_deleted = 1 THEN 'Yes' ELSE 'No' END as 'Soft Deleted',
-                COALESCE(a.account_no, 'N/A') as 'Account Number',
-                COALESCE(a.account_type, 'N/A') as 'Account Type',
-                COALESCE(a.status, 'N/A') as 'Account Status',
-                COALESCE(a.balance, 0.00) as 'Balance (INR)',
-                COALESCE(a.daily_limit, 0.00) as 'Daily Limit (INR)',
                 COALESCE(u.dob, '') as 'Date of Birth',
                 COALESCE(u.gender, '') as 'Gender',
                 COALESCE(u.father_name, '') as 'Father Name',
@@ -363,7 +358,6 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
                 COALESCE(u.last_login_at, 'Never') as 'Last Active',
                 COALESCE(u.last_login_ip, 'N/A') as 'Last Login IP'
             FROM users u
-            LEFT JOIN accounts a ON u.customer_id = a.user_id AND a.status = 'active'
             WHERE {$whereSql}
             ORDER BY {$orderSql}
         ";
@@ -690,16 +684,14 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
     // ---------------------------------------------------------
     public function countUsers(string $whereSql, array $params): int
     {
-        return (int)$this->fetchOne("SELECT COUNT(DISTINCT u.id) as count FROM users u LEFT JOIN accounts a ON u.customer_id = a.user_id AND a.status = 'active' WHERE {$whereSql}", $params)['count'] ?? 0;
+        return (int)($this->fetchOne("SELECT COUNT(*) as count FROM users u WHERE {$whereSql}", $params)['count'] ?? 0);
     }
 
     public function getUsers(string $whereSql, array $params, int $perPage, int $offset, string $orderSql = 'u.created_at DESC') {
         $sql = "
             SELECT
-                u.id, u.customer_id, u.full_name, u.email, u.phone, u.status, u.created_at, u.last_login_at, u.profile_picture,
-                a.balance, a.account_no
+                u.id, u.customer_id, u.full_name, u.email, u.phone, u.status, u.created_at, u.last_login_at, u.profile_picture
             FROM users u
-            LEFT JOIN accounts a ON u.customer_id = a.user_id AND a.status = 'active'
             WHERE {$whereSql}
             ORDER BY {$orderSql}
             LIMIT {$perPage} OFFSET {$offset}

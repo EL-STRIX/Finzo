@@ -1042,25 +1042,14 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
             }
         }
 
-        // Balance Filter
-        if (!empty($filters['balance']) && $filters['balance'] !== 'all') {
-            if ($filters['balance'] === 'premium') {
-                $where_clauses[] = "a.balance >= 100000";
-            } elseif ($filters['balance'] === 'standard') {
-                $where_clauses[] = "a.balance > 0 AND a.balance < 100000";
-            } elseif ($filters['balance'] === 'zero') {
-                $where_clauses[] = "(a.balance = 0 OR a.balance IS NULL)";
-            }
-        }
-
         // Sorting
         if (!empty($filters['sort'])) {
             if ($filters['sort'] === 'newest') {
                 $orderSql = "u.created_at DESC";
-            } elseif ($filters['sort'] === 'balance_high') {
-                $orderSql = "a.balance DESC";
-            } elseif ($filters['sort'] === 'balance_low') {
-                $orderSql = "a.balance ASC";
+            } elseif ($filters['sort'] === 'oldest') {
+                $orderSql = "u.created_at ASC";
+            } elseif ($filters['sort'] === 'name_asc') {
+                $orderSql = "u.full_name ASC";
             } elseif ($filters['sort'] === 'recently_active') {
                 $orderSql = "u.last_login_at DESC";
             }
