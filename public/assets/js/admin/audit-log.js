@@ -127,7 +127,7 @@
 
         tbody.innerHTML = '';
         entries.forEach((entry, i) => {
-            const rowIndex = ((currentPage - 1) * rowsPerPage) + i + 1;
+            const rowIndex = total ? (total - (((currentPage - 1) * rowsPerPage) + i)) : (i + 1);
             const tr = document.createElement('tr');
             tr.className = 'hover:bg-slate-50/70 dark:hover:bg-white/[0.03] transition-colors cursor-pointer group';
             
