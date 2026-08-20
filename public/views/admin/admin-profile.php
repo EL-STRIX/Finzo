@@ -432,10 +432,6 @@ ob_start();
 
             <!-- Action Buttons -->
             <div class="flex items-center gap-2 shrink-0">
-                <button type="button" onclick="window.AdminProfile.applyActivityFilter()" class="px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider inline-flex items-center gap-1.5 bg-black text-white hover:bg-zinc-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200 shadow-md cursor-pointer transition-all">
-                    <span class="material-symbols-outlined text-[16px]" aria-hidden="true">filter_alt</span>
-                    <span>Filter</span>
-                </button>
                 <button type="button" onclick="window.AdminProfile.resetActivityFilter()" class="px-3 py-2.5 rounded-xl text-xs font-bold bg-white text-zinc-900 hover:bg-zinc-100 border border-zinc-300 dark:bg-zinc-900 dark:text-white dark:hover:bg-black dark:border-zinc-700 shadow-sm cursor-pointer transition-colors" title="Reset Filters">
                     <span class="material-symbols-outlined text-[16px]" aria-hidden="true">restart_alt</span>
                 </button>

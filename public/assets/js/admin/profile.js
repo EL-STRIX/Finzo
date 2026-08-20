@@ -586,16 +586,17 @@
         },
 
         exportActivityCSV: () => {
-            if (!activityData || activityData.length === 0) {
-                if (window.portal) window.portal.showToast('No activity logs found for the selected criteria', 'error');
+            const dataToExport = (activityData && activityData.length > 0) ? activityData : allActivityLogs;
+            if (!dataToExport || dataToExport.length === 0) {
+                if (window.portal) window.portal.showToast('No activity logs found to export', 'error');
                 return;
             }
 
             const fromDateVal = document.getElementById('activity-from-date')?.value;
             const toDateVal = document.getElementById('activity-to-date')?.value;
 
-            const headers = ['Log #', 'Operation / Action', 'Details & Context', 'IP Address', 'Entity Type', 'Entity ID', 'Timestamp'];
-            const rows = activityData.map((a, idx) => [
+            const headers = ['Log ID', 'Operation / Action', 'Details & Context', 'IP Address', 'Entity Type', 'Entity ID', 'Date & Time'];
+            const rows = dataToExport.map((a, idx) => [
                 idx + 1,
                 `"${(a.action || a.action_type || 'System Event').replace(/"/g, '""')}"`,
                 `"${(a.details || '').replace(/"/g, '""')}"`,
@@ -605,10 +606,9 @@
                 `"${a.created_at || ''}"`
             ]);
 
-            const csvContent = 'data:text/csv;charset=utf-8,\uFEFF' + [headers.join(','), ...rows.map(r => r.join(','))].join('\r\n');
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement('a');
-            link.setAttribute('href', encodedUri);
+            const csvString = [headers.join(','), ...rows.map(r => r.join(','))].join('\r\n');
+            const blob = new Blob(['\uFEFF' + csvString], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
 
             let dateLabel = new Date().toISOString().slice(0, 10);
             if (fromDateVal && toDateVal) {
@@ -619,11 +619,15 @@
                 dateLabel = `upto_${toDateVal}`;
             }
 
-            link.setAttribute('download', `Finzo_Admin_Audit_Trail_${dateLabel}.csv`);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `Finzo_Admin_Audit_Trail_${dateLabel}.csv`;
             document.body.appendChild(link);
             link.click();
-            link.remove();
-            if (window.portal) window.portal.showToast(`Exported ${activityData.length} activity records as CSV`, 'success');
+            document.body.removeChild(link);
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
+
+            if (window.portal) window.portal.showToast(`Exported ${dataToExport.length} activity records as CSV`, 'success');
         },
 
 
