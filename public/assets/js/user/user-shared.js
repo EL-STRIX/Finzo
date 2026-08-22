@@ -88,6 +88,23 @@ async function fetchUserSession() {
       _userCache.avatarUrl = data.user?.avatar_url || null;
       _userCache._loaded = true;
 
+      // Sync header profile details dynamically
+      const nameEl = document.getElementById('header-profile-name');
+      const idEl = document.getElementById('header-profile-id');
+      if (nameEl && _userCache.name) nameEl.textContent = _userCache.name;
+      if (idEl && _userCache.customerId) idEl.textContent = 'ID: ' + _userCache.customerId;
+
+      if (_userCache.avatarUrl) {
+        document.querySelectorAll('header .header-avatar').forEach(el => {
+          let photoSrc = _userCache.avatarUrl;
+          if (!photoSrc.startsWith('http') && !photoSrc.startsWith('data:')) {
+            const clean = photoSrc.replace(/^\/+/, '');
+            photoSrc = clean.startsWith('Finzo/public/') ? '/' + clean : '/Finzo/public/uploads/' + clean;
+          }
+          el.innerHTML = `<img src="${photoSrc}?v=${Date.now()}" alt="${_userCache.name}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+        });
+      }
+
       // Sync metadata back to localStorage
       localStorage.setItem(STATE_KEYS.STATUS, _userCache.status);
       localStorage.setItem(STATE_KEYS.NOTIF_COUNT, String(_userCache.notifCount));
