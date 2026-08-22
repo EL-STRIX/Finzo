@@ -19,10 +19,10 @@ class SecurityMiddlewareTest extends TestCase {
         $ip = '127.0.0.1';
         $key = "auth_api_{$ip}";
         
-        // Allowed: 5 requests per 5 minutes
+        // Allowed: 5 requests per 1 minute
         for ($i = 1; $i <= 5; $i++) {
             try {
-                RateLimiter::check($key, 5, 5);
+                RateLimiter::check($key, 5, 1);
                 $this->assertTrue(true); // Should not throw
             } catch (\Exception $e) {
                 $this->fail("RateLimiter threw exception prematurely on attempt $i");
@@ -31,7 +31,7 @@ class SecurityMiddlewareTest extends TestCase {
         
         // 6th request should throw
         try {
-            RateLimiter::check($key, 5, 5);
+            RateLimiter::check($key, 5, 1);
             $this->fail("RateLimiter failed to block the 6th request");
         } catch (\App\Shared\Core\Exceptions\ApiException $e) {
             $this->assertEquals(429, $e->getStatusCode());
