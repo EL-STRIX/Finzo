@@ -1,7 +1,79 @@
 <?php
 $currentPath = basename($_SERVER['PHP_SELF']);
-function isActive($path, $current) {
-    return (strpos($current, $path) !== false) ? 'bg-primary/5 dark:bg-primary/10 text-accent border-r-4 border-accent shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] active-nav-item' : 'text-text-secondary hover:bg-background hover:text-text-primary border-r-4 border-transparent';
+function isActive($key, $current) {
+    $active = false;
+    switch ($key) {
+        case 'dashboard':
+            $active = ($current === 'admin-dashboard.php' || $current === 'admin_dashboard.php');
+            break;
+        case 'approvals':
+            $active = (str_contains($current, 'approval') || str_contains($current, 'review-application'));
+            break;
+        case 'users':
+            $active = ($current === 'admin-users.php' || $current === 'admin-user-detail.php' || $current === 'admin_user_detail.php');
+            break;
+        case 'staff':
+            $active = ($current === 'admin-staff.php' || $current === 'admin-staff-detail.php' || $current === 'admin_staff_detail.php');
+            break;
+        case 'branches':
+            $active = str_contains($current, 'branch');
+            break;
+        case 'transactions':
+            $active = str_contains($current, 'transaction');
+            break;
+        case 'audit':
+            $active = str_contains($current, 'audit');
+            break;
+        case 'loan-products':
+            $active = str_contains($current, 'loan-product');
+            break;
+        case 'loans':
+            $active = (str_contains($current, 'loan') && !str_contains($current, 'loan-product'));
+            break;
+        case 'card-products':
+            $active = str_contains($current, 'card-product');
+            break;
+        case 'cards':
+            $active = (str_contains($current, 'card') && !str_contains($current, 'card-product'));
+            break;
+        case 'ledger':
+            $active = str_contains($current, 'ledger');
+            break;
+        case 'reports':
+            $active = str_contains($current, 'report');
+            break;
+        case 'suspended-users':
+            $active = str_contains($current, 'suspended-user');
+            break;
+        case 'suspended-staff':
+            $active = str_contains($current, 'suspended-staff');
+            break;
+        case 'locked':
+            $active = str_contains($current, 'locked');
+            break;
+        case 'deleted-users':
+            $active = (str_contains($current, 'deleted-user') || str_contains($current, 'deleted-users'));
+            break;
+        case 'interest':
+            $active = str_contains($current, 'interest');
+            break;
+        case 'roles':
+            $active = str_contains($current, 'role');
+            break;
+        case 'settings':
+            $active = str_contains($current, 'settings');
+            break;
+        case 'profile':
+            $active = (str_contains($current, 'profile') || str_contains($current, 'admin-detail') || str_contains($current, 'admin_detail'));
+            break;
+        default:
+            $active = ($current === $key);
+            break;
+    }
+
+    return $active
+        ? 'bg-primary/5 dark:bg-primary/10 text-accent border-r-4 border-accent shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] active-nav-item'
+        : 'text-text-secondary hover:bg-background hover:text-text-primary border-r-4 border-transparent';
 }
 ?>
 <!-- Admin Sidebar -->
@@ -33,7 +105,7 @@ function isActive($path, $current) {
                 </a>
             </li>
             <li>
-                <a href="admin-pending-approvals.php" class="flex items-center justify-between px-4 py-2.5 rounded-lg font-bold transition-all group <?= isActive('approval', $currentPath) ?>">
+                <a href="admin-pending-approvals.php" class="flex items-center justify-between px-4 py-2.5 rounded-lg font-bold transition-all group <?= isActive('approvals', $currentPath) ?>">
                     <div class="flex items-center gap-3">
                         <span class="material-symbols-outlined text-[20px]" aria-hidden="true">rule</span>
                         <span class="text-sm">Approvals</span>
@@ -42,7 +114,7 @@ function isActive($path, $current) {
                 </a>
             </li>
             <li>
-                <a href="admin-users.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg font-bold transition-all <?= isActive('user', $currentPath) ?>">
+                <a href="admin-users.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg font-bold transition-all <?= isActive('users', $currentPath) ?>">
                     <span class="material-symbols-outlined text-[20px]" aria-hidden="true">group</span>
                     <span class="text-sm">User Management</span>
                 </a>
@@ -54,13 +126,13 @@ function isActive($path, $current) {
                 </a>
             </li>
             <li>
-                <a href="admin-branches.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg font-bold transition-all <?= isActive('branch', $currentPath) ?>">
+                <a href="admin-branches.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg font-bold transition-all <?= isActive('branches', $currentPath) ?>">
                     <span class="material-symbols-outlined text-[20px]" aria-hidden="true">store</span>
                     <span class="text-sm">Branch Operations</span>
                 </a>
             </li>
             <li>
-                <a href="admin-transactions.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg font-bold transition-all <?= isActive('transaction', $currentPath) ?>">
+                <a href="admin-transactions.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg font-bold transition-all <?= isActive('transactions', $currentPath) ?>">
                     <span class="material-symbols-outlined text-[20px]" aria-hidden="true">swap_horiz</span>
                     <span class="text-sm">Global Transactions</span>
                 </a>
@@ -79,7 +151,7 @@ function isActive($path, $current) {
         
         <ul class="space-y-1 px-3">
             <li>
-                <a href="admin-loan-products.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg font-bold transition-all <?= isActive('loan-product', $currentPath) ?>">
+                <a href="admin-loan-products.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg font-bold transition-all <?= isActive('loan-products', $currentPath) ?>">
                     <span class="material-symbols-outlined text-[20px]" aria-hidden="true">real_estate_agent</span>
                     <span class="text-sm">Loan Products</span>
                 </a>
@@ -91,7 +163,7 @@ function isActive($path, $current) {
                 </a>
             </li>
             <li>
-                <a href="admin-card-products.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg font-bold transition-all <?= isActive('card-product', $currentPath) ?>">
+                <a href="admin-card-products.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg font-bold transition-all <?= isActive('card-products', $currentPath) ?>">
                     <span class="material-symbols-outlined text-[20px]" aria-hidden="true">featured_play_list</span>
                     <span class="text-sm">Card Products</span>
                 </a>
@@ -123,7 +195,7 @@ function isActive($path, $current) {
         
         <ul class="space-y-1 px-3">
             <li>
-                <a href="admin-reports.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg font-bold transition-all <?= isActive('report', $currentPath) ?>">
+                <a href="admin-reports.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg font-bold transition-all <?= isActive('reports', $currentPath) ?>">
                     <span class="material-symbols-outlined text-[20px]" aria-hidden="true">query_stats</span>
                     <span class="text-sm">Advanced Reports</span>
                 </a>
@@ -136,7 +208,7 @@ function isActive($path, $current) {
         
         <ul class="space-y-1 px-3">
             <li>
-                <a href="admin-suspended-users.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg font-bold transition-all <?= isActive('suspended-user', $currentPath) ?>">
+                <a href="admin-suspended-users.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg font-bold transition-all <?= isActive('suspended-users', $currentPath) ?>">
                     <span class="material-symbols-outlined text-[20px]" aria-hidden="true">person_off</span>
                     <span class="text-sm">Suspended Users</span>
                 </a>
@@ -154,7 +226,7 @@ function isActive($path, $current) {
                 </a>
             </li>
             <li>
-                <a href="admin-deleted-users.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg font-bold transition-all <?= isActive('delete', $currentPath) ?>">
+                <a href="admin-deleted-users.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg font-bold transition-all <?= isActive('deleted-users', $currentPath) ?>">
                     <span class="material-symbols-outlined text-[20px]" aria-hidden="true">person_remove</span>
                     <span class="text-sm">Deleted Users</span>
                 </a>
@@ -166,7 +238,7 @@ function isActive($path, $current) {
                 </a>
             </li>
             <li>
-                <a href="admin-roles.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg font-bold transition-all <?= isActive('role', $currentPath) ?>">
+                <a href="admin-roles.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg font-bold transition-all <?= isActive('roles', $currentPath) ?>">
                     <span class="material-symbols-outlined text-[20px]" aria-hidden="true">policy</span>
                     <span class="text-sm">Roles & Permissions</span>
                 </a>
