@@ -318,6 +318,8 @@ class AuthService implements \App\Domain\Contracts\Services\AuthServiceInterface
      */
     public function registerUser(string $fullName, string $email, string $phone, string $password): bool
     {
+        $phone = normalize_phone($phone);
+
         if ($this->repository->findUserByEmailAny($email)) {
             throw new ApiException('Validation failed', 409, ['errors' => ['email' => 'This email is already registered']]);
         }
@@ -338,13 +340,14 @@ class AuthService implements \App\Domain\Contracts\Services\AuthServiceInterface
             if (session_status() === PHP_SESSION_ACTIVE) {
                 \App\Shared\Security\SessionManager::regenerate(true);
             }
-            $_SESSION['user_id']     = (int)$userId;
-            $_SESSION['user_name']   = $fullName;
-            $_SESSION['user_email']  = $email;
-            $_SESSION['user_phone']  = $phone;
-            $_SESSION['user_status'] = 'pending';
-            $_SESSION['role']        = 'customer';
-            $_SESSION['last_activity'] = time();
+            $_SESSION['user_id']          = (int)$userId;
+            $_SESSION['user_customer_id'] = $customer_id;
+            $_SESSION['user_name']        = $fullName;
+            $_SESSION['user_email']       = $email;
+            $_SESSION['user_phone']       = $phone;
+            $_SESSION['user_status']      = 'pending';
+            $_SESSION['role']             = 'customer';
+            $_SESSION['last_activity']    = time();
 
             $welcomeMsg = "Your account has been registered. Complete your profile to start banking.";
             $this->repository->createNotification($customer_id, 'system', 'Welcome to Finzo!', $welcomeMsg);

@@ -452,13 +452,33 @@ function destroy_session()
 // =====================================================
 
 /**
- * Validate an Indian mobile phone number (10 digits starting with 6-9).
+/**
+ * Normalize an Indian mobile phone number to canonical 10-digit format.
+ * @param mixed $phone Phone number to normalize
+ * @return string Canonical 10-digit number or stripped digits
+ */
+function normalize_phone($phone): string
+{
+    $clean = preg_replace('/[^\d+]/', '', (string)$phone);
+    if (str_starts_with($clean, '+91') && strlen($clean) === 13) {
+        $clean = substr($clean, 3);
+    } elseif (str_starts_with($clean, '91') && strlen($clean) === 12) {
+        $clean = substr($clean, 2);
+    } elseif (str_starts_with($clean, '0') && strlen($clean) === 11) {
+        $clean = substr($clean, 1);
+    }
+    return $clean;
+}
+
+/**
+ * Validate an Indian mobile phone number (10 digits starting with 6-9, with optional +91/91/0 prefix).
  * @param string $phone Phone number to validate
  * @return bool True if valid
  */
 function validate_phone($phone)
 {
-    return preg_match('/^[6-9]\d{9}$/', $phone);
+    $clean = normalize_phone($phone);
+    return (bool)preg_match('/^[6-9]\d{9}$/', $clean);
 }
 
 /**

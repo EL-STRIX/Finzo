@@ -192,7 +192,7 @@ class AuthController
         return [
             'success'  => true,
             'message'  => 'Registration successful! Please complete your profile.',
-            'redirect' => $base . '/public/views/auth/login.php'
+            'redirect' => $base . '/public/views/user/complete-profile.php'
         ];
     }
 
