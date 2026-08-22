@@ -302,8 +302,8 @@ class AdminStaffBranchRepository extends BaseRepository implements \App\Domain\C
         $stmt = $this->db->prepare("
             SELECT b.*,
                 s.id as manager_id, s.full_name as manager_name, s.staff_id as manager_staff_id, s.personal_email as manager_email, s.profile_photo as manager_avatar,
-                (SELECT COUNT(*) FROM staff st WHERE st.branch_id = b.id) as staff_count,
-                (SELECT COUNT(*) FROM transactions t JOIN staff st ON t.processed_by_staff_id = st.id WHERE st.branch_id = b.id AND t.created_at >= b.created_at) as txn_count
+                (SELECT COUNT(*) FROM staff st WHERE st.branch_id = b.id AND st.is_deleted = 0) as staff_count,
+                (SELECT COUNT(*) FROM transactions t JOIN staff st ON t.processed_by_staff_id = st.id WHERE st.branch_id = b.id AND st.is_deleted = 0 AND t.created_at >= b.created_at) as txn_count
             FROM branches b LEFT JOIN staff s ON b.manager_id = s.id WHERE {$where_sql} ORDER BY b.created_at DESC
         ");
         $stmt->execute($params);
@@ -357,16 +357,23 @@ class AdminStaffBranchRepository extends BaseRepository implements \App\Domain\C
 
     public function getStaffList(array $filters, int $page = 1, int $perPage = 20): array
     {
-        $search   = trim($filters['search'] ?? '');
-        $status   = trim($filters['status'] ?? 'all');
-        $role     = trim($filters['role'] ?? ($filters['designation'] ?? 'all'));
-        $branchId = intval($filters['branch_id'] ?? 0);
-        $filter   = trim($filters['filter'] ?? '');
+        $search    = trim($filters['search'] ?? '');
+        $status    = trim($filters['status'] ?? 'all');
+        $role      = trim($filters['role'] ?? ($filters['designation'] ?? 'all'));
+        $branchId  = intval($filters['branch_id'] ?? 0);
+        $filter    = trim($filters['filter'] ?? '');
+        $startDate = trim($filters['start_date'] ?? '');
+        $endDate   = trim($filters['end_date'] ?? '');
+        $reason    = trim($filters['reason'] ?? '');
 
         $whereClauses = ["s.is_deleted = 0"];
         $params = [];
 
-        if ($status !== 'all' && in_array($status, ['active', 'suspended'])) {
+        if ($status === 'active') {
+            $whereClauses[] = "s.status = 'active'";
+        } elseif ($status === 'suspended') {
+            $whereClauses[] = "s.status = 'suspended'";
+        } elseif ($status !== 'all' && !empty($status)) {
             $whereClauses[] = "s.status = ?";
             $params[] = $status;
         }
@@ -383,9 +390,20 @@ class AdminStaffBranchRepository extends BaseRepository implements \App\Domain\C
             $whereClauses[] = "s.branch_id IS NULL";
         }
 
+        if (!empty($startDate)) {
+            $whereClauses[] = "DATE(s.updated_at) >= ?";
+            $params[] = $startDate;
+        }
+
+        if (!empty($endDate)) {
+            $whereClauses[] = "DATE(s.updated_at) <= ?";
+            $params[] = $endDate;
+        }
+
         if (!empty($search)) {
-            $whereClauses[] = "(s.full_name LIKE ? OR s.personal_email LIKE ? OR s.staff_id LIKE ? OR s.phone LIKE ?)";
+            $whereClauses[] = "(s.full_name LIKE ? OR s.personal_email LIKE ? OR s.staff_id LIKE ? OR s.phone LIKE ? OR b.name LIKE ?)";
             $s = "%{$search}%";
+            $params[] = $s;
             $params[] = $s;
             $params[] = $s;
             $params[] = $s;
@@ -395,7 +413,8 @@ class AdminStaffBranchRepository extends BaseRepository implements \App\Domain\C
         $whereSql = implode(' AND ', $whereClauses);
 
         // Count matching records
-        $countStmt = $this->db->prepare("SELECT COUNT(*) FROM staff s WHERE {$whereSql}");
+        $countSql = "SELECT COUNT(*) FROM staff s LEFT JOIN branches b ON b.id = s.branch_id WHERE {$whereSql}";
+        $countStmt = $this->db->prepare($countSql);
         $countStmt->execute($params);
         $total = (int)$countStmt->fetchColumn();
 
@@ -405,16 +424,38 @@ class AdminStaffBranchRepository extends BaseRepository implements \App\Domain\C
         // Fetch paginated staff records
         $sql = "
             SELECT s.id, s.staff_id, s.full_name, s.personal_email, s.phone, s.designation, s.department,
-                   s.status, s.profile_photo, s.date_of_joining, s.last_login_at, s.created_at,
+                   s.status, s.profile_photo, s.date_of_joining, s.last_login_at, s.created_at, s.updated_at,
                    b.id as branch_id, b.name as branch_name, b.branch_code,
                    (SELECT id FROM branches WHERE manager_id = s.id LIMIT 1) as managed_branch_id,
                    (SELECT name FROM branches WHERE manager_id = s.id LIMIT 1) as managed_branch_name,
                    (SELECT COUNT(*) FROM transactions WHERE processed_by_staff_id = s.id AND status = 'completed') as txn_count,
-                   (SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE processed_by_staff_id = s.id AND status = 'completed') as txn_amount
+                   (SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE processed_by_staff_id = s.id AND status = 'completed') as txn_amount,
+                   (
+                       SELECT al.created_at 
+                       FROM audit_log al 
+                       WHERE (al.entity_id = s.staff_id OR al.entity_id = CAST(s.id AS CHAR)) 
+                         AND al.action_type = 'staff_suspended' 
+                       ORDER BY al.id DESC LIMIT 1
+                   ) as raw_suspended_at,
+                   (
+                       SELECT al.details 
+                       FROM audit_log al 
+                       WHERE (al.entity_id = s.staff_id OR al.entity_id = CAST(s.id AS CHAR)) 
+                         AND al.action_type = 'staff_suspended' 
+                       ORDER BY al.id DESC LIMIT 1
+                   ) as raw_suspension_details,
+                   (
+                       SELECT COALESCE(adm.full_name, al.actor_id, 'Administrator') 
+                       FROM audit_log al 
+                       LEFT JOIN admin_users adm ON (adm.admin_id = al.actor_id OR CAST(adm.id AS CHAR) = al.actor_id)
+                       WHERE (al.entity_id = s.staff_id OR al.entity_id = CAST(s.id AS CHAR)) 
+                         AND al.action_type = 'staff_suspended' 
+                       ORDER BY al.id DESC LIMIT 1
+                   ) as raw_suspended_by
             FROM staff s
             LEFT JOIN branches b ON b.id = s.branch_id
             WHERE {$whereSql}
-            ORDER BY s.created_at DESC
+            ORDER BY s.updated_at DESC, s.created_at DESC
             LIMIT ? OFFSET ?
         ";
 
@@ -423,7 +464,6 @@ class AdminStaffBranchRepository extends BaseRepository implements \App\Domain\C
         $fetchParams[] = $offset;
 
         $stmt = $this->db->prepare($sql);
-        // Bind integer parameters for LIMIT and OFFSET
         $idx = 1;
         foreach ($params as $param) {
             $stmt->bindValue($idx++, $param);
@@ -454,11 +494,44 @@ class AdminStaffBranchRepository extends BaseRepository implements \App\Domain\C
             return '/Finzo/uploads/' . $subDir . '/' . $cleanPath;
         };
 
-        foreach ($staffList as &$s) {
+        foreach ($staffList as $k => &$s) {
             $s['profile_photo_url'] = $resolveStaffUrl($s['profile_photo'] ?? null, 'staff-photos');
             $nameParts = explode(' ', trim($s['full_name'] ?? ''));
             $s['initials'] = strtoupper(substr($nameParts[0] ?? '', 0, 1) . (isset($nameParts[1]) ? substr($nameParts[1], 0, 1) : ''));
+
+            // Suspension metadata
+            $details = $s['raw_suspension_details'] ?? '';
+            if (preg_match('/Reason:\s*(.*)$/i', $details, $matches)) {
+                $s['suspension_reason'] = trim($matches[1]);
+            } else {
+                $s['suspension_reason'] = !empty($details) ? $details : 'Administrative Review';
+            }
+
+            $rawSusp = $s['raw_suspended_at'] ?? ($s['updated_at'] ?? $s['created_at']);
+            $s['suspended_at'] = !empty($rawSusp) ? date('d M Y, h:i A', strtotime($rawSusp)) : 'N/A';
+            $s['suspended_by'] = $s['raw_suspended_by'] ?? 'Administrator';
+
+            if (!empty($rawSusp)) {
+                $diff = time() - strtotime($rawSusp);
+                if ($diff < 3600) {
+                    $s['duration'] = max(1, round($diff / 60)) . 'm ago';
+                } elseif ($diff < 86400) {
+                    $s['duration'] = round($diff / 3600) . 'h ago';
+                } else {
+                    $s['duration'] = round($diff / 86400) . 'd ago';
+                }
+            } else {
+                $s['duration'] = 'Indefinite';
+            }
+
+            // Reason filter in PHP if specified
+            if (!empty($reason) && $reason !== 'all') {
+                if (stripos($s['suspension_reason'], $reason) === false && stripos($details, $reason) === false) {
+                    unset($staffList[$k]);
+                }
+            }
         }
+        $staffList = array_values($staffList);
 
         return [
             'staff' => $staffList,

@@ -35,12 +35,14 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Avatar handling
         const av = document.getElementById('detail-avatar');
-        if (staff.profile_photo) {
-            av.innerHTML = `<img src="/Finzo/public/assets/${staff.profile_photo}" class="w-full h-full object-cover rounded-lg">`;
+        const photoUrl = staff.profile_photo_url || (staff.profile_photo ? (staff.profile_photo.startsWith('/') ? staff.profile_photo : '/Finzo/' + staff.profile_photo) : null);
+        if (photoUrl) {
+            av.innerHTML = `<img src="${photoUrl}" class="w-full h-full object-cover rounded-3xl" alt="${staff.full_name || ''}">`;
             av.style.background = 'none';
         } else {
-            av.textContent = staff.initials || (staff.full_name ? staff.full_name.charAt(0) : 'S');
-            av.className = 'avatar-lg premium-gradient-primary';
+            const initials = staff.initials || (staff.full_name ? staff.full_name.charAt(0) : 'S');
+            av.textContent = initials;
+            av.className = 'w-24 h-24 sm:w-28 sm:h-28 rounded-3xl overflow-hidden shadow-sm bg-error-bg flex items-center justify-center border border-error-bg text-4xl font-black text-error';
             av.style.background = '';
         }
 
@@ -121,7 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
         window.api.setButtonLoading(btn, true);
         
         try {
-            const response = await window.api.patch('/staff/' + staffId, { action: 'reinstate', password: password });
+            const response = await window.api.patch('/staff/' + staffId, { staff_id: staffId, action: 'reinstate', password: password });
 
             if (response.success || response.status === 'success') {
                 window.showToast('Staff account reinstated. Redirecting...', 'success');

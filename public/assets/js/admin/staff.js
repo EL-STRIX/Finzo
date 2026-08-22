@@ -15,7 +15,7 @@
         if (tbody) tbody.style.opacity = '0.5';
 
         const searchVal = document.getElementById('staff-search-input')?.value?.trim() || '';
-        const statusVal = document.getElementById('filter-status')?.value || 'all';
+        const statusVal = document.getElementById('filter-status')?.value || 'active';
         const roleVal = document.getElementById('filter-role')?.value || 'all';
         const branchVal = document.getElementById('filter-branch')?.value || 'all';
 

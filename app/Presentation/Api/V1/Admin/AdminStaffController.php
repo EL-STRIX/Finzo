@@ -201,11 +201,14 @@ class AdminStaffController
             return $this->security ? $this->security->cleanInput($val) : trim((string)$val);
         };
         $filters = [
-            'search'    => $clean($_GET['search'] ?? ''),
-            'status'    => $clean($_GET['status'] ?? 'all'),
-            'role'      => $clean($_GET['role'] ?? ($_GET['designation'] ?? 'all')),
-            'branch_id' => intval($_GET['branch_id'] ?? 0),
-            'filter'    => $clean($_GET['filter'] ?? '')
+            'search'     => $clean($_GET['search'] ?? ''),
+            'status'     => $clean($_GET['status'] ?? 'all'),
+            'role'       => $clean($_GET['role'] ?? ($_GET['designation'] ?? 'all')),
+            'branch_id'  => intval($_GET['branch_id'] ?? 0),
+            'filter'     => $clean($_GET['filter'] ?? ''),
+            'start_date' => $clean($_GET['start_date'] ?? ''),
+            'end_date'   => $clean($_GET['end_date'] ?? ''),
+            'reason'     => $clean($_GET['reason'] ?? '')
         ];
 
         $page = max(1, intval($_GET['page'] ?? 1));
@@ -220,11 +223,14 @@ class AdminStaffController
             return $this->security ? $this->security->cleanInput($val) : trim((string)$val);
         };
         $filters = [
-            'search'    => $clean($_GET['search'] ?? ''),
-            'status'    => $clean($_GET['status'] ?? 'all'),
-            'role'      => $clean($_GET['role'] ?? ($_GET['designation'] ?? 'all')),
-            'branch_id' => intval($_GET['branch_id'] ?? 0),
-            'filter'    => $clean($_GET['filter'] ?? '')
+            'search'     => $clean($_GET['search'] ?? ''),
+            'status'     => $clean($_GET['status'] ?? 'all'),
+            'role'       => $clean($_GET['role'] ?? ($_GET['designation'] ?? 'all')),
+            'branch_id'  => intval($_GET['branch_id'] ?? 0),
+            'filter'     => $clean($_GET['filter'] ?? ''),
+            'start_date' => $clean($_GET['start_date'] ?? ''),
+            'end_date'   => $clean($_GET['end_date'] ?? ''),
+            'reason'     => $clean($_GET['reason'] ?? '')
         ];
 
         $generator = $this->service->exportStaff($filters);
@@ -261,22 +267,27 @@ class AdminStaffController
             return $this->security ? $this->security->cleanInput($val) : trim((string)$val);
         };
         $filters = [
-            'search'    => $clean($_GET['search'] ?? ''),
-            'status'    => 'suspended',
-            'branch_id' => intval($_GET['branch_id'] ?? 0)
+            'search'     => $clean($_GET['search'] ?? ''),
+            'status'     => 'suspended',
+            'branch_id'  => intval($_GET['branch_id'] ?? 0),
+            'start_date' => $clean($_GET['start_date'] ?? ''),
+            'end_date'   => $clean($_GET['end_date'] ?? ''),
+            'reason'     => $clean($_GET['reason'] ?? '')
         ];
 
         $page = max(1, intval($_GET['page'] ?? 1));
-        $perPage = min(50, max(10, intval($_GET['per_page'] ?? 20)));
+        $perPage = min(50, max(5, intval($_GET['per_page'] ?? 10)));
 
         $result = $this->service->getStaffList($filters, $page, $perPage);
         return [
-            'status' => 'success',
-            'data'   => [
+            'status'  => 'success',
+            'success' => true,
+            'data'    => [
                 'staff'        => $result['staff'],
                 'total'        => $result['total'],
                 'pages'        => $result['pages'],
-                'current_page' => $result['current_page']
+                'current_page' => $result['current_page'],
+                'stats'        => $result['stats'] ?? []
             ]
         ];
     }

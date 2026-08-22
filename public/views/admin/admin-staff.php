@@ -90,17 +90,17 @@ ob_start();
           <div class="w-full relative z-30">
             <label for="filter-status" class="fin-label">Account Status</label>
             <div class="finzo-dropdown w-full" id="status-filter-dropdown">
-              <input type="hidden" id="filter-status" value="all">
+              <input type="hidden" id="filter-status" value="active">
               <div class="finzo-dropdown-trigger fin-input !flex items-center justify-between w-full cursor-pointer">
                 <div class="flex items-center gap-2 truncate">
                     <span class="material-symbols-outlined text-lg text-text-secondary" aria-hidden="true">verified_user</span>
-                    <span class="dropdown-label font-bold text-sm text-text-primary">All Statuses</span>
+                    <span class="dropdown-label font-bold text-sm text-text-primary">Active Staff</span>
                 </div>
                 <span class="material-symbols-outlined chevron transition-transform duration-300 text-text-secondary" aria-hidden="true">expand_more</span>
               </div>
               <div id="filter-status-menu" class="finzo-dropdown-menu !z-[3000] !w-full">
-                <div class="finzo-dropdown-option is-selected" data-value="all">All Statuses</div>
-                <div class="finzo-dropdown-option" data-value="active">Active Staff</div>
+                <div class="finzo-dropdown-option is-selected" data-value="active">Active Staff</div>
+                <div class="finzo-dropdown-option" data-value="all">All Statuses</div>
                 <div class="finzo-dropdown-option" data-value="suspended">Suspended Staff</div>
               </div>
             </div>
