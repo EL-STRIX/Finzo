@@ -1,7 +1,7 @@
 <?php
 $currentPath = basename($_SERVER['PHP_SELF']);
 function isActiveStaff($path, $current) {
-    return (strpos($current, $path) !== false) ? 'bg-warning-surface/10 text-warning-base border-r-4 border-warning-base' : 'text-text-muted hover:bg-surface-subtle dark:hover:bg-white/5 hover:text-text-main dark:hover:text-white border-r-4 border-transparent';
+    return (strpos($current, $path) !== false) ? 'bg-warning-surface/10 text-warning-base border-r-4 border-warning-base active-nav-item' : 'text-text-muted hover:bg-surface-subtle dark:hover:bg-white/5 hover:text-text-main dark:hover:text-white border-r-4 border-transparent';
 }
 ?>
 <!-- Staff Sidebar -->
@@ -84,4 +84,26 @@ function isActiveStaff($path, $current) {
             </li>
         </ul>
     </div>
+    <script>
+        (function() {
+            try {
+                var sb = document.getElementById('sidebar');
+                if (!sb) return;
+                var nav = sb.querySelector('nav');
+                if (!nav) return;
+                var saved = sessionStorage.getItem('finzo_sidebar_pos_staff');
+                if (saved !== null) {
+                    nav.scrollTop = parseInt(saved, 10);
+                }
+                var active = nav.querySelector('.active-nav-item');
+                if (active) {
+                    var nRect = nav.getBoundingClientRect();
+                    var aRect = active.getBoundingClientRect();
+                    if (aRect.top < nRect.top || aRect.bottom > nRect.bottom || saved === null) {
+                        active.scrollIntoView({ block: 'center', inline: 'nearest', behavior: 'instant' });
+                    }
+                }
+            } catch (e) {}
+        })();
+    </script>
 </aside>

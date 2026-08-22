@@ -10,6 +10,7 @@
             this.bindDropdowns();
             this.bindModals();
             this.bindTabs();
+            this.initSidebarScroll();
             this.initARIA();
         },
 
@@ -346,6 +347,69 @@
                 tab.setAttribute('aria-selected', 'true');
                 content.classList.remove('hidden');
             }
+        },
+
+        initSidebarScroll: function() {
+            const sidebars = document.querySelectorAll('aside#admin-sidebar, aside#sidebar, .admin-sidebar, aside');
+            sidebars.forEach(sidebar => {
+                const nav = sidebar.querySelector('nav') || sidebar;
+                if (!nav) return;
+
+                const path = window.location.pathname;
+                const portalKey = path.includes('/admin') ? 'admin' : (path.includes('/staff') ? 'staff' : 'user');
+                const storageKey = 'finzo_sidebar_pos_' + portalKey;
+
+                // 1. Locate active link
+                const findActiveLink = () => {
+                    let link = nav.querySelector('.active-nav-item, [aria-current="page"], [data-sidebar-active="true"]');
+                    if (link) return link;
+
+                    const currentFile = path.split('/').pop().split('?')[0];
+                    if (currentFile) {
+                        const links = Array.from(nav.querySelectorAll('a[href]'));
+                        return links.find(a => {
+                            const href = a.getAttribute('href');
+                            if (!href || href === '#' || href.startsWith('javascript:')) return false;
+                            const hrefFile = href.split('/').pop().split('?')[0];
+                            return hrefFile && hrefFile === currentFile;
+                        });
+                    }
+                    return null;
+                };
+
+                const activeLink = findActiveLink();
+
+                // 2. Restore saved scroll position or scroll active item into view
+                const savedScroll = sessionStorage.getItem(storageKey);
+                if (savedScroll !== null && !isNaN(parseInt(savedScroll, 10))) {
+                    nav.scrollTop = parseInt(savedScroll, 10);
+                }
+
+                if (activeLink) {
+                    const navRect = nav.getBoundingClientRect();
+                    const linkRect = activeLink.getBoundingClientRect();
+                    const isVisible = (linkRect.top >= navRect.top - 10 && linkRect.bottom <= navRect.bottom + 10);
+                    if (!isVisible || savedScroll === null) {
+                        activeLink.scrollIntoView({ block: 'center', inline: 'nearest', behavior: 'instant' });
+                    }
+                }
+
+                // 3. Track scroll changes
+                let scrollTimer;
+                nav.addEventListener('scroll', () => {
+                    clearTimeout(scrollTimer);
+                    scrollTimer = setTimeout(() => {
+                        sessionStorage.setItem(storageKey, String(nav.scrollTop));
+                    }, 60);
+                }, { passive: true });
+
+                // 4. Save scroll position on link click
+                nav.querySelectorAll('a').forEach(a => {
+                    a.addEventListener('click', () => {
+                        sessionStorage.setItem(storageKey, String(nav.scrollTop));
+                    });
+                });
+            });
         }
     };
 

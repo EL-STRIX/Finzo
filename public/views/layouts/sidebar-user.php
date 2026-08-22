@@ -1,7 +1,7 @@
 <?php
 $currentPath = basename($_SERVER['PHP_SELF']);
 function isActiveUser($path, $current) {
-    return (strpos($current, $path) !== false) ? 'bg-primary-surface/10 text-primary-base border-l-4 border-primary-base' : 'text-text-muted hover:bg-surface-subtle dark:hover:bg-white/5 hover:text-text-main dark:hover:text-white border-l-4 border-transparent';
+    return (strpos($current, $path) !== false) ? 'bg-primary-surface/10 text-primary-base border-l-4 border-primary-base active-nav-item' : 'text-text-muted hover:bg-surface-subtle dark:hover:bg-white/5 hover:text-text-main dark:hover:text-white border-l-4 border-transparent';
 }
 ?>
 <!-- Customer Sidebar -->
@@ -100,4 +100,26 @@ function isActiveUser($path, $current) {
             <span class="text-sm">Secure Logout</span>
         </button>
     </div>
+    <script>
+        (function() {
+            try {
+                var sb = document.getElementById('sidebar');
+                if (!sb) return;
+                var nav = sb.querySelector('nav');
+                if (!nav) return;
+                var saved = sessionStorage.getItem('finzo_sidebar_pos_user');
+                if (saved !== null) {
+                    nav.scrollTop = parseInt(saved, 10);
+                }
+                var active = nav.querySelector('.active-nav-item');
+                if (active) {
+                    var nRect = nav.getBoundingClientRect();
+                    var aRect = active.getBoundingClientRect();
+                    if (aRect.top < nRect.top || aRect.bottom > nRect.bottom || saved === null) {
+                        active.scrollIntoView({ block: 'center', inline: 'nearest', behavior: 'instant' });
+                    }
+                }
+            } catch (e) {}
+        })();
+    </script>
 </aside>

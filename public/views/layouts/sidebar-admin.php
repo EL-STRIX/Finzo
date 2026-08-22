@@ -1,7 +1,7 @@
 <?php
 $currentPath = basename($_SERVER['PHP_SELF']);
 function isActive($path, $current) {
-    return (strpos($current, $path) !== false) ? 'bg-primary/5 dark:bg-primary/10 text-accent border-r-4 border-accent shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)]' : 'text-text-secondary hover:bg-background hover:text-text-primary border-r-4 border-transparent';
+    return (strpos($current, $path) !== false) ? 'bg-primary/5 dark:bg-primary/10 text-accent border-r-4 border-accent shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] active-nav-item' : 'text-text-secondary hover:bg-background hover:text-text-primary border-r-4 border-transparent';
 }
 ?>
 <!-- Admin Sidebar -->
@@ -203,4 +203,26 @@ function isActive($path, $current) {
             </li>
         </ul>
     </div>
+    <script>
+        (function() {
+            try {
+                var sb = document.getElementById('admin-sidebar');
+                if (!sb) return;
+                var nav = sb.querySelector('nav');
+                if (!nav) return;
+                var saved = sessionStorage.getItem('finzo_sidebar_pos_admin');
+                if (saved !== null) {
+                    nav.scrollTop = parseInt(saved, 10);
+                }
+                var active = nav.querySelector('.active-nav-item');
+                if (active) {
+                    var nRect = nav.getBoundingClientRect();
+                    var aRect = active.getBoundingClientRect();
+                    if (aRect.top < nRect.top || aRect.bottom > nRect.bottom || saved === null) {
+                        active.scrollIntoView({ block: 'center', inline: 'nearest', behavior: 'instant' });
+                    }
+                }
+            } catch (e) {}
+        })();
+    </script>
 </aside>
