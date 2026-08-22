@@ -212,8 +212,17 @@
             const isMod = admin.admin_role === 'moderator';
 
             let roleFormatted = 'Admin';
-            if (isSuper) roleFormatted = 'Super Admin';
-            else if (isMod) roleFormatted = 'Moderator';
+            let roleDescription = 'Operations & User Administrator';
+            let roleScopeLevel = 'Operational management tier';
+            if (isSuper) {
+                roleFormatted = 'Super Admin';
+                roleDescription = 'Platform Root Administrator';
+                roleScopeLevel = 'Root system tier';
+            } else if (isMod) {
+                roleFormatted = 'Moderator';
+                roleDescription = 'Compliance & KYC Reviewer';
+                roleScopeLevel = 'Compliance & verification tier';
+            }
 
             const infoRoleBadge = document.getElementById('info-role-badge');
             if (infoRoleBadge) {
@@ -223,13 +232,12 @@
                     : (isSuper ? 'px-2.5 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-widest bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20' : 'px-2.5 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-widest bg-teal-500/10 text-teal-600 dark:text-teal-400 border border-teal-500/20');
             }
 
-            const isFull = (admin.access_level || 'full') === 'full';
             const infoAccessBadge = document.getElementById('info-access-badge');
             if (infoAccessBadge) {
-                infoAccessBadge.textContent = isFull ? 'Full Access' : 'Restricted';
-                infoAccessBadge.className = isFull 
-                    ? 'px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-widest bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20' 
-                    : 'px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-widest bg-surface-subtle text-text-secondary border border-border-subtle';
+                infoAccessBadge.textContent = isMod ? 'Restricted Access' : 'Full Access';
+                infoAccessBadge.className = isMod
+                    ? 'px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-widest bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20'
+                    : 'px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-widest bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20';
             }
 
             // 6. Security Telemetry
@@ -251,34 +259,58 @@
                 sysFailed.className = `font-bold ${attempts > 0 ? 'text-rose-500' : 'text-emerald-500'}`;
             }
 
-            // 7. Role Scope Tags
-            const scopeContainer = document.getElementById('role-scope-tags');
-            if (scopeContainer) {
+            // 7. Role & Permissions Box Content
+            setTxt('role-title-desc', roleDescription);
+            setTxt('role-scope-level', roleScopeLevel);
+
+            const scopeList = document.getElementById('role-scope-list');
+            if (scopeList) {
                 if (isMod) {
-                    scopeContainer.innerHTML = `
-                        <span class="px-2 py-0.5 rounded-md bg-surface-subtle border border-border-subtle text-[10px] font-bold text-text-primary">KYC Approvals</span>
-                        <span class="px-2 py-0.5 rounded-md bg-surface-subtle border border-border-subtle text-[10px] font-bold text-text-primary">User Reviews</span>
-                        <span class="px-2 py-0.5 rounded-md bg-surface-subtle border border-border-subtle text-[10px] font-bold text-text-primary">Read-Only Operations</span>
-                        <span class="px-2 py-0.5 rounded-md bg-surface-subtle border border-border-subtle text-[10px] font-bold text-text-primary">Audit Log Inspection</span>
+                    scopeList.innerHTML = `
+                        <div class="flex items-center gap-1.5 text-[11px] text-text-primary font-medium">
+                            <span class="material-symbols-outlined text-emerald-500 text-[14px]">check_circle</span>
+                            <span>KYC & Document Verification</span>
+                        </div>
+                        <div class="flex items-center gap-1.5 text-[11px] text-text-primary font-medium">
+                            <span class="material-symbols-outlined text-emerald-500 text-[14px]">check_circle</span>
+                            <span>Customer Application Reviews</span>
+                        </div>
+                        <div class="flex items-center gap-1.5 text-[11px] text-text-secondary font-medium">
+                            <span class="material-symbols-outlined text-rose-500 text-[14px]">block</span>
+                            <span>No Account Deletion or Fund Transfers</span>
+                        </div>
+                    `;
+                } else if (isSuper) {
+                    scopeList.innerHTML = `
+                        <div class="flex items-center gap-1.5 text-[11px] text-text-primary font-medium">
+                            <span class="material-symbols-outlined text-emerald-500 text-[14px]">check_circle</span>
+                            <span>Root System & Security Oversight</span>
+                        </div>
+                        <div class="flex items-center gap-1.5 text-[11px] text-text-primary font-medium">
+                            <span class="material-symbols-outlined text-emerald-500 text-[14px]">check_circle</span>
+                            <span>Manage All Administrators & Roles</span>
+                        </div>
+                        <div class="flex items-center gap-1.5 text-[11px] text-text-primary font-medium">
+                            <span class="material-symbols-outlined text-emerald-500 text-[14px]">check_circle</span>
+                            <span>Global Financial Core & Ledger Control</span>
+                        </div>
                     `;
                 } else {
-                    scopeContainer.innerHTML = `
-                        <span class="px-2 py-0.5 rounded-md bg-surface-subtle border border-border-subtle text-[10px] font-bold text-text-primary">User Management</span>
-                        <span class="px-2 py-0.5 rounded-md bg-surface-subtle border border-border-subtle text-[10px] font-bold text-text-primary">Staff Operations</span>
-                        <span class="px-2 py-0.5 rounded-md bg-surface-subtle border border-border-subtle text-[10px] font-bold text-text-primary">Branch Controls</span>
-                        <span class="px-2 py-0.5 rounded-md bg-surface-subtle border border-border-subtle text-[10px] font-bold text-text-primary">Global Transactions</span>
+                    scopeList.innerHTML = `
+                        <div class="flex items-center gap-1.5 text-[11px] text-text-primary font-medium">
+                            <span class="material-symbols-outlined text-emerald-500 text-[14px]">check_circle</span>
+                            <span>Full Customer & KYC Management</span>
+                        </div>
+                        <div class="flex items-center gap-1.5 text-[11px] text-text-primary font-medium">
+                            <span class="material-symbols-outlined text-emerald-500 text-[14px]">check_circle</span>
+                            <span>Staff & Banking Branch Operations</span>
+                        </div>
+                        <div class="flex items-center gap-1.5 text-[11px] text-text-primary font-medium">
+                            <span class="material-symbols-outlined text-emerald-500 text-[14px]">check_circle</span>
+                            <span>Global Transactions & System Logs</span>
+                        </div>
                     `;
                 }
-            }
-
-            // 8. Audit Log Links
-            const auditLink = document.getElementById('view-audit-link');
-            if (auditLink) {
-                auditLink.href = `admin-audit-log.php?search=${encodeURIComponent(admin.admin_id || '')}`;
-            }
-            const topbarAudit = document.getElementById('topbar-audit-link');
-            if (topbarAudit) {
-                topbarAudit.href = `admin-audit-log.php?search=${encodeURIComponent(admin.admin_id || '')}`;
             }
         },
 

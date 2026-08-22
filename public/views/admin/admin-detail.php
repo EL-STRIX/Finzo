@@ -62,6 +62,12 @@ $roleLabel = match($role) {
     default       => 'Admin'
 };
 
+$roleDescription = match($role) {
+    'super_admin' => 'Platform Root Administrator',
+    'moderator'   => 'Compliance & KYC Reviewer',
+    default       => 'Operations & User Administrator'
+};
+
 $accessLevel  = $adminData['access_level'] ?? ($isModerator ? 'restricted' : 'full');
 $isFullAccess = ($accessLevel === 'full');
 
@@ -94,7 +100,7 @@ ob_start();
     <!-- ═══════════════════════════════════════════ -->
     <!-- 1. BREADCRUMBS & TOP BAR                    -->
     <!-- ═══════════════════════════════════════════ -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div class="flex items-center justify-between gap-4">
         <div class="flex items-center gap-3">
             <a href="admin-profile.php" class="w-9 h-9 rounded-xl bg-surface border border-border-subtle hover:bg-surface-hover flex items-center justify-center text-text-secondary hover:text-text-primary transition-colors shadow-sm cursor-pointer" title="Back to Directory">
                 <span class="material-symbols-outlined text-[18px]" aria-hidden="true">arrow_back</span>
@@ -106,17 +112,6 @@ ob_start();
                     <span class="text-text-primary font-black">Profile Dossier</span>
                 </div>
             </div>
-        </div>
-
-        <div class="flex items-center gap-2">
-            <a href="admin-profile.php" class="btn btn-secondary px-3.5 py-1.5 text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-sm">
-                <span class="material-symbols-outlined text-[16px]" aria-hidden="true">group</span>
-                <span>All Accounts</span>
-            </a>
-            <a id="topbar-audit-link" href="admin-audit-log.php?search=<?= urlencode($adminCode) ?>" class="btn btn-secondary px-3.5 py-1.5 text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-sm">
-                <span class="material-symbols-outlined text-[16px]" aria-hidden="true">manage_search</span>
-                <span>Audit Trail</span>
-            </a>
         </div>
     </div>
 
@@ -294,35 +289,60 @@ ob_start();
                     <span class="material-symbols-outlined text-primary text-[16px]">verified</span>
                     <span>Role &amp; Permissions</span>
                 </h3>
-                <span id="info-access-badge" class="px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-widest <?= $isFullAccess ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20' : 'bg-surface-subtle text-text-secondary border border-border-subtle' ?>">
-                    <?= $isFullAccess ? 'Full Access' : 'Restricted' ?>
+                <span id="info-access-badge" class="px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-widest <?= $isModerator ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20' : 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20' ?>">
+                    <?= $isModerator ? 'Restricted Access' : 'Full Access' ?>
                 </span>
             </div>
 
             <div class="space-y-2 text-xs">
                 <div>
-                    <label class="text-[10px] font-black text-text-secondary uppercase tracking-widest block mb-1.5">Operational Scope</label>
-                    <div id="role-scope-tags" class="flex flex-wrap gap-1.5">
-                        <?php if ($isModerator): ?>
-                            <span class="px-2 py-0.5 rounded-md bg-surface-subtle border border-border-subtle text-[10px] font-bold text-text-primary">KYC Approvals</span>
-                            <span class="px-2 py-0.5 rounded-md bg-surface-subtle border border-border-subtle text-[10px] font-bold text-text-primary">User Reviews</span>
-                            <span class="px-2 py-0.5 rounded-md bg-surface-subtle border border-border-subtle text-[10px] font-bold text-text-primary">Read-Only Operations</span>
-                            <span class="px-2 py-0.5 rounded-md bg-surface-subtle border border-border-subtle text-[10px] font-bold text-text-primary">Audit Log Inspection</span>
-                        <?php else: ?>
-                            <span class="px-2 py-0.5 rounded-md bg-surface-subtle border border-border-subtle text-[10px] font-bold text-text-primary">User Management</span>
-                            <span class="px-2 py-0.5 rounded-md bg-surface-subtle border border-border-subtle text-[10px] font-bold text-text-primary">Staff Operations</span>
-                            <span class="px-2 py-0.5 rounded-md bg-surface-subtle border border-border-subtle text-[10px] font-bold text-text-primary">Branch Controls</span>
-                            <span class="px-2 py-0.5 rounded-md bg-surface-subtle border border-border-subtle text-[10px] font-bold text-text-primary">Global Transactions</span>
-                        <?php endif; ?>
-                    </div>
+                    <div class="font-bold text-text-primary text-xs" id="role-title-desc"><?= $roleDescription ?></div>
+                    <div class="text-[10px] text-text-secondary mt-0.5" id="role-scope-level"><?= $isModerator ? 'Compliance & verification tier' : ($isSuper ? 'Root system tier' : 'Operational management tier') ?></div>
                 </div>
 
-                <div class="pt-2 border-t border-border-subtle flex items-center justify-between">
-                    <span class="text-[11px] text-text-secondary font-medium">Global Audit Log</span>
-                    <a id="view-audit-link" href="admin-audit-log.php?search=<?= urlencode($adminCode) ?>" class="text-[11px] font-bold text-primary hover:underline flex items-center gap-0.5">
-                        <span>View Logs</span>
-                        <span class="material-symbols-outlined text-[13px]">arrow_forward</span>
-                    </a>
+                <div class="pt-2 border-t border-border-subtle">
+                    <div id="role-scope-list" class="space-y-1.5">
+                        <?php if ($isModerator): ?>
+                            <div class="flex items-center gap-1.5 text-[11px] text-text-primary font-medium">
+                                <span class="material-symbols-outlined text-emerald-500 text-[14px]">check_circle</span>
+                                <span>KYC & Document Verification</span>
+                            </div>
+                            <div class="flex items-center gap-1.5 text-[11px] text-text-primary font-medium">
+                                <span class="material-symbols-outlined text-emerald-500 text-[14px]">check_circle</span>
+                                <span>Customer Application Reviews</span>
+                            </div>
+                            <div class="flex items-center gap-1.5 text-[11px] text-text-secondary font-medium">
+                                <span class="material-symbols-outlined text-rose-500 text-[14px]">block</span>
+                                <span>No Account Deletion or Fund Transfers</span>
+                            </div>
+                        <?php elseif ($isSuper): ?>
+                            <div class="flex items-center gap-1.5 text-[11px] text-text-primary font-medium">
+                                <span class="material-symbols-outlined text-emerald-500 text-[14px]">check_circle</span>
+                                <span>Root System & Security Oversight</span>
+                            </div>
+                            <div class="flex items-center gap-1.5 text-[11px] text-text-primary font-medium">
+                                <span class="material-symbols-outlined text-emerald-500 text-[14px]">check_circle</span>
+                                <span>Manage All Administrators & Roles</span>
+                            </div>
+                            <div class="flex items-center gap-1.5 text-[11px] text-text-primary font-medium">
+                                <span class="material-symbols-outlined text-emerald-500 text-[14px]">check_circle</span>
+                                <span>Global Financial Core & Ledger Control</span>
+                            </div>
+                        <?php else: ?>
+                            <div class="flex items-center gap-1.5 text-[11px] text-text-primary font-medium">
+                                <span class="material-symbols-outlined text-emerald-500 text-[14px]">check_circle</span>
+                                <span>Full Customer & KYC Management</span>
+                            </div>
+                            <div class="flex items-center gap-1.5 text-[11px] text-text-primary font-medium">
+                                <span class="material-symbols-outlined text-emerald-500 text-[14px]">check_circle</span>
+                                <span>Staff & Banking Branch Operations</span>
+                            </div>
+                            <div class="flex items-center gap-1.5 text-[11px] text-text-primary font-medium">
+                                <span class="material-symbols-outlined text-emerald-500 text-[14px]">check_circle</span>
+                                <span>Global Transactions & System Logs</span>
+                            </div>
+                        <?php endif; ?>
+                    </div>
                 </div>
             </div>
         </div>
