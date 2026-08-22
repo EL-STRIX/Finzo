@@ -81,24 +81,44 @@ class AdminManagementRepository extends BaseRepository implements \App\Domain\Co
 
     public function getAdminActivity(string $adminId, int $limit = 100)
     {
+        $stmt = $this->db->prepare("SELECT id, admin_id FROM admin_users WHERE admin_id = ? OR id = ? LIMIT 1");
+        $stmt->execute([$adminId, is_numeric($adminId) ? (int)$adminId : 0]);
+        $adm = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        $searchActorIds = [$adminId];
+        if ($adm) {
+            $searchActorIds = array_values(array_unique([$adm['admin_id'], (string)$adm['id']]));
+        }
+
+        $placeholders = implode(',', array_fill(0, count($searchActorIds), '?'));
         $stmt = $this->db->prepare("
-            SELECT action_type as action, action_type, details, ip_address, created_at, entity_id, entity_type
+            SELECT action_type as action, action_type, details, ip_address, created_at, entity_id, entity_type, actor_id, actor_role
             FROM audit_log
-            WHERE actor_id = ? OR entity_id = ?
+            WHERE actor_id IN ($placeholders)
             ORDER BY created_at DESC, id DESC LIMIT " . (int)$limit . "
         ");
-        $stmt->execute([$adminId, $adminId]);
+        $stmt->execute($searchActorIds);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function getActivityCount(string $adminId)
     {
+        $stmt = $this->db->prepare("SELECT id, admin_id FROM admin_users WHERE admin_id = ? OR id = ? LIMIT 1");
+        $stmt->execute([$adminId, is_numeric($adminId) ? (int)$adminId : 0]);
+        $adm = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        $searchActorIds = [$adminId];
+        if ($adm) {
+            $searchActorIds = array_values(array_unique([$adm['admin_id'], (string)$adm['id']]));
+        }
+
+        $placeholders = implode(',', array_fill(0, count($searchActorIds), '?'));
         $stmt = $this->db->prepare("
             SELECT COUNT(*) as total_actions
             FROM audit_log
-            WHERE actor_id = ? OR entity_id = ?
+            WHERE actor_id IN ($placeholders)
         ");
-        $stmt->execute([$adminId, $adminId]);
+        $stmt->execute($searchActorIds);
         return (int)$stmt->fetchColumn();
     }
 
