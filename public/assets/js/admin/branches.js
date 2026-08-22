@@ -23,9 +23,9 @@
             return '/' + clean;
         }
         if (clean.startsWith('uploads/')) {
-            return '/Finzo/' + clean;
+            return '/Finzo/public/' + clean;
         }
-        return '/Finzo/uploads/' + subDir + '/' + clean;
+        return '/Finzo/public/uploads/' + subDir + '/' + clean;
     }
 
     /**
@@ -156,7 +156,7 @@
                             <span class="material-symbols-outlined text-[18px]" aria-hidden="true">edit</span>
                         </button>
                         ${!isSystem ? `
-                        <button type="button" class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-600 dark:text-slate-400 ${isActive ? 'hover:text-amber-600 dark:hover:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-500/15' : 'hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-500/15'} transition-colors action-toggle-status" data-id="${b.id}" data-status="${isActive ? 'inactive' : 'active'}" data-name="${escapeHtml(b.name)}" title="${isActive ? 'Suspend Branch' : 'Reactivate Branch'}">
+                        <button type="button" class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-600 dark:text-slate-400 ${isActive ? 'hover:text-amber-600 dark:hover:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-500/15' : 'hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-500/15'} transition-colors action-toggle-status" data-id="${b.id}" data-status="${isActive ? 'inactive' : 'active'}" data-name="${b.name.replace(/"/g, '"')}" title="${isActive ? 'Suspend Branch' : 'Reactivate Branch'}">
                             <span class="material-symbols-outlined text-[18px]" aria-hidden="true">${isActive ? 'pause_circle' : 'play_circle'}</span>
                         </button>
                         <button type="button" class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-600 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/15 transition-colors action-delete" data-id="${b.id}" data-name="${escapeHtml(b.name)}" data-code="${escapeHtml(b.branch_code)}" title="Delete Branch">
@@ -369,8 +369,9 @@
 
         try {
             const response = await window.api.get(`/branches/generate-code?state=${encodeURIComponent(state)}`);
-            if (response && response.branch_code) {
-                codeInput.value = response.branch_code;
+            const generated = response.branch_code || (response.data && response.data.branch_code);
+            if (generated) {
+                codeInput.value = generated;
             }
         } catch (e) {
             console.warn('Fallback branch code applied for state:', fallbackCode);
@@ -915,7 +916,8 @@
         if (!branch && branchOrId) {
             try {
                 const res = await window.api.get(`/branches/${branchOrId}`);
-                if (res && (res.branch || res.data)) branch = res.branch || res.data;
+                const unwrapped = res && res.data && res.data.branch ? res.data : res;
+                if (unwrapped && unwrapped.branch) branch = unwrapped.branch;
             } catch (e) {
                 console.error('Error fetching branch:', e);
             }
@@ -982,7 +984,8 @@
         if (!branch && branchOrId) {
             try {
                 const res = await window.api.get(`/branches/${branchOrId}`);
-                if (res && (res.branch || res.data)) branch = res.branch || res.data;
+                const unwrapped = res && res.data && res.data.branch ? res.data : res;
+                if (unwrapped && unwrapped.branch) branch = unwrapped.branch;
             } catch (e) {
                 console.error('Error fetching branch:', e);
             }

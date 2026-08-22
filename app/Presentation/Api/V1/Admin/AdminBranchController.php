@@ -51,6 +51,9 @@ class AdminBranchController
         if (isset($_POST['branch_name']) || isset($_POST['name'])) {
             $data['branch_name'] = $this->security->cleanInput($_POST['branch_name'] ?? $_POST['name']);
         }
+        if (isset($_POST['branch_code'])) {
+            $data['branch_code'] = $this->security->cleanInput($_POST['branch_code']);
+        }
         if (isset($_POST['state'])) {
             $data['state'] = $this->security->cleanInput($_POST['state']);
         }

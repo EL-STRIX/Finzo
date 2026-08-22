@@ -366,6 +366,29 @@ class AdminStaffBranchService implements \App\Domain\Contracts\Services\AdminSta
     {
         return $this->repo->getStaffPerformance(...$args);
     }
+
+    /**
+     * Check if the current admin has the given permission, falling back to
+     * alternate permissions. If none are available, throws a 403.
+     */
+    private function assertBranchPermission(int $adminId, string $primary, array $fallbacks = []): void
+    {
+        if (!$this->security) {
+            return;
+        }
+
+        foreach (array_merge([$primary], $fallbacks) as $perm) {
+            try {
+                $this->security->checkAdminPermission($adminId, $perm);
+                return;
+            } catch (\Throwable $e) {
+                // Try next fallback permission
+            }
+        }
+
+        throw new \App\Shared\Core\Exceptions\ApiException('You do not have permission to perform this action', 403);
+    }
+
     /**
      * Delete Branch.
      *
@@ -378,6 +401,8 @@ class AdminStaffBranchService implements \App\Domain\Contracts\Services\AdminSta
      */
     public function deleteBranch(int $branchId, int $adminId, string $admin_password, string $confirm_name, ?array $closure_doc): array
     {
+        $this->assertBranchPermission($adminId, 'delete_branch', ['manage_branches', 'add_branch']);
+
         $hash = $this->repo->getAdminPasswordHash($adminId);
         if (!$hash || !password_verify($admin_password, $hash)) {
             throw new \App\Shared\Core\Exceptions\ApiException('Invalid administrator password.', 401);
@@ -429,13 +454,7 @@ class AdminStaffBranchService implements \App\Domain\Contracts\Services\AdminSta
      */
     public function createBranch(array $data, ?array $certFile, int $adminId, string $adminPassword): array
     {
-        if ($this->security) {
-            try {
-                $this->security->checkAdminPermission($adminId, 'add_branch');
-            } catch (\Throwable $e) {
-                // Fallback for full admins
-            }
-        }
+        $this->assertBranchPermission($adminId, 'add_branch', ['manage_branches', 'edit_branch']);
 
         if (empty($adminPassword)) {
             throw new \App\Shared\Core\Exceptions\ApiException('Admin password is required for branch creation', 422);
@@ -565,13 +584,7 @@ class AdminStaffBranchService implements \App\Domain\Contracts\Services\AdminSta
      */
     public function updateBranch(int $branchId, array $data, ?array $certFile, int $adminId, ?string $adminPassword): array
     {
-        if ($this->security) {
-            try {
-                $this->security->checkAdminPermission($adminId, 'edit_branch');
-            } catch (\Throwable $e) {
-                // Fallback
-            }
-        }
+        $this->assertBranchPermission($adminId, 'edit_branch', ['manage_branches', 'add_branch']);
 
         if (!empty($adminPassword)) {
             if (!$this->verifyAdminPassword($adminId, $adminPassword)) {
@@ -591,6 +604,18 @@ class AdminStaffBranchService implements \App\Domain\Contracts\Services\AdminSta
             if (!empty($name)) {
                 $updateData['name'] = $name;
             }
+        }
+
+        if (isset($data['branch_code']) && !empty(trim($data['branch_code']))) {
+            $newCode = strtoupper(trim($data['branch_code']));
+            $dupCount = $this->repo->countExactBranchCode($newCode);
+            if ($dupCount > 0) {
+                $currentCode = is_array($branch) ? ($branch['branch_code'] ?? '') : ($branch->branch_code ?? '');
+                if ($currentCode !== $newCode) {
+                    throw new \App\Shared\Core\Exceptions\ApiException('Branch code already exists. Please choose a different code.', 422);
+                }
+            }
+            $updateData['branch_code'] = $newCode;
         }
 
         if (isset($data['state']) && !empty(trim($data['state']))) {
@@ -704,9 +729,9 @@ class AdminStaffBranchService implements \App\Domain\Contracts\Services\AdminSta
                 return '/' . $cleanPath;
             }
             if (str_starts_with($cleanPath, 'uploads/')) {
-                return '/Finzo/' . $cleanPath;
+                return '/Finzo/public/' . $cleanPath;
             }
-            return '/Finzo/uploads/' . $subDir . '/' . $cleanPath;
+            return '/Finzo/public/uploads/' . $subDir . '/' . $cleanPath;
         };
 
         if (!empty($branch['manager_name'])) {
@@ -835,9 +860,9 @@ class AdminStaffBranchService implements \App\Domain\Contracts\Services\AdminSta
                 return '/' . $cleanPath;
             }
             if (str_starts_with($cleanPath, 'uploads/')) {
-                return '/Finzo/' . $cleanPath;
+                return '/Finzo/public/' . $cleanPath;
             }
-            return '/Finzo/uploads/' . $subDir . '/' . $cleanPath;
+            return '/Finzo/public/uploads/' . $subDir . '/' . $cleanPath;
         };
 
         foreach ($branches as &$b) {
