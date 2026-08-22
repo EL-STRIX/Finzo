@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════
-   FINZO — Admin Detail Controller
+   FINZO — Admin Detail Controller (Streamlined)
    Handles fetching, managing, and rendering admin dossier data.
    ═══════════════════════════════════════════ */
 
@@ -62,7 +62,7 @@
                 this.renderActivity(allActivities);
             }
 
-            // Fetch latest live data from API
+            // Fetch live data from API
             await this.loadAdminData();
         },
 
@@ -95,9 +95,7 @@
 
             try {
                 const response = await window.api.get(`/admins/${currentAdminId}`);
-                if (!response) {
-                    return;
-                }
+                if (!response) return;
 
                 const payload = response.data || response;
                 const admin = payload.admin || response.admin;
@@ -122,9 +120,9 @@
         renderUI: function(admin) {
             if (!admin) return;
 
-            // 1. Header Admin Name
-            const headerName = document.getElementById('header-admin-name');
-            if (headerName) headerName.textContent = admin.full_name || 'Admin Dossier';
+            // 1. Names
+            const infoName = document.getElementById('info-name');
+            if (infoName) infoName.textContent = admin.full_name || 'Admin Dossier';
 
             const resetAdminName = document.getElementById('reset-admin-name');
             if (resetAdminName) resetAdminName.textContent = admin.full_name || 'Admin';
@@ -132,32 +130,30 @@
             const deleteAdminName = document.getElementById('delete-admin-name');
             if (deleteAdminName) deleteAdminName.textContent = admin.full_name || 'Admin';
             
-            // 2. Status Badge Topbar & Action Button States
+            // 2. Status Badge & Action Button
             const statusBox = document.getElementById('header-status-badge');
             const isActive = (admin.status || 'active') === 'active';
 
             if (statusBox) {
                 statusBox.className = isActive
-                    ? 'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-widest bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
-                    : 'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-widest bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20';
+                    ? 'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-widest bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
+                    : 'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-widest bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20';
                 statusBox.innerHTML = `
-                    <span class="w-1.5 h-1.5 rounded-full ${isActive ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500'}"></span>
-                    <span>${isActive ? 'Active Account' : 'Account Suspended'}</span>
+                    <span class="w-1.5 h-1.5 rounded-full ${isActive ? 'bg-emerald-500' : 'bg-rose-500'}"></span>
+                    <span>${isActive ? 'Active' : 'Suspended'}</span>
                 `;
             }
 
+            const suspendBtn = document.getElementById('action-suspend-btn');
             const suspendLabel = document.getElementById('suspend-label');
-            const suspendDesc = document.getElementById('suspend-desc');
             const suspendIcon = document.getElementById('suspend-icon');
-            const suspendIconContainer = document.getElementById('suspend-icon-container');
 
-            if (suspendLabel) suspendLabel.textContent = isActive ? 'Suspend Administrator' : 'Activate Administrator';
-            if (suspendDesc) suspendDesc.textContent = isActive ? 'Temporarily revoke all system access' : 'Restore full operational access';
+            if (suspendLabel) suspendLabel.textContent = isActive ? 'Suspend' : 'Activate';
             if (suspendIcon) suspendIcon.textContent = isActive ? 'block' : 'check_circle';
-            if (suspendIconContainer) {
-                suspendIconContainer.className = isActive
-                    ? 'w-10 h-10 rounded-xl bg-amber-500/10 text-amber-500 border border-amber-500/20 flex items-center justify-center group-hover:scale-105 transition-transform'
-                    : 'w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 flex items-center justify-center group-hover:scale-105 transition-transform';
+            if (suspendBtn) {
+                suspendBtn.className = isActive
+                    ? 'px-3.5 py-2 rounded-xl text-xs font-black uppercase tracking-wider flex items-center gap-1.5 transition-all cursor-pointer shadow-sm bg-amber-500/10 hover:bg-amber-500 text-amber-600 hover:text-white border border-amber-500/20'
+                    : 'px-3.5 py-2 rounded-xl text-xs font-black uppercase tracking-wider flex items-center gap-1.5 transition-all cursor-pointer shadow-sm bg-emerald-500/10 hover:bg-emerald-600 text-emerald-600 hover:text-white border border-emerald-500/20';
             }
 
             // 3. Photo & Monogram
@@ -166,19 +162,18 @@
             if (photoContainer) {
                 if (admin.profile_photo) {
                     const photoSrc = resolvePhotoUrl(admin.profile_photo);
-                    photoContainer.innerHTML = `<img src="${photoSrc}?v=${Date.now()}" class="w-full h-full object-cover" alt="${escapeHtml(admin.full_name)}" onerror="this.outerHTML='<span id=\\\'photo-initials\\\' class=\\\'text-3xl sm:text-4xl font-black text-text-secondary\\\'>${initials}</span>'">`;
+                    photoContainer.innerHTML = `<img src="${photoSrc}?v=${Date.now()}" class="w-full h-full object-cover" alt="${escapeHtml(admin.full_name)}" onerror="this.outerHTML='<span id=\\\'photo-initials\\\' class=\\\'text-2xl sm:text-3xl font-black text-text-secondary\\\'>${initials}</span>'">`;
                 } else {
-                    photoContainer.innerHTML = `<span id="photo-initials" class="text-3xl sm:text-4xl font-black text-text-secondary">${initials}</span>`;
+                    photoContainer.innerHTML = `<span id="photo-initials" class="text-2xl sm:text-3xl font-black text-text-secondary">${initials}</span>`;
                 }
             }
 
-            // 4. Info Grid Fields Helper
+            // 4. Info Fields
             const setTxt = (id, val) => {
                 const el = document.getElementById(id);
                 if (el) el.textContent = (val !== null && val !== undefined && val !== '') ? val : '---';
             };
 
-            setTxt('info-name', admin.full_name);
             setTxt('info-admin-id', admin.admin_id);
             setTxt('info-email', admin.email || 'Not Provided');
             setTxt('info-phone', admin.phone || 'Not Provided');
@@ -209,160 +204,74 @@
             const dobFormatted = formatDate(admin.date_of_birth) + calculateAge(admin.date_of_birth);
             setTxt('info-dob', dobFormatted);
             setTxt('info-joined-date', formatDate(admin.created_at));
-            setTxt('hero-created-by', admin.created_by_name || 'Root System');
-            setTxt('sys-created-by', admin.created_by_name || 'Root System');
-            setTxt('sys-id', admin.admin_id);
+            setTxt('hero-created-by', admin.created_by_name || 'System');
 
-            // 5. Badges
+            // 5. Role & Badges
             const isSuper = admin.admin_role === 'super_admin';
             const isAdmin = admin.admin_role === 'admin';
             const isMod = admin.admin_role === 'moderator';
 
-            let roleFormatted = 'Administrator';
-            if (isSuper) roleFormatted = 'Super Administrator';
-            else if (isMod) roleFormatted = 'System Moderator';
+            let roleFormatted = 'Admin';
+            if (isSuper) roleFormatted = 'Super Admin';
+            else if (isMod) roleFormatted = 'Moderator';
 
             const infoRoleBadge = document.getElementById('info-role-badge');
             if (infoRoleBadge) {
                 infoRoleBadge.textContent = roleFormatted;
                 infoRoleBadge.className = isMod 
-                    ? 'px-3 py-1 rounded-xl text-[10px] font-black uppercase tracking-widest bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20'
-                    : (isSuper ? 'px-3 py-1 rounded-xl text-[10px] font-black uppercase tracking-widest bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20' : 'px-3 py-1 rounded-xl text-[10px] font-black uppercase tracking-widest bg-teal-500/10 text-teal-600 dark:text-teal-400 border border-teal-500/20');
+                    ? 'px-2.5 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-widest bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20'
+                    : (isSuper ? 'px-2.5 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-widest bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20' : 'px-2.5 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-widest bg-teal-500/10 text-teal-600 dark:text-teal-400 border border-teal-500/20');
             }
 
             const isFull = (admin.access_level || 'full') === 'full';
             const infoAccessBadge = document.getElementById('info-access-badge');
             if (infoAccessBadge) {
-                infoAccessBadge.textContent = isFull ? 'Full Access' : 'Restricted Access';
+                infoAccessBadge.textContent = isFull ? 'Full Access' : 'Restricted';
                 infoAccessBadge.className = isFull 
-                    ? 'px-3 py-1 rounded-xl text-[10px] font-black uppercase tracking-widest bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20' 
-                    : 'px-3 py-1 rounded-xl text-[10px] font-black uppercase tracking-widest bg-surface-subtle text-text-secondary border border-border-subtle';
+                    ? 'px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-widest bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20' 
+                    : 'px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-widest bg-surface-subtle text-text-secondary border border-border-subtle';
             }
 
-            // 6. System Audit Telemetry
-            setTxt('hero-last-login', admin.last_login_at ? timeAgo(admin.last_login_at) : 'Never');
-            setTxt('hero-last-ip', admin.last_login_ip || 'No Record');
-            setTxt('sys-last-login', admin.last_login_at ? formatDate(admin.last_login_at) : 'Never');
-            setTxt('sys-last-ip', admin.last_login_ip || 'No Record');
+            // 6. Security Telemetry
+            setTxt('sys-last-login', admin.last_login_at ? `${formatDate(admin.last_login_at)} (${timeAgo(admin.last_login_at)})` : 'Never');
+            setTxt('sys-last-ip', `IP: ${admin.last_login_ip || 'No Record'}`);
             setTxt('sys-pwd-change', admin.last_password_changed ? timeAgo(admin.last_password_changed) : 'Never');
             
-            const is2Fa = intval(admin.two_fa_enabled) === 1;
-            const hero2fa = document.getElementById('hero-2fa-status');
-            if (hero2fa) {
-                hero2fa.textContent = is2Fa ? 'Enabled & Active' : 'Disabled';
-                hero2fa.className = `text-xs font-bold ${is2Fa ? 'text-emerald-500' : 'text-text-secondary'}`;
-            }
-
+            const is2Fa = parseInt(admin.two_fa_enabled) === 1;
             const sys2fa = document.getElementById('sys-2fa-badge');
             if (sys2fa) {
-                sys2fa.textContent = is2Fa ? 'Active (TOTP)' : 'Not Configured';
-                sys2fa.className = `text-xs font-bold ${is2Fa ? 'text-emerald-500' : 'text-text-secondary'}`;
+                sys2fa.textContent = is2Fa ? 'Enabled' : 'Disabled';
+                sys2fa.className = `font-bold ${is2Fa ? 'text-emerald-500' : 'text-text-secondary'}`;
             }
 
             const attempts = admin.failed_attempts || 0;
-            const heroFailed = document.getElementById('hero-failed-attempts');
-            if (heroFailed) {
-                heroFailed.textContent = `${attempts} ${attempts === 1 ? 'attempt' : 'attempts'}`;
-                heroFailed.className = `text-xs font-bold ${attempts > 0 ? 'text-rose-500' : 'text-emerald-500'}`;
-            }
-
             const sysFailed = document.getElementById('sys-failed-attempts');
             if (sysFailed) {
-                sysFailed.textContent = attempts;
-                sysFailed.className = `text-xs font-bold ${attempts > 0 ? 'text-rose-500' : 'text-emerald-500'}`;
+                sysFailed.textContent = `${attempts} ${attempts === 1 ? 'attempt' : 'attempts'}`;
+                sysFailed.className = `font-bold ${attempts > 0 ? 'text-rose-500' : 'text-emerald-500'}`;
             }
 
-            // 7. Security Policy Note
-            const noteText = document.getElementById('security-note-text');
-            if (noteText) {
+            // 7. Role Scope Tags
+            const scopeContainer = document.getElementById('role-scope-tags');
+            if (scopeContainer) {
                 if (isMod) {
-                    noteText.textContent = '"Moderators have restricted operational access. All KYC approvals and customer account reviews are permanently recorded for institutional compliance and auditing."';
+                    scopeContainer.innerHTML = `
+                        <span class="px-2 py-0.5 rounded-md bg-surface-subtle border border-border-subtle text-[10px] font-bold text-text-primary">KYC Approvals</span>
+                        <span class="px-2 py-0.5 rounded-md bg-surface-subtle border border-border-subtle text-[10px] font-bold text-text-primary">User Reviews</span>
+                        <span class="px-2 py-0.5 rounded-md bg-surface-subtle border border-border-subtle text-[10px] font-bold text-text-primary">Read-Only Operations</span>
+                        <span class="px-2 py-0.5 rounded-md bg-surface-subtle border border-border-subtle text-[10px] font-bold text-text-primary">Audit Log Inspection</span>
+                    `;
                 } else {
-                    noteText.textContent = '"Administrators possess elevated operational privileges. Every system modification and user override is recorded in the global audit log."';
+                    scopeContainer.innerHTML = `
+                        <span class="px-2 py-0.5 rounded-md bg-surface-subtle border border-border-subtle text-[10px] font-bold text-text-primary">User Management</span>
+                        <span class="px-2 py-0.5 rounded-md bg-surface-subtle border border-border-subtle text-[10px] font-bold text-text-primary">Staff Operations</span>
+                        <span class="px-2 py-0.5 rounded-md bg-surface-subtle border border-border-subtle text-[10px] font-bold text-text-primary">Branch Controls</span>
+                        <span class="px-2 py-0.5 rounded-md bg-surface-subtle border border-border-subtle text-[10px] font-bold text-text-primary">Global Transactions</span>
+                    `;
                 }
             }
 
-            // 8. Role Privileges Matrix (Granted vs Restricted)
-            const grantedContainer = document.getElementById('privileges-granted');
-            const restrictedContainer = document.getElementById('privileges-restricted');
-            const privilegeRoleBadge = document.getElementById('privilege-role-badge');
-            const levelSub = document.getElementById('privilege-level-sub');
-
-            if (privilegeRoleBadge) {
-                privilegeRoleBadge.textContent = roleFormatted;
-                privilegeRoleBadge.className = isMod 
-                    ? 'px-2.5 py-1 rounded-xl text-[10px] font-black uppercase tracking-widest bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20'
-                    : (isSuper ? 'px-2.5 py-1 rounded-xl text-[10px] font-black uppercase tracking-widest bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20' : 'px-2.5 py-1 rounded-xl text-[10px] font-black uppercase tracking-widest bg-teal-500/10 text-teal-600 dark:text-teal-400 border border-teal-500/20');
-            }
-
-            if (levelSub) {
-                levelSub.textContent = isSuper ? 'Root Authority (Unrestricted)' : (isAdmin ? 'Operational Authority (Full)' : 'Compliance Authority (Restricted)');
-            }
-
-            let granted = [];
-            let restricted = [];
-
-            if (isSuper) {
-                granted = [
-                    'Root System, Configuration & Global Security Governance',
-                    'Create, Provision, Suspend & Purge Administrators',
-                    'Financial Core, Global Ledger & Settlement Overrides',
-                    'Full Operational Powers Over Users, Staff & Banking Branches',
-                    'Immutable Global Audit Trail & System Telemetry Access'
-                ];
-                restricted = [
-                    'None (Unrestricted Root Institutional Scope)'
-                ];
-            } else if (isAdmin) {
-                granted = [
-                    'Customer Management (Approve KYC, Search, Review Profiles)',
-                    'Staff Operations (Create, Update, Assign Branches & Shifts)',
-                    'Branch Management (Create, Edit, Suspend Branches)',
-                    'Global Transactions & Core Banking Telemetry Inspection',
-                    'Institutional Audit Log & System Activity Oversight'
-                ];
-                restricted = [
-                    'Modify or Suspend Root Super Administrators',
-                    'Direct System Database & Infrastructure Reconfigurations',
-                    'Execute Manual Financial Core Ledger Adjustments',
-                    'Purge or Alter Immutable Audit Trail Records'
-                ];
-            } else {
-                granted = [
-                    'KYC Verification & Customer Document Approvals',
-                    'Read-Only Access to User Directory & Account Profiles',
-                    'Read-Only Staff & Branch Operations Directory',
-                    'Inspect System Audit Logs & Operational Activity'
-                ];
-                restricted = [
-                    'Customer Account Suspension or Permanent Deletion',
-                    'Create, Modify or Terminate Bank Staff Members',
-                    'Create, Edit or Suspend Banking Branches',
-                    'Execute Direct Financial Transactions, Debits or Credits',
-                    'Create, Modify or Manage Other Administrators',
-                    'Access System Environment or Security Credentials'
-                ];
-            }
-
-            if (grantedContainer) {
-                grantedContainer.innerHTML = granted.map(item => `
-                    <div class="flex items-start gap-2.5 p-3 rounded-2xl bg-surface-subtle border border-border-subtle hover:border-emerald-500/30 transition-all">
-                        <span class="material-symbols-outlined text-emerald-500 text-[18px] shrink-0 mt-0.5" aria-hidden="true">check_circle</span>
-                        <div class="text-xs font-bold text-text-primary leading-snug">${escapeHtml(item)}</div>
-                    </div>
-                `).join('');
-            }
-
-            if (restrictedContainer) {
-                restrictedContainer.innerHTML = restricted.map(item => `
-                    <div class="flex items-start gap-2.5 p-3 rounded-2xl bg-surface-subtle border border-border-subtle opacity-85">
-                        <span class="material-symbols-outlined text-rose-500 text-[18px] shrink-0 mt-0.5" aria-hidden="true">${isSuper ? 'lock_open' : 'block'}</span>
-                        <div class="text-xs font-bold text-text-secondary leading-snug">${escapeHtml(item)}</div>
-                    </div>
-                `).join('');
-            }
-
-            // 9. Audit Log Links
+            // 8. Audit Log Links
             const auditLink = document.getElementById('view-audit-link');
             if (auditLink) {
                 auditLink.href = `admin-audit-log.php?search=${encodeURIComponent(admin.admin_id || '')}`;
@@ -378,10 +287,6 @@
          */
         renderActivity: function(activities) {
             allActivities = activities || [];
-            
-            const heroCount = document.getElementById('hero-activity-count');
-            if (heroCount) heroCount.textContent = `${allActivities.length} Actions Logged`;
-
             this.filterActivity();
         },
 
@@ -409,11 +314,11 @@
                         <tr>
                             <td colspan="4" class="py-12 text-center">
                                 <div class="flex flex-col items-center justify-center max-w-sm mx-auto">
-                                    <div class="w-12 h-12 rounded-2xl bg-surface-subtle border border-border-subtle flex items-center justify-center mb-3 text-text-secondary">
-                                        <span class="material-symbols-outlined text-2xl">history_toggle_off</span>
+                                    <div class="w-10 h-10 rounded-xl bg-surface-subtle border border-border-subtle flex items-center justify-center mb-2.5 text-text-secondary">
+                                        <span class="material-symbols-outlined text-xl">history_toggle_off</span>
                                     </div>
-                                    <div class="text-xs font-black text-text-primary uppercase tracking-wider mb-1">No Activity Logged Yet</div>
-                                    <div class="text-[11px] font-medium text-text-secondary">This administrator has not initiated any recorded actions or operations yet.</div>
+                                    <div class="text-xs font-black text-text-primary uppercase tracking-wider mb-0.5">No Activity Recorded</div>
+                                    <div class="text-[11px] font-medium text-text-secondary">No operational actions have been initiated by this account yet.</div>
                                 </div>
                             </td>
                         </tr>
@@ -421,7 +326,7 @@
                 } else {
                     tbody.innerHTML = `
                         <tr>
-                            <td colspan="4" class="py-10 text-center text-xs font-bold text-text-secondary">
+                            <td colspan="4" class="py-8 text-center text-xs font-bold text-text-secondary">
                                 No activity records match "${escapeHtml(query)}"
                             </td>
                         </tr>
@@ -451,26 +356,26 @@
                 }
 
                 return `
-                    <tr class="hover:bg-surface-subtle transition-colors border-b border-border-subtle last:border-0">
-                        <td class="py-4 px-6 text-[11px] font-bold text-text-secondary whitespace-nowrap">${formatDT(act.created_at)}</td>
-                        <td class="py-4 px-6 whitespace-nowrap">
-                            <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest ${badgeClass}">${escapeHtml(actType.replace(/_/g, ' '))}</span>
+                    <tr class="hover:bg-surface-subtle transition-colors border-b border-border-subtle last:border-0 text-xs">
+                        <td class="py-3.5 px-5 font-bold text-text-secondary whitespace-nowrap">${formatDT(act.created_at)}</td>
+                        <td class="py-3.5 px-5 whitespace-nowrap">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-widest ${badgeClass}">${escapeHtml(actType.replace(/_/g, ' '))}</span>
                         </td>
-                        <td class="py-4 px-6 text-[11px] font-medium text-text-primary max-w-md">${escapeHtml(act.details || '-')}</td>
-                        <td class="py-4 px-6 text-right text-[10px] font-mono font-bold text-text-secondary whitespace-nowrap">${escapeHtml(act.ip_address || '127.0.0.1')}</td>
+                        <td class="py-3.5 px-5 font-medium text-text-primary max-w-md">${escapeHtml(act.details || '-')}</td>
+                        <td class="py-3.5 px-5 text-right font-mono font-bold text-text-secondary whitespace-nowrap">${escapeHtml(act.ip_address || '127.0.0.1')}</td>
                     </tr>
                 `;
             }).join('');
         },
 
         /**
-         * Administrative Actions: Toggle Status
+         * Toggle Status
          */
         toggleStatus: async function() {
             if (!currentAdminData) return;
             const isActive = currentAdminData.status === 'active';
             const confirmMsg = isActive 
-                ? `Are you sure you want to SUSPEND ${currentAdminData.full_name}? They will lose all administrative access immediately.`
+                ? `Are you sure you want to SUSPEND ${currentAdminData.full_name}? They will lose access immediately.`
                 : `Are you sure you want to ACTIVATE ${currentAdminData.full_name}?`;
 
             if (!confirm(confirmMsg)) return;
@@ -480,7 +385,7 @@
                 const payload = response ? (response.data || response) : {};
 
                 if (response && (response.success || payload.success)) {
-                    notify(payload.message || response.message || 'Admin status updated successfully', 'success');
+                    notify(payload.message || response.message || 'Status updated successfully', 'success');
                     await this.loadAdminData();
                 } else {
                     notify(payload.message || response?.message || 'Failed to update status', 'error');
@@ -491,7 +396,7 @@
         },
 
         /**
-         * Reset Password Modal Handlers
+         * Reset Password Modal
          */
         showResetModal: function() {
             const modal = document.getElementById('reset-modal');
@@ -556,14 +461,14 @@
                     if (modalContent) {
                         const doneBtn = document.createElement('button');
                         doneBtn.id = 'reset-done-btn';
-                        doneBtn.className = 'w-full py-3 bg-primary text-text-inverse font-black rounded-xl text-xs uppercase tracking-widest mt-6 hover:bg-primary/90 transition-colors shadow-lg cursor-pointer';
+                        doneBtn.className = 'w-full py-2.5 bg-primary text-text-inverse font-black rounded-xl text-xs uppercase tracking-widest mt-5 hover:bg-primary/90 transition-colors shadow-sm cursor-pointer';
                         doneBtn.textContent = 'Done';
                         doneBtn.onclick = () => {
                             this.closeResetModal();
                             doneBtn.remove();
                             this.loadAdminData();
                         };
-                        modalContent.querySelector('.p-8')?.appendChild(doneBtn);
+                        modalContent.querySelector('.p-6, .p-8')?.appendChild(doneBtn);
                     }
 
                     notify(payload.message || response.message || 'Password generated successfully', 'success');
@@ -578,7 +483,7 @@
         },
 
         /**
-         * Delete Account Modal Handlers
+         * Delete Account Modal
          */
         showDeleteModal: function() {
             if (!currentAdminData) return;
