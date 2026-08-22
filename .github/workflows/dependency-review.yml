@@ -21,7 +21,7 @@ jobs:
           extensions: mbstring, json
 
       - name: Run Composer Security Audit
-        run: composer audit
+        run: composer audit --locked
 
       - name: GitHub Dependency Review
         uses: actions/dependency-review-action@v5
