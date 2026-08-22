@@ -27,16 +27,29 @@ class CompleteUserProfileAction
 
         $data = [
             'user_id' => $userId,
-            'dob' => $this->security->cleanInput($postData['dob'] ?? ''), 'gender' => $this->security->cleanInput($postData['gender'] ?? ''),
-            'father_name' => $this->security->cleanInput($postData['father_name'] ?? ''), 'mother_name' => $this->security->cleanInput($postData['mother_name'] ?? ''),
-            'marital_status' => $this->security->cleanInput($postData['marital_status'] ?? ''), 'nationality' => $this->security->cleanInput($postData['nationality'] ?? ''),
-            'occupation' => $this->security->cleanInput($postData['occupation'] ?? ''), 'annual_income' => $this->security->cleanInput($postData['annual_income'] ?? ''),
-            'source_of_income' => $this->security->cleanInput($postData['source_of_income'] ?? ''), 'street' => $this->security->cleanInput($postData['street'] ?? ''),
-            'city' => $this->security->cleanInput($postData['city'] ?? ''), 'state' => $this->security->cleanInput($postData['state'] ?? ''),
-            'pincode' => $this->security->cleanInput($postData['pincode'] ?? ''), 'id_type' => $this->security->cleanInput($postData['id_type'] ?? ''),
-            'id_number' => $this->security->cleanInput($postData['id_number'] ?? ''), 'account_type' => $this->security->cleanInput($postData['account_type'] ?? ''),
-            'initial_deposit' => floatval($postData['initial_deposit'] ?? 0), 'txn_pin' => $postData['txn_pin'] ?? '',
+            'dob' => $this->security->cleanInput($postData['dob'] ?? ''),
+            'gender' => $this->security->cleanInput($postData['gender'] ?? ''),
+            'father_name' => $this->security->cleanInput($postData['father_name'] ?? $postData['father-name'] ?? ''),
+            'mother_name' => $this->security->cleanInput($postData['mother_name'] ?? $postData['mother-name'] ?? ''),
+            'marital_status' => $this->security->cleanInput($postData['marital_status'] ?? $postData['marital-status'] ?? ''),
+            'nationality' => $this->security->cleanInput($postData['nationality'] ?? ''),
+            'occupation' => $this->security->cleanInput($postData['occupation'] ?? ''),
+            'annual_income' => $this->security->cleanInput($postData['annual_income'] ?? $postData['income'] ?? ''),
+            'source_of_income' => $this->security->cleanInput($postData['source_of_income'] ?? $postData['source-of-income'] ?? ''),
+            'street' => $this->security->cleanInput($postData['street'] ?? ''),
+            'city' => $this->security->cleanInput($postData['city'] ?? ''),
+            'state' => $this->security->cleanInput($postData['state'] ?? ''),
+            'pincode' => $this->security->cleanInput($postData['pincode'] ?? ''),
+            'id_type' => $this->security->cleanInput($postData['id_type'] ?? $postData['id-type'] ?? ''),
+            'id_number' => $this->security->cleanInput($postData['id_number'] ?? $postData['id-number'] ?? ''),
+            'account_type' => $this->security->cleanInput($postData['account_type'] ?? $postData['account-type'] ?? 'savings'),
+            'initial_deposit' => floatval($postData['initial_deposit'] ?? 0),
+            'txn_pin' => $postData['txn_pin'] ?? '1234',
         ];
+
+        if (isset($files['profile_photo']) && !isset($files['profile_picture'])) {
+            $files['profile_picture'] = $files['profile_photo'];
+        }
 
         $existing_user = $this->userService->getUserFiles($userId);
         $data['has_profile_pic'] = !\App\Shared\Core\Validation\Validator::isEmpty($existing_user['profile_picture']);

@@ -164,6 +164,7 @@ $router->post('/api/v1/cards/{id}/transact', [UserCardController::class, 'transa
 $router->get('/api/v1/cards/{id}/statement', [UserCardController::class, 'statement'], [UserAuthMiddleware::class]);
 
 $router->get('/api/v1/public/stats', [PublicController::class, 'chartStats']);
+$router->get('/api/v1/public/branches', [PublicController::class, 'branches']);
 $router->post('/api/v1/uploads/branch-cert', [UploadController::class, 'uploadBranchCert'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->post('/api/v1/uploads/id-document', [UploadController::class, 'uploadIdDocument'], [\App\Presentation\Middleware\UserAuthMiddleware::class]);
 $router->get('/api/v1/documents/receipt', [PdfController::class, 'receipt']);

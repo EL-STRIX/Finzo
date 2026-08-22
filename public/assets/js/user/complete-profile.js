@@ -52,19 +52,26 @@ function initDropdowns() {
 
 async function loadBranches() {
   try {
-    const res = await fetch('/Finzo/api/admin/branches.php?action=list');
-    const data = await res.json();
+    let data;
+    if (window.api && typeof window.api.get === 'function') {
+      data = await window.api.get('/public/branches');
+    } else {
+      const res = await fetch('/Finzo/public/api/v1/public/branches');
+      data = await res.json();
+    }
     const menu = document.getElementById('branch-dropdown-menu');
-    if (data.success && data.branches.length > 0) {
+    if (menu && data && data.success && Array.isArray(data.branches) && data.branches.length > 0) {
       menu.innerHTML = data.branches.map(b => 
-        `<div class="finzo-dropdown-option p-3 text-sm font-medium hover:bg-[var(--color-surface-hover)] cursor-pointer" data-value="${b.id}">${b.name} (${b.ifsc})</div>`
+        `<div class="finzo-dropdown-option p-3 text-sm font-medium hover:bg-surface-elevated cursor-pointer" data-value="${b.id}">${b.name} (${b.ifsc || b.branch_code || ''})</div>`
       ).join('');
       // re-bind options
       initDropdowns();
-    } else {
-      menu.innerHTML = '<div class="p-3 text-sm text-[var(--color-text-muted)]">No branches found</div>';
+    } else if (menu) {
+      menu.innerHTML = '<div class="p-3 text-sm text-text-muted">No branches available</div>';
     }
-  } catch(e) {}
+  } catch(e) {
+    console.warn('Failed to load branches', e);
+  }
 }
 
 function handleUpload(input, boxId, previewId) {
@@ -161,7 +168,7 @@ function updateProgress() {
 }
 
 async function submitProfile() {
-  const type = document.querySelector('input[name="account-type"]:checked').value;
+  const type = document.querySelector('input[name="account-type"]:checked')?.value || 'savings';
   const branch = document.getElementById('branch').value;
   const terms = document.getElementById('terms').checked;
   
@@ -176,37 +183,40 @@ async function submitProfile() {
   btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-lg">sync</span> Processing...';
 
   try {
-    let csrfToken = '';
-    try {
-      const tokenRes = await fetch('/Finzo/api/auth/get-csrf-token.php');
-      const tokenData = await tokenRes.json();
-      csrfToken = tokenData.csrf_token || '';
-    } catch (e) {}
-
     const formData = new FormData();
-    formData.append('csrf_token', csrfToken);
     Object.keys(formValues).forEach(k => formData.append(k, formValues[k]));
     
     if (uploads.profile) formData.append('profile_photo', uploads.profile);
     if (uploads.front) formData.append('id_front', uploads.front);
     if (uploads.back) formData.append('id_back', uploads.back);
 
-    const res = await fetch('/Finzo/api/user/complete-profile.php', {
-      method: 'POST',
-      credentials: 'same-origin',
-      body: formData
-    });
-    
-    const data = await res.json();
-    if (data.success) {
-      window.location.href = 'account-pending.php';
+    let data;
+    if (window.api && typeof window.api.post === 'function') {
+      data = await window.api.post('/user/profile/complete', formData, true);
     } else {
-      showToast(data.message || 'Submission failed', 'error');
+      const csrf = window.csrfToken || '';
+      if (csrf) formData.append('csrf_token', csrf);
+      const res = await fetch('/Finzo/public/api/v1/user/profile/complete', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: csrf ? { 'X-CSRF-Token': csrf } : {},
+        body: formData
+      });
+      data = await res.json();
+    }
+    
+    if (data && data.success) {
+      showToast('Profile submitted successfully!', 'success');
+      setTimeout(() => {
+        window.location.href = 'account-pending.php';
+      }, 600);
+    } else {
+      showToast((data && data.message) ? data.message : 'Submission failed', 'error');
       btn.disabled = false;
       btn.innerHTML = '<span class="material-symbols-outlined text-[18px]">done_all</span> Submit Application';
     }
   } catch (e) {
-    showToast('Connection error', 'error');
+    showToast('Connection error. Please try again.', 'error');
     btn.disabled = false;
     btn.innerHTML = '<span class="material-symbols-outlined text-[18px]">done_all</span> Submit Application';
   }

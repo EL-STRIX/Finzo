@@ -86,4 +86,20 @@ class PublicController
             throw new \App\Shared\Core\Exceptions\ApiException('Database error', 500);
         }
     }
+
+    public function branches()
+    {
+        try {
+            $pdo = \App\Shared\Core\Database::getInstance()->getConnection();
+            $stmt = $pdo->query("SELECT id, name, branch_code, ifsc, city, state FROM branches WHERE status = 'active' ORDER BY name ASC");
+            $branches = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+            return [
+                'success' => true,
+                'branches' => $branches
+            ];
+        } catch (\PDOException $e) {
+            throw new \App\Shared\Core\Exceptions\ApiException('Failed to retrieve branches', 500);
+        }
+    }
 }
