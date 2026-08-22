@@ -59,7 +59,7 @@ ob_start();
     </div>
 
     <!-- AMOUNT & SECURITY CARD -->
-    <div class="ds-card ds-animate-slide-up" style="animation-delay: 0.1s;">
+    <div class="ds-card ds-animate-slide-up delay-100">
       <div class="ds-card-header border-b border-border-main">
         <h3 class="font-display text-lg font-bold text-text-main">2. Transfer Details</h3>
       </div>
@@ -142,7 +142,9 @@ ob_start();
 
 <script defer src="/Finzo/public/assets/js/core/utils.js"></script>
   <script defer src="/Finzo/public/assets/js/core/api.js"></script>
+<script defer src="/Finzo/public/assets/js/user/transfer.js"></script>
 <?php
 $slot = ob_get_clean();
 include __DIR__ . '/../layouts/app.php';
 ?>
+

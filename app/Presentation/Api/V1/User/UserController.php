@@ -298,7 +298,9 @@ class UserController
             $customer_id = $_SESSION['user_customer_id'];
             $notification_count = (int)$this->service->getUnreadNotificationCount($customer_id);
             $greeting = get_greeting();
-            $avatar_url = !\App\Shared\Core\Validation\Validator::isEmpty($user['profile_picture']) ? '../../../' . $user['profile_picture'] : null;
+            $avatar_url = !\App\Shared\Core\Validation\Validator::isEmpty($user['profile_picture'])
+                ? (str_starts_with($user['profile_picture'], 'http') ? $user['profile_picture'] : APP_URL . '/' . ltrim($user['profile_picture'], '/'))
+                : null;
 
             $past_rejections_raw = $this->service->getPastRejections($user['customer_id']);
             $past_rejections = [];
@@ -494,7 +496,7 @@ class UserController
             json_response(['success' => false, 'message' => 'Method not allowed'], 405);
         }
 
-        if ($_SESSION['user_status'] !== \App\Domain\Enums\AccountStatusEnum::ACTIVE->value) {
+        if (($_SESSION['user_status'] ?? '') !== \App\Domain\Enums\AccountStatusEnum::ACTIVE->value) {
             json_response(['success' => false, 'message' => 'Your account is not active. Transfers are not allowed.'], 403);
         }
 

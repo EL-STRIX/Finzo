@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!userId) {
         alert('User ID is missing');
-        // window.location.href = 'admin-pending-approvals.html';
+        // window.location.href = 'admin-pending-approvals.php';
         return;
     }
 
@@ -55,8 +55,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const profilePlaceholder = document.getElementById('profile-photo-placeholder');
         if (profilePhoto && user.profile_picture_url) {
             let url = user.profile_picture_url;
-            if (!url.startsWith('http://') && !url.startsWith('https://') && !url.startsWith('/')) {
-                url = '/Finzo/public/assets/' + url;
+            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                url = url.startsWith('/') ? url : '/Finzo/' + url.replace(/^\//, '');
             }
             profilePhoto.src = url;
             profilePhoto.classList.remove('hidden');
@@ -64,75 +64,79 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Personal Details
-        const pFields = document.querySelectorAll('#personal-fields > div > div');
-        if (pFields.length >= 13) {
-            pFields[0].textContent = user.dob || 'N/A';
-            pFields[1].textContent = user.gender || 'N/A';
-            pFields[2].textContent = user.marital_status || 'N/A';
-            pFields[3].textContent = user.nationality || 'N/A';
-            pFields[4].textContent = user.father_name || 'N/A';
-            pFields[5].textContent = user.mother_name || 'N/A';
-            pFields[6].textContent = user.occupation || 'N/A';
-            pFields[7].textContent = user.source_of_income || 'N/A';
-            pFields[8].textContent = user.annual_income || 'N/A';
-            pFields[9].textContent = user.phone || 'N/A';
-            pFields[10].textContent = user.email || 'N/A';
-            pFields[11].textContent = user.kyc_submitted_at || 'N/A';
-            pFields[12].textContent = user.created_at || 'N/A';
-        }
+        const valDob = document.getElementById('val-dob');
+        const valGender = document.getElementById('val-gender');
+        const valMarital = document.getElementById('val-marital-status');
+        const valNat = document.getElementById('val-nationality');
+        const valFather = document.getElementById('val-father-name');
+        const valMother = document.getElementById('val-mother-name');
+        const valOcc = document.getElementById('val-occupation');
+        const valSrc = document.getElementById('val-source-of-income');
+        const valAnn = document.getElementById('val-annual-income');
+        const valPhone = document.getElementById('val-phone');
+        const valEmail = document.getElementById('val-email');
+        const valKyc = document.getElementById('val-kyc-submitted-at');
+        const valCreated = document.getElementById('val-created-at');
+
+        if (valDob) valDob.textContent = user.dob || 'N/A';
+        if (valGender) valGender.textContent = user.gender || 'N/A';
+        if (valMarital) valMarital.textContent = user.marital_status || 'N/A';
+        if (valNat) valNat.textContent = user.nationality || 'N/A';
+        if (valFather) valFather.textContent = user.father_name || 'N/A';
+        if (valMother) valMother.textContent = user.mother_name || 'N/A';
+        if (valOcc) valOcc.textContent = user.occupation || 'N/A';
+        if (valSrc) valSrc.textContent = user.source_of_income || 'N/A';
+        if (valAnn) valAnn.textContent = user.annual_income || 'N/A';
+        if (valPhone) valPhone.textContent = user.phone || 'N/A';
+        if (valEmail) valEmail.textContent = user.email || 'N/A';
+        if (valKyc) valKyc.textContent = user.kyc_submitted_at || 'N/A';
+        if (valCreated) valCreated.textContent = user.created_at || 'N/A';
 
         // Address
-        const addressFields = document.querySelectorAll('#address-fields .font-bold');
-        if (addressFields.length >= 5) {
-            addressFields[0].textContent = user.street;
-            addressFields[1].textContent = user.city;
-            addressFields[2].textContent = user.state;
-            addressFields[3].textContent = user.pincode;
-            addressFields[4].textContent = user.country;
-        }
+        const valStreet = document.getElementById('val-street');
+        const valCity = document.getElementById('val-city');
+        const valState = document.getElementById('val-state');
+        const valPincode = document.getElementById('val-pincode');
+        const valCountry = document.getElementById('val-country');
+        
+        if (valStreet) valStreet.textContent = user.street || 'N/A';
+        if (valCity) valCity.textContent = user.city || 'N/A';
+        if (valState) valState.textContent = user.state || 'N/A';
+        if (valPincode) valPincode.textContent = user.pincode || 'N/A';
+        if (valCountry) valCountry.textContent = user.country || 'N/A';
 
         // Identity
-        const identityFields = document.querySelectorAll('#identity-fields .font-bold');
-        if (identityFields.length >= 2) {
-            identityFields[0].textContent = user.id_type;
-            identityFields[1].textContent = user.id_number;
-        }
+        const valIdType = document.getElementById('val-id-type');
+        const valIdNumber = document.getElementById('val-id-number');
+        if (valIdType) valIdType.textContent = user.id_type || 'N/A';
+        if (valIdNumber) valIdNumber.textContent = user.id_number || 'N/A';
 
         if (data.id_documents) {
             const docBlocks = document.querySelectorAll('.ds-card .aspect-video');
             if (data.id_documents.front_url && docBlocks.length > 0) {
                 let url = data.id_documents.front_url;
-                if (!url.startsWith('http://') && !url.startsWith('https://') && !url.startsWith('/')) {
-                    url = '/Finzo/public/assets/' + url;
+                if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                    url = url.startsWith('/') ? url : '/Finzo/' + url.replace(/^\//, '');
                 }
-                docBlocks[0].innerHTML = `<img src="${url}" class="w-full h-full object-cover rounded-xl shadow-lg border border-slate-200" alt="Front Side">`;
+                docBlocks[0].innerHTML = `<img src="${url}" class="w-full h-full object-cover rounded-xl shadow-lg border border-slate-200" alt="Front Side" onerror="this.parentElement.innerHTML='<div class=\\'flex flex-col items-center justify-center p-6 text-center text-text-secondary\\'><span class=\\'material-symbols-outlined text-3xl opacity-30 mb-1\\'>broken_image</span><span class=\\'text-xs\\'>Preview unavailable</span></div>'">`;
             }
             if (data.id_documents.back_url && docBlocks.length > 1) {
                 let url = data.id_documents.back_url;
-                if (!url.startsWith('http://') && !url.startsWith('https://') && !url.startsWith('/')) {
-                    url = '/Finzo/public/assets/' + url;
+                if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                    url = url.startsWith('/') ? url : '/Finzo/' + url.replace(/^\//, '');
                 }
-                docBlocks[1].innerHTML = `<img src="${url}" class="w-full h-full object-cover rounded-xl shadow-lg border border-slate-200" alt="Back Side">`;
+                docBlocks[1].innerHTML = `<img src="${url}" class="w-full h-full object-cover rounded-xl shadow-lg border border-slate-200" alt="Back Side" onerror="this.parentElement.innerHTML='<div class=\\'flex flex-col items-center justify-center p-6 text-center text-text-secondary\\'><span class=\\'material-symbols-outlined text-3xl opacity-30 mb-1\\'>broken_image</span><span class=\\'text-xs\\'>Preview unavailable</span></div>'">`;
             }
         }
 
         // Account Details
-        const accountBlock = document.getElementById('account-fields');
-        if (accountBlock && accountBlock.children.length >= 3) {
-             const accTypeDiv = accountBlock.children[0];
-             const initDepDiv = accountBlock.children[1];
-             const pinDiv = accountBlock.children[2];
-             
-             if (accTypeDiv) accTypeDiv.innerHTML = `<label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Account Type</label><span class="status-badge" >${account.account_type || 'Savings'} Account</span>`;
-             
-             if (initDepDiv) {
-                 initDepDiv.innerHTML = `<label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Initial Deposit</label><div class="font-bold text-lg">₹${parseFloat(account.initial_deposit || 0).toLocaleString('en-IN', {minimumFractionDigits: 2})}</div>`;
-             }
-             
-             if (pinDiv) {
-                 pinDiv.innerHTML = `<label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Transaction PIN</label><div class="flex items-center gap-2.5 font-bold"><span class="font-mono text-base tracking-widest text-slate-600 dark:text-slate-400">••••</span><span class="text-[9px] font-black uppercase tracking-widest px-2 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600 dark:text-emerald-400 border border-emerald-200/50 dark:border-emerald-900/30">Encrypted</span></div>`;
-             }
-        }
+        const valAccType = document.getElementById('val-account-type');
+        const valInitialDeposit = document.getElementById('val-initial-deposit');
+        const valPin = document.getElementById('val-transaction-pin');
+        
+        if (valAccType) valAccType.innerHTML = `<span class="status-badge" >${account.account_type || 'Savings'} Account</span>`;
+        if (valInitialDeposit) valInitialDeposit.innerHTML = `₹${parseFloat(account.initial_deposit || 0).toLocaleString('en-IN', {minimumFractionDigits: 2})}`;
+        if (valPin) valPin.innerHTML = `<div class="flex items-center gap-2.5 font-bold"><span class="font-mono text-base tracking-widest text-slate-600 dark:text-slate-400">••••</span><span class="text-[9px] font-black uppercase tracking-widest px-2 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600 dark:text-emerald-400 border border-emerald-200/50 dark:border-emerald-900/30">Encrypted</span></div>`;
 
         // Timeline
         if (data.timeline) {
@@ -257,7 +261,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (response.status === 'success' || response.success) {
                     window.showToast('Application Approved! Account Number: ' + (response.account_no || response.data?.account_no), 'success');
                     setTimeout(() => {
-                         window.location.href = 'admin-pending-approvals.html';
+                         window.location.href = 'admin-pending-approvals.php';
                     }, 1500);
                 } else {
                     window.showToast(response.message || 'Action failed', 'error');
@@ -295,7 +299,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (response.status === 'success' || response.success) {
                     window.showToast('Application Rejected.', 'success');
                     setTimeout(() => {
-                        window.location.href = 'admin-pending-approvals.html';
+                        window.location.href = 'admin-pending-approvals.php';
                     }, 1500);
                 } else {
                     window.showToast(response.message || 'Action failed', 'error');

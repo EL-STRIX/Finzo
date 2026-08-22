@@ -12,6 +12,7 @@ interface AdminOperationsRepositoryInterface
     public function getAuditLogs(array $filters, int $perPage, int $offset);
     public function getAuditLogActionTypes();
     public function getAuditLogStats(array $filters);
+    public function exportAuditLogsGenerator(array $filters): \Generator;
     public function getSingleStat(string $sql, array $params = []);
     public function getDashboardRecentUsers();
     public function getMonthlyChartDataRow(string $monthDate);
@@ -23,9 +24,9 @@ interface AdminOperationsRepositoryInterface
     public function insertInterestRate(float $rate, string $applyFrom, string $applyDate, string $adminDisplayId): void;
     public function updateActiveSavingsInterestRate(float $rate): void;
     public function getActiveSavingsAccounts();
-    public function addTransaction(string $txnId, ?int $fromAccountId, int $toAccountId, string $type, float $amount, float $balanceAfter, string $description, string $referenceNote, string $status): void;
+    public function addTransaction(string $txnId, ?int $fromAccountId, ?int $toAccountId, string $type, float $amount, float $balanceAfter, string $description, string $referenceNote, string $status): void;
     public function updateAccountBalance(float $balance, int $accountId): void;
-    public function addNotification(int $userId, string $type, string $title, string $message): void;
+    public function addNotification(string|int $userId, string $type, string $title, string $message): void;
     public function getExportUsers(string $whereSql, array $params);
     public function exportUsersGenerator(string $whereSql, array $params): \Generator;
     public function countLockedAccounts(string $whereSql, array $params): int;
@@ -47,12 +48,12 @@ interface AdminOperationsRepositoryInterface
     public function countSuspendedUsers(string $whereSql, array $params): int;
     public function getSuspendedUsers(string $whereSql, array $params, int $perPage, int $offset);
     public function countTransactions(string $baseSql, array $params): int;
-    public function getTransactions(string $baseSql, array $params, int $perPage, int $offset);
+    public function getTransactions(string $baseSql, array $params, int $perPage, int $offset, string $orderSql = 't.created_at DESC, t.id DESC');
     public function getTransactionsSummary(string $baseSql, array $params);
     public function exportTransactions(string $baseSql, array $params);
     public function exportTransactionsGenerator(string $baseSql, array $params): \Generator;
     public function countUsers(string $whereSql, array $params): int;
-    public function getUsers(string $whereSql, array $params, int $perPage, int $offset);
+    public function getUsers(string $whereSql, array $params, int $perPage, int $offset, string $orderSql = 'u.created_at DESC');
     public function getUsersStats();
     public function getSuspendedUser(int $userId);
     public function getSuspendedUserProfile(int $userId);

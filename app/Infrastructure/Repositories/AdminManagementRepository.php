@@ -79,28 +79,50 @@ class AdminManagementRepository extends BaseRepository implements \App\Domain\Co
         ", [$id], \App\Domain\Models\Admin::class);
     }
 
-    public function getAdminActivity(string $adminId, int $limit = 50)
+    public function getAdminActivity(string $adminId, int $limit = 100)
     {
+        $stmt = $this->db->prepare("SELECT id, admin_id FROM admin_users WHERE admin_id = ? OR id = ? LIMIT 1");
+        $stmt->execute([$adminId, is_numeric($adminId) ? (int)$adminId : 0]);
+        $adm = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        $searchActorIds = [$adminId];
+        if ($adm) {
+            $searchActorIds = array_values(array_unique([$adm['admin_id'], (string)$adm['id']]));
+        }
+
+        $placeholders = implode(',', array_fill(0, count($searchActorIds), '?'));
         $stmt = $this->db->prepare("
-            SELECT action_type, details, ip_address, created_at, entity_id, entity_type
+            SELECT action_type as action, action_type, details, ip_address, created_at, entity_id, entity_type, actor_id, actor_role
             FROM audit_log
-            WHERE actor_id = ? AND actor_role IN ('Super Admin', 'Admin', 'Moderator', 'super_admin', 'admin', 'moderator')
-            ORDER BY created_at DESC LIMIT " . (int)$limit . "
+            WHERE actor_id IN ($placeholders)
+            ORDER BY created_at DESC, id DESC LIMIT " . (int)$limit . "
         ");
-        $stmt->execute([$adminId]);
+        $stmt->execute($searchActorIds);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function getActivityCount(string $adminId)
     {
+        $stmt = $this->db->prepare("SELECT id, admin_id FROM admin_users WHERE admin_id = ? OR id = ? LIMIT 1");
+        $stmt->execute([$adminId, is_numeric($adminId) ? (int)$adminId : 0]);
+        $adm = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        $searchActorIds = [$adminId];
+        if ($adm) {
+            $searchActorIds = array_values(array_unique([$adm['admin_id'], (string)$adm['id']]));
+        }
+
+        $placeholders = implode(',', array_fill(0, count($searchActorIds), '?'));
         $stmt = $this->db->prepare("
             SELECT COUNT(*) as total_actions
             FROM audit_log
-            WHERE actor_id = ? AND actor_role IN ('Super Admin', 'Admin', 'Moderator', 'super_admin', 'admin', 'moderator')
+            WHERE actor_id IN ($placeholders)
         ");
-        $stmt->execute([$adminId]);
+        $stmt->execute($searchActorIds);
         return (int)$stmt->fetchColumn();
     }
+
+
 
     public function getAllAdmins()
     {
@@ -112,7 +134,7 @@ class AdminManagementRepository extends BaseRepository implements \App\Domain\Co
             FROM admin_users a
             WHERE a.admin_role != 'super_admin'
             ORDER BY a.created_at DESC
-        ", \App\Domain\Models\Admin::class);
+        ", [], \App\Domain\Models\Admin::class);
     }
 
     public function getLockedAdmins()
@@ -123,8 +145,9 @@ class AdminManagementRepository extends BaseRepository implements \App\Domain\Co
             FROM admin_users
             WHERE account_locked = 1
             ORDER BY locked_at DESC
-        ", \App\Domain\Models\Admin::class);
+        ", [], \App\Domain\Models\Admin::class);
     }
+
 
     public function updateAdminProfileField(int $id, string $field, $value)
     {
@@ -159,4 +182,35 @@ class AdminManagementRepository extends BaseRepository implements \App\Domain\Co
     {
         return $this->execute("UPDATE admin_users SET two_fa_enabled = ? WHERE id = ?", [$enabled, $id]);
     }
+
+    public function unlockAdmin(int $id)
+    {
+        return $this->execute("
+            UPDATE admin_users 
+            SET account_locked = 0,
+                locked_at = NULL,
+                lock_reason = NULL,
+                locked_until = NULL,
+                answer_attempts = 0,
+                answer_locked_until = NULL,
+                failed_attempts = 0,
+                updated_at = NOW()
+            WHERE id = ?
+        ", [$id]);
+    }
+
+    public function updateSecurityQuestion(int $id, string $question, string $answerHash)
+    {
+        return $this->execute("
+            UPDATE admin_users 
+            SET security_question = ?, 
+                security_answer_hash = ?, 
+                security_question_set = 1,
+                answer_attempts = 0,
+                answer_locked_until = NULL,
+                updated_at = NOW()
+            WHERE id = ?
+        ", [$question, $answerHash, $id]);
+    }
 }
+

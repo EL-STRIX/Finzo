@@ -15,4 +15,7 @@ interface AdminManagementServiceInterface
     public function uploadAvatar(int $adminId, ?array $file, bool $isProfileEndpoint = false): array;
     public function updateTwoFaSettings(int $adminId, int $enabled): array;
     public function updateAdminProfile(int $adminId, array $data): array;
+    public function updateSecurityQuestion(int $adminId, array $data): array;
+    public function unlockAdmin(int $targetAdminId): array;
 }
+

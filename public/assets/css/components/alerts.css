@@ -1,0 +1,65 @@
+/* Finzo Enterprise Alerts Component System */
+
+.alert {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-xs);
+  padding: var(--space-md);
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.5;
+  width: 100%;
+}
+
+.alert-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.alert-content {
+  flex-grow: 1;
+}
+
+.alert-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 15px;
+  margin-bottom: 4px;
+  color: var(--color-text-primary);
+}
+
+.alert-message {
+  color: var(--color-text-secondary);
+}
+
+/* Variations */
+.alert-success {
+  background-color: var(--color-success-bg);
+  border-color: var(--color-success-bg);
+}
+.alert-success .alert-icon { color: var(--color-success); }
+.alert-success .alert-title { color: var(--color-success); }
+
+.alert-warning {
+  background-color: var(--color-warning-bg);
+  border-color: var(--color-warning-bg);
+}
+.alert-warning .alert-icon { color: var(--color-warning); }
+.alert-warning .alert-title { color: var(--color-warning); }
+
+.alert-error, .alert-danger {
+  background-color: var(--color-error-bg);
+  border-color: var(--color-error-bg);
+}
+.alert-error .alert-icon, .alert-danger .alert-icon { color: var(--color-error); }
+.alert-error .alert-title, .alert-danger .alert-title { color: var(--color-error); }
+
+.alert-info {
+  background-color: var(--color-info-bg);
+  border-color: var(--color-info-bg);
+}
+.alert-info .alert-icon { color: var(--color-info); }
+.alert-info .alert-title { color: var(--color-info); }

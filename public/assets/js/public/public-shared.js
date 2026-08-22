@@ -78,9 +78,9 @@ $(document).ready(function() {
     $(document).on('click', '#terminal-link-btn', function(e) {
         e.preventDefault();
         if (window.isAuthenticated()) {
-            window.location.href = '/Finzo/public/views/user/dashboard.html';
+            window.location.href = '/Finzo/public/views/user/dashboard.php';
         } else {
-            window.location.href = '/Finzo/public/views/auth/login.html';
+            window.location.href = '/Finzo/public/views/auth/login.php';
         }
     });
 
@@ -305,14 +305,14 @@ $(document).ready(function() {
 
     // --- NEW: Sidebar Auto-Highlighting (Extension-Aware) ---
     function highlightActiveSidebar() {
-        const fullPath = window.location.pathname.replace('.html', '').replace(/\/$/, "");
+        const fullPath = window.location.pathname.replace('.php', '').replace(/\/$/, "");
         
         document.querySelectorAll('aside nav a').forEach(link => {
             const href = link.getAttribute('href');
             if (!href || href === '#' || href.startsWith('javascript')) return;
             
-            // Clean up the href for comparison (remove .html and trailing slashes)
-            const cleanHref = href.replace('.html', '').replace(/\/$/, "");
+            // Clean up the href for comparison (remove .php and trailing slashes)
+            const cleanHref = href.replace('.php', '').replace(/\/$/, "");
             
             if (fullPath.endsWith(cleanHref)) {
                 link.classList.add('active', 'bg-blue-50', 'dark:bg-blue-900/20', 'text-blue-600', 'dark:text-blue-400');

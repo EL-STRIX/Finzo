@@ -68,7 +68,7 @@ ob_start();
     </div>
 
     <!-- RIGHT: NOTIFICATION FEED -->
-    <div class="w-full lg:w-3/4 ds-animate-slide-up" style="animation-delay: 0.1s;">
+    <div class="w-full lg:w-3/4 ds-animate-slide-up delay-100">
       <div class="ds-card min-h-[400px]">
         <div id="notif-container" class="flex flex-col">
           <!-- Populated by JS -->
@@ -99,7 +99,9 @@ ob_start();
 
 <script defer src="/Finzo/public/assets/js/core/utils.js"></script>
   <script defer src="/Finzo/public/assets/js/core/api.js"></script>
+<script defer src="/Finzo/public/assets/js/user/notifications.js"></script>
 <?php
 $slot = ob_get_clean();
 include __DIR__ . '/../layouts/app.php';
 ?>
+

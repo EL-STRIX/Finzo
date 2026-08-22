@@ -34,7 +34,7 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
     {
         $total = $this->repository->countAuditLogs($filters);
 
-        $pages  = max(1, ceil($total / $perPage));
+        $pages  = max(1, (int)ceil($total / $perPage));
         $offset = ($page - 1) * $perPage;
 
         $entries = $this->repository->getAuditLogs($filters, $perPage, $offset);
@@ -49,11 +49,26 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
             'per_page'     => $perPage,
             'action_types' => $action_types,
             'stats'        => [
-                'admin'  => (int)($stats['admin_count'] ?? 0),
-                'staff'  => (int)($stats['staff_count'] ?? 0),
-                'user'   => (int)($stats['user_count'] ?? 0)
+                'total'    => $total,
+                'admin'    => (int)($stats['admin_count'] ?? 0),
+                'staff'    => (int)($stats['staff_count'] ?? 0),
+                'user'     => (int)($stats['user_count'] ?? 0),
+                'system'   => (int)($stats['system_count'] ?? 0),
+                'success'  => (int)($stats['success_count'] ?? 0),
+                'failure'  => (int)($stats['failure_count'] ?? 0)
             ]
         ];
+    }
+
+    /**
+     * Export Audit Logs as CSV generator.
+     *
+     * @param array $filters
+     * @return \Generator
+     */
+    public function exportAuditLogs(array $filters): \Generator
+    {
+        return $this->repository->exportAuditLogsGenerator($filters);
     }
     /**
      * Get Dashboard Data.
@@ -67,7 +82,7 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
 
         $stats_cache = \App\Shared\Core\Cache\CacheManager::getInstance()->get('admin_dashboard_stats', function() {
             return $this->repository->getCachedDashboardStats();
-        }, 300); // 5 minutes cache
+        }, 15); // 15 seconds cache
 
         $stats = array_merge($stats, $stats_cache);
 
@@ -93,14 +108,14 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
 
                 $data[] = [
                     'month'       => $month_label,
-                    'deposits'    => (float)$month_data['deposits'],
-                    'withdrawals' => (float)$month_data['withdrawals'],
-                    'transfers'   => (float)$month_data['transfers'],
-                    'count'       => (int)$month_data['count']
+                    'deposits'    => (float)($month_data['deposits'] ?? 0),
+                    'withdrawals' => (float)($month_data['withdrawals'] ?? 0),
+                    'transfers'   => (float)($month_data['transfers'] ?? 0),
+                    'count'       => (int)($month_data['count'] ?? 0)
                 ];
             }
             return $data;
-        }, 3600); // 1 hour cache
+        }, 30); // 30 seconds cache
 
         $admin_data = $this->repository->getAdminById($adminId);
 
@@ -334,24 +349,28 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
      */
     public function exportUsers(array $filters): array|\Generator
     {
-        $where_clauses = ["u.is_deleted = 0", "u.status != 'suspended'"];
+        $where_clauses = [];
         $params = [];
 
-        if ($filters['status'] !== 'all' && in_array($filters['status'], ['pending', 'under_review', 'active', 'rejected'])) {
-            $where_clauses[] = "u.status = ?";
-            $params[] = $filters['status'];
-        }
-
         if (!empty($filters['search'])) {
-            $where_clauses[] = "(u.full_name LIKE ? OR u.customer_id LIKE ?)";
+            $where_clauses[] = "(u.full_name LIKE ? OR u.customer_id LIKE ? OR u.email LIKE ? OR u.phone LIKE ?)";
             $search_param = "%{$filters['search']}%";
             $params[] = $search_param;
             $params[] = $search_param;
+            $params[] = $search_param;
+            $params[] = $search_param;
+        }
+
+        $orderSql = "u.created_at DESC";
+        $this->applyUserFiltersAndSort($filters, $where_clauses, $orderSql);
+
+        if (empty($where_clauses)) {
+            $where_clauses[] = "1=1";
         }
 
         $where_sql = implode(' AND ', $where_clauses);
 
-        return $this->repository->exportUsersGenerator($where_sql, $params);
+        return $this->repository->exportUsersGenerator($where_sql, $params, $orderSql);
     }
     /**
      * Get Locked Accounts.
@@ -601,24 +620,26 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
         $account = $this->repository->getAccountPreferences($user['customer_id']);
 
         $id_front_url = null;
-        if ($user['id_front_path']) {
+        if (!empty($user['id_front_path'])) {
             $id_front_url = str_starts_with($user['id_front_path'], 'storage/')
-                ? APP_URL . '/api/Admin/view-kyc-document.php?path=' . urlencode($user['id_front_path'])
-                : APP_URL . '/' . $user['id_front_path'];
+                ? APP_URL . '/api/v1/users/' . $user['id'] . '/kyc?path=' . urlencode($user['id_front_path'])
+                : (str_starts_with($user['id_front_path'], 'http') ? $user['id_front_path'] : APP_URL . '/' . ltrim($user['id_front_path'], '/'));
         }
 
         $id_back_url = null;
-        if ($user['id_back_path']) {
+        if (!empty($user['id_back_path'])) {
             $id_back_url = str_starts_with($user['id_back_path'], 'storage/')
-                ? APP_URL . '/api/Admin/view-kyc-document.php?path=' . urlencode($user['id_back_path'])
-                : APP_URL . '/' . $user['id_back_path'];
+                ? APP_URL . '/api/v1/users/' . $user['id'] . '/kyc?path=' . urlencode($user['id_back_path'])
+                : (str_starts_with($user['id_back_path'], 'http') ? $user['id_back_path'] : APP_URL . '/' . ltrim($user['id_back_path'], '/'));
         }
 
-        $profile_pic_url = $user['profile_picture'] ? APP_URL . '/' . $user['profile_picture'] : null;
+        $profile_pic_url = !empty($user['profile_picture'])
+            ? (str_starts_with($user['profile_picture'], 'http') ? $user['profile_picture'] : APP_URL . '/' . ltrim($user['profile_picture'], '/'))
+            : null;
         if (!$profile_pic_url) {
-            $avatar_path = 'uploads/avatars/user_' . $user['id'] . '.jpg';
+            $avatar_path = 'public/uploads/avatars/user_' . $user['id'] . '.jpg';
             if (file_exists(FINZO_ROOT . '/' . $avatar_path)) {
-                $profile_pic_url = APP_URL . '/' . $avatar_path;
+                $profile_pic_url = APP_URL . '/uploads/avatars/user_' . $user['id'] . '.jpg';
             }
         }
         $user['profile_picture_url'] = $profile_pic_url;
@@ -915,12 +936,12 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
         $where_clauses = ["1=1"];
         $params = [];
 
-        if ($filters['type'] !== 'all' && in_array($filters['type'], ['deposit', 'withdrawal', 'transfer', 'interest_credit'])) {
+        if (isset($filters['type']) && $filters['type'] !== 'all' && in_array($filters['type'], ['deposit', 'withdrawal', 'transfer', 'interest_credit'])) {
             $where_clauses[] = "t.type = ?";
             $params[] = $filters['type'];
         }
 
-        if ($filters['status'] !== 'all' && in_array($filters['status'], ['completed', 'pending', 'failed', 'reversed'])) {
+        if (isset($filters['status']) && $filters['status'] !== 'all' && in_array($filters['status'], ['completed', 'pending', 'failed', 'reversed'])) {
             $where_clauses[] = "t.status = ?";
             $params[] = $filters['status'];
         }
@@ -935,11 +956,30 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
             $params[] = $filters['to_date'];
         }
 
-        if (!empty($filters['search'])) {
-            $where_clauses[] = "(t.txn_id LIKE ? OR fu.full_name LIKE ? OR tu.full_name LIKE ? OR fa.account_no LIKE ? OR ta.account_no LIKE ?)";
-            $s = "%{$filters['search']}%";
-            $params = array_merge($params, [$s, $s, $s, $s, $s]);
+        if (!empty($filters['min_amount']) && is_numeric($filters['min_amount'])) {
+            $where_clauses[] = "t.amount >= ?";
+            $params[] = (float)$filters['min_amount'];
         }
+
+        if (!empty($filters['max_amount']) && is_numeric($filters['max_amount'])) {
+            $where_clauses[] = "t.amount <= ?";
+            $params[] = (float)$filters['max_amount'];
+        }
+
+        if (!empty($filters['search'])) {
+            $where_clauses[] = "(t.txn_id LIKE ? OR fu.full_name LIKE ? OR tu.full_name LIKE ? OR fa.account_no LIKE ? OR ta.account_no LIKE ? OR s.staff_id LIKE ? OR t.description LIKE ?)";
+            $s = "%{$filters['search']}%";
+            $params = array_merge($params, [$s, $s, $s, $s, $s, $s, $s]);
+        }
+
+        $sortMap = [
+            'newest'      => 't.created_at DESC, t.id DESC',
+            'oldest'      => 't.created_at ASC, t.id ASC',
+            'amount_high' => 't.amount DESC, t.created_at DESC',
+            'amount_low'  => 't.amount ASC, t.created_at DESC'
+        ];
+        $sortKey = $filters['sort'] ?? 'newest';
+        $orderSql = $sortMap[$sortKey] ?? $sortMap['newest'];
 
         $where_sql = implode(' AND ', $where_clauses);
         $base_sql = "
@@ -949,6 +989,7 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
             LEFT JOIN accounts ta ON t.to_account_id = ta.id
             LEFT JOIN users tu ON ta.user_id = tu.customer_id
             LEFT JOIN staff s ON t.processed_by_staff_id = s.id
+            LEFT JOIN branches b ON s.branch_id = b.id
             WHERE {$where_sql}
         ";
 
@@ -960,7 +1001,7 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
         $pages  = max(1, ceil($total / $perPage));
         $offset = ($page - 1) * $perPage;
 
-        $transactions = $this->repository->getTransactions($base_sql, $params, $perPage, $offset);
+        $transactions = $this->repository->getTransactions($base_sql, $params, $perPage, $offset, $orderSql);
         $summary = $this->repository->getTransactionsSummary($base_sql, $params);
 
         return [
@@ -980,15 +1021,47 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
      * @param int $perPage
      * @return array
      */
+    private function applyUserFiltersAndSort(array $filters, array &$where_clauses, string &$orderSql): void
+    {
+        // Status Filter - only active and suspended non-deleted users belong in User Management
+        $status = $filters['status'] ?? 'all';
+        if ($status === 'active') {
+            $where_clauses[] = "u.is_deleted = 0 AND u.status = 'active'";
+        } elseif ($status === 'suspended') {
+            $where_clauses[] = "u.is_deleted = 0 AND u.status = 'suspended'";
+        } else {
+            $where_clauses[] = "u.is_deleted = 0 AND u.status IN ('active', 'suspended')";
+        }
+
+        // Activity Filter
+        if (!empty($filters['activity']) && $filters['activity'] !== 'all') {
+            if ($filters['activity'] === 'recent') {
+                $where_clauses[] = "u.last_login_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)";
+            } elseif ($filters['activity'] === 'inactive_30') {
+                $where_clauses[] = "(u.last_login_at < DATE_SUB(NOW(), INTERVAL 30 DAY) OR u.last_login_at IS NULL)";
+            } elseif ($filters['activity'] === 'dormant') {
+                $where_clauses[] = "(u.last_login_at < DATE_SUB(NOW(), INTERVAL 90 DAY) OR u.last_login_at IS NULL)";
+            }
+        }
+
+        // Sorting
+        if (!empty($filters['sort'])) {
+            if ($filters['sort'] === 'newest') {
+                $orderSql = "u.created_at DESC";
+            } elseif ($filters['sort'] === 'oldest') {
+                $orderSql = "u.created_at ASC";
+            } elseif ($filters['sort'] === 'name_asc') {
+                $orderSql = "u.full_name ASC";
+            } elseif ($filters['sort'] === 'recently_active') {
+                $orderSql = "u.last_login_at DESC";
+            }
+        }
+    }
+
     public function getUsersList(array $filters, int $page, int $perPage): array
     {
-        $where_clauses = ["u.is_deleted = 0", "u.status != 'suspended'"];
+        $where_clauses = [];
         $params = [];
-
-        if ($filters['status'] !== 'all' && in_array($filters['status'], ['pending', 'under_review', 'active', 'rejected'])) {
-            $where_clauses[] = "u.status = ?";
-            $params[] = $filters['status'];
-        }
 
         if (!empty($filters['search'])) {
             $where_clauses[] = "(u.full_name LIKE ? OR u.customer_id LIKE ? OR u.email LIKE ? OR u.phone LIKE ?)";
@@ -999,13 +1072,20 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
             $params[] = $search_param;
         }
 
+        $orderSql = "u.created_at DESC";
+        $this->applyUserFiltersAndSort($filters, $where_clauses, $orderSql);
+
+        if (empty($where_clauses)) {
+            $where_clauses[] = "1=1";
+        }
+
         $where_sql = implode(' AND ', $where_clauses);
         $total = $this->repository->countUsers($where_sql, $params);
 
         $pages  = max(1, ceil($total / $perPage));
         $offset = ($page - 1) * $perPage;
 
-        $users = $this->repository->getUsers($where_sql, $params, $perPage, $offset);
+        $users = $this->repository->getUsers($where_sql, $params, $perPage, $offset, $orderSql);
 
         foreach ($users as &$u) {
             $profile_pic_url = $u['profile_picture'] ? APP_URL . '/' . $u['profile_picture'] : null;
@@ -1093,9 +1173,18 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
             }
         }
 
-        $base_avatar_dir = UPLOAD_AVATARS_PATH;
-        $avatar_path = $base_avatar_dir . 'user_' . $userId . '.jpg';
-        $avatar_url = file_exists($avatar_path) ? APP_URL . '/uploads/avatars/user_' . $userId . '.jpg?t=' . filemtime($avatar_path) : null;
+        $avatar_url = null;
+        if (!empty($user['profile_picture'])) {
+            $avatar_url = str_starts_with($user['profile_picture'], 'http')
+                ? $user['profile_picture']
+                : APP_URL . '/' . ltrim($user['profile_picture'], '/');
+        } else {
+            $base_avatar_dir = UPLOAD_AVATARS_PATH;
+            $avatar_path = $base_avatar_dir . 'user_' . $userId . '.jpg';
+            if (file_exists($avatar_path)) {
+                $avatar_url = APP_URL . '/uploads/avatars/user_' . $userId . '.jpg?t=' . filemtime($avatar_path);
+            }
+        }
 
         $formatted_user = [
             'id' => $user['id'],
@@ -1136,12 +1225,17 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
     public function unlockAccount(int $userId, int $adminId): array
     {
         $pdo = \App\Shared\Core\Database::getInstance();
-        $chars = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ23456789@#$%!';
+        $lower = 'abcdefghjkmnpqrstuvwxyz';
+        $upper = 'ABCDEFGHJKMNPQRSTUVWXYZ';
+        $digits = '23456789';
+        $symbols = '@#$%!';
+        $chars = $lower . $upper . $digits . $symbols;
+        
         $temp_pass = '';
-        $temp_pass .= 'abcdefghjkmnpqrstuvwxyz'[rand(0, 23)];
-        $temp_pass .= 'ABCDEFGHJKMNPQRSTUVWXYZ'[rand(0, 23)];
-        $temp_pass .= '23456789'[rand(0, 7)];
-        $temp_pass .= '@#$%!'[rand(0, 4)];
+        $temp_pass .= $lower[rand(0, strlen($lower) - 1)];
+        $temp_pass .= $upper[rand(0, strlen($upper) - 1)];
+        $temp_pass .= $digits[rand(0, strlen($digits) - 1)];
+        $temp_pass .= $symbols[rand(0, strlen($symbols) - 1)];
         for ($i = 4; $i < 12; $i++) {
             $temp_pass .= $chars[rand(0, strlen($chars) - 1)];
         }
@@ -1215,7 +1309,7 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
 
         switch ($action) {
             case 'suspend':
-                if (function_exists('check_admin_permission') && isset($pdo)) {
+                if ($this->security !== null && function_exists('check_admin_permission') && isset($pdo)) {
                     $this->security->checkAdminPermission($adminId, 'suspend_user');
                 }
                 if ($user['status'] === \App\Domain\Enums\AccountStatusEnum::SUSPENDED->value) {
@@ -1238,7 +1332,7 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
                 return ['success' => true, 'message' => 'User suspended successfully'];
 
             case 'reinstate':
-                if (function_exists('check_admin_permission') && isset($pdo)) {
+                if ($this->security !== null && function_exists('check_admin_permission') && isset($pdo)) {
                     $this->security->checkAdminPermission($adminId, 'reinstate_user');
                 }
                 if ($user['status'] === \App\Domain\Enums\AccountStatusEnum::ACTIVE->value) {
@@ -1261,7 +1355,7 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
                 return ['success' => true, 'message' => 'User reinstated successfully'];
 
             case 'delete':
-                if (function_exists('check_admin_permission') && isset($pdo)) {
+                if ($this->security !== null && function_exists('check_admin_permission') && isset($pdo)) {
                     $this->security->checkAdminPermission($adminId, 'soft_delete_user');
                 }
                 if ($user['is_deleted']) {
@@ -1278,7 +1372,7 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
                 return ['success' => true, 'message' => 'User deleted successfully'];
 
             case 'recover':
-                if (function_exists('check_admin_permission') && isset($pdo)) {
+                if ($this->security !== null && function_exists('check_admin_permission') && isset($pdo)) {
                     $this->security->checkAdminPermission($adminId, 'soft_delete_user');
                 }
                 if (!$user['is_deleted']) {
@@ -1317,7 +1411,7 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
                 return ['success' => true, 'message' => 'User recovered successfully'];
 
             case 'hard_delete':
-                if (function_exists('check_admin_permission') && isset($pdo)) {
+                if ($this->security !== null && function_exists('check_admin_permission') && isset($pdo)) {
                     $this->security->checkAdminPermission($adminId, 'soft_delete_user');
                 }
                 $this->repository->hardDeleteUserAccount($userId, $user['customer_id']);
@@ -1329,7 +1423,7 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
                 return ['success' => true, 'message' => 'User permanently deleted'];
 
             case 'delete_account_only':
-                if (function_exists('check_admin_permission') && isset($pdo)) {
+                if ($this->security !== null && function_exists('check_admin_permission') && isset($pdo)) {
                     $this->security->checkAdminPermission($adminId, 'soft_delete_user');
                 }
                 $this->repository->deleteAccountOnly($user['customer_id']);
@@ -1362,9 +1456,29 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
             $transactions = $this->repository->getAccountsRecentTransactions($account_ids, 20);
         }
 
-        $id_front_url = $user['id_front_path'] ? APP_URL . '/' . $user['id_front_path'] : null;
-        $id_back_url  = $user['id_back_path'] ? APP_URL . '/' . $user['id_back_path'] : null;
-        $avatar_url = !empty($user['profile_picture']) ? APP_URL . '/' . $user['profile_picture'] : null;
+        $id_front_url = null;
+        if (!empty($user['id_front_path'])) {
+            $id_front_url = str_starts_with($user['id_front_path'], 'storage/')
+                ? APP_URL . '/api/v1/users/' . $user['id'] . '/kyc?path=' . urlencode($user['id_front_path'])
+                : (str_starts_with($user['id_front_path'], 'http') ? $user['id_front_path'] : APP_URL . '/' . ltrim($user['id_front_path'], '/'));
+        }
+
+        $id_back_url = null;
+        if (!empty($user['id_back_path'])) {
+            $id_back_url = str_starts_with($user['id_back_path'], 'storage/')
+                ? APP_URL . '/api/v1/users/' . $user['id'] . '/kyc?path=' . urlencode($user['id_back_path'])
+                : (str_starts_with($user['id_back_path'], 'http') ? $user['id_back_path'] : APP_URL . '/' . ltrim($user['id_back_path'], '/'));
+        }
+
+        $avatar_url = !empty($user['profile_picture'])
+            ? (str_starts_with($user['profile_picture'], 'http') ? $user['profile_picture'] : APP_URL . '/' . ltrim($user['profile_picture'], '/'))
+            : null;
+        if (!$avatar_url) {
+            $avatar_path = 'public/uploads/avatars/user_' . $user['id'] . '.jpg';
+            if (file_exists(FINZO_ROOT . '/' . $avatar_path)) {
+                $avatar_url = APP_URL . '/uploads/avatars/user_' . $user['id'] . '.jpg';
+            }
+        }
 
         return [
             'success' => true,
@@ -1442,7 +1556,7 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
             }
 
             // Mark original as reversed
-            $pdo->prepare("UPDATE transactions SET status = 'reversed', updated_at = NOW() WHERE id = ?")->execute([$txn['id']]);
+            $pdo->prepare("UPDATE transactions SET status = 'reversed' WHERE id = ?")->execute([$txn['id']]);
 
             // Create Reversal transaction
             $revTxnId = generate_transaction_id();
@@ -1472,7 +1586,10 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
                     "Reversed transaction {$transactionId}. Reason: {$reason}"
                 );
             }
-            $this->repository->addNotification($txn['to_user_id'], 'transaction', 'Transaction Reversed', 'A transaction of ₹' . number_format($txn['amount'], 2) . ' was reversed by administration. Ref: ' . $transactionId);
+            $targetCustomerId = $dest ? ($dest['customer_id'] ?? null) : ($source ? ($source['customer_id'] ?? null) : null);
+            if ($targetCustomerId) {
+                $this->repository->addNotification($targetCustomerId, 'transaction', 'Transaction Reversed', 'A transaction of ₹' . number_format($txn['amount'], 2) . ' was reversed by administration. Ref: ' . $transactionId);
+            }
 
             $this->repository->commit();
             return ['success' => true, 'message' => 'Transaction reversed successfully', 'code' => 200];

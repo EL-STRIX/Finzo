@@ -5,7 +5,6 @@
 @import 'base/typography.css';
 @import 'base/reset.css';
 @import 'base/animations.css';
-@import 'base/dark-mode.css';
 @import 'base/custom.css';
 
 /* 2. Components */
@@ -14,6 +13,8 @@
 @import 'components/cards.css';
 @import 'components/tables.css';
 @import 'components/badges.css';
+@import 'components/alerts.css';
+@import 'components/pagination.css';
 @import 'components/dropdowns.css';
 @import 'components/modals.css';
 @import 'components/toasts.css';
@@ -43,4 +44,58 @@ a:focus-visible {
 /* Ensure Minimum Touch Target (WCAG 2.2 AA) */
 .btn-primary, .btn-secondary, button {
     min-height: 44px !important;
+}
+
+/* Animation Delays */
+.delay-100 { animation-delay: 0.1s; }
+.delay-200 { animation-delay: 0.2s; }
+.delay-300 { animation-delay: 0.3s; }
+.delay-400 { animation-delay: 0.4s; }
+.delay-500 { animation-delay: 0.5s; }
+
+/* Custom Backgrounds */
+.bg-radial-dots { background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 24px 24px; }
+
+/* Utilities */
+.icon-filled { font-variation-settings: 'FILL' 1; }
+.icon-light { font-variation-settings: 'wght' 300; }
+
+/* =======================================================================
+   PREMIUM CUSTOM SCROLLBAR (LIGHT & DARK MODE)
+======================================================================= */
+html, body, * {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}
+
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-track {
+  background-color: transparent;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-thumb);
+  border-radius: 9999px;
+  border: 1.5px solid transparent;
+  background-clip: padding-box;
+  transition: background-color 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--scrollbar-thumb-hover);
+}
+
+::-webkit-scrollbar-corner {
+  background-color: transparent;
+}
+
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
 }

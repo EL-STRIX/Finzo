@@ -13,16 +13,33 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
     public function countAuditLogs(array $filters): int
     {
         [$whereSql, $params] = $this->buildAuditLogFilters($filters);
-        return (int)$this->fetchOne("SELECT COUNT(*) as count FROM audit_log al WHERE {$whereSql}", $params)['count'] ?? 0;
+        return (int)($this->fetchOne("SELECT COUNT(*) as count FROM audit_log al WHERE {$whereSql}", $params)['count'] ?? 0);
     }
 
-    public function getAuditLogs(array $filters, int $perPage, int $offset) {
+    public function getAuditLogs(array $filters, int $perPage, int $offset)
+    {
         [$whereSql, $params] = $this->buildAuditLogFilters($filters);
         return $this->fetchAll("
-            SELECT al.id, al.action_type, al.entity_id, al.entity_type,
-                   al.actor_id, al.actor_role, al.details, al.ip_address, al.created_at,
+            SELECT al.id, al.uuid, al.event_id, al.correlation_id, al.request_id,
+                   al.module, al.action_type, al.entity_id, al.entity_type,
+                   al.actor_id, al.actor_role, al.branch_id, al.session_id, al.device_info,
+                   al.details, al.ip_address, al.status,
+                   al.previous_values, al.new_values, al.created_at,
+                   b.name as branch_name,
                    al.actor_id as actor_display_id,
-                   al.actor_role as actor_specific_role,
+                   CASE 
+                       WHEN al.actor_role != '' THEN al.actor_role
+                       WHEN al.actor_id LIKE 'ADM%' THEN 'admin'
+                       WHEN al.actor_id LIKE 'STF%' THEN 'staff'
+                       WHEN al.actor_id LIKE 'USR%' THEN 'user'
+                       ELSE 'system'
+                   END as actor_specific_role,
+                   CASE 
+                       WHEN al.actor_role IN ('admin', 'super_admin', 'moderator') OR al.actor_id LIKE 'ADM%' THEN COALESCE(a.full_name, al.actor_id)
+                       WHEN al.actor_role IN ('staff') OR al.actor_id LIKE 'STF%' THEN COALESCE(s.full_name, al.actor_id)
+                       WHEN al.actor_role IN ('user') OR al.actor_id LIKE 'USR%' THEN COALESCE(u.full_name, al.actor_id)
+                       ELSE al.actor_id
+                   END as actor_name,
                    COALESCE(
                        CASE WHEN al.entity_type = 'user' THEN u.customer_id ELSE NULL END,
                        CASE WHEN al.entity_type = 'staff' THEN s.staff_id ELSE NULL END,
@@ -30,30 +47,82 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
                        al.entity_id
                    ) as entity_display_id
             FROM audit_log al
-            LEFT JOIN users u ON al.entity_type = 'user' AND (u.id = al.entity_id OR u.customer_id = al.entity_id)
-            LEFT JOIN staff s ON al.entity_type = 'staff' AND (s.id = al.entity_id OR s.staff_id = al.entity_id)
-            LEFT JOIN admin_users a ON al.entity_type = 'admin' AND (a.id = al.entity_id OR a.admin_id = al.entity_id)
+            LEFT JOIN users u ON (al.entity_type = 'user' AND (u.id = al.entity_id OR u.customer_id = al.entity_id)) OR (al.actor_role = 'user' AND (u.id = al.actor_id OR u.customer_id = al.actor_id))
+            LEFT JOIN staff s ON (al.entity_type = 'staff' AND (s.id = al.entity_id OR s.staff_id = al.entity_id)) OR (al.actor_role = 'staff' AND (s.id = al.actor_id OR s.staff_id = al.actor_id))
+            LEFT JOIN admin_users a ON (al.entity_type = 'admin' AND (a.id = al.entity_id OR a.admin_id = al.entity_id)) OR (al.actor_role = 'admin' AND (a.id = al.actor_id OR a.admin_id = al.actor_id))
+            LEFT JOIN branches b ON (al.branch_id = b.id OR al.branch_id = b.branch_code)
             WHERE {$whereSql}
-            ORDER BY al.created_at DESC
+            ORDER BY al.created_at DESC, al.id DESC
             LIMIT {$perPage} OFFSET {$offset}
         ", $params);
     }
 
-    public function getAuditLogActionTypes() {
-        $stmt = $this->db->query("SELECT DISTINCT action_type FROM audit_log ORDER BY action_type");
+    public function getAuditLogActionTypes()
+    {
+        $stmt = $this->db->query("SELECT DISTINCT action_type FROM audit_log WHERE action_type != '' ORDER BY action_type");
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
     }
 
-    public function getAuditLogStats(array $filters) {
+    public function getAuditLogStats(array $filters)
+    {
         [$whereSql, $params] = $this->buildAuditLogFilters($filters);
         return $this->fetchOne("
             SELECT 
-                SUM(CASE WHEN al.actor_role LIKE '%Admin%' OR al.actor_role = 'Moderator' OR al.actor_role IN ('admin', 'super_admin', 'moderator') THEN 1 ELSE 0 END) as admin_count,
-                SUM(CASE WHEN al.actor_role IN ('Staff', 'staff') THEN 1 ELSE 0 END) as staff_count,
-                SUM(CASE WHEN al.actor_role IN ('User', 'user') THEN 1 ELSE 0 END) as user_count
+                COUNT(*) as total_count,
+                SUM(CASE WHEN al.actor_role LIKE '%admin%' OR al.actor_role = 'moderator' OR al.actor_id LIKE 'ADM%' THEN 1 ELSE 0 END) as admin_count,
+                SUM(CASE WHEN al.actor_role LIKE '%staff%' OR al.actor_id LIKE 'STF%' THEN 1 ELSE 0 END) as staff_count,
+                SUM(CASE WHEN al.actor_role LIKE '%user%' OR al.actor_id LIKE 'USR%' THEN 1 ELSE 0 END) as user_count,
+                SUM(CASE WHEN al.actor_role LIKE '%system%' OR (al.actor_role = '' AND al.actor_id NOT LIKE 'ADM%' AND al.actor_id NOT LIKE 'STF%' AND al.actor_id NOT LIKE 'USR%') THEN 1 ELSE 0 END) as system_count,
+                SUM(CASE WHEN al.status = 'success' THEN 1 ELSE 0 END) as success_count,
+                SUM(CASE WHEN al.status IN ('failure', 'warning') THEN 1 ELSE 0 END) as failure_count
             FROM audit_log al
             WHERE {$whereSql}
         ", $params);
+    }
+
+    public function exportAuditLogsGenerator(array $filters): \Generator
+    {
+        [$whereSql, $params] = $this->buildAuditLogFilters($filters);
+        $sql = "
+            SELECT al.id, al.uuid, al.event_id, al.created_at as timestamp,
+                   CASE 
+                       WHEN al.actor_role != '' THEN al.actor_role
+                       WHEN al.actor_id LIKE 'ADM%' THEN 'admin'
+                       WHEN al.actor_id LIKE 'STF%' THEN 'staff'
+                       WHEN al.actor_id LIKE 'USR%' THEN 'user'
+                       ELSE 'system'
+                   END as actor_role,
+                   al.actor_id,
+                   al.action_type,
+                   al.module,
+                   al.entity_type,
+                   al.entity_id,
+                   al.status,
+                   al.ip_address,
+                   al.details
+            FROM audit_log al
+            WHERE {$whereSql}
+            ORDER BY al.created_at DESC, al.id DESC
+        ";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            yield [
+                'Log ID'        => $row['id'],
+                'Event ID'      => $row['event_id'] ?? '',
+                'Timestamp'     => $row['timestamp'],
+                'Actor Role'    => strtoupper($row['actor_role'] ?? 'SYSTEM'),
+                'Actor ID'      => $row['actor_id'] ?? '',
+                'Action Type'   => strtoupper(str_replace('_', ' ', $row['action_type'] ?? '')),
+                'Module'        => strtoupper($row['module'] ?? 'SYSTEM'),
+                'Entity Type'   => strtoupper($row['entity_type'] ?? '-'),
+                'Entity ID'     => $row['entity_id'] ?? '-',
+                'Status'        => strtoupper($row['status'] ?? 'SUCCESS'),
+                'IP Address'    => $row['ip_address'] ?? 'N/A',
+                'Details'       => $row['details'] ?? ''
+            ];
+        }
     }
 
     private function buildAuditLogFilters(array $filters): array
@@ -61,21 +130,27 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
         $where_clauses = ["1=1"];
         $params = [];
 
-        if (isset($filters['action_type']) && $filters['action_type'] !== 'all') {
-            $where_clauses[] = "al.action_type LIKE ?";
-            $params[] = "%{$filters['action_type']}%";
+        if (!empty($filters['action_type']) && $filters['action_type'] !== 'all') {
+            $where_clauses[] = "al.action_type = ?";
+            $params[] = $filters['action_type'];
         }
 
-        if (isset($filters['actor_role']) && $filters['actor_role'] !== 'all' && in_array($filters['actor_role'], ['admin', 'staff', 'system', 'user'])) {
-            if ($filters['actor_role'] === 'admin') {
-                $where_clauses[] = "(al.actor_role LIKE '%Admin%' OR al.actor_role = 'Moderator' OR al.actor_role IN ('admin', 'super_admin', 'moderator'))";
-            } elseif ($filters['actor_role'] === 'staff') {
-                $where_clauses[] = "al.actor_role IN ('Staff', 'staff')";
-            } elseif ($filters['actor_role'] === 'system') {
-                $where_clauses[] = "al.actor_role IN ('System', 'system')";
-            } elseif ($filters['actor_role'] === 'user') {
-                $where_clauses[] = "al.actor_role IN ('User', 'user')";
+        if (!empty($filters['actor_role']) && $filters['actor_role'] !== 'all') {
+            $role = strtolower($filters['actor_role']);
+            if ($role === 'admin') {
+                $where_clauses[] = "(al.actor_role LIKE '%admin%' OR al.actor_role = 'moderator' OR al.actor_id LIKE 'ADM%')";
+            } elseif ($role === 'staff') {
+                $where_clauses[] = "(al.actor_role LIKE '%staff%' OR al.actor_id LIKE 'STF%')";
+            } elseif ($role === 'user') {
+                $where_clauses[] = "(al.actor_role LIKE '%user%' OR al.actor_id LIKE 'USR%')";
+            } elseif ($role === 'system') {
+                $where_clauses[] = "(al.actor_role LIKE '%system%' OR (al.actor_role = '' AND al.actor_id NOT LIKE 'ADM%' AND al.actor_id NOT LIKE 'STF%' AND al.actor_id NOT LIKE 'USR%'))";
             }
+        }
+
+        if (!empty($filters['status']) && $filters['status'] !== 'all') {
+            $where_clauses[] = "al.status = ?";
+            $params[] = $filters['status'];
         }
 
         if (!empty($filters['from_date'])) {
@@ -89,8 +164,13 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
         }
 
         if (!empty($filters['search'])) {
-            $where_clauses[] = "(al.actor_id LIKE ? OR al.entity_id LIKE ?)";
+            $where_clauses[] = "(al.actor_id LIKE ? OR al.entity_id LIKE ? OR al.details LIKE ? OR al.action_type LIKE ? OR al.ip_address LIKE ? OR al.event_id LIKE ? OR al.uuid LIKE ?)";
             $s = "%{$filters['search']}%";
+            $params[] = $s;
+            $params[] = $s;
+            $params[] = $s;
+            $params[] = $s;
+            $params[] = $s;
             $params[] = $s;
             $params[] = $s;
         }
@@ -128,7 +208,7 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
             FROM transactions
             WHERE status = 'completed'
                 AND DATE_FORMAT(created_at, '%Y-%m') = ?
-        ", [$monthDate], \App\Domain\Models\Admin::class);
+        ", [$monthDate]);
     }
 
     public function getAdminById(int $adminId) {
@@ -202,7 +282,7 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
         return $this->fetchAll("SELECT id, user_id, balance FROM accounts WHERE account_type = 'savings' AND status = 'active' AND balance > 0", []);
     }
 
-    public function addTransaction(string $txnId, ?int $fromAccountId, int $toAccountId, string $type, float $amount, float $balanceAfter, string $description, string $referenceNote, string $status): void
+    public function addTransaction(string $txnId, ?int $fromAccountId, ?int $toAccountId, string $type, float $amount, float $balanceAfter, string $description, string $referenceNote, string $status): void
     {
         $this->execute("
             INSERT INTO transactions (txn_id, from_account_id, to_account_id, type, amount, balance_after, description, reference_note, status, created_at)
@@ -215,7 +295,7 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
         $this->execute("UPDATE accounts SET balance = ?, updated_at = NOW() WHERE id = ?", [$balance, $accountId]);
     }
 
-    public function addNotification(int $userId, string $type, string $title, string $message): void
+    public function addNotification(string|int $userId, string $type, string $title, string $message): void
     {
         $this->execute("
             INSERT INTO notifications (user_id, type, title, message, is_read, created_at)
@@ -231,7 +311,7 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
     public function getAccountForUpdate(int $accountId)
     {
         return $this->fetchOne("
-            SELECT a.id, a.account_no, a.balance, u.full_name, u.customer_id
+            SELECT a.id, a.account_no, a.balance, u.full_name, u.customer_id, u.id as user_id
             FROM accounts a
             JOIN users u ON a.user_id = u.customer_id
             WHERE a.id = ? AND a.status = 'active'
@@ -249,19 +329,37 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
         ", $params);
     }
 
-    public function exportUsersGenerator(string $whereSql, array $params): \Generator {
+    public function exportUsersGenerator(string $whereSql, array $params, string $orderSql = 'u.created_at DESC'): \Generator {
         $sql = "
             SELECT
                 u.customer_id as 'Customer ID',
                 u.full_name as 'Full Name',
                 u.email as 'Email',
                 u.phone as 'Phone',
-                u.status as 'Status',
-                u.created_at as 'Created At',
-                u.last_login_at as 'Last Login'
+                u.status as 'User Status',
+                CASE WHEN u.is_deleted = 1 THEN 'Yes' ELSE 'No' END as 'Soft Deleted',
+                COALESCE(u.dob, '') as 'Date of Birth',
+                COALESCE(u.gender, '') as 'Gender',
+                COALESCE(u.father_name, '') as 'Father Name',
+                COALESCE(u.mother_name, '') as 'Mother Name',
+                COALESCE(u.marital_status, '') as 'Marital Status',
+                COALESCE(u.nationality, '') as 'Nationality',
+                COALESCE(u.occupation, '') as 'Occupation',
+                COALESCE(u.annual_income, '') as 'Annual Income',
+                COALESCE(u.source_of_income, '') as 'Source of Income',
+                COALESCE(u.id_type, '') as 'ID Document Type',
+                COALESCE(u.id_number, '') as 'ID Number',
+                COALESCE(u.street, '') as 'Street Address',
+                COALESCE(u.city, '') as 'City',
+                COALESCE(u.state, '') as 'State',
+                COALESCE(u.pincode, '') as 'PIN Code',
+                COALESCE(u.country, 'India') as 'Country',
+                u.created_at as 'Registration Date',
+                COALESCE(u.last_login_at, 'Never') as 'Last Active',
+                COALESCE(u.last_login_ip, 'N/A') as 'Last Login IP'
             FROM users u
             WHERE {$whereSql}
-            ORDER BY u.created_at DESC
+            ORDER BY {$orderSql}
         ";
         $stmt = $this->db->prepare($sql);
         $stmt->execute($params);
@@ -455,7 +553,7 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
                     WHERE action_type = 'user_suspended' AND entity_type = 'user'
                     GROUP BY entity_id
                 ) log2 ON log1.id = log2.max_id
-            ) l ON u.customer_id = l.entity_id
+            ) l ON u.id = l.entity_id
             WHERE {$whereSql}
         ";
         return (int)$this->fetchOne($sql, $params)['count'] ?? 0;
@@ -479,7 +577,7 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
                     WHERE action_type = 'user_suspended' AND entity_type = 'user'
                     GROUP BY entity_id
                 ) log2 ON log1.id = log2.max_id
-            ) l ON u.customer_id = l.entity_id
+            ) l ON u.id = l.entity_id
             WHERE {$whereSql}
             ORDER BY raw_suspended_at DESC
             LIMIT {$perPage} OFFSET {$offset}
@@ -495,20 +593,29 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
         return (int)$this->fetchOne("SELECT COUNT(*) as count " . $baseSql, $params)['count'] ?? 0;
     }
 
-    public function getTransactions(string $baseSql, array $params, int $perPage, int $offset) {
+    public function getTransactions(string $baseSql, array $params, int $perPage, int $offset, string $orderSql = 't.created_at DESC, t.id DESC') {
         $sql = "
             SELECT
-                t.id, t.txn_id, t.type, t.amount, t.balance_after, t.description,
+                t.id, t.txn_id, t.type, t.amount, t.balance_after, t.dest_balance_after, t.description,
                 t.reference_note, t.status, t.created_at,
                 COALESCE(fa.account_no, 'N/A') as from_account_no,
+                COALESCE(fa.account_type, '') as from_account_type,
                 COALESCE(fu.full_name, 'N/A') as from_user_name,
+                COALESCE(fu.email, '') as from_user_email,
+                COALESCE(fu.customer_id, '') as from_customer_id,
                 fu.profile_picture as from_user_avatar,
                 COALESCE(ta.account_no, 'N/A') as to_account_no,
+                COALESCE(ta.account_type, '') as to_account_type,
                 COALESCE(tu.full_name, 'N/A') as to_user_name,
+                COALESCE(tu.email, '') as to_user_email,
+                COALESCE(tu.customer_id, '') as to_customer_id,
                 tu.profile_picture as to_user_avatar,
-                COALESCE(s.staff_id, '') as processed_by
+                COALESCE(s.staff_id, '') as processed_by,
+                COALESCE(s.full_name, '') as processed_by_name,
+                COALESCE(b.name, '') as branch_name,
+                COALESCE(b.branch_code, '') as branch_code
             {$baseSql}
-            ORDER BY t.created_at DESC, t.id DESC
+            ORDER BY {$orderSql}
             LIMIT {$perPage} OFFSET {$offset}
         ";
         return $this->fetchAll($sql, $params);
@@ -521,7 +628,8 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
                 COALESCE(SUM(t.amount), 0) as total_amount,
                 COALESCE(SUM(CASE WHEN t.type = 'deposit' THEN t.amount ELSE 0 END), 0) as total_deposits,
                 COALESCE(SUM(CASE WHEN t.type = 'withdrawal' THEN t.amount ELSE 0 END), 0) as total_withdrawals,
-                COALESCE(SUM(CASE WHEN t.type = 'transfer' THEN t.amount ELSE 0 END), 0) as total_transfers
+                COALESCE(SUM(CASE WHEN t.type = 'transfer' THEN t.amount ELSE 0 END), 0) as total_transfers,
+                COALESCE(SUM(CASE WHEN t.type = 'interest_credit' THEN t.amount ELSE 0 END), 0) as total_interest
             {$baseSql}
         ";
         return $this->fetchOne($sql, $params);
@@ -576,16 +684,16 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
     // ---------------------------------------------------------
     public function countUsers(string $whereSql, array $params): int
     {
-        return (int)$this->fetchOne("SELECT COUNT(u.id) as count FROM users u WHERE {$whereSql}", $params)['count'] ?? 0;
+        return (int)($this->fetchOne("SELECT COUNT(*) as count FROM users u WHERE {$whereSql}", $params)['count'] ?? 0);
     }
 
-    public function getUsers(string $whereSql, array $params, int $perPage, int $offset) {
+    public function getUsers(string $whereSql, array $params, int $perPage, int $offset, string $orderSql = 'u.created_at DESC') {
         $sql = "
             SELECT
                 u.id, u.customer_id, u.full_name, u.email, u.phone, u.status, u.created_at, u.last_login_at, u.profile_picture
             FROM users u
             WHERE {$whereSql}
-            ORDER BY u.created_at DESC
+            ORDER BY {$orderSql}
             LIMIT {$perPage} OFFSET {$offset}
         ";
         return $this->fetchAll($sql, $params);
@@ -594,10 +702,10 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
     public function getUsersStats() {
         return $this->fetchOne("
             SELECT
-                SUM(CASE WHEN is_deleted = 0 THEN 1 ELSE 0 END) as total_users,
+                SUM(CASE WHEN is_deleted = 0 AND status IN ('active', 'suspended') THEN 1 ELSE 0 END) as total_users,
                 SUM(CASE WHEN is_deleted = 0 AND status = 'active' THEN 1 ELSE 0 END) as active_users,
                 SUM(CASE WHEN is_deleted = 0 AND status = 'suspended' THEN 1 ELSE 0 END) as suspended_users,
-                SUM(CASE WHEN is_deleted = 0 AND MONTH(created_at) = MONTH(CURDATE()) AND YEAR(created_at) = YEAR(CURDATE()) THEN 1 ELSE 0 END) as new_this_month,
+                SUM(CASE WHEN is_deleted = 0 AND status IN ('active', 'suspended') AND MONTH(created_at) = MONTH(CURDATE()) AND YEAR(created_at) = YEAR(CURDATE()) THEN 1 ELSE 0 END) as new_this_month,
                 SUM(CASE WHEN is_deleted = 1 THEN 1 ELSE 0 END) as soft_deleted
             FROM users
         ", []);
@@ -634,10 +742,10 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
         $stmt = $this->db->prepare("
             SELECT details, created_at, actor_id
             FROM audit_log
-            WHERE action_type = 'user_suspended' AND entity_id = ?
+            WHERE action_type = 'user_suspended' AND (entity_id = ? OR entity_id = (SELECT id FROM users WHERE customer_id = ?))
             ORDER BY id DESC LIMIT 1
         ");
-        $stmt->execute([$customerId]);
+        $stmt->execute([$customerId, $customerId]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
@@ -819,7 +927,7 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
         $pending_users = (int)$this->getSingleStat("SELECT COUNT(*) FROM users WHERE status IN ('{$pending_status}', '{$under_review_status}') AND is_deleted = 0");
 
         return [
-            'total_users'        => (int)$this->getSingleStat("SELECT COUNT(*) FROM users WHERE is_deleted = 0"),
+            'total_users'        => (int)$this->getSingleStat("SELECT COUNT(*) FROM users WHERE (is_deleted = 0 AND status IN ('{$active_status}', '{$suspended_status}')) OR is_deleted = 1"),
             'active_users'       => (int)$this->getSingleStat("SELECT COUNT(*) FROM users WHERE status = '{$active_status}' AND is_deleted = 0"),
             'pending_users'      => $pending_users,
             'pending_approvals'  => $pending_users, // Alias for backward compatibility with frontend

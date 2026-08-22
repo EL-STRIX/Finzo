@@ -98,7 +98,7 @@ function renderRecentActivity(activity) {
             <td>${typeBadge}</td>
             <td class="text-xs font-bold ${amountClass}">${amountPrefix}${window.FinzoUtils.formatINR(txn.amount)}</td>
             <td class="text-right">
-                <a href="receipt.html?id=${txn.txn_id}" class="text-warning-base hover:underline text-[10px] uppercase font-bold tracking-wider">
+                <a href="receipt.php?id=${txn.txn_id}" class="text-warning-base hover:underline text-[10px] uppercase font-bold tracking-wider">
                     Receipt
                 </a>
             </td>

@@ -3,147 +3,490 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Transaction Receipt - <?= htmlspecialchars($txn['txn_id']) ?></title>
-    <link href="<?= FINZO_ROOT ?>/public/assets/css/tailwind.css" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f1f5f9; padding: 40px; }
-        .receipt-card { background: white; max-width: 600px; margin: 0 auto; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); border-radius: 24px; padding: 48px; position: relative; overflow: hidden; }
-        .finzo-logo { font-weight: 800; font-size: 32px; letter-spacing: -1px; color: #002645; }
-        .watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-45deg); font-size: 80px; font-weight: 900; color: rgba(0, 38, 69, 0.02); white-space: nowrap; pointer-events: none; z-index: 0; }
-        .content-layer { position: relative; z-index: 10; }
-        .receipt-row { display: flex; justify-content: space-between; padding: 16px 0; border-bottom: 1px dashed #e2e8f0; }
-        .receipt-row:last-child { border-bottom: none; }
-        .label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: #64748b; font-weight: 700; }
-        .value { font-size: 14px; color: #0f172a; font-weight: 600; }
-        .value.mono { font-family: 'JetBrains Mono', monospace; font-size: 13px; }
-        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        @page {
+            size: A4 portrait;
+            margin: 12mm 15mm 12mm 15mm;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #0f172a;
+            color: #0f172a;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 24px 16px;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        .action-bar {
+            width: 100%;
+            max-width: 560px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 16px;
+            padding: 10px 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+        }
+        .action-bar-title {
+            color: #e2e8f0;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .action-bar-buttons {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn {
+            border: none;
+            outline: none;
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+        .btn:active {
+            transform: scale(0.97);
+        }
+        .btn-print {
+            background-color: #0284c7;
+            color: #ffffff;
+            box-shadow: 0 4px 14px rgba(2, 132, 199, 0.4);
+        }
+        .btn-print:hover {
+            background-color: #0369a1;
+            box-shadow: 0 6px 18px rgba(2, 132, 199, 0.5);
+        }
+        .btn-close {
+            background-color: #334155;
+            color: #f1f5f9;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .btn-close:hover {
+            background-color: #475569;
+            color: #ffffff;
+        }
+        .receipt-card {
+            background-color: #ffffff;
+            width: 100%;
+            max-width: 560px;
+            border-radius: 24px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+            padding: 36px 32px;
+            position: relative;
+            overflow: hidden;
+        }
+        .watermark {
+            position: absolute;
+            top: 52%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-30deg);
+            font-size: 60px;
+            font-weight: 900;
+            color: rgba(15, 23, 42, 0.03);
+            white-space: nowrap;
+            pointer-events: none;
+            z-index: 0;
+            letter-spacing: 0.12em;
+            user-select: none;
+        }
+        .content {
+            position: relative;
+            z-index: 10;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding-bottom: 18px;
+            border-bottom: 2px solid #002645;
+            margin-bottom: 20px;
+        }
+        .logo-title {
+            font-size: 28px;
+            font-weight: 900;
+            color: #002645;
+            letter-spacing: -0.5px;
+            line-height: 1;
+        }
+        .logo-subtitle {
+            font-size: 11px;
+            font-weight: 800;
+            color: #475569;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-top: 5px;
+        }
+        .logo-contact {
+            font-size: 10px;
+            color: #94a3b8;
+            margin-top: 2px;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 8px;
+            font-weight: 800;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .status-completed {
+            background-color: #ecfdf5;
+            color: #059669;
+            border: 1px solid #a7f3d0;
+        }
+        .status-pending {
+            background-color: #fffbeb;
+            color: #d97706;
+            border: 1px solid #fde68a;
+        }
+        .status-failed {
+            background-color: #fff1f2;
+            color: #e11d48;
+            border: 1px solid #fecdd3;
+        }
+        .amount-box {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 18px;
+            text-align: center;
+            margin-bottom: 18px;
+        }
+        .amount-label {
+            font-size: 10px;
+            font-weight: 800;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            margin-bottom: 4px;
+        }
+        .amount-val {
+            font-size: 34px;
+            font-weight: 900;
+            color: #002645;
+            letter-spacing: -0.5px;
+            line-height: 1.1;
+        }
+        .type-pill {
+            display: inline-block;
+            padding: 3px 12px;
+            border-radius: 20px;
+            background-color: #e2e8f0;
+            color: #334155;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-top: 6px;
+        }
+        .flow-banner {
+            background-color: #f0f9ff;
+            border: 1px solid #bae6fd;
+            border-radius: 12px;
+            padding: 10px 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            font-weight: 700;
+            color: #0369a1;
+            margin-bottom: 16px;
+        }
+        .flow-arrow {
+            font-size: 14px;
+            color: #0284c7;
+            font-weight: 900;
+        }
+        .table-rows {
+            margin-bottom: 18px;
+        }
+        .row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 9px 0;
+            border-bottom: 1px dashed #e2e8f0;
+            font-size: 12px;
+        }
+        .row:last-child {
+            border-bottom: none;
+        }
+        .row-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            flex-shrink: 0;
+            margin-right: 12px;
+        }
+        .row-value {
+            font-weight: 700;
+            color: #0f172a;
+            text-align: right;
+            word-break: break-word;
+        }
+        .mono {
+            font-family: monospace, Courier, monospace;
+            font-size: 12px;
+        }
+        .sub-val {
+            font-size: 10px;
+            color: #64748b;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+        .footer {
+            border-top: 1px solid #e2e8f0;
+            padding-top: 14px;
+            text-align: center;
+        }
+        .footer-note {
+            font-size: 10px;
+            color: #94a3b8;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            line-height: 1.4;
+        }
+        .footer-date {
+            font-size: 9px;
+            color: #cbd5e1;
+            font-family: monospace;
+            margin-top: 4px;
+        }
+
         @media print {
-            body { background: white; padding: 0; }
-            .receipt-card { box-shadow: none; max-width: 100%; border-radius: 0; padding: 20px; }
-            .no-print { display: none; }
+            body {
+                background-color: #ffffff !important;
+                padding: 0 !important;
+            }
+            .action-bar {
+                display: none !important;
+            }
+            .receipt-card {
+                box-shadow: none !important;
+                border: 1px solid #94a3b8 !important;
+                max-width: 100% !important;
+                border-radius: 12px !important;
+                padding: 24px !important;
+            }
         }
     </style>
 </head>
 <body>
     
-    <div class="text-center mb-6 no-print">
-        <button onclick="window.print()" class="bg-[#002645] hover:bg-blue-900 text-white px-6 py-3 rounded-xl font-bold text-sm shadow-lg hover:shadow-xl transition-all flex items-center gap-2 mx-auto">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
-            Print Receipt
-        </button>
+    <!-- Action Bar (Hidden during Print) -->
+    <div class="action-bar">
+        <div class="action-bar-title">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+            Receipt Preview
+        </div>
+        <div class="action-bar-buttons">
+            <button id="btn-print-receipt" onclick="window.print()" class="btn btn-print">
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                Print Receipt
+            </button>
+            <button id="btn-close-receipt" onclick="window.close()" class="btn btn-close">Close</button>
+        </div>
     </div>
 
+    <!-- Official Receipt Card -->
     <div class="receipt-card">
-        <div class="watermark">FINZO VERIFIED</div>
+        <div class="watermark">FINZO OFFICIAL</div>
         
-        <div class="content-layer">
-            <div class="flex justify-between items-start mb-10">
+        <div class="content">
+            <!-- Header -->
+            <div class="header">
                 <div>
-                    <div class="finzo-logo">Finzo</div>
-                    <div class="text-xs text-slate-500 font-medium tracking-wide uppercase mt-1">Official Banking Receipt</div>
+                    <div class="logo-title">Finzo</div>
+                    <div class="logo-subtitle">Official Banking Transaction Receipt</div>
+                    <div class="logo-contact">Finzo Core Banking System • 1800-FINZO-BANK</div>
                 </div>
-                <div class="text-right">
-                    <div class="text-xs text-slate-400 font-bold uppercase tracking-widest mb-1">Status</div>
-                    <div class="inline-block px-3 py-1 rounded-md border font-bold text-xs uppercase tracking-widest <?= $statusColor ?>">
-                        <?= htmlspecialchars($txn['status']) ?>
+                <div>
+                    <?php
+                        $st = strtolower($txn['status'] ?? 'completed');
+                        $badgeClass = 'status-completed';
+                        if ($st === 'failed') $badgeClass = 'status-failed';
+                        elseif ($st === 'pending') $badgeClass = 'status-pending';
+                    ?>
+                    <span class="status-badge <?= $badgeClass ?>"><?= htmlspecialchars($txn['status']) ?></span>
+                </div>
+            </div>
+
+            <!-- Amount Box -->
+            <div class="amount-box">
+                <div class="amount-label">Transaction Amount</div>
+                <div class="amount-val"><?= $formattedAmount ?></div>
+                <span class="type-pill"><?= htmlspecialchars(str_replace('_', ' ', $txn['type'])) ?></span>
+            </div>
+
+            <!-- Transfer Account-to-Account Flow Banner -->
+            <?php if ($txn['type'] === 'transfer' && !empty($txn['from_account_no']) && !empty($txn['to_account_no'])) : ?>
+                <div class="flow-banner">
+                    <div>
+                        <span style="font-size:9px;text-transform:uppercase;color:#64748b;display:block;">Sender Account</span>
+                        <span class="mono" style="color:#0f172a;"><?= htmlspecialchars($txn['from_account_no']) ?></span>
+                    </div>
+                    <div class="flow-arrow">➔</div>
+                    <div style="text-align:right;">
+                        <span style="font-size:9px;text-transform:uppercase;color:#64748b;display:block;">Beneficiary Account</span>
+                        <span class="mono" style="color:#0f172a;"><?= htmlspecialchars($txn['to_account_no']) ?></span>
                     </div>
                 </div>
-            </div>
+            <?php endif; ?>
 
-            <div class="bg-slate-50 rounded-2xl p-6 mb-8 text-center border border-slate-100">
-                <div class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Transaction Amount</div>
-                <div class="text-4xl font-black text-[#002645] tracking-tight"><?= $formattedAmount ?></div>
-                <div class="text-xs font-bold text-slate-500 uppercase mt-2 bg-slate-200/50 inline-block px-3 py-1 rounded-full">
-                    <?= htmlspecialchars($txn['type']) ?>
+            <!-- Details Rows -->
+            <div class="table-rows">
+                <div class="row">
+                    <span class="row-label">Transaction ID</span>
+                    <span class="row-value mono"><?= htmlspecialchars($txn['txn_id']) ?></span>
                 </div>
-            </div>
 
-            <div class="mb-8">
-                <div class="receipt-row">
-                    <span class="label">Transaction ID</span>
-                    <span class="value mono tracking-tight"><?= htmlspecialchars($txn['txn_id']) ?></span>
-                </div>
-                <div class="receipt-row">
-                    <span class="label">Date & Time</span>
-                    <span class="value"><?= date('d M Y, h:i A', strtotime($txn['created_at'])) ?></span>
+                <div class="row">
+                    <span class="row-label">Date & Time</span>
+                    <span class="row-value"><?= date('d M Y, h:i:s A', strtotime($txn['created_at'])) ?></span>
                 </div>
                 
                 <?php if ($txn['type'] === 'transfer') : ?>
-                    <div class="receipt-row">
-                        <span class="label">From Account</span>
-                        <div class="text-right">
-                            <div class="value"><?= htmlspecialchars($txn['from_name'] === 'N/A' ? 'Deleted User' : $txn['from_name']) ?></div>
-                            <div class="value mono opacity-50 mt-1"><?= htmlspecialchars($txn['from_account_no'] ?? 'Deleted Account') ?></div>
+                    <div class="row">
+                        <span class="row-label">From Account (Sender)</span>
+                        <div class="row-value">
+                            <div><?= htmlspecialchars($txn['from_name'] === 'N/A' ? 'Sender Customer' : $txn['from_name']) ?></div>
+                            <div class="mono sub-val"><?= htmlspecialchars($txn['from_account_no'] ?? 'N/A') ?></div>
                         </div>
                     </div>
-                    <div class="receipt-row">
-                        <span class="label">To Account</span>
-                        <div class="text-right">
-                            <div class="value"><?= htmlspecialchars($txn['to_name'] === 'N/A' ? 'Deleted User' : $txn['to_name']) ?></div>
-                            <div class="value mono opacity-50 mt-1"><?= htmlspecialchars($txn['to_account_no'] ?? 'Deleted Account') ?></div>
+                    <div class="row">
+                        <span class="row-label">To Account (Beneficiary)</span>
+                        <div class="row-value">
+                            <div><?= htmlspecialchars($txn['to_name'] === 'N/A' ? 'Beneficiary Customer' : $txn['to_name']) ?></div>
+                            <div class="mono sub-val"><?= htmlspecialchars($txn['to_account_no'] ?? 'N/A') ?></div>
                         </div>
                     </div>
-                <?php elseif ($txn['type'] === 'deposit' || $txn['type'] === 'interest_credit') : ?>
-                    <div class="receipt-row">
-                        <span class="label">Credited To</span>
-                        <div class="text-right">
-                            <div class="value"><?= htmlspecialchars($txn['to_name'] === 'N/A' ? 'Deleted User' : $txn['to_name']) ?></div>
-                            <div class="value mono opacity-50 mt-1"><?= htmlspecialchars($txn['to_account_no'] ?? 'Deleted Account') ?></div>
+                <?php elseif ($txn['type'] === 'deposit') : ?>
+                    <div class="row">
+                        <span class="row-label">Processed By Staff</span>
+                        <div class="row-value">
+                            <div><?= htmlspecialchars($txn['staff_name'] ?: 'Branch Staff') ?> (<?= htmlspecialchars($txn['staff_id'] ?: 'STF') ?>)</div>
+                            <?php if (!empty($txn['branch_name'])) : ?>
+                                <div class="sub-val"><?= htmlspecialchars($txn['branch_name']) ?> Branch</div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <span class="row-label">Credited Account</span>
+                        <div class="row-value">
+                            <div><?= htmlspecialchars($txn['to_name'] === 'N/A' ? 'Customer Account' : $txn['to_name']) ?></div>
+                            <div class="mono sub-val"><?= htmlspecialchars($txn['to_account_no'] ?? 'N/A') ?></div>
                         </div>
                     </div>
                 <?php elseif ($txn['type'] === 'withdrawal') : ?>
-                    <div class="receipt-row">
-                        <span class="label">Debited From</span>
-                        <div class="text-right">
-                            <div class="value"><?= htmlspecialchars($txn['from_name'] === 'N/A' ? 'Deleted User' : $txn['from_name']) ?></div>
-                            <div class="value mono opacity-50 mt-1"><?= htmlspecialchars($txn['from_account_no'] ?? 'Deleted Account') ?></div>
+                    <div class="row">
+                        <span class="row-label">Processed By Staff</span>
+                        <div class="row-value">
+                            <div><?= htmlspecialchars($txn['staff_name'] ?: 'Branch Staff') ?> (<?= htmlspecialchars($txn['staff_id'] ?: 'STF') ?>)</div>
+                            <?php if (!empty($txn['branch_name'])) : ?>
+                                <div class="sub-val"><?= htmlspecialchars($txn['branch_name']) ?> Branch</div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <span class="row-label">Debited Account</span>
+                        <div class="row-value">
+                            <div><?= htmlspecialchars($txn['from_name'] === 'N/A' ? ($txn['to_name'] === 'N/A' ? 'Customer Account' : $txn['to_name']) : $txn['from_name']) ?></div>
+                            <div class="mono sub-val"><?= htmlspecialchars($txn['from_account_no'] !== 'N/A' ? $txn['from_account_no'] : ($txn['to_account_no'] ?? 'N/A')) ?></div>
+                        </div>
+                    </div>
+                <?php elseif ($txn['type'] === 'interest_credit') : ?>
+                    <div class="row">
+                        <span class="row-label">Source</span>
+                        <div class="row-value">Finzo Core Treasury</div>
+                    </div>
+                    <div class="row">
+                        <span class="row-label">Credited Account</span>
+                        <div class="row-value">
+                            <div><?= htmlspecialchars($txn['to_name']) ?></div>
+                            <div class="mono sub-val"><?= htmlspecialchars($txn['to_account_no']) ?></div>
                         </div>
                     </div>
                 <?php endif; ?>
 
-                <?php if ($txn['description']) : ?>
-                <div class="receipt-row">
-                    <span class="label">Description</span>
-                    <span class="value text-right max-w-[250px]"><?= htmlspecialchars($txn['description']) ?></span>
+                <?php if (!empty($txn['description'])) : ?>
+                <div class="row">
+                    <span class="row-label">Description</span>
+                    <span class="row-value" style="max-width:280px;"><?= htmlspecialchars($txn['description']) ?></span>
                 </div>
                 <?php endif; ?>
 
-                <?php if ($txn['reference_note']) : ?>
-                <div class="receipt-row">
-                    <span class="label">Reference</span>
-                    <span class="value mono"><?= htmlspecialchars($txn['reference_note']) ?></span>
+                <?php if (!empty($txn['reference_note'])) : ?>
+                <div class="row">
+                    <span class="row-label">Reference Note</span>
+                    <span class="row-value mono" style="font-size:11px;max-width:280px;"><?= htmlspecialchars($txn['reference_note']) ?></span>
                 </div>
                 <?php endif; ?>
                 
                 <?php if ($txn['balance_after'] !== null) : ?>
-                <div class="receipt-row">
-                    <span class="label">Balance After</span>
-                    <span class="value"><?= CURRENCY_SYMBOL . ' ' . number_format($txn['balance_after'], 2) ?></span>
+                <div class="row">
+                    <span class="row-label">Balance After</span>
+                    <span class="row-value" style="font-size:14px;font-weight:900;color:#002645;"><?= CURRENCY_SYMBOL . ' ' . number_format($txn['balance_after'], 2) ?></span>
                 </div>
                 <?php endif; ?>
             </div>
 
-            <div class="border-t-2 border-slate-900 pt-6 mt-6">
-                <div class="text-center">
-                    <p class="text-[10px] text-slate-400 font-semibold uppercase tracking-widest leading-relaxed">
-                        This is a computer-generated receipt.<br>No physical signature is required.
-                    </p>
-                    <p class="text-[10px] text-slate-300 mt-2 font-mono">
-                        Generated on <?= date('d/m/Y H:i:s') ?>
-                    </p>
+            <!-- Footer -->
+            <div class="footer">
+                <div class="footer-note">
+                    This is an official computer-generated banking receipt.<br>Finzo Enterprise Core Banking Authentication Verified.
+                </div>
+                <div class="footer-date">
+                    Generated on <?= date('d M Y, h:i:s A') ?>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Auto print when opened in a new tab
-        window.onload = function() {
+        document.getElementById('btn-print-receipt')?.addEventListener('click', function() {
+            window.print();
+        });
+        document.getElementById('btn-close-receipt')?.addEventListener('click', function() {
+            window.close();
+        });
+
+        // Automatic print prompt when loaded
+        window.addEventListener('DOMContentLoaded', function() {
             setTimeout(function() {
                 window.print();
-            }, 500);
-        };
+            }, 400);
+        });
     </script>
 </body>
 </html>

@@ -4,91 +4,97 @@
 <head>
     <meta charset="UTF-8">
     <title>Staff Statement - <?= htmlspecialchars($staff['full_name']) ?></title>
-    <link href="<?= FINZO_ROOT ?>/public/assets/css/tailwind.css" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f1f5f9; padding: 40px; }
-        .statement-card { background: white; max-width: 900px; margin: 0 auto; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); border-radius: 24px; padding: 48px; position: relative; overflow: hidden; min-height: 1000px;}
-        .finzo-logo { font-weight: 800; font-size: 32px; letter-spacing: -1px; color: #002645; }
-        .mono { font-family: 'JetBrains Mono', monospace; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        @page { size: A4 portrait; margin: 15mm; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; background-color: #0f172a; padding: 30px 16px; color: #0f172a; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        .statement-card { background: white; max-width: 900px; margin: 0 auto; box-shadow: 0 20px 40px rgba(0,0,0,0.3); border-radius: 20px; padding: 40px; border: 1px solid #e2e8f0; }
+        .finzo-logo { font-weight: 900; font-size: 30px; letter-spacing: -1px; color: #002645; }
+        .mono { font-family: monospace, Courier, monospace; }
+        .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 30px; border-bottom: 2px solid #002645; pb-5; padding-bottom: 20px; }
+        .btn-print { background: #0284c7; color: white; border: none; padding: 10px 20px; border-radius: 10px; font-weight: 800; font-size: 13px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+        .table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+        .table th { padding: 10px 12px; border-bottom: 2px solid #e2e8f0; text-align: left; font-size: 10px; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.08em; }
+        .table td { padding: 12px; border-bottom: 1px dashed #e2e8f0; font-size: 12px; }
+        .badge { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: 10px; font-weight: 800; text-transform: uppercase; background: #e2e8f0; color: #475569; }
+        .footer { border-top: 1px solid #e2e8f0; padding-top: 20px; margin-top: 40px; text-align: center; font-size: 10px; color: #94a3b8; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; }
         
         @media print {
-            body { background: white; padding: 0; }
-            .statement-card { box-shadow: none; max-width: 100%; border-radius: 0; padding: 20px; min-height: auto;}
-            .no-print { display: none; }
+            body { background: white !important; padding: 0 !important; }
+            .statement-card { box-shadow: none !important; max-width: 100% !important; border: 1px solid #94a3b8 !important; padding: 20px !important; }
+            .no-print { display: none !important; }
         }
     </style>
 </head>
 <body>
     
-    <div class="text-center mb-6 no-print">
-        <button onclick="window.print()" class="bg-[#002645] hover:bg-blue-900 text-white px-6 py-3 rounded-xl font-bold text-sm shadow-lg hover:shadow-xl transition-all flex items-center gap-2 mx-auto">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+    <div style="text-align: center; margin-bottom: 20px;" class="no-print">
+        <button onclick="window.print()" class="btn-print">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
             Print Staff Statement
         </button>
     </div>
 
     <div class="statement-card">
-        
-        <div class="flex justify-between items-start mb-10 border-b border-slate-100 pb-10">
+        <div class="header">
             <div>
                 <div class="finzo-logo">Finzo</div>
-                <div class="text-xs text-slate-500 font-medium tracking-wide uppercase mt-1">Official Staff Audit Statement</div>
-                <div class="text-sm font-semibold text-slate-700 mt-4">Generated on <?= date('d M Y, h:i A') ?></div>
+                <div style="font-size:11px;color:#64748b;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;margin-top:4px;">Official Staff Audit Statement</div>
+                <div style="font-size:12px;font-weight:600;color:#334155;margin-top:8px;">Generated on <?= date('d M Y, h:i A') ?></div>
             </div>
-            <div class="text-right">
-                <div class="text-2xl font-black text-slate-800"><?= htmlspecialchars($staff['full_name']) ?></div>
-                <div class="text-sm text-slate-500 mt-1 mono"><?= htmlspecialchars($staff['staff_code']) ?></div>
-                <div class="text-sm text-slate-500 mt-1"><?= htmlspecialchars($staff['email']) ?></div>
-                <div class="text-sm text-slate-500 mt-1"><?= htmlspecialchars($staff['phone']) ?></div>
+            <div style="text-align:right;">
+                <div style="font-size:20px;font-weight:900;color:#0f172a;"><?= htmlspecialchars($staff['full_name']) ?></div>
+                <div class="mono" style="font-size:12px;color:#64748b;font-weight:700;margin-top:2px;"><?= htmlspecialchars($staff['staff_code']) ?></div>
+                <div style="font-size:12px;color:#64748b;margin-top:2px;"><?= htmlspecialchars($staff['email']) ?></div>
+                <div style="font-size:12px;color:#64748b;margin-top:2px;"><?= htmlspecialchars($staff['phone']) ?></div>
             </div>
         </div>
 
         <div>
-            <h4 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Transactions Processed</h4>
+            <div style="font-size:11px;font-weight:800;color:#64748b;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;">Transactions Processed</div>
             
             <?php if (\App\Shared\Core\Validation\Validator::isEmpty($transactions)) : ?>
-                <div class="text-center py-10 text-slate-400 text-sm font-semibold bg-slate-50 rounded-xl">No transactions found for this staff.</div>
+                <div style="text-align:center;padding:30px;color:#94a3b8;font-size:13px;font-weight:700;background:#f8fafc;border-radius:12px;">No transactions found for this staff member.</div>
             <?php else : ?>
-                <table class="w-full text-left border-collapse">
+                <table class="table">
                     <thead>
                         <tr>
-                            <th class="py-3 px-4 border-b-2 border-slate-100 text-[10px] font-black text-slate-400 uppercase tracking-widest">Date</th>
-                            <th class="py-3 px-4 border-b-2 border-slate-100 text-[10px] font-black text-slate-400 uppercase tracking-widest">Details</th>
-                            <th class="py-3 px-4 border-b-2 border-slate-100 text-[10px] font-black text-slate-400 uppercase tracking-widest">Type</th>
-                            <th class="py-3 px-4 border-b-2 border-slate-100 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Amount</th>
+                            <th>Date</th>
+                            <th>Details</th>
+                            <th>Type</th>
+                            <th style="text-align:right;">Amount</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-slate-100">
+                    <tbody>
                         <?php foreach ($transactions as $txn) :
-                            $color = 'text-slate-700';
+                            $color = '#0f172a';
                             $details = '';
 
                             if ($txn['type'] === 'deposit') {
-                                $color = 'text-emerald-600';
+                                $color = '#059669';
                                 $details = 'To: ' . htmlspecialchars($txn['to_name'] ?? '') . ' (' . htmlspecialchars($txn['to_acc'] ?? '') . ')';
                             } elseif ($txn['type'] === 'withdrawal') {
-                                $color = 'text-red-500';
+                                $color = '#e11d48';
                                 $details = 'From: ' . htmlspecialchars($txn['from_name'] ?? '') . ' (' . htmlspecialchars($txn['from_acc'] ?? '') . ')';
                             } else {
-                                $color = 'text-slate-500';
-                                $details = 'Internal Transfer: ' . htmlspecialchars($txn['from_acc'] ?? '') . ' &rarr; ' . htmlspecialchars($txn['to_acc'] ?? '');
+                                $color = '#0284c7';
+                                $details = 'Transfer: ' . htmlspecialchars($txn['from_acc'] ?? '') . ' ➔ ' . htmlspecialchars($txn['to_acc'] ?? '');
                             }
                             ?>
                         <tr>
-                            <td class="py-4 px-4 text-xs text-slate-500 font-medium whitespace-nowrap align-top"><?= date('d M Y h:i A', strtotime($txn['created_at'])) ?></td>
-                            <td class="py-4 px-4 align-top">
-                                <div class="text-[10px] mono text-slate-400 mb-1 uppercase"><?= htmlspecialchars($txn['txn_id']) ?></div>
-                                <div class="text-sm font-semibold text-slate-700"><?= $details ?></div>
+                            <td style="color:#64748b;white-space:nowrap;"><?= date('d M Y h:i A', strtotime($txn['created_at'])) ?></td>
+                            <td>
+                                <div class="mono" style="font-size:10px;color:#94a3b8;font-weight:700;"><?= htmlspecialchars($txn['txn_id']) ?></div>
+                                <div style="font-weight:700;color:#0f172a;margin-top:2px;"><?= $details ?></div>
                                 <?php if ($txn['reference_note']) : ?>
-                                    <div class="text-[10px] text-slate-400 mt-0.5 italic">Ref: <?= htmlspecialchars($txn['reference_note']) ?></div>
+                                    <div style="font-size:10px;color:#64748b;font-style:italic;margin-top:2px;">Ref: <?= htmlspecialchars($txn['reference_note']) ?></div>
                                 <?php endif; ?>
                             </td>
-                            <td class="py-4 px-4 align-top">
-                                <span class="text-[10px] font-bold uppercase tracking-widest bg-slate-100 px-2 py-1 rounded text-slate-500"><?= htmlspecialchars($txn['type']) ?></span>
+                            <td>
+                                <span class="badge"><?= htmlspecialchars($txn['type']) ?></span>
                             </td>
-                            <td class="py-4 px-4 text-right align-top">
-                                <div class="text-sm font-black <?= $color ?>"><?= CURRENCY_SYMBOL . number_format($txn['amount'], 2) ?></div>
+                            <td style="text-align:right;">
+                                <div style="font-weight:900;font-size:13px;color:<?= $color ?>;"><?= CURRENCY_SYMBOL . number_format($txn['amount'], 2) ?></div>
                             </td>
                         </tr>
                         <?php endforeach; ?>
@@ -97,10 +103,8 @@
             <?php endif; ?>
         </div>
 
-        <div class="border-t-2 border-slate-900 pt-6 mt-16 text-center">
-            <p class="text-[10px] text-slate-400 font-semibold uppercase tracking-widest leading-relaxed">
-                This is a computer-generated statement.<br>No physical signature is required.
-            </p>
+        <div class="footer">
+            This is a computer-generated statement. No physical signature is required.
         </div>
     </div>
 

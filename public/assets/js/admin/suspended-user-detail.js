@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!userId) {
         alert('User ID missing');
-        window.location.href = 'admin-suspended-users.html';
+        window.location.href = 'admin-suspended-users.php';
         return;
     }
 
@@ -42,6 +42,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         document.getElementById('detail-name').textContent = user.full_name || 'N/A';
+        const topbarTitle = document.querySelector('.admin-topbar-title');
+        if (topbarTitle) topbarTitle.textContent = user.full_name || 'N/A';
         document.getElementById('detail-email').textContent = user.email || 'N/A';
         
         document.getElementById('detail-acc-no').textContent = user.account_no || 'N/A';
@@ -123,7 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await window.api.patch('/users/' + userId, { action: 'delete', password: password });
             if (response.status === 'success' || response.success) {
                 window.FinzoUtils.showToast('Account archived successfully', 'success');
-                setTimeout(() => window.location.href = 'admin-deleted-users.html', 1500);
+                setTimeout(() => window.location.href = 'admin-deleted-users.php', 1500);
             } else {
                 alert(response.message || 'Action failed.');
                 window.api.setButtonLoading(btn, false);
@@ -143,7 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (response.status === 'success' || response.success) {
                 window.FinzoUtils.showToast('Account reinstated. Redirecting...', 'success');
-                setTimeout(() => window.location.href = 'admin-suspended-users.html', 1500);
+                setTimeout(() => window.location.href = 'admin-suspended-users.php', 1500);
             } else {
                 alert(response.message);
                 window.api.setButtonLoading(btn, false);

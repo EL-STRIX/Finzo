@@ -16,7 +16,7 @@ class AdminOperationsController
 
     public function __construct(\App\Domain\Contracts\Services\AdminOperationsServiceInterface $service, ?\App\Domain\Contracts\Security\SecurityServiceInterface $security = null)
     {
-        $this->security = $security;
+        $this->security = $security ?? new \App\Shared\Security\SecurityService();
         $this->service = $service;
     }
 
@@ -26,16 +26,62 @@ class AdminOperationsController
             'search'      => $this->security->cleanInput($_GET['search'] ?? ''),
             'action_type' => $this->security->cleanInput($_GET['action_type'] ?? 'all'),
             'actor_role'  => $this->security->cleanInput($_GET['actor_role'] ?? 'all'),
+            'status'      => $this->security->cleanInput($_GET['status'] ?? 'all'),
             'from_date'   => $this->security->cleanInput($_GET['from_date'] ?? ''),
             'to_date'     => $this->security->cleanInput($_GET['to_date'] ?? '')
         ];
 
+        $export = $this->security->cleanInput($_GET['export'] ?? '');
+        if ($export === 'csv') {
+            $generator = $this->service->exportAuditLogs($filters);
+
+            if (ob_get_level()) {
+                ob_end_clean();
+            }
+
+            header('Cache-Control: no-cache, no-store, must-revalidate');
+            header('Content-Type: text/csv; charset=utf-8');
+            header('Content-Disposition: attachment; filename="finzo_audit_logs_' . date('Y-m-d') . '.csv"');
+            header('X-Accel-Buffering: no');
+
+            $output = fopen('php://output', 'w');
+            $headerWritten = false;
+            foreach ($generator as $row) {
+                if (!$headerWritten) {
+                    fputcsv($output, array_keys($row), ',', '"', "\\");
+                    $headerWritten = true;
+                }
+                fputcsv($output, $row, ',', '"', "\\");
+            }
+            fclose($output);
+            if (defined('FINZO_TESTING') && FINZO_TESTING) {
+                throw new \Exception('Exit called after export');
+            }
+            exit;
+        }
+
         $page     = max(1, intval($_GET['page'] ?? 1));
-        $per_page = min(100, max(10, intval($_GET['per_page'] ?? 25)));
+        $per_page = min(100, max(5, intval($_GET['per_page'] ?? 25)));
 
         $data = $this->service->getAuditLog($filters, $page, $per_page);
         $data['success'] = true;
         return $data;
+    }
+
+    public function session(?string $id = null, ?string $extra = null): array
+    {
+        $adminId = \App\Shared\Security\Auth::user()['id'] ?? 0;
+        
+        $pdo = \App\Shared\Core\Database::getInstance();
+        $stmt = $pdo->prepare("SELECT id, admin_id as customer_id, full_name, profile_photo, admin_role FROM admin_users WHERE id = ?");
+        $stmt->execute([$adminId]);
+        $admin = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        return [
+            'success' => true,
+            'csrf_token' => $_SESSION['csrf_token'] ?? '',
+            'admin' => $admin ?: \App\Shared\Security\Auth::user()
+        ];
     }
 
     public function dashboard(?string $id = null, ?string $extra = null): array
@@ -43,9 +89,7 @@ class AdminOperationsController
         $adminId = \App\Shared\Security\Auth::user()['id'];
         $data = $this->service->getDashboardData($adminId);
 
-        if (\App\Shared\Core\Validation\Validator::isEmpty($_SESSION['csrf_token'])) {
-            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-        }
+
 
         return [
             'success' => true,
@@ -151,20 +195,18 @@ class AdminOperationsController
         $per_page = min(50, max(10, intval($_GET['per_page'] ?? 10)));
 
         $data = $this->service->getPendingApprovals($filters, $page, $per_page);
-        return [
-            'success' => true,
-            'data'    => $data
-        ];
+        $data['success'] = true;
+        return $data;
     }
 
     public function recoverUser(?string $id = null, ?string $extra = null): array
     {
-        $userId = intval($_POST['user_id'] ?? 0);
+        $adminId = \App\Shared\Security\Auth::user()['id'];
+        $userId = intval($id);
         if (!$userId) {
             throw new ApiException('User ID is required', 422);
         }
 
-        $adminId = \App\Shared\Security\Auth::user()['id'];
         $result = $this->service->recoverUser($userId, $adminId);
         if (!$result['success']) {
             throw new ApiException($result['message'], $result['code'] ?? 500);
@@ -227,7 +269,8 @@ class AdminOperationsController
             exit;
         }
 
-        $absolute_path = dirname(__DIR__, 3) . '/' . $path;
+        $root = defined('FINZO_ROOT') ? FINZO_ROOT : dirname(__DIR__, 5);
+        $absolute_path = $root . '/' . $path;
 
         if (!file_exists($absolute_path)) {
             http_response_code(404);
@@ -269,14 +312,17 @@ class AdminOperationsController
     public function transactions()
     {
         $filters = [
-            'search'    => $this->security->cleanInput($_GET['search'] ?? ''),
-            'type'      => $this->security->cleanInput($_GET['type'] ?? 'all'),
-            'status'    => $this->security->cleanInput($_GET['status'] ?? 'all'),
-            'from_date' => $this->security->cleanInput($_GET['from_date'] ?? ''),
-            'to_date'   => $this->security->cleanInput($_GET['to_date'] ?? '')
+            'search'     => $this->security->cleanInput($_GET['search'] ?? ''),
+            'type'       => $this->security->cleanInput($_GET['type'] ?? 'all'),
+            'status'     => $this->security->cleanInput($_GET['status'] ?? 'all'),
+            'from_date'  => $this->security->cleanInput($_GET['from_date'] ?? ''),
+            'to_date'    => $this->security->cleanInput($_GET['to_date'] ?? ''),
+            'min_amount' => $this->security->cleanInput($_GET['min_amount'] ?? ''),
+            'max_amount' => $this->security->cleanInput($_GET['max_amount'] ?? ''),
+            'sort'       => $this->security->cleanInput($_GET['sort'] ?? 'newest')
         ];
         $page     = max(1, intval($_GET['page'] ?? 1));
-        $per_page = min(50, max(10, intval($_GET['per_page'] ?? 20)));
+        $per_page = min(100, max(5, intval($_GET['per_page'] ?? 10)));
         $export   = $this->security->cleanInput($_GET['export'] ?? '');
 
         if ($export === 'csv') {
@@ -297,6 +343,10 @@ class AdminOperationsController
 
             $generator = $this->service->getTransactions($filters, $page, $per_page, true);
 
+            if (ob_get_level()) {
+                ob_end_clean();
+            }
+
             header('Cache-Control: no-cache, no-store, must-revalidate');
             header('Content-Type: text/csv; charset=utf-8');
             header('Content-Disposition: attachment; filename="finzo_transactions_' . date('Y-m-d') . '.csv"');
@@ -306,10 +356,10 @@ class AdminOperationsController
             $headerWritten = false;
             foreach ($generator as $row) {
                 if (!$headerWritten) {
-                    fputcsv($output, array_keys($row));
+                    fputcsv($output, array_keys($row), ',', '"', "\\");
                     $headerWritten = true;
                 }
-                fputcsv($output, $row);
+                fputcsv($output, $row, ',', '"', "\\");
             }
             fclose($output);
             if (defined('FINZO_TESTING') && FINZO_TESTING) {
@@ -326,8 +376,10 @@ class AdminOperationsController
     public function users(?string $id = null, ?string $extra = null): array
     {
         $filters = [
-            'search' => $this->security->cleanInput($_GET['search'] ?? ''),
-            'status' => $this->security->cleanInput($_GET['status'] ?? 'all')
+            'search'   => $this->security->cleanInput($_GET['search'] ?? ''),
+            'status'   => $this->security->cleanInput($_GET['status'] ?? 'all'),
+            'sort'     => $this->security->cleanInput($_GET['sort'] ?? 'newest'),
+            'activity' => $this->security->cleanInput($_GET['activity'] ?? 'all')
         ];
         $page     = max(1, intval($_GET['page'] ?? 1));
         $per_page = min(50, max(10, intval($_GET['per_page'] ?? 20)));
@@ -340,8 +392,10 @@ class AdminOperationsController
     public function exportUsers(): void
     {
         $filters = [
-            'search' => $this->security->cleanInput($_GET['search'] ?? ''),
-            'status' => $this->security->cleanInput($_GET['status'] ?? 'all')
+            'search'   => $this->security->cleanInput($_GET['search'] ?? ''),
+            'status'   => $this->security->cleanInput($_GET['status'] ?? 'all'),
+            'sort'     => $this->security->cleanInput($_GET['sort'] ?? 'newest'),
+            'activity' => $this->security->cleanInput($_GET['activity'] ?? 'all')
         ];
 
         $isAsync = filter_var($_GET['async'] ?? false, FILTER_VALIDATE_BOOLEAN);
@@ -361,6 +415,10 @@ class AdminOperationsController
 
         $generator = $this->service->exportUsers($filters);
 
+        if (ob_get_level()) {
+            ob_end_clean();
+        }
+
         header('Cache-Control: no-cache, no-store, must-revalidate');
         header('Content-Type: text/csv; charset=utf-8');
         header('Content-Disposition: attachment; filename="finzo_users_' . date('Y-m-d') . '.csv"');
@@ -370,10 +428,10 @@ class AdminOperationsController
         $headerWritten = false;
         foreach ($generator as $row) {
             if (!$headerWritten) {
-                fputcsv($output, array_keys($row));
+                fputcsv($output, array_keys($row), ',', '"', "\\");
                 $headerWritten = true;
             }
-            fputcsv($output, $row);
+            fputcsv($output, $row, ',', '"', "\\");
         }
         fclose($output);
         if (defined('FINZO_TESTING') && FINZO_TESTING) {
@@ -435,12 +493,24 @@ class AdminOperationsController
 
     public function userAction(?string $id = null, ?string $extra = null): array
     {
-        $userId = intval($_POST['user_id'] ?? 0);
-        $action  = $this->security->cleanInput($_POST['action'] ?? '');
-        $reason  = $this->security->cleanInput($_POST['reason'] ?? '');
-        $password = $_POST['password'] ?? '';
-        $balance_option = $this->security->cleanInput($_POST['balance_option'] ?? 'full');
         $adminId = \App\Shared\Security\Auth::user()['id'];
+        $userId = intval($id);
+
+        $input = $_POST;
+        if (empty($input)) {
+            $raw = file_get_contents('php://input');
+            $json = json_decode($raw, true);
+            if (is_array($json)) {
+                $input = $json;
+            } else {
+                parse_str($raw, $input);
+            }
+        }
+
+        $action  = $this->security->cleanInput($input['action'] ?? '');
+        $reason  = $this->security->cleanInput($input['reason'] ?? '');
+        $password = $input['password'] ?? '';
+        $balance_option = $this->security->cleanInput($input['balance_option'] ?? 'full');
 
         if (!$userId || \App\Shared\Core\Validation\Validator::isEmpty($action)) {
             throw new ApiException('User ID and action are required', 422);
@@ -488,7 +558,7 @@ class AdminOperationsController
 
         $transactionId = $id ?? $_POST['transaction_id'] ?? '';
         $reason = $this->security->cleanInput($_POST['reason'] ?? '');
-        $adminId = $_SESSION['admin_id'] ?? 0;
+        $adminId = \App\Shared\Security\Auth::user()['id'] ?? 0;
 
         if (empty($transactionId) || empty($reason)) {
             throw new ApiException('Transaction ID and reason are required', 422);

@@ -24,4 +24,6 @@ enum AuditActionEnum: string
     case BENEFICIARY_ADDED = 'beneficiary_added';
     case BENEFICIARY_DELETED = 'beneficiary_deleted';
     case KYC_SUBMITTED = 'kyc_submitted';
+    case ADMIN_ACTION = 'admin_action';
+    case TRANSACTION_REVERSED = 'transaction_reversed';
 }

@@ -15,8 +15,9 @@
 
         try {
             const response = await window.api.get('/users', {
-                search: document.getElementById('user-search').value,
-                status: document.getElementById('filter-status').value,
+                search: document.getElementById('user-search')?.value?.trim() || '',
+                status: document.getElementById('filter-status')?.value || 'all',
+                activity: document.getElementById('filter-activity')?.value || 'all',
                 page: currentPage,
                 per_page: 10
             });
@@ -44,7 +45,7 @@
         if (!tbody) return;
 
         if (!users.length) {
-            tbody.innerHTML = '<tr><td colspan=\"7\" class=\"py-12 text-center\"><div class=\"flex flex-col items-center justify-center\"><span class=\"material-symbols-outlined text-4xl text-text-muted/30 mb-3\">inventory_2</span><div class=\"text-sm font-bold text-text-muted uppercase tracking-widest\">No users found.</div></div></td></tr>';
+            tbody.innerHTML = '<tr><td colspan="7" class="py-12 text-center"><div class="flex flex-col items-center justify-center"><span class="material-symbols-outlined text-4xl text-text-muted/30 mb-3">inventory_2</span><div class="text-sm font-bold text-text-muted uppercase tracking-widest">No users found.</div></div></td></tr>';
             return;
         }
 
@@ -57,16 +58,31 @@
             const name = u.full_name || 'User';
             const initials = name.split(' ').filter(Boolean).map(n => n ? n[0] : '').join('').toUpperCase() || 'U';
             const statusVal = u.status || 'pending';
-            const statusClass = statusVal === 'active' ? 'badge-success' : (statusVal === 'suspended' ? 'badge-neutral' : 'badge-warning');
+            const statusClass = statusVal === 'active' ? 'badge-success' : (statusVal === 'suspended' ? 'badge-danger' : 'badge-warning');
             const statusText = statusVal.toUpperCase();
-            const gradient = window.FinzoUtils.getAvatarGradient(initials);
+            const gradient = window.FinzoUtils && window.FinzoUtils.getAvatarGradient ? window.FinzoUtils.getAvatarGradient(initials) : 'linear-gradient(135deg, #10b981, #059669)';
             
-            const avatarHtml = u.profile_picture_url 
-                ? `<img src="${u.profile_picture_url}" class="admin-avatar object-cover border border-slate-200 dark:border-white/10" alt="${name}">` 
-                : (u.avatar_url ? `<img src="${u.avatar_url}" class="admin-avatar object-cover border border-slate-200 dark:border-white/10" alt="${name}">` : `<div class="admin-avatar" >${initials}</div>`);
+            const fallbackAvatar = `<div class="admin-avatar !w-10 !h-10 !rounded-xl text-[12px] font-bold text-white flex items-center justify-center shadow-inner" style="background: ${gradient}">${initials}</div>`;
+            const avatarUrl = u.profile_picture_url || u.avatar_url;
+            // Build HTML entities programmatically so the source cannot be mangled by formatters (XSS prevention)
+            const AMP_CH = String.fromCharCode(38);   // &
+            const Q_CH = String.fromCharCode(34);     // "
+            const LT_CH = String.fromCharCode(60);    // <
+            const GT_CH = String.fromCharCode(62);    // >
+            const escHtml = function(s) {
+                return String(s)
+                    .replace(new RegExp(Q_CH, 'g'), AMP_CH + 'quot;')
+                    .replace(new RegExp(LT_CH, 'g'), AMP_CH + 'lt;')
+                    .replace(new RegExp(GT_CH, 'g'), AMP_CH + 'gt;');
+            };
+            const escapedFallback = escHtml(fallbackAvatar);
+            const escapedName = escHtml(name);
+            const avatarHtml = avatarUrl 
+                ? `<img src="${avatarUrl}" class="admin-avatar !w-10 !h-10 !rounded-xl object-cover border border-border-subtle" alt="${escapedName}" onerror="this.outerHTML='${escapedFallback}'">` 
+                : fallbackAvatar;
 
-            const balanceStr = u.balance !== null && u.balance !== undefined ? '₹' + parseFloat(u.balance).toLocaleString('en-IN', {minimumFractionDigits: 2}) : 'N/A';
-            const lastActive = u.last_login_at ? window.FinzoUtils.formatDate(u.last_login_at) : 'Never';
+            const joinedDate = u.created_at ? (window.FinzoUtils ? window.FinzoUtils.formatDate(u.created_at) : u.created_at) : '—';
+            const lastActive = u.last_login_at ? (window.FinzoUtils ? window.FinzoUtils.formatDate(u.last_login_at) : u.last_login_at) : 'Never';
             
             rowsHtml += `
             <tr>
@@ -82,9 +98,10 @@
                 <td class="text-xs opacity-70">${u.email || '—'}</td>
                 <td class="text-xs">${u.phone || 'N/A'}</td>
                 <td><span class="status-badge ${statusClass}"><span class="status-dot"></span>${statusText}</span></td>
+                <td class="text-xs font-semibold opacity-70">${joinedDate}</td>
                 <td class="text-[11px] opacity-60 font-semibold">${lastActive}</td>
                 <td class="text-right">
-                    <a href="admin-user-detail.html?id=${u.id}" class="btn btn-secondary px-4 py-2 text-[11px] uppercase tracking-wider font-bold rounded-xl inline-flex items-center gap-2">
+                    <a href="admin-user-detail.php?id=${u.id}" class="btn btn-secondary px-4 py-2 text-[11px] uppercase tracking-wider font-bold rounded-xl inline-flex items-center gap-2">
                         <span class="material-symbols-outlined !text-[14px]" aria-hidden="true">visibility</span> View
                     </a>
                 </td>
@@ -163,38 +180,36 @@
                     loadUsers();
                 }, 300);
             });
-            searchInput.addEventListener('keyup', (e) => {
-                if (e.key === 'Enter') {
-                    clearTimeout(searchTimeout);
-                    currentPage = 1;
-                    loadUsers();
-                }
-            });
         }
 
-        const statusInput = document.getElementById('filter-status');
-        if (statusInput) {
-            statusInput.addEventListener('change', () => {
-                currentPage = 1;
-                loadUsers();
-            });
-        }
+        ['filter-status', 'filter-activity'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.addEventListener('change', () => {
+                    currentPage = 1;
+                    loadUsers();
+                });
+            }
+        });
 
         const clearBtn = document.getElementById('clear-filters');
         if (clearBtn) {
             clearBtn.addEventListener('click', (e) => {
                 e.preventDefault();
-                document.getElementById('user-search').value = '';
-                document.getElementById('filter-status').value = 'all';
+                if(document.getElementById('user-search')) document.getElementById('user-search').value = '';
+                if(document.getElementById('filter-status')) document.getElementById('filter-status').value = 'all';
+                if(document.getElementById('filter-activity')) document.getElementById('filter-activity').value = 'all';
                 
                 // Reset custom dropdown labels
                 document.querySelectorAll('.dropdown-label').forEach(label => {
                     const dropdown = label.closest('.finzo-dropdown');
                     if (dropdown) {
-                        const defaultOpt = dropdown.querySelector('.finzo-dropdown-option[data-value="all"]');
-                        if (defaultOpt) label.textContent = defaultOpt.textContent.trim();
-                        dropdown.querySelectorAll('.finzo-dropdown-option').forEach(opt => opt.classList.remove('is-selected'));
-                        if (defaultOpt) defaultOpt.classList.add('is-selected');
+                        const defaultOpt = dropdown.querySelector('.finzo-dropdown-option[data-value="all"]') || dropdown.querySelector('.finzo-dropdown-option');
+                        if (defaultOpt) {
+                            label.textContent = defaultOpt.textContent.trim();
+                            dropdown.querySelectorAll('.finzo-dropdown-option').forEach(opt => opt.classList.remove('is-selected'));
+                            defaultOpt.classList.add('is-selected');
+                        }
                     }
                 });
 
@@ -230,51 +245,118 @@
             });
         }
 
-        // Export Modal Logic
-        const exportBtn = document.getElementById('open-export-modal');
-        const modal = document.getElementById('export-modal');
-        if (exportBtn && modal) {
-            exportBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                modal.classList.remove('hidden');
-                modal.classList.add('flex');
-                document.body.classList.add('overflow-hidden');
-            });
+        // Export Modal Open / Close & Dropdown Synchronization
+        const exportModal = document.getElementById('export-modal');
+
+        function openExportModal() {
+            if (!exportModal) return;
+
+            // Sync modal dropdowns with current page filter values
+            const curStatus = document.getElementById('filter-status')?.value || 'all';
+            const curActivity = document.getElementById('filter-activity')?.value || 'all';
+
+            setModalDropdownValue('export-status-dropdown', 'export-filter-status', curStatus);
+            setModalDropdownValue('export-activity-dropdown', 'export-filter-activity', curActivity);
+
+            exportModal.classList.remove('hidden');
+            exportModal.style.display = 'flex';
+            document.body.classList.add('overflow-hidden');
         }
 
-        document.querySelectorAll('.close-export-modal').forEach(btn => {
-            btn.addEventListener('click', (e) => {
+        function closeExportModal() {
+            if (!exportModal) return;
+            exportModal.classList.add('hidden');
+            exportModal.style.display = 'none';
+            document.body.classList.remove('overflow-hidden');
+        }
+
+        function setModalDropdownValue(dropdownId, inputId, val) {
+            const dropdown = document.getElementById(dropdownId);
+            const input = document.getElementById(inputId);
+            if (input) input.value = val;
+            if (dropdown) {
+                const opt = dropdown.querySelector(`.finzo-dropdown-option[data-value="${val}"]`);
+                const label = dropdown.querySelector('.dropdown-label');
+                if (opt && label) {
+                    label.textContent = opt.textContent.trim();
+                    dropdown.querySelectorAll('.finzo-dropdown-option').forEach(o => o.classList.remove('is-selected'));
+                    opt.classList.add('is-selected');
+                }
+            }
+        }
+
+        // Global delegation for modal open, close, and outside clicks
+        document.addEventListener('click', (e) => {
+            const exportTrigger = e.target.closest('#open-export-modal');
+            if (exportTrigger) {
                 e.preventDefault();
-                modal.classList.add('hidden');
-                modal.classList.remove('flex');
-                document.body.classList.remove('overflow-hidden');
-            });
+                openExportModal();
+                return;
+            }
+
+            const closeTrigger = e.target.closest('.close-export-modal');
+            if (closeTrigger) {
+                e.preventDefault();
+                closeExportModal();
+                return;
+            }
+
+            if (exportModal && e.target === exportModal) {
+                closeExportModal();
+            }
         });
 
-        const startExport = document.getElementById('start-export');
-        if (startExport) {
-            startExport.addEventListener('click', function(e) {
+        // Close on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && exportModal && !exportModal.classList.contains('hidden')) {
+                closeExportModal();
+            }
+        });
+
+        // Export Confirmation & Trigger
+        const startExportBtn = document.getElementById('start-export');
+        if (startExportBtn) {
+            startExportBtn.addEventListener('click', function(e) {
                 e.preventDefault();
-                window.api.setButtonLoading(this, true, 'Generating...');
+                const originalHtml = this.innerHTML;
+                this.disabled = true;
+                this.innerHTML = '<span class="material-symbols-outlined animate-spin text-[16px]" aria-hidden="true">autorenew</span> <span>Exporting...</span>';
                 
-                // Build the URL with current filters
-                const search = document.getElementById('user-search') ? document.getElementById('user-search').value : '';
-                const status = document.getElementById('filter-status') ? document.getElementById('filter-status').value : 'all';
-                
-                const queryParams = new URLSearchParams({ search, status }).toString();
-                const exportUrl = `${window.api.baseUrl}/users/export?${queryParams}`;
-                
-                // Trigger download
-                window.location.href = exportUrl;
-                
-                setTimeout(() => {
-                    this.textContent = 'Export Started!';
+                try {
+                    const search = document.getElementById('user-search') ? document.getElementById('user-search').value.trim() : '';
+                    const status = document.getElementById('export-filter-status') ? document.getElementById('export-filter-status').value : 'all';
+                    const activity = document.getElementById('export-filter-activity') ? document.getElementById('export-filter-activity').value : 'all';
+                    const sort = 'newest';
+                    
+                    const params = { search, status, sort, activity };
+                    const basePath = window.location.pathname.includes('/public/') ? '/Finzo/public' : '/Finzo';
+                    const exportUrl = window.api && typeof window.api.buildUrl === 'function'
+                        ? window.api.buildUrl('/users/export', params)
+                        : `${basePath}/api/v1/users/export?${new URLSearchParams(params).toString()}`;
+                    
+                    // Trigger direct browser download via hidden link
+                    const dlLink = document.createElement('a');
+                    dlLink.href = exportUrl;
+                    dlLink.setAttribute('download', 'finzo_users_' + new Date().toISOString().slice(0, 10) + '.csv');
+                    document.body.appendChild(dlLink);
+                    dlLink.click();
                     setTimeout(() => {
-                        window.api.setButtonLoading(this, false);
-                        modal.classList.add('hidden');
-                        document.body.classList.remove('overflow-hidden');
-                    }, 1000);
-                }, 1000);
+                        if (document.body.contains(dlLink)) document.body.removeChild(dlLink);
+                    }, 200);
+                    
+                    setTimeout(() => {
+                        this.innerHTML = '<span class="material-symbols-outlined text-[16px] text-success" aria-hidden="true">check_circle</span> <span>Downloaded!</span>';
+                        setTimeout(() => {
+                            this.disabled = false;
+                            this.innerHTML = originalHtml;
+                            closeExportModal();
+                        }, 1200);
+                    }, 800);
+                } catch (err) {
+                    console.error('Export failed:', err);
+                    this.disabled = false;
+                    this.innerHTML = originalHtml;
+                }
             });
         }
     }

@@ -1,6 +1,23 @@
 /* Finzo Enterprise Banking Design Tokens */
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined' !important;
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+}
+
 :root {
-  /* 1. COLOR SYSTEM (Light Mode) */
+  /* 1. COLOR PALETTES (Raw Colors) */
+  /* Primary (Blue) */
   --color-primary-50: #f4f7f9;
   --color-primary-100: #e1e5e9;
   --color-primary-200: #d1d9e0;
@@ -11,49 +28,92 @@
   --color-primary-700: #061A2D;
   --color-primary-800: #03101C;
   --color-primary-900: #01080e;
-  --color-primary-base: #0A2540;
-  --color-primary-hover: #061A2D;
-  --color-primary-surface: #f4f7f9;
+
+  /* Secondary (Slate) */
+  --color-secondary-50: #f8fafc;
+  --color-secondary-500: #64748b;
+  --color-secondary-600: #475569;
+  --color-secondary-700: #334155;
+  --color-secondary-800: #1e293b;
+  --color-secondary-900: #0f172a;
+
+  /* Status Colors */
+  --color-green-50: #E8F5E9;
+  --color-green-500: #0E793C;
+  --color-green-600: #0B6331;
+  --color-green-700: #084823;
   
-  --color-surface-main: #ffffff;
-  --color-surface-subtle: #F4F7F9;
-  --color-surface-hover: #E6E9EC;
+  --color-amber-50: #FFF8E1;
+  --color-amber-500: #B97200;
+  --color-amber-600: #975D00;
+  --color-amber-700: #754800;
+
+  --color-red-50: #FFEBEE;
+  --color-red-500: #C62828;
+  --color-red-600: #A32121;
+  --color-red-700: #7E1919;
+
+  --color-blue-50: #E3F2FD;
+  --color-blue-500: #185ABB;
+  --color-blue-600: #134A99;
+  --color-blue-700: #0E3773;
+
+  /* 2. SEMANTIC TOKENS (Light Mode Default) */
   
-  --color-text-main: #111820;
-  --color-text-muted: #6E7A87;
-  --color-text-disabled: #A0AAB4;
+  /* Backgrounds & Surfaces */
+  --color-background: #FAFAF9;
+  --color-surface: #ffffff;
+  --color-surface-elevated: #ffffff;
+  
+  /* Primary */
+  --color-primary: #1C1917;
+  --color-primary-hover: #292524;
+  --color-primary-active: #44403C;
+  
+  /* Secondary */
+  --color-secondary: #44403C;
+  --color-secondary-hover: #57534E;
+
+  /* Accent (Gold) */
+  --color-accent: #A16207;
+  --color-accent-hover: #854D0E;
+
+  /* Text */
+  --color-text-primary: #0C0A09;
+  --color-text-secondary: #44403C;
+  --color-text-muted: #78716C;
   --color-text-inverse: #ffffff;
   
-  --color-border-subtle: #D1D9E0;
-  --color-border-main: #b0b8c1;
-  --color-border-focus: #0A2540;
-  
-  --color-success-base: #0E793C;
-  --color-success-hover: #0B6331;
-  --color-success-surface: #E8F5E9;
-  --color-success-text: #084823;
-  
-  --color-warning-base: #B97200;
-  --color-warning-hover: #975D00;
-  --color-warning-surface: #FFF8E1;
-  --color-warning-text: #754800;
-  
-  --color-danger-base: #C62828;
-  --color-danger-hover: #A32121;
-  --color-danger-surface: #FFEBEE;
-  --color-danger-text: #7E1919;
-  
-  --color-info-base: #185ABB;
-  --color-info-hover: #134A99;
-  --color-info-surface: #E3F2FD;
-  --color-info-text: #0E3773;
+  /* Borders */
+  --color-border-subtle: #E7E5E4;
+  --color-border: #D6D3D1;
+  --color-border-strong: #A8A29E;
 
-  /* 2. TYPOGRAPHY SYSTEM */
-  --font-display: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  /* Semantic Statuses */
+  --color-success: var(--color-green-600);
+  --color-success-bg: var(--color-green-50);
+  
+  --color-warning: var(--color-amber-500);
+  --color-warning-bg: var(--color-amber-50);
+  
+  --color-error: var(--color-red-600);
+  --color-error-bg: var(--color-red-50);
+  
+  --color-info: var(--color-blue-600);
+  --color-info-bg: var(--color-blue-50);
+
+  /* States */
+  --color-focus: #A16207;
+  --color-disabled: #A8A29E;
+  --color-disabled-bg: #E7E5E4;
+  --color-overlay: rgba(12, 10, 9, 0.4);
+
+  /* 3. TYPOGRAPHY SYSTEM */
+  --font-display: 'Cormorant', 'Playfair Display', serif;
+  --font-body: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
   
-  /* 3. SPACING SYSTEM */
+  /* 4. SPACING SYSTEM */
   --space-4xs: 4px;
   --space-3xs: 8px;
   --space-2xs: 12px;
@@ -65,15 +125,16 @@
   --space-2xl: 48px;
   --space-3xl: 64px;
   
-  /* 5. SHADOW SYSTEM */
-  --shadow-xs: 0 1px 2px 0 rgba(10, 37, 64, 0.04);
-  --shadow-sm: 0 4px 12px rgba(10, 37, 64, 0.05), 0 1px 3px rgba(10, 37, 64, 0.03);
-  --shadow-md: 0 10px 20px rgba(10, 37, 64, 0.08), 0 4px 6px rgba(10, 37, 64, 0.04);
-  --shadow-lg: 0 20px 30px rgba(10, 37, 64, 0.1);
-  --shadow-dropdown: 0 10px 25px -5px rgba(10, 37, 64, 0.1), 0 8px 10px -6px rgba(10, 37, 64, 0.1);
-  --shadow-focus: 0 0 0 3px rgba(10, 37, 64, 0.2);
-  --shadow-focus-danger: 0 0 0 3px rgba(198, 40, 40, 0.2);
-  --shadow-focus-success: 0 0 0 3px rgba(14, 121, 60, 0.2);
+  /* 5. SHADOW SYSTEM (Liquid Glass) */
+  --shadow-xs: 0 1px 2px 0 rgba(12, 10, 9, 0.05);
+  --shadow-sm: 0 4px 12px rgba(12, 10, 9, 0.03), 0 1px 3px rgba(12, 10, 9, 0.02);
+  --shadow-md: 0 10px 20px rgba(12, 10, 9, 0.04), 0 4px 6px rgba(12, 10, 9, 0.02);
+  --shadow-lg: 0 20px 30px rgba(12, 10, 9, 0.08);
+  --shadow-dropdown: 0 10px 30px -5px rgba(12, 10, 9, 0.1), 0 8px 10px -6px rgba(12, 10, 9, 0.05);
+  
+  --shadow-focus: 0 0 0 3px rgba(161, 98, 7, 0.2);
+  --shadow-focus-error: 0 0 0 3px rgba(220, 38, 38, 0.2);
+  --shadow-focus-success: 0 0 0 3px rgba(22, 163, 74, 0.2);
   
   /* 6. BORDER RADIUS */
   --radius-sm: 4px;
@@ -83,26 +144,99 @@
   --radius-2xl: 24px;
   --radius-full: 9999px;
   
-  /* 13. ANIMATION SYSTEM */
+  /* 7. ANIMATION SYSTEM */
   --transition-fast: 150ms cubic-bezier(0.16, 1, 0.3, 1);
   --transition-normal: 250ms cubic-bezier(0.16, 1, 0.3, 1);
   --transition-slow: 350ms cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* 8. SCROLLBAR SYSTEM */
+  --scrollbar-track: transparent;
+  --scrollbar-thumb: rgba(15, 23, 42, 0.22);
+  --scrollbar-thumb-hover: rgba(15, 23, 42, 0.42);
 }
 
-.dark {
-  --color-surface-main: #1e293b;
-  --color-surface-subtle: #0f172a;
-  --color-surface-hover: #334155;
+/* =======================================================================
+   DARK MODE OVERRIDES
+======================================================================= */
+[data-theme="dark"], .dark {
+  color-scheme: dark;
+  /* Backgrounds & Surfaces */
+  --color-background: #0C0A09;
+  --color-surface: #1C1917;
+  --color-surface-elevated: #292524;
   
-  --color-text-main: #ffffff;
-  --color-text-muted: #A0AAB4;
-  --color-text-disabled: #6E7A87;
+  /* Primary */
+  --color-primary: #FAFAF9;
+  --color-primary-hover: #F5F5F4;
+  --color-primary-active: #E7E5E4;
   
-  --color-border-subtle: #334155;
-  --color-border-main: #4a5560;
-  --color-border-focus: #38bdf8;
+  /* Secondary */
+  --color-secondary: #D6D3D1;
+  --color-secondary-hover: #F5F5F4;
+
+  /* Accent (Gold) */
+  --color-accent: #EAB308;
+  --color-accent-hover: #FDE047;
+
+  /* Text */
+  --color-text-primary: #FAFAF9;
+  --color-text-secondary: #D6D3D1;
+  --color-text-muted: #A8A29E;
+  --color-text-inverse: #0C0A09;
   
-  --shadow-md: 0 10px 20px rgba(0, 0, 0, 0.3), 0 4px 6px rgba(0, 0, 0, 0.2);
-  --shadow-lg: 0 20px 30px rgba(0, 0, 0, 0.5);
-  --shadow-dropdown: 0 10px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+  /* Borders */
+  --color-border-subtle: rgba(255, 255, 255, 0.05);
+  --color-border: rgba(255, 255, 255, 0.1);
+  --color-border-strong: rgba(255, 255, 255, 0.15);
+
+  /* Semantic Statuses */
+  --color-success: #22c55e;
+  --color-success-bg: rgba(34, 197, 94, 0.15);
+  
+  --color-warning: #f59e0b;
+  --color-warning-bg: rgba(245, 158, 11, 0.12);
+  
+  --color-error: #ef4444;
+  --color-error-bg: rgba(239, 68, 68, 0.12);
+  
+  --color-info: #3b82f6;
+  --color-info-bg: rgba(59, 130, 246, 0.12);
+
+  /* States */
+  --color-focus: #EAB308;
+  --color-disabled: #44403C;
+  --color-disabled-bg: #1C1917;
+  --color-overlay: rgba(0, 0, 0, 0.8);
+
+  /* Shadows (Dark Mode) */
+  --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 10px 20px rgba(0, 0, 0, 0.6), 0 4px 6px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 20px 30px rgba(0, 0, 0, 0.8);
+  --shadow-dropdown: 0 10px 25px -5px rgba(0, 0, 0, 0.8), 0 8px 10px -6px rgba(0, 0, 0, 0.6);
+  
+  --shadow-focus: 0 0 0 3px rgba(88, 166, 255, 0.3);
+  --shadow-focus-error: 0 0 0 3px rgba(248, 81, 73, 0.3);
+  --shadow-focus-success: 0 0 0 3px rgba(46, 160, 67, 0.3);
+
+  /* Scrollbars (Dark Mode) */
+  --scrollbar-track: transparent;
+  --scrollbar-thumb: rgba(255, 255, 255, 0.22);
+  --scrollbar-thumb-hover: rgba(255, 255, 255, 0.42);
+}
+
+/* ─── Skeleton Loading State ─── */
+@keyframes skeleton-shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, var(--color-background) 25%, var(--color-surface) 50%, var(--color-background) 75%) !important;
+  background-size: 800px 100% !important;
+  animation: skeleton-shimmer 1.4s ease-in-out infinite !important;
+  color: transparent !important;
+  border-color: transparent !important;
+  border-radius: var(--radius-sm);
+  user-select: none;
+  pointer-events: none;
 }

@@ -16,6 +16,7 @@ interface AdminStaffBranchRepositoryInterface
     public function unassignStaffFromBranch(int $branchId);
     public function deleteBranch(int $branchId);
     public function getMaxStaffId();
+    public function getLastStaffId();
     public function getStaffDetail(int $staffId);
     public function getStaffPerformance(int $staffId);
     public function findStaffRecord(int $staffId);
@@ -30,5 +31,11 @@ interface AdminStaffBranchRepositoryInterface
     public function updateStaffPhoto(int $staffId, string $path);
     public function getAdminPasswordHash(int $adminId): ?string;
     public function deleteBranchAndUnassignStaff(int $branchId): void;
-    public function getBranchesWithStats(string $search, string $type, string $status): array;
+    public function getStaffList(array $filters, int $page = 1, int $perPage = 20): array;
+    public function getStaffDetailComprehensive(int $staffId): ?array;
+    public function updateBranchRecord(int $id, array $data): bool;
+    public function updateBranchStatus(int $id, string $status): bool;
+    public function getBranchDetailWithStats(int $id): ?array;
+    public function findBranchByManagerId(int $managerId): ?array;
 }
+

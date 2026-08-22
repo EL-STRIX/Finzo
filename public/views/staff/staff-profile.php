@@ -154,11 +154,17 @@ ob_start();
                         <form id="password-form" class="space-y-4">
                             <div>
                                 <label for="pw-current" class="block text-xs font-black text-text-muted uppercase tracking-widest mb-1">Current Password *</label>
-                                <input type="password" id="pw-current" required class="w-full fin-input">
+                                <div class="fin-input-wrapper">
+                                    <span class="material-symbols-outlined input-icon-left">lock</span>
+                                    <input type="password" id="pw-current" required class="w-full fin-input has-icon-left" placeholder="Enter current password">
+                                </div>
                             </div>
                             <div>
                                 <label for="pw-new" class="block text-xs font-black text-text-muted uppercase tracking-widest mb-1">New Password *</label>
-                                <input type="password" id="pw-new" required minlength="8" class="w-full fin-input" oninput="checkPasswordStrength()">
+                                <div class="fin-input-wrapper">
+                                    <span class="material-symbols-outlined input-icon-left">lock_open</span>
+                                    <input type="password" id="pw-new" required minlength="8" class="w-full fin-input has-icon-left" placeholder="Min 8 characters" oninput="checkPasswordStrength()">
+                                </div>
                                 <div class="mt-2 pl-1">
                                     <div class="password-strength-bar">
                                         <div class="password-strength-fill" id="pw-strength-bar" style="width:0%"></div>
@@ -168,7 +174,10 @@ ob_start();
                             </div>
                             <div>
                                 <label for="pw-confirm" class="block text-xs font-black text-text-muted uppercase tracking-widest mb-1">Confirm Password *</label>
-                                <input type="password" id="pw-confirm" required class="w-full fin-input">
+                                <div class="fin-input-wrapper">
+                                    <span class="material-symbols-outlined input-icon-left">check_circle</span>
+                                    <input type="password" id="pw-confirm" required class="w-full fin-input has-icon-left" placeholder="Confirm new password">
+                                </div>
                             </div>
                             <div id="pw-error" class="hidden text-xs font-bold text-danger-base bg-danger-surface dark:bg-danger-surface/10 p-2 rounded" aria-live="polite"></div>
                             <button type="submit" id="pw-submit-btn" class="w-full h-10 bg-warning-surface text-white font-bold rounded-lg shadow-md shadow-amber-500/20 hover:bg-warning-surface transition-all text-xs uppercase tracking-widest mt-2">
@@ -208,6 +217,7 @@ ob_start();
                 </div>
 
             </div>
+<script defer src="/Finzo/public/assets/js/staff/staff-profile.js"></script>
 <?php
 $slot = ob_get_clean();
 include __DIR__ . '/../layouts/app.php';

@@ -19,15 +19,20 @@ class RateLimiter
         // Simple file-based atomic tracking (Enterprise would use Redis, but avoiding infrastructure changes)
         $fp = fopen($file, 'c+');
         if (flock($fp, LOCK_EX)) {
-            $data = json_decode(stream_get_contents($fp) ?: '{}', true);
+            $data = json_decode(stream_get_contents($fp) ?: '{}', true) ?? [];
+            if (!is_array($data)) {
+                $data = [];
+            }
             
             $now = time();
             $windowStart = $now - ($decayMinutes * 60);
 
             // Clean up old entries
-            foreach ($data as $k => &$requests) {
-                $requests = array_filter($requests, fn($time) => $time > $windowStart);
-                if (empty($requests)) unset($data[$k]);
+            foreach ($data as $k => $requests) {
+                $data[$k] = array_filter($requests, fn($time) => $time > $windowStart);
+                if (empty($data[$k])) {
+                    unset($data[$k]);
+                }
             }
 
             // Check current key

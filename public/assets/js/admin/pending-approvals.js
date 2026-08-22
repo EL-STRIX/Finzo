@@ -11,11 +11,11 @@
      * Load applications with current filters
      */
     async function loadApplications() {
-        const tbody = document.getElementById('applications-table-body');
+        const tbody = document.getElementById('pending-tbody');
         if (tbody) tbody.style.opacity = '0.5';
 
         try {
-            const searchInput = document.getElementById('approval-search');
+            const searchInput = document.getElementById('search-pending');
             const response = await window.api.get('/users/pending', {
                 status: currentStatus,
                 search: searchInput ? searchInput.value : '',
@@ -24,8 +24,8 @@
             });
 
             if (response.success) {
-                renderTable(response.data.applications, response.data.total, response.data.pages);
-                updateStats(response.data.stats || {});
+                renderTable(response.applications, response.total, response.pages);
+                updateStats(response.stats || {});
             }
         } catch (error) {
             console.error('Failed to load applications:', error);
@@ -38,7 +38,7 @@
      * Render applications table
      */
     function renderTable(apps, total, pages) {
-        const tbody = document.getElementById('applications-table-body');
+        const tbody = document.getElementById('pending-tbody');
         if (!tbody) return;
 
         if (!apps || !apps.length) {
@@ -56,10 +56,10 @@
             let avatarHtml = `<div class="admin-avatar premium-gradient-primary uppercase">${initials}</div>`;
             if (app.profile_picture_url) {
                 let url = app.profile_picture_url;
-                if (!url.startsWith('http://') && !url.startsWith('https://') && !url.startsWith('/')) {
-                    url = '/Finzo/public/assets/' + url;
+                if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                    url = url.startsWith('/') ? url : '/Finzo/' + url.replace(/^\//, '');
                 }
-                avatarHtml = `<img src="${url}" class="admin-avatar object-cover border border-slate-200 dark:border-white/10" alt="${app.full_name}">`;
+                avatarHtml = `<img src="${url}" class="admin-avatar object-cover border border-slate-200 dark:border-white/10" alt="${app.full_name}" onerror="this.outerHTML='<div class=\\'admin-avatar premium-gradient-primary uppercase\\'>${initials}</div>'">`;
             }
 
             return `
@@ -86,7 +86,7 @@
                 </td>
                 <td>
                     <div class="flex justify-end">
-                        <a href="admin-review-application.html?id=${app.id}" class="btn btn-secondary px-3 py-1.5 text-[11px] rounded-lg flex items-center gap-2">
+                        <a href="admin-review-application.php?id=${app.id}" class="btn btn-secondary px-3 py-1.5 text-[11px] rounded-lg flex items-center gap-2">
                             <span class="material-symbols-outlined !text-xs" aria-hidden="true">settings_accessibility</span> Manage
                         </a>
                     </div>
@@ -116,13 +116,8 @@
 
         let html = '';
         for (let i = 1; i <= pages; i++) {
-            if (pages > 5 && i > 3 && i < pages) {
-                if (i === 4) html += '<span class="px-2 opacity-50">...</span>';
-                continue;
-            }
             const activeClass = i === currentPage ? 'btn btn-primary active' : 'btn btn-secondary';
-            const style = i === currentPage ? 'background: #1a3c5e !important;' : '';
-            html += `<button class="${activeClass} w-9 h-9 p-0 text-xs rounded-lg" style="${style}" data-page="${i}">${i}</button>`;
+            html += `<button class="${activeClass} w-9 h-9 p-0 text-xs rounded-lg" data-page="${i}">${i}</button>`;
         }
         
         if (parent) parent.innerHTML = html;
@@ -199,7 +194,7 @@
         });
 
         // Filter Apply/Reset
-        const searchInput = document.getElementById('approval-search');
+        const searchInput = document.getElementById('search-pending');
         if (searchInput) {
             searchInput.addEventListener('input', () => {
                 clearTimeout(searchTimeout);

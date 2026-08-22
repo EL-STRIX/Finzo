@@ -10,6 +10,7 @@
             this.bindDropdowns();
             this.bindModals();
             this.bindTabs();
+            this.initSidebarScroll();
             this.initARIA();
         },
 
@@ -35,30 +36,45 @@
             });
         },
 
+        closeAllDropdowns: function() {
+            document.querySelectorAll('.finzo-dropdown.is-open, .finzo-dropdown-menu.is-open, .finzo-dropdown-trigger.is-open').forEach(el => {
+                el.classList.remove('is-open');
+                if (el.classList.contains('finzo-dropdown-trigger')) {
+                    el.setAttribute('aria-expanded', 'false');
+                }
+            });
+        },
+
         bindDropdowns: function() {
             const toggleDropdown = (trigger) => {
                 const dropdown = trigger.closest('.finzo-dropdown');
+                if (!dropdown) return;
                 const menu = dropdown.querySelector('.finzo-dropdown-menu');
                 if (!menu) return;
 
-                const isOpen = menu.classList.contains('is-open');
+                const isOpen = menu.classList.contains('is-open') || trigger.classList.contains('is-open');
                 
                 // Close all others
-                document.querySelectorAll('.finzo-dropdown-menu.is-open').forEach(m => {
-                    if (m !== menu) {
-                        m.classList.remove('is-open');
-                        const otherTrigger = m.closest('.finzo-dropdown').querySelector('.finzo-dropdown-trigger');
-                        if (otherTrigger) otherTrigger.setAttribute('aria-expanded', 'false');
+                document.querySelectorAll('.finzo-dropdown.is-open, .finzo-dropdown-menu.is-open, .finzo-dropdown-trigger.is-open').forEach(el => {
+                    if (el !== menu && el !== trigger && el !== dropdown) {
+                        el.classList.remove('is-open');
+                        if (el.classList.contains('finzo-dropdown-trigger')) {
+                            el.setAttribute('aria-expanded', 'false');
+                        }
                     }
                 });
 
                 // Toggle current
                 if (isOpen) {
+                    dropdown.classList.remove('is-open');
                     menu.classList.remove('is-open');
+                    trigger.classList.remove('is-open');
                     trigger.setAttribute('aria-expanded', 'false');
                     trigger.focus();
                 } else {
+                    dropdown.classList.add('is-open');
                     menu.classList.add('is-open');
+                    trigger.classList.add('is-open');
                     trigger.setAttribute('aria-expanded', 'true');
                     // Focus first option
                     const firstOption = menu.querySelector('.finzo-dropdown-option');
@@ -68,7 +84,8 @@
 
             const selectOption = (option) => {
                 const dropdown = option.closest('.finzo-dropdown');
-                const triggerText = dropdown.querySelector('.dropdown-selected-text') || dropdown.querySelector('.finzo-dropdown-trigger');
+                if (!dropdown) return;
+                const trigger = dropdown.querySelector('.finzo-dropdown-trigger');
                 
                 // Visual update
                 dropdown.querySelectorAll('.finzo-dropdown-option').forEach(opt => {
@@ -79,23 +96,35 @@
                 option.classList.add('is-selected');
                 option.setAttribute('aria-selected', 'true');
                 
-                // Text update - avoid replacing children if it has icons
-                if (dropdown.querySelector('.dropdown-selected-text')) {
-                    dropdown.querySelector('.dropdown-selected-text').textContent = option.textContent.trim();
-                } else {
+                // Text update - check dropdown-label or dropdown-selected-text
+                const labelEl = dropdown.querySelector('.dropdown-label, .dropdown-selected-text');
+                if (labelEl) {
+                    labelEl.textContent = option.textContent.trim();
+                } else if (trigger) {
                     // Primitive fallback
-                    const textNode = Array.from(triggerText.childNodes).find(n => n.nodeType === 3 && n.textContent.trim().length > 0);
+                    const textNode = Array.from(trigger.childNodes).find(n => n.nodeType === 3 && n.textContent.trim().length > 0);
                     if (textNode) textNode.textContent = option.textContent.trim() + ' ';
                 }
                 
                 // Close
                 const menu = dropdown.querySelector('.finzo-dropdown-menu');
-                menu.classList.remove('is-open');
-                dropdown.querySelector('.finzo-dropdown-trigger').setAttribute('aria-expanded', 'false');
-                dropdown.querySelector('.finzo-dropdown-trigger').focus();
+                if (menu) menu.classList.remove('is-open');
+                dropdown.classList.remove('is-open');
+                if (trigger) {
+                    trigger.classList.remove('is-open');
+                    trigger.setAttribute('aria-expanded', 'false');
+                    trigger.focus();
+                }
+
+                const hiddenInput = dropdown.querySelector('input[type="hidden"]');
+                const newValue = option.dataset.value !== undefined ? option.dataset.value : option.textContent.trim();
+                if (hiddenInput) {
+                    hiddenInput.value = newValue;
+                    hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
+                }
 
                 dropdown.dispatchEvent(new CustomEvent('change', { 
-                    detail: { value: option.dataset.value || option.textContent.trim(), text: option.textContent.trim() } 
+                    detail: { value: newValue, text: option.textContent.trim() } 
                 }));
             };
 
@@ -103,10 +132,11 @@
             document.addEventListener('click', (e) => {
                 // Click outside
                 if (!e.target.closest('.finzo-dropdown')) {
-                    document.querySelectorAll('.finzo-dropdown-menu.is-open').forEach(menu => {
-                        menu.classList.remove('is-open');
-                        const trigger = menu.closest('.finzo-dropdown').querySelector('.finzo-dropdown-trigger');
-                        if (trigger) trigger.setAttribute('aria-expanded', 'false');
+                    document.querySelectorAll('.finzo-dropdown.is-open, .finzo-dropdown-menu.is-open, .finzo-dropdown-trigger.is-open').forEach(el => {
+                        el.classList.remove('is-open');
+                        if (el.classList.contains('finzo-dropdown-trigger')) {
+                            el.setAttribute('aria-expanded', 'false');
+                        }
                     });
                 }
 
@@ -152,9 +182,12 @@
                         e.preventDefault();
                         const dropdown = option.closest('.finzo-dropdown');
                         menu.classList.remove('is-open');
-                        const t = dropdown.querySelector('.finzo-dropdown-trigger');
-                        t.setAttribute('aria-expanded', 'false');
-                        t.focus();
+                        const t = dropdown ? dropdown.querySelector('.finzo-dropdown-trigger') : null;
+                        if (t) {
+                            t.classList.remove('is-open');
+                            t.setAttribute('aria-expanded', 'false');
+                            t.focus();
+                        }
                     }
                 }
             });
@@ -314,6 +347,69 @@
                 tab.setAttribute('aria-selected', 'true');
                 content.classList.remove('hidden');
             }
+        },
+
+        initSidebarScroll: function() {
+            const sidebars = document.querySelectorAll('aside#admin-sidebar, aside#sidebar, .admin-sidebar, aside');
+            sidebars.forEach(sidebar => {
+                const nav = sidebar.querySelector('nav') || sidebar;
+                if (!nav) return;
+
+                const path = window.location.pathname;
+                const portalKey = path.includes('/admin') ? 'admin' : (path.includes('/staff') ? 'staff' : 'user');
+                const storageKey = 'finzo_sidebar_pos_' + portalKey;
+
+                // 1. Locate active link
+                const findActiveLink = () => {
+                    let link = nav.querySelector('.active-nav-item, [aria-current="page"], [data-sidebar-active="true"]');
+                    if (link) return link;
+
+                    const currentFile = path.split('/').pop().split('?')[0];
+                    if (currentFile) {
+                        const links = Array.from(nav.querySelectorAll('a[href]'));
+                        return links.find(a => {
+                            const href = a.getAttribute('href');
+                            if (!href || href === '#' || href.startsWith('javascript:')) return false;
+                            const hrefFile = href.split('/').pop().split('?')[0];
+                            return hrefFile && hrefFile === currentFile;
+                        });
+                    }
+                    return null;
+                };
+
+                const activeLink = findActiveLink();
+
+                // 2. Restore saved scroll position or scroll active item into view
+                const savedScroll = sessionStorage.getItem(storageKey);
+                if (savedScroll !== null && !isNaN(parseInt(savedScroll, 10))) {
+                    nav.scrollTop = parseInt(savedScroll, 10);
+                }
+
+                if (activeLink) {
+                    const navRect = nav.getBoundingClientRect();
+                    const linkRect = activeLink.getBoundingClientRect();
+                    const isVisible = (linkRect.top >= navRect.top - 10 && linkRect.bottom <= navRect.bottom + 10);
+                    if (!isVisible || savedScroll === null) {
+                        activeLink.scrollIntoView({ block: 'center', inline: 'nearest', behavior: 'instant' });
+                    }
+                }
+
+                // 3. Track scroll changes
+                let scrollTimer;
+                nav.addEventListener('scroll', () => {
+                    clearTimeout(scrollTimer);
+                    scrollTimer = setTimeout(() => {
+                        sessionStorage.setItem(storageKey, String(nav.scrollTop));
+                    }, 60);
+                }, { passive: true });
+
+                // 4. Save scroll position on link click
+                nav.querySelectorAll('a').forEach(a => {
+                    a.addEventListener('click', () => {
+                        sessionStorage.setItem(storageKey, String(nav.scrollTop));
+                    });
+                });
+            });
         }
     };
 

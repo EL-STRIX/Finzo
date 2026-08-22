@@ -1,118 +1,53 @@
 /**
- * Finzo Admin — Profile & RBAC Management Handler
- * Manages administrative account settings, avatar, security, and super_admin privileges.
+ * Finzo Admin — Executive Profile & Access Management Handler
+ * Version 2.0 — Executive Dashboard, Responsive Tab System, Real-time 2FA, Dynamic Audit & Directory Controls
  */
 
-(function () {
-    let currentAdminRole = 'admin';
+(function() {
+    function notify(msg, type = 'info') {
+        if (window.portal && window.portal.showToast) {
+            window.portal.showToast(msg, type);
+        } else if (window.utils && window.utils.showToast) {
+            window.utils.showToast(msg, type);
+        } else {
+            console.log(`[Toast ${type}]: ${msg}`);
+        }
+    }
 
-    // Pagination State for Activity
+    function resolvePhotoUrl(path) {
+        if (!path) return '';
+        if (path.startsWith('http') || path.startsWith('data:')) return path;
+        let clean = path.replace(/^\/+/, '');
+        if (clean.startsWith('Finzo/public/')) {
+            return '/' + clean;
+        }
+        if (clean.startsWith('uploads/') || clean.startsWith('assets/')) {
+            return '/Finzo/public/' + clean;
+        }
+        return '/Finzo/public/uploads/' + clean;
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+
+    let currentAdminRole = null;
+
+    let allActivityLogs = [];
     let activityData = [];
     let currentActivityPage = 1;
-    const ACTIVITY_PER_PAGE = 10;
+    const ACTIVITY_PER_PAGE = 8;
+    let allAdmins = [];
+    let pendingUnlockAdminId = null;
+    let pendingUnlockName = '';
 
-    // Helper: Formats relative time
-    const timeAgo = (dateStr) => {
-        if (!dateStr) return 'Never';
-        const ts = new Date(dateStr).getTime();
-        const seconds = Math.floor((new Date().getTime() - ts) / 1000);
 
-        let interval = seconds / 31536000;
-        if (interval > 1) return Math.floor(interval) + " years ago";
-        interval = seconds / 2592000;
-        if (interval > 1) return Math.floor(interval) + " months ago";
-        interval = seconds / 86400;
-        if (interval > 1) {
-            const days = Math.floor(interval);
-            return days === 1 ? "Yesterday" : days + " days ago";
-        }
-        interval = seconds / 3600;
-        if (interval > 1) return Math.floor(interval) + " hours ago";
-        interval = seconds / 60;
-        if (interval > 1) return Math.floor(interval) + " minutes ago";
-        return Math.floor(seconds) + " seconds ago";
-    };
-
-    // Helper: Formats absolute date and time
-    const formatDateTime = (dateStr) => {
-        if (!dateStr) return '-';
-        const d = new Date(dateStr);
-        return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) + ', ' +
-            d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-    };
-
-    function renderActivityPage() {
-        const tbody = document.getElementById('activity-table-body');
-        const info = document.getElementById('activity-pagination-info');
-        const prevBtn = document.getElementById('activity-prev-btn');
-        const nextBtn = document.getElementById('activity-next-btn');
-
-        if (activityData.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="4" class="py-12 text-center"><div class="flex flex-col items-center justify-center"><span class="material-symbols-outlined text-4xl text-text-muted/30 mb-3" aria-hidden="true">inventory_2</span><div class="text-sm font-bold text-text-muted">No recent activity found.</div></div></td></tr>`;
-            document.getElementById('activity-pagination-container').classList.add('hidden');
-            return;
-        }
-
-        document.getElementById('activity-pagination-container').classList.remove('hidden');
-
-        const totalPages = Math.ceil(activityData.length / ACTIVITY_PER_PAGE);
-        if (currentActivityPage > totalPages) currentActivityPage = totalPages;
-        if (currentActivityPage < 1) currentActivityPage = 1;
-
-        const startIdx = (currentActivityPage - 1) * ACTIVITY_PER_PAGE;
-        const endIdx = Math.min(startIdx + ACTIVITY_PER_PAGE, activityData.length);
-
-        const pageData = activityData.slice(startIdx, endIdx);
-
-        tbody.innerHTML = pageData.map(a => {
-            // Strip redundant IP from details
-            let cleanDetails = a.details ? a.details.replace(/\sfrom IP:\s.*$/, '') : '-';
-
-            // Professional overrides
-            switch (a.action_type) {
-                case 'admin_login':
-                    cleanDetails = 'Successfully authenticated into the administrative console.';
-                    break;
-                case 'admin_profile_updated':
-                    cleanDetails = 'Account preferences and profile parameters were modified.';
-                    break;
-                case 'admin_password_updated':
-                    cleanDetails = 'Security credentials (password) were successfully reset.';
-                    break;
-                case 'admin_added':
-                    cleanDetails = 'A new administrative account was provisioned in the system.';
-                    break;
-                case 'admin_deleted':
-                    cleanDetails = 'An administrative account was permanently revoked and deleted.';
-                    break;
-                case 'admin_suspended':
-                    cleanDetails = 'Administrative system access was temporarily suspended.';
-                    break;
-                case 'admin_activated':
-                    cleanDetails = 'Administrative system access was restored and activated.';
-                    break;
-            }
-
-            // Determine badge style
-            let badgeClass = 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 border border-slate-200 dark:border-slate-700';
-            if (a.action_type.includes('login')) badgeClass = 'bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400 border border-blue-100 dark:border-blue-500/20';
-            else if (a.action_type.includes('update')) badgeClass = 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-500/20';
-            else if (a.action_type.includes('delete') || a.action_type.includes('suspend')) badgeClass = 'bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400 border border-red-100 dark:border-red-500/20';
-            else if (a.action_type.includes('add') || a.action_type.includes('activate')) badgeClass = 'bg-purple-50 text-purple-600 dark:bg-purple-500/10 dark:text-purple-400 border border-purple-100 dark:border-purple-500/20';
-
-            return `
-            <tr class="hover:bg-slate-50 dark:hover:bg-white/5 transition-colors border-b border-slate-50 dark:border-white/5 last:border-0">
-                <td class="py-4"><span class="px-2.5 py-1 rounded-md text-[10px] font-black uppercase tracking-widest ${badgeClass}">${a.action_type.replace(/_/g, ' ')}</span></td>
-                <td class="py-4 text-[13px] font-medium text-slate-600 dark:text-slate-300">${cleanDetails}</td>
-                <td class="py-4 text-xs font-mono text-slate-500 dark:text-slate-400">${a.ip_address}</td>
-                <td class="py-4 text-[11px] font-bold text-slate-500 dark:text-slate-400 whitespace-nowrap uppercase tracking-wide">${formatDateTime(a.created_at)}</td>
-            </tr>
-        `}).join('');
-
-        info.textContent = `Showing ${startIdx + 1} to ${endIdx} of ${activityData.length} entries`;
-        prevBtn.disabled = currentActivityPage === 1;
-        nextBtn.disabled = currentActivityPage === totalPages;
-    }
 
     /**
      * Load Admin profile data from API
@@ -120,183 +55,307 @@
     async function loadAdminProfile() {
         try {
             const response = await window.api.get('/admins/profile');
-            if (response.success) {
-                const admin = response.profile;
+            if (response && (response.success || response.status === 200 || response.data)) {
+                const payload = response.data || response;
+                const admin = payload.profile || response.profile || payload;
+                if (!admin || !admin.full_name) {
+                    console.error('Invalid profile data payload:', response);
+                    return;
+                }
                 currentAdminRole = admin.admin_role;
 
-                // Topbar & Subtitle handling
-                if (!admin.profile_photo) {
-                    document.getElementById('topbar-avatar').textContent = admin.full_name.charAt(0);
-                }
+                // Sync Header & Hero Profile
+                const nameDisplay = document.getElementById('profile-name-display');
+                if (nameDisplay) nameDisplay.textContent = admin.full_name;
 
-                // Profile Card bindings
-                document.getElementById('profile-name-display').textContent = admin.full_name;
-                document.getElementById('profile-admin-id-input').value = admin.admin_id || '---';
-                document.getElementById('profile-name-input').value = admin.full_name;
-                document.getElementById('profile-dob-input').value = admin.date_of_birth || '';
+                const heroAdminId = document.getElementById('hero-admin-id-text');
+                if (heroAdminId) heroAdminId.textContent = 'ID: ' + (admin.admin_id || '#' + admin.id);
+
+                const heroEmail = document.getElementById('hero-email-text');
+                if (heroEmail) heroEmail.textContent = admin.email || 'admin@finzo.com';
+
+                const headerName = document.getElementById('header-profile-name');
+                if (headerName) headerName.textContent = admin.full_name;
+                const headerId = document.getElementById('header-profile-id');
+                if (headerId) headerId.textContent = 'ID: ' + (admin.admin_id || '#' + admin.id);
+
+                // Form bindings
+                const adminIdInput = document.getElementById('profile-admin-id-input');
+                if (adminIdInput) adminIdInput.value = admin.admin_id || '---';
+
+                const nameInput = document.getElementById('profile-name-input');
+                if (nameInput) nameInput.value = admin.full_name;
+
+                const dobInput = document.getElementById('profile-dob-input');
+                if (dobInput) dobInput.value = admin.date_of_birth || '';
 
                 // Gender Dropdown sync
                 const genderVal = admin.gender || '';
                 const genderInput = document.getElementById('profile-gender-input');
-                genderInput.value = genderVal;
-                const genderDropdown = genderInput.closest('.finzo-dropdown');
-                if (genderDropdown && genderVal) {
-                    const label = genderDropdown.querySelector('.dropdown-label');
-                    if (label) label.textContent = genderVal;
-                }
-                document.getElementById('profile-phone-input').value = admin.phone || '';
-                document.getElementById('profile-email-input').value = admin.email;
-
-                const qField = document.getElementById('profile-seq-q-input');
-                if (qField) qField.value = admin.security_question || '';
-
-                // Badges
-                const baseBadgeClass = 'px-3.5 py-1.5 text-[10px] font-black rounded-xl uppercase tracking-widest transition-colors';
-
-                const roleBadge = document.getElementById('badge-role');
-                if (admin.admin_role === 'super_admin') {
-                    roleBadge.textContent = 'Super Admin';
-                    roleBadge.className = `${baseBadgeClass} bg-primary-base text-white shadow-sm`;
-                } else if (admin.admin_role === 'admin') {
-                    roleBadge.textContent = 'Admin';
-                    roleBadge.className = `${baseBadgeClass} bg-teal-50 text-teal-600 dark:bg-teal-500/10 dark:text-teal-400`;
-                } else {
-                    roleBadge.textContent = 'Moderator';
-                    roleBadge.className = `${baseBadgeClass} bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400`;
-                }
-
-                const accessBadge = document.getElementById('badge-access');
-                accessBadge.textContent = admin.access_level;
-                accessBadge.className = admin.access_level === 'full'
-                    ? `${baseBadgeClass} bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400`
-                    : `${baseBadgeClass} bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400`;
-
-                const statusBadge = document.getElementById('badge-status');
-                statusBadge.textContent = admin.status;
-                if (admin.status === 'active') {
-                    statusBadge.className = `${baseBadgeClass} bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400`;
-                } else if (admin.status === 'suspended') {
-                    statusBadge.className = `${baseBadgeClass} bg-red-50 text-red-600 dark:bg-red-900/30 dark:text-red-400`;
-                } else {
-                    statusBadge.className = `${baseBadgeClass} bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400`;
-                }
-
-                // Avatar handling
-                const initials = admin.full_name.split(' ').map(n => n[0]).join('').substring(0, 2);
-                if (admin.profile_photo) {
-                    document.getElementById('avatar-img-preview').src = '/Finzo/public/assets/' + admin.profile_photo;
-                    document.getElementById('avatar-img-preview').classList.remove('hidden');
-                    document.getElementById('avatar-initials').classList.add('hidden');
-                } else {
-                    document.getElementById('avatar-img-preview').classList.add('hidden');
-                    document.getElementById('avatar-initials').textContent = initials;
-                    document.getElementById('avatar-initials').classList.remove('hidden');
-                }
-
-                // Security Card bindings
-                document.getElementById('sec-last-login').textContent = timeAgo(admin.last_login_at);
-                document.getElementById('sec-last-ip').textContent = admin.last_login_ip || '-';
-                document.getElementById('sec-last-pwd').textContent = timeAgo(admin.last_password_changed);
-
-                // Recovery Status handling
-                const recoveryCard = document.getElementById('sec-recovery-card');
-                const recoveryIcon = document.getElementById('sec-recovery-icon');
-                const recoveryText = document.getElementById('sec-recovery-text');
-                if (recoveryCard && recoveryIcon && recoveryText) {
-                    const recoveryLabel = recoveryCard.querySelector('label');
-                    if (admin.security_question_set == 1) {
-                        recoveryCard.className = "bg-emerald-50 dark:bg-emerald-500/5 rounded-2xl p-5 border border-emerald-100 dark:border-emerald-500/10 relative overflow-hidden group hover:border-emerald-300 transition-colors";
-                        recoveryIcon.textContent = "verified_user";
-                        recoveryIcon.className = "material-symbols-outlined text-emerald-500 opacity-80 mb-3 relative z-10 text-[28px]";
-                        if (recoveryLabel) recoveryLabel.className = "block text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1 relative z-10";
-                        recoveryText.textContent = "✓ Configured";
-                        recoveryText.className = "font-bold text-[13px] tracking-wide text-emerald-700 dark:text-emerald-400 relative z-10 truncate";
-                    } else {
-                        recoveryCard.className = "bg-rose-50 dark:bg-rose-500/5 rounded-2xl p-5 border border-rose-100 dark:border-rose-500/10 relative overflow-hidden group hover:border-rose-300 transition-colors";
-                        recoveryIcon.textContent = "gpp_maybe";
-                        recoveryIcon.className = "material-symbols-outlined text-rose-500 opacity-80 mb-3 relative z-10 text-[28px]";
-                        if (recoveryLabel) recoveryLabel.className = "block text-[10px] font-black text-rose-600 dark:text-rose-400 uppercase tracking-widest mb-1 relative z-10";
-                        recoveryText.textContent = "⚠ Action Required";
-                        recoveryText.className = "font-bold text-[13px] tracking-wide text-rose-700 dark:text-rose-400 relative z-10 truncate";
+                if (genderInput) {
+                    genderInput.value = genderVal;
+                    const genderDropdown = genderInput.closest('.finzo-dropdown');
+                    if (genderDropdown && genderVal) {
+                        const label = genderDropdown.querySelector('.dropdown-label');
+                        if (label) label.textContent = genderVal;
+                        genderDropdown.querySelectorAll('.finzo-dropdown-option').forEach(opt => {
+                            opt.classList.toggle('is-selected', opt.dataset.value === genderVal);
+                        });
                     }
                 }
 
-                // 2FA is currently a placeholder
-                // document.getElementById('sec-2fa-toggle').checked = (admin.two_fa_enabled == 1);
+                const phoneInput = document.getElementById('profile-phone-input');
+                if (phoneInput) phoneInput.value = admin.phone || '';
 
-                // Recent Activity
-                if (response.activity && response.activity.length > 0) {
-                    activityData = response.activity;
-                    currentActivityPage = 1;
-                    renderActivityPage();
-                } else {
-                    activityData = [];
-                    renderActivityPage();
-                }
+                const emailInput = document.getElementById('profile-email-input');
+                if (emailInput) emailInput.value = admin.email;
 
-                // Super Admin Privileges Check
+                // Role Meta Labels & Badges
+                const roleBadge = document.getElementById('badge-role');
+                const metaRoleLabel = document.getElementById('meta-role-label');
+                const secRoleScope = document.getElementById('sec-role-scope');
+                
+                let roleFormatted = 'Administrator';
                 if (admin.admin_role === 'super_admin') {
-                    // Show Add Admin button
-                    const addBtn = document.getElementById('header-add-admin-btn');
-                    if (addBtn) addBtn.classList.remove('hidden');
+                    roleFormatted = 'Super Administrator';
+                    if (roleBadge) {
+                        roleBadge.textContent = 'Super Admin';
+                        roleBadge.className = 'px-3 py-1 rounded-xl text-[10px] font-black uppercase tracking-widest bg-primary-base text-white shadow-sm';
+                    }
+                } else if (admin.admin_role === 'admin') {
+                    roleFormatted = 'System Administrator';
+                    if (roleBadge) {
+                        roleBadge.textContent = 'Admin';
+                        roleBadge.className = 'px-3 py-1 rounded-xl text-[10px] font-black uppercase tracking-widest bg-teal-500/10 text-teal-600 dark:text-teal-400 border border-teal-500/20';
+                    }
+                } else {
+                    roleFormatted = 'System Moderator';
+                    if (roleBadge) {
+                        roleBadge.textContent = 'Moderator';
+                        roleBadge.className = 'px-3 py-1 rounded-xl text-[10px] font-black uppercase tracking-widest bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20';
+                    }
+                }
+                if (metaRoleLabel) metaRoleLabel.textContent = roleFormatted;
+                if (secRoleScope) secRoleScope.textContent = roleFormatted;
 
-                    // Show Management Card
-                    document.getElementById('admin-management-container').classList.remove('hidden');
-                    loadAdminList();
-                    loadLockedAdmins();
+                // Access Level Badge
+                const accessBadge = document.getElementById('badge-access');
+                if (accessBadge) {
+                    accessBadge.textContent = (admin.access_level || 'full').toUpperCase() + ' ACCESS';
+                    accessBadge.className = admin.access_level === 'full'
+                        ? 'px-3 py-1 rounded-lg bg-info-bg text-info border border-info-border text-[10px] font-black uppercase tracking-widest'
+                        : 'px-3 py-1 rounded-lg bg-surface-subtle text-text-secondary border border-border-subtle text-[10px] font-black uppercase tracking-widest';
                 }
 
-                // Security Question Status Badge
+                // Account Status Badge
+                const statusBadge = document.getElementById('badge-status');
+                if (statusBadge) {
+                    const isActive = (admin.status || 'active') === 'active';
+                    statusBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full ${isActive ? 'bg-emerald-500' : 'bg-rose-500'}"></span> ${(admin.status || 'active').toUpperCase()}`;
+                    statusBadge.className = isActive
+                        ? 'px-3 py-1 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5'
+                        : 'px-3 py-1 rounded-lg bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20 text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5';
+                }
+
+                // Avatar / Photo handling
+                const initials = (admin.full_name || 'AD').split(' ').filter(Boolean).map(n => n[0]).join('').toUpperCase().substring(0, 2);
+                const avatarImg = document.getElementById('avatar-img-preview');
+                const avatarInitials = document.getElementById('avatar-initials');
+                if (admin.profile_photo) {
+                    const photoSrc = resolvePhotoUrl(admin.profile_photo);
+                    if (avatarImg) {
+                        avatarImg.src = photoSrc + '?v=' + Date.now();
+                        avatarImg.classList.remove('hidden');
+                    }
+                    if (avatarInitials) avatarInitials.classList.add('hidden');
+                } else {
+                    if (avatarImg) avatarImg.classList.add('hidden');
+                    if (avatarInitials) {
+                        avatarInitials.textContent = initials;
+                        avatarInitials.classList.remove('hidden');
+                    }
+                }
+
+
+
+                // Security Card Telemetry
+                const secLogin = document.getElementById('sec-last-login');
+                if (secLogin) secLogin.textContent = admin.last_login_at ? (window.FinzoUtils ? window.FinzoUtils.timeAgo(admin.last_login_at) : admin.last_login_at) : 'Active Now';
+                const secIp = document.getElementById('sec-last-ip');
+                if (secIp) secIp.textContent = admin.last_login_ip || '127.0.0.1';
+                const secPwd = document.getElementById('sec-last-pwd');
+                if (secPwd) secPwd.textContent = admin.last_password_changed ? (window.FinzoUtils ? window.FinzoUtils.timeAgo(admin.last_password_changed) : admin.last_password_changed) : 'Recently';
+
+                // 2FA Toggle Sync
+                const twoFaToggle = document.getElementById('sec-2fa-toggle');
+                const twoFaLabel = document.getElementById('sec-2fa-label');
+                const is2FaEnabled = admin.two_fa_enabled == 1;
+                if (twoFaToggle) twoFaToggle.checked = is2FaEnabled;
+                if (twoFaLabel) {
+                    twoFaLabel.textContent = is2FaEnabled ? 'ENABLED (ACTIVE)' : 'DISABLED';
+                    twoFaLabel.className = is2FaEnabled
+                        ? 'text-[10px] font-mono font-black uppercase tracking-widest px-2.5 py-1 rounded bg-emerald-500/10 text-emerald-600 border border-emerald-500/20'
+                        : 'text-[10px] font-mono font-black uppercase tracking-widest px-2.5 py-1 rounded bg-surface border border-border-subtle text-text-secondary';
+                }
+
+                // Security Question Status
                 const sqContainer = document.getElementById('sq-status-container');
+                const badgeSqLabel = document.getElementById('badge-sq-label');
+                const heroSecScore = document.getElementById('hero-security-score');
                 const sqSet = admin.security_question_set == 1;
+
+                if (badgeSqLabel) {
+                    badgeSqLabel.textContent = sqSet ? 'Recovery: Active ✓' : 'Recovery: Action Required ⚠️';
+                }
+
+                let secScore = 80;
+                if (sqSet) secScore += 10;
+                if (is2FaEnabled) secScore += 10;
+                if (heroSecScore) heroSecScore.textContent = `${secScore}%`;
+
                 if (sqContainer) {
                     if (sqSet) {
                         sqContainer.innerHTML = `
-                            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 dark:bg-emerald-500/10 dark:border-emerald-500/20">
-                                <span class="material-symbols-outlined text-emerald-500 text-[14px]" aria-hidden="true">check_circle</span>
-                                <span class="text-[10px] font-black uppercase tracking-widest text-emerald-600 dark:text-emerald-400">Security Question Set ✓</span>
+                            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400">
+                                <span class="material-symbols-outlined text-[14px]" aria-hidden="true">check_circle</span>
+                                <span class="text-[10px] font-black uppercase tracking-widest">Configured ✓</span>
                             </div>`;
                         const sqQField = document.getElementById('sq-question');
                         if (sqQField && admin.security_question) sqQField.value = admin.security_question;
                         const sqBtnText = document.getElementById('sq-btn-text');
                         if (sqBtnText) sqBtnText.textContent = 'Update Security Question';
                     } else {
-                        const warningMsg = admin.admin_role === 'super_admin'
-                            ? '⚠️ As a Super Admin, your account is critical. If you get locked, you will need another Super Admin to unlock you, or you must have a security question set.'
-                            : '⚠️ You have not set a security question yet. If your account gets locked you will need a Super Admin to unlock it manually.';
                         sqContainer.innerHTML = `
-                            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-50 border border-amber-200 dark:bg-amber-500/10 dark:border-amber-500/20 mb-3">
-                                <span class="material-symbols-outlined text-amber-500 text-[14px]" aria-hidden="true">warning</span>
-                                <span class="text-[10px] font-black uppercase tracking-widest text-amber-600 dark:text-amber-400">Not Set — Recommended</span>
-                            </div>
-                            <p class="text-[11px] font-semibold text-amber-700 dark:text-amber-400 leading-relaxed bg-amber-50 dark:bg-amber-500/10 border border-amber-100 dark:border-amber-500/20 rounded-xl p-3">
-                                ${warningMsg}
-                            </p>`;
+                            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400">
+                                <span class="material-symbols-outlined text-[14px]" aria-hidden="true">warning</span>
+                                <span class="text-[10px] font-black uppercase tracking-widest">Action Recommended</span>
+                            </div>`;
                     }
                 }
 
+                // Activity Trail
+                const activityList = payload.activity || response.activity || [];
+                allActivityLogs = Array.isArray(activityList) ? activityList : [];
+                activityData = [...allActivityLogs];
+                currentActivityPage = 1;
+                
+                const countBadge = document.getElementById('activity-count-badge');
+                if (countBadge) countBadge.textContent = `${allActivityLogs.length} Logs`;
+                
+                renderActivityPage();
+
+
+                // Super Admin Exclusive Privileges
+                if (admin.admin_role === 'super_admin') {
+                    const tabBtnDir = document.getElementById('tab-btn-directory');
+                    if (tabBtnDir) {
+                        tabBtnDir.classList.remove('hidden');
+                        tabBtnDir.classList.add('flex');
+                    }
+                    loadAdminList();
+                    loadLockedAdmins();
+                }
+
             } else {
-                window.portal.showToast(response.message || 'Failed to load profile', 'error');
+                if (window.portal) window.portal.showToast(response?.message || 'Failed to load profile', 'error');
             }
         } catch (error) {
             console.error('Failed to load profile:', error);
-            window.portal.showToast('Network error loading profile', 'error');
+            if (window.portal) window.portal.showToast('Network error loading profile', 'error');
         }
     }
 
-    let pendingUnlockAdminId = null;
-    let pendingUnlockName = '';
+    /**
+     * Render paginated Activity Log
+     */
+    function renderActivityPage() {
+        const tbody = document.getElementById('activity-table-body');
+        const paginationContainer = document.getElementById('activity-pagination-container');
+        const paginationInfo = document.getElementById('activity-pagination-info');
+        const prevBtn = document.getElementById('activity-prev-btn');
+        const nextBtn = document.getElementById('activity-next-btn');
 
+        if (!tbody) return;
+
+        if (activityData.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="4" class="text-center italic text-text-secondary py-12 text-sm">No activity logs recorded yet.</td></tr>`;
+            if (paginationContainer) paginationContainer.classList.add('hidden');
+            return;
+        }
+
+        if (paginationContainer) paginationContainer.classList.remove('hidden');
+
+        const totalPages = Math.ceil(activityData.length / ACTIVITY_PER_PAGE);
+        const startIndex = (currentActivityPage - 1) * ACTIVITY_PER_PAGE;
+        const endIndex = Math.min(startIndex + ACTIVITY_PER_PAGE, activityData.length);
+        const currentSlice = activityData.slice(startIndex, endIndex);
+
+        if (paginationInfo) {
+            paginationInfo.textContent = `Showing ${startIndex + 1} to ${endIndex} of ${activityData.length} entries`;
+        }
+
+        if (prevBtn) prevBtn.disabled = currentActivityPage === 1;
+        if (nextBtn) nextBtn.disabled = currentActivityPage >= totalPages;
+
+        const formatDT = (d) => {
+            if (!d) return '-';
+            return new Date(d).toLocaleString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+        };
+
+        tbody.innerHTML = currentSlice.map(a => {
+            const actionText = a.action || 'system_event';
+            let icon = 'history';
+            let badgeStyle = 'bg-primary/10 text-primary border border-primary/20';
+
+            if (actionText.includes('login')) {
+                icon = 'login';
+                badgeStyle = 'bg-emerald-500/10 text-emerald-600 border border-emerald-500/20';
+            } else if (actionText.includes('password') || actionText.includes('security')) {
+                icon = 'key';
+                badgeStyle = 'bg-amber-500/10 text-amber-600 border border-amber-500/20';
+            } else if (actionText.includes('provision') || actionText.includes('admin')) {
+                icon = 'manage_accounts';
+                badgeStyle = 'bg-info/10 text-info border border-info-border';
+            }
+
+            return `
+                <tr class="hover:bg-surface-subtle transition-colors">
+                    <td class="py-4 px-6">
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider ${badgeStyle}">
+                            <span class="material-symbols-outlined text-[14px]" aria-hidden="true">${icon}</span>
+                            ${actionText.replace(/_/g, ' ')}
+                        </span>
+                    </td>
+                    <td class="py-4 px-6 text-xs text-text-primary font-medium max-w-md truncate">${a.details || 'Administrative system operation'}</td>
+                    <td class="py-4 px-6 text-xs font-mono font-bold text-text-secondary">${a.ip_address || '127.0.0.1'}</td>
+                    <td class="py-4 px-6 text-right text-xs font-medium text-text-secondary">${formatDT(a.created_at)}</td>
+                </tr>
+            `;
+        }).join('');
+    }
+
+    /**
+     * Load Locked Admin Accounts
+     */
     async function loadLockedAdmins() {
         try {
             const res = await window.api.get('/admins/locked');
-            if (!res.success || res.total === 0) {
-                document.getElementById('locked-admins-container').classList.add('hidden');
+            if (!res || (!res.success && !res.data)) {
+                document.getElementById('locked-admins-container')?.classList.add('hidden');
+                return;
+            }
+            const payload = res.data || res;
+            const lockedList = payload.locked_admins || payload.locked || (Array.isArray(payload) ? payload : []);
+            const total = payload.total ?? lockedList.length;
+
+            if (total === 0 || lockedList.length === 0) {
+                document.getElementById('locked-admins-container')?.classList.add('hidden');
                 return;
             }
 
-            document.getElementById('locked-admins-container').classList.remove('hidden');
-            document.getElementById('locked-count-badge').textContent = `${res.total} Locked`;
+            document.getElementById('locked-admins-container')?.classList.remove('hidden');
+            const badge = document.getElementById('locked-count-badge');
+            if (badge) badge.textContent = `${total} Locked`;
 
             const formatDT = (d) => {
                 if (!d) return '-';
@@ -304,124 +363,126 @@
             };
 
             const tbody = document.getElementById('locked-admins-body');
-            tbody.innerHTML = res.locked_admins.map(a => {
-                const lockReasonLabel = a.lock_reason === 'failed_password'
-                    ? `<span class="px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-widest bg-rose-50 text-rose-600 border border-rose-100">Wrong Password (3x)</span>`
-                    : `<span class="px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-widest bg-amber-50 text-amber-600 border border-amber-100">Wrong Answer (5x)</span>`;
+            if (tbody) {
+                tbody.innerHTML = lockedList.map(a => {
+                    const lockReasonLabel = a.lock_reason === 'failed_password'
+                        ? `<span class="px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-widest bg-rose-500/10 text-rose-600 border border-rose-500/20">Wrong Password (3x)</span>`
+                        : `<span class="px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-widest bg-amber-500/10 text-amber-600 border border-amber-500/20">Wrong Answer (5x)</span>`;
 
-                const attemptsColor = a.answer_attempts >= 3 ? 'text-rose-600 font-bold' : 'text-slate-600 dark:text-slate-300';
-                const sqHtml = a.security_question_set
-                    ? `<span class="text-emerald-600 text-xs font-bold">Yes</span>`
-                    : `<span class="text-rose-500 text-xs font-bold">No</span>`;
+                    const attemptsColor = a.answer_attempts >= 3 ? 'text-rose-600 font-bold' : 'text-text-secondary';
+                    const sqHtml = a.security_question_set
+                        ? `<span class="text-emerald-600 text-xs font-bold">Yes ✓</span>`
+                        : `<span class="text-rose-500 text-xs font-bold">No ✕</span>`;
 
-                return `<tr class="hover:bg-rose-50/30 dark:hover:bg-rose-500/5 transition-colors border-b border-slate-50 dark:border-white/5 last:border-0">
-                    <td class="py-4 px-6">
-                        <div class="text-xs font-black dark:text-white tracking-tight">${a.full_name}</div>
-                        <div class="text-[9px] font-bold text-slate-400 mt-0.5">${a.email}</div>
-                    </td>
-                    <td class="py-4 px-4"><span class="px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-widest bg-teal-500/10 text-teal-600 border border-teal-500/20">${a.admin_role}</span></td>
-                    <td class="py-4 px-4 text-[11px] text-slate-500 dark:text-slate-400 font-medium">${formatDT(a.locked_at)}</td>
-                    <td class="py-4 px-4">${lockReasonLabel}</td>
-                    <td class="py-4 px-4 text-[11px] font-bold ${attemptsColor}">${a.answer_attempts} / 5</td>
-                    <td class="py-4 px-4">${sqHtml}</td>
-                    <td class="py-4 px-4">
-                        <button onclick="window.AdminProfile.showUnlockConfirm(${a.id}, '${a.full_name.replace(/'/g, "\\'")}')"
-                            class="px-3 py-1.5 bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white border border-emerald-200 rounded-lg text-[10px] font-black uppercase tracking-widest transition-colors">
-                            Unlock
-                        </button>
-                    </td>
-                </tr>`;
-            }).join('');
+                    return `<tr class="hover:bg-rose-500/5 transition-colors border-b border-border-subtle last:border-0">
+                        <td class="py-4 px-6">
+                            <div class="text-xs font-black text-text-primary tracking-tight">${a.full_name}</div>
+                            <div class="text-[10px] font-bold text-text-secondary mt-0.5">${a.email}</div>
+                        </td>
+                        <td class="py-4 px-4"><span class="px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest bg-teal-500/10 text-teal-600 border border-teal-500/20">${a.admin_role}</span></td>
+                        <td class="py-4 px-4 text-xs text-text-secondary font-medium">${formatDT(a.locked_at)}</td>
+                        <td class="py-4 px-4">${lockReasonLabel}</td>
+                        <td class="py-4 px-4 text-xs font-mono font-bold ${attemptsColor}">${a.answer_attempts} / 5</td>
+                        <td class="py-4 px-4">${sqHtml}</td>
+                        <td class="py-4 px-4 text-right">
+                            <button onclick="window.AdminProfile.showUnlockConfirm(${a.id}, '${(a.full_name || '').replace(/'/g, "\\'")}')"
+                                class="px-3.5 py-1.5 bg-emerald-500/10 hover:bg-emerald-600 text-emerald-600 hover:text-white border border-emerald-500/20 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all">
+                                Unlock
+                            </button>
+                        </td>
+                    </tr>`;
+                }).join('');
+            }
         } catch (err) {
             console.error('Error loading locked admins:', err);
         }
     }
 
-    // Store full admin list for client-side filtering
-    let allAdmins = [];
-
+    /**
+     * Render Global Admin Table
+     */
     function renderAdminTable(admins) {
         const tbody = document.getElementById('admin-management-body');
         if (!tbody) return;
 
         if (admins.length > 0) {
-            tbody.innerHTML = admins.map((a, i) => {
-
-                let roleHtml = `<span class="px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-widest bg-teal-500/10 text-teal-600 border border-teal-500/20">Admin</span>`;
+            tbody.innerHTML = admins.map(a => {
+                let roleHtml = `<span class="px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest bg-teal-500/10 text-teal-600 border border-teal-500/20">Admin</span>`;
                 if (a.admin_role === 'moderator') {
-                    roleHtml = `<span class="px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-widest bg-amber-500/10 text-amber-600 border border-amber-500/20">Moderator</span>`;
+                    roleHtml = `<span class="px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest bg-amber-500/10 text-amber-600 border border-amber-500/20">Moderator</span>`;
                 }
 
-                let statHtml = `<span class="px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-widest bg-emerald-500/10 text-emerald-500">• Active</span>`;
-                if (a.status === 'suspended') statHtml = `<span class="px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-widest bg-red-500/10 text-red-500">• Suspended</span>`;
+                let statHtml = `<span class="px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">• Active</span>`;
+                if (a.status === 'suspended') {
+                    statHtml = `<span class="px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest bg-rose-500/10 text-rose-600 border border-rose-500/20">• Suspended</span>`;
+                }
 
-                const photo = a.profile_photo
-                    ? `<img src="/Finzo/public/assets/${a.profile_photo}" class="w-9 h-9 rounded-xl object-cover shadow-sm ring-2 ring-slate-100 dark:ring-white/5">`
-                    : `<div class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-white/5 flex items-center justify-center text-[11px] font-black text-slate-400 border border-slate-200/50 dark:border-white/10">${a.full_name.charAt(0).toUpperCase()}</div>`;
+                const initials = (a.full_name || 'A').split(' ').filter(Boolean).map(n => n[0]).join('').toUpperCase().substring(0, 2) || 'A';
+                const photoUrl = resolvePhotoUrl(a.profile_photo);
+                const photo = photoUrl
+                    ? `<img src="${photoUrl}" class="w-9 h-9 rounded-xl object-cover shadow-sm ring-2 ring-primary/20" alt="${escapeHtml(a.full_name || 'Admin')}" onerror="this.outerHTML='<div class=\\\'w-9 h-9 rounded-xl bg-surface-subtle flex items-center justify-center text-xs font-black text-text-secondary border border-border-subtle\\\'>${initials}</div>'">`
+                    : `<div class="w-9 h-9 rounded-xl bg-surface-subtle flex items-center justify-center text-xs font-black text-text-secondary border border-border-subtle">${initials}</div>`;
+
 
                 const formatDateLocal = (d) => {
                     if (!d) return '-';
                     const dt = new Date(d);
-                    return dt.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
+                    return dt.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
                 };
 
                 return `
-                        <tr class="hover:bg-slate-50/50 dark:hover:bg-white/5 transition-colors group">
-                            <td class="py-4 px-6 text-[10px] font-black text-slate-400 w-20 text-left font-mono">${a.admin_id}</td>
-                            <td class="py-4 px-6">
-                                <div class="flex items-center gap-3">
-                                    ${photo}
-                                    <div>
-                                        <div class="text-xs font-black dark:text-white tracking-tight">${a.full_name}</div>
-                                        <div class="text-[9px] font-bold text-slate-400 mt-0.5">${a.email}</div>
-                                    </div>
+                    <tr class="hover:bg-surface-subtle transition-colors">
+                        <td class="py-4 px-6 text-xs font-mono font-bold text-text-secondary">${a.admin_id}</td>
+                        <td class="py-4 px-6">
+                            <div class="flex items-center gap-3">
+                                ${photo}
+                                <div>
+                                    <div class="text-xs font-black text-text-primary tracking-tight">${a.full_name}</div>
+                                    <div class="text-[10px] font-bold text-text-secondary mt-0.5">${a.email}</div>
                                 </div>
-                            </td>
-                            <td class="py-4 px-6">${roleHtml}</td>
-                            <td class="py-4 px-6">
-                                <span class="text-[10px] font-bold uppercase tracking-tight text-slate-500 dark:text-slate-400">${a.access_level}</span>
-                            </td>
-                            <td class="py-4 px-6">${statHtml}</td>
-                            <td class="py-4 px-6">
-                                <div class="text-[10px] font-bold dark:text-slate-300">${a.last_login_at ? timeAgo(a.last_login_at) : 'Never'}</div>
-                            </td>
-                            <td class="py-4 px-6">
-                                <div class="text-[10px] font-bold dark:text-slate-300">${a.created_by_name || 'System'}</div>
-                                <div class="text-[9px] font-bold text-slate-400 mt-0.5">${formatDateLocal(a.created_at)}</div>
-                            </td>
-                            <td class="py-4 px-6 text-right">
-                                <a href="admin-detail.html?id=${a.id}" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 dark:bg-white/5 hover:bg-primary hover:text-white dark:hover:bg-primary transition-all rounded-lg text-[9px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 shadow-sm border border-transparent hover:border-primary/20">
-                                    View Profile
-                                    <span class="material-symbols-outlined text-[14px]" aria-hidden="true">chevron_right</span>
-                                </a>
-                            </td>
-                        </tr>
-                        `;
+                            </div>
+                        </td>
+                        <td class="py-4 px-6">${roleHtml}</td>
+                        <td class="py-4 px-6">
+                            <span class="text-xs font-bold uppercase tracking-tight text-text-secondary">${a.access_level || 'standard'}</span>
+                        </td>
+                        <td class="py-4 px-6">${statHtml}</td>
+                        <td class="py-4 px-6">
+                            <div class="text-xs font-bold text-text-primary">${a.last_login_at ? window.FinzoUtils.timeAgo(a.last_login_at) : 'Never'}</div>
+                        </td>
+                        <td class="py-4 px-6">
+                            <div class="text-xs font-bold text-text-primary">${a.created_by_name || 'System'}</div>
+                            <div class="text-[10px] font-medium text-text-secondary mt-0.5">${formatDateLocal(a.created_at)}</div>
+                        </td>
+                        <td class="py-4 px-6 text-right">
+                            <a href="admin-detail.php?id=${a.id}" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-white text-zinc-900 hover:bg-black hover:text-white dark:bg-zinc-900 dark:text-white dark:hover:bg-white dark:hover:text-black rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border border-border-subtle shadow-sm cursor-pointer">
+                                <span>Inspect</span>
+                                <span class="material-symbols-outlined text-[14px]" aria-hidden="true">chevron_right</span>
+                            </a>
+                        </td>
+                    </tr>
+                `;
             }).join('');
         } else {
-            tbody.innerHTML = `<tr><td colspan="8" class="py-12 text-center"><div class="flex flex-col items-center justify-center"><span class="material-symbols-outlined text-4xl text-text-muted/30 mb-3" aria-hidden="true">inventory_2</span><div class="text-sm font-bold text-text-muted">No administrators match your filters.</div></div></td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="8" class="py-12 text-center text-text-secondary text-sm">No administrators match your search or filter criteria.</td></tr>`;
         }
     }
 
     function filterAdminList() {
         const searchVal = (document.getElementById('admin-search-input')?.value || '').toLowerCase().trim();
-        const statusVal = document.getElementById('admin-status-filter')?.value || 'all';
-        const roleVal = document.getElementById('admin-role-filter')?.value || 'all';
+        const statusVal = (document.getElementById('admin-status-filter')?.value || 'all').toLowerCase().trim();
+        const roleVal = (document.getElementById('admin-role-filter')?.value || 'all').toLowerCase().trim();
 
         const filtered = allAdmins.filter(a => {
-            // Search filter: match against name, email, admin_id
             if (searchVal) {
-                const haystack = `${a.full_name} ${a.email} ${a.admin_id}`.toLowerCase();
+                const haystack = `${a.full_name || ''} ${a.email || ''} ${a.admin_id || ''} ${a.phone || ''} ${a.admin_role || ''} ${a.status || ''}`.toLowerCase();
                 if (!haystack.includes(searchVal)) return false;
             }
-            // Status filter
-            if (statusVal !== 'all' && a.status !== statusVal) return false;
-            // Role filter
-            if (roleVal !== 'all' && a.admin_role !== roleVal) return false;
+            if (statusVal !== 'all' && (a.status || '').toLowerCase() !== statusVal) return false;
+            if (roleVal !== 'all' && (a.admin_role || '').toLowerCase() !== roleVal) return false;
             return true;
         });
 
-        // Update visible count badge
         const badge = document.getElementById('management-count-badge');
         if (badge) {
             const isFiltered = searchVal || statusVal !== 'all' || roleVal !== 'all';
@@ -433,22 +494,24 @@
         renderAdminTable(filtered);
     }
 
-    async function loadAdminList() {
 
+    async function loadAdminList() {
         try {
             const res = await window.api.get('/admins');
-            if (res.success) {
-                allAdmins = res.admins || [];
-                document.getElementById('management-count-badge').textContent = `${res.total} Admins`;
+            if (res && (res.success || res.status === 200 || res.data)) {
+                const payload = res.data || res;
+                allAdmins = payload.admins || (Array.isArray(payload) ? payload : []);
+                const total = payload.total ?? allAdmins.length;
+                const countBadge = document.getElementById('management-count-badge');
+                if (countBadge) countBadge.textContent = `${total} Admins`;
                 renderAdminTable(allAdmins);
             }
         } catch (e) {
-            console.error(e);
+            console.error('Error loading admin list:', e);
         }
     }
 
-    // Wire up filter controls using event delegation (bulletproof approach)
-    // Wire up filter controls directly
+    // Attach search and filter listeners for directory
     const searchInput = document.getElementById('admin-search-input');
     if (searchInput) searchInput.addEventListener('input', filterAdminList);
 
@@ -458,8 +521,145 @@
     const roleFilter = document.getElementById('admin-role-filter');
     if (roleFilter) roleFilter.addEventListener('change', filterAdminList);
 
-    // Exported Object
+    // Attach real-time listeners for activity log
+    const activitySearch = document.getElementById('activity-search-input');
+    if (activitySearch) activitySearch.addEventListener('input', () => window.AdminProfile.applyActivityFilter());
+
+    const fromDateInput = document.getElementById('activity-from-date');
+    if (fromDateInput) fromDateInput.addEventListener('change', () => window.AdminProfile.applyActivityFilter());
+
+    const toDateInput = document.getElementById('activity-to-date');
+    if (toDateInput) toDateInput.addEventListener('change', () => window.AdminProfile.applyActivityFilter());
+
+
+    // ==========================================
+    // EXPORTED OBJECT TO GLOBAL SCOPE
+    // ==========================================
     window.AdminProfile = {
+        
+        switchTab: (tabId) => {
+            // Update Tab Buttons
+            document.querySelectorAll('.profile-tab-btn').forEach(btn => {
+                const isCurrent = btn.dataset.tab === tabId;
+                btn.setAttribute('aria-selected', isCurrent ? 'true' : 'false');
+                if (isCurrent) {
+                    btn.className = 'profile-tab-btn flex items-center gap-2 px-5 py-3 rounded-t-xl text-xs font-black uppercase tracking-wider transition-all border-b-2 border-black dark:border-white text-black dark:text-white bg-surface shadow-sm cursor-pointer';
+                } else {
+                    btn.className = 'profile-tab-btn flex items-center gap-2 px-5 py-3 rounded-t-xl text-xs font-black uppercase tracking-wider transition-all border-b-2 border-transparent text-text-secondary hover:text-text-primary hover:bg-surface-hover cursor-pointer';
+                }
+            });
+
+            // Update Tab Panels
+            document.querySelectorAll('.tab-panel').forEach(panel => {
+                panel.classList.toggle('hidden', panel.id !== tabId);
+            });
+        },
+
+
+        copyText: (text, label = 'Copied') => {
+            if (!text || text === '---') return;
+            navigator.clipboard.writeText(text).then(() => {
+                if (window.portal) window.portal.showToast(`${label} copied to clipboard!`, 'success');
+            }).catch(() => {
+                if (window.portal) window.portal.showToast('Could not copy to clipboard', 'error');
+            });
+        },
+
+        applyActivityFilter: () => {
+            const searchVal = (document.getElementById('activity-search-input')?.value || '').toLowerCase().trim();
+            const fromDateVal = document.getElementById('activity-from-date')?.value || '';
+            const toDateVal = document.getElementById('activity-to-date')?.value || '';
+
+            activityData = allActivityLogs.filter(a => {
+                if (searchVal) {
+                    const haystack = `${a.action || ''} ${a.action_type || ''} ${a.details || ''} ${a.ip_address || ''} ${a.entity_type || ''} ${a.entity_id || ''}`.toLowerCase();
+                    if (!haystack.includes(searchVal)) return false;
+                }
+                if (fromDateVal && a.created_at) {
+                    const logDate = a.created_at.substring(0, 10);
+                    if (logDate < fromDateVal) return false;
+                }
+                if (toDateVal && a.created_at) {
+                    const logDate = a.created_at.substring(0, 10);
+                    if (logDate > toDateVal) return false;
+                }
+                return true;
+            });
+
+            currentActivityPage = 1;
+            const isFiltered = Boolean(searchVal || fromDateVal || toDateVal);
+            const countBadge = document.getElementById('activity-count-badge');
+            if (countBadge) {
+                countBadge.textContent = isFiltered
+                    ? `${activityData.length} of ${allActivityLogs.length} Logs`
+                    : `${allActivityLogs.length} Logs`;
+            }
+            renderActivityPage();
+        },
+
+        resetActivityFilter: () => {
+            const searchInput = document.getElementById('activity-search-input');
+            const fromInput = document.getElementById('activity-from-date');
+            const toInput = document.getElementById('activity-to-date');
+
+            if (searchInput) searchInput.value = '';
+            if (fromInput) fromInput.value = '';
+            if (toInput) toInput.value = '';
+
+            activityData = [...allActivityLogs];
+            currentActivityPage = 1;
+            const countBadge = document.getElementById('activity-count-badge');
+            if (countBadge) countBadge.textContent = `${allActivityLogs.length} Logs`;
+            renderActivityPage();
+            if (window.portal) window.portal.showToast('Activity filters reset', 'info');
+        },
+
+        exportActivityCSV: () => {
+            const dataToExport = (activityData && activityData.length > 0) ? activityData : allActivityLogs;
+            if (!dataToExport || dataToExport.length === 0) {
+                if (window.portal) window.portal.showToast('No activity logs found to export', 'error');
+                return;
+            }
+
+            const fromDateVal = document.getElementById('activity-from-date')?.value;
+            const toDateVal = document.getElementById('activity-to-date')?.value;
+
+            const headers = ['Log ID', 'Operation / Action', 'Details & Context', 'IP Address', 'Entity Type', 'Entity ID', 'Date & Time'];
+            const rows = dataToExport.map((a, idx) => [
+                idx + 1,
+                `"${(a.action || a.action_type || 'System Event').replace(/"/g, '""')}"`,
+                `"${(a.details || '').replace(/"/g, '""')}"`,
+                `"${a.ip_address || '127.0.0.1'}"`,
+                `"${a.entity_type || 'admin'}"`,
+                `"${a.entity_id || 'ADM001'}"`,
+                `"${a.created_at || ''}"`
+            ]);
+
+            const csvString = [headers.join(','), ...rows.map(r => r.join(','))].join('\r\n');
+            const blob = new Blob(['\uFEFF' + csvString], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+
+            let dateLabel = new Date().toISOString().slice(0, 10);
+            if (fromDateVal && toDateVal) {
+                dateLabel = `${fromDateVal}_to_${toDateVal}`;
+            } else if (fromDateVal) {
+                dateLabel = `from_${fromDateVal}`;
+            } else if (toDateVal) {
+                dateLabel = `upto_${toDateVal}`;
+            }
+
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `Finzo_Admin_Audit_Trail_${dateLabel}.csv`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
+
+            if (window.portal) window.portal.showToast(`Exported ${dataToExport.length} activity records as CSV`, 'success');
+        },
+
+
         uploadPhoto: async (input) => {
             if (input.files && input.files[0]) {
                 const file = input.files[0];
@@ -469,22 +669,26 @@
                 try {
                     const reader = new FileReader();
                     reader.onload = (e) => {
-                        document.getElementById('avatar-img-preview').src = e.target.result;
-                        document.getElementById('avatar-img-preview').classList.remove('hidden');
-                        document.getElementById('avatar-initials').classList.add('hidden');
+                        const preview = document.getElementById('avatar-img-preview');
+                        const initials = document.getElementById('avatar-initials');
+                        if (preview) { preview.src = e.target.result; preview.classList.remove('hidden'); }
+                        if (initials) initials.classList.add('hidden');
                     };
                     reader.readAsDataURL(file);
 
                     const response = await window.api.upload('/admins/profile/photo', formData);
-                    if (response.success) {
-                        window.portal.showToast('Profile photo updated', 'success');
+                    const payload = response ? (response.data || response) : {};
+                    if (response && (response.success || response.status === 200 || payload.success)) {
+                        if (window.portal) window.portal.showToast(payload.message || 'Profile photo updated successfully', 'success');
+                        await loadAdminProfile();
                         if (window.AdminPortal) window.AdminPortal.init();
                     } else {
-                        window.portal.showToast(response.message || 'Upload failed', 'error');
+                        if (window.portal) window.portal.showToast(payload.message || 'Upload failed', 'error');
                     }
                 } catch (error) {
-                    window.portal.showToast('System error uploading photo', 'error');
+                    if (window.portal) window.portal.showToast('System error uploading photo', 'error');
                 }
+
             }
         },
 
@@ -493,8 +697,8 @@
                 const file = input.files[0];
                 const r = new FileReader();
                 r.onload = (e) => {
-                    document.getElementById('new-avatar-preview').src = e.target.result;
-                    document.getElementById('new-avatar-preview').classList.remove('hidden');
+                    const preview = document.getElementById('new-avatar-preview');
+                    if (preview) { preview.src = e.target.result; preview.classList.remove('hidden'); }
                 };
                 r.readAsDataURL(file);
             }
@@ -503,7 +707,8 @@
         togglePW: (id) => {
             const input = document.getElementById(id);
             if (!input) return;
-            const icon = input.nextElementSibling;
+            const btn = input.nextElementSibling;
+            const icon = btn ? btn.querySelector('.material-symbols-outlined') : null;
             if (input.type === 'password') {
                 input.type = 'text';
                 if (icon) icon.textContent = 'visibility_off';
@@ -524,104 +729,91 @@
             if (/[^A-Za-z0-9]/.test(pw)) strength++;
 
             if (strength === 0) {
-                pwBar.style.width = '0%'; pwText.textContent = '';
+                pwBar.style.width = '0%'; if (pwText) pwText.textContent = '';
             } else if (strength <= 2) {
-                pwBar.style.width = '33%'; pwBar.style.background = '#ef4444'; pwText.textContent = 'Weak'; pwText.style.color = '#ef4444';
+                pwBar.style.width = '33%'; pwBar.style.background = '#ef4444'; if (pwText) { pwText.textContent = 'Weak'; pwText.style.color = '#ef4444'; }
             } else if (strength === 3) {
-                pwBar.style.width = '66%'; pwBar.style.background = '#f39c12'; pwText.textContent = 'Fair'; pwText.style.color = '#f39c12';
+                pwBar.style.width = '66%'; pwBar.style.background = '#f39c12'; if (pwText) { pwText.textContent = 'Fair'; pwText.style.color = '#f39c12'; }
             } else {
-                pwBar.style.width = '100%'; pwBar.style.background = '#10b981'; pwText.textContent = 'Strong'; pwText.style.color = '#10b981';
-            }
-        },
-
-        checkAddStrength: (pw) => {
-            const pwBar = document.getElementById('add-pw-bar');
-            if (!pwBar) return;
-            let strength = 0;
-            if (pw.length >= 8) strength++;
-            if (/[A-Z]/.test(pw)) strength++;
-            if (/[0-9]/.test(pw)) strength++;
-            if (/[^A-Za-z0-9]/.test(pw)) strength++;
-
-            if (strength === 0) {
-                pwBar.style.width = '0%';
-            } else if (strength <= 2) {
-                pwBar.style.width = '33%'; pwBar.style.background = '#ef4444';
-            } else if (strength === 3) {
-                pwBar.style.width = '66%'; pwBar.style.background = '#f39c12';
-            } else {
-                pwBar.style.width = '100%'; pwBar.style.background = '#10b981';
+                pwBar.style.width = '100%'; pwBar.style.background = '#10b981'; if (pwText) { pwText.textContent = 'Strong'; pwText.style.color = '#10b981'; }
             }
         },
 
         updatePassword: async () => {
+
             const curr = document.getElementById('curr-pw').value;
             const nw = document.getElementById('new-pw').value;
             const conf = document.getElementById('conf-pw').value;
 
             if (!curr || !nw || !conf) {
-                window.portal.showToast('Please fill all password fields', 'error');
+                if (window.portal) window.portal.showToast('Please fill all password fields', 'error');
+                return;
+            }
+            if (nw !== conf) {
+                if (window.portal) window.portal.showToast('New passwords do not match', 'error');
                 return;
             }
 
-            const btn = document.querySelector('button[onclick="window.AdminProfile.updatePassword()"]') || document.activeElement;
+            const btn = document.querySelector('button[onclick*="updatePassword"]') || document.activeElement;
 
             try {
                 if (btn) window.api.setButtonLoading(btn, true, 'Updating...');
                 const res = await window.api.post('/admins/profile', {
                     current_password: curr, new_password: nw, confirm_new_password: conf
                 });
-                if (res.success) {
-                    window.portal.showToast('Password changed successfully', 'success');
+                const payload = res ? (res.data || res) : {};
+                if (res && (res.success || res.status === 200 || payload.success)) {
+                    if (window.portal) window.portal.showToast(payload.message || 'Password changed successfully', 'success');
                     document.getElementById('curr-pw').value = '';
                     document.getElementById('new-pw').value = '';
                     document.getElementById('conf-pw').value = '';
-                    document.getElementById('pw-bar').style.width = '0%';
-                    document.getElementById('pw-text').textContent = '';
+                    const pwBar = document.getElementById('pw-bar');
+                    if (pwBar) pwBar.style.width = '0%';
+                    const pwText = document.getElementById('pw-text');
+                    if (pwText) pwText.textContent = '';
                     loadAdminProfile();
                 } else {
-                    window.portal.showToast(res.message, 'error');
+                    if (window.portal) window.portal.showToast(payload.message || res?.message || 'Password update failed', 'error');
                 }
             } catch (e) {
-                window.portal.showToast('System error updating password', 'error');
+                if (window.portal) window.portal.showToast('System error updating password', 'error');
             } finally {
                 if (btn) window.api.setButtonLoading(btn, false);
             }
         },
 
         saveProfile: async () => {
+            const nameInput = document.getElementById('profile-name-input');
+            const dobInput = document.getElementById('profile-dob-input');
+            const genderInput = document.getElementById('profile-gender-input');
+            const phoneInput = document.getElementById('profile-phone-input');
+
             const payload = {
-                full_name: document.getElementById('profile-name-input').value,
-                date_of_birth: document.getElementById('profile-dob-input').value,
-                gender: document.getElementById('profile-gender-input').value,
-                phone: document.getElementById('profile-phone-input').value
+                full_name: nameInput ? nameInput.value.trim() : '',
+                date_of_birth: dobInput ? dobInput.value : '',
+                gender: genderInput ? genderInput.value : '',
+                phone: phoneInput ? phoneInput.value.trim() : ''
             };
 
-            const qField = document.getElementById('profile-seq-q-input');
-            const aField = document.getElementById('profile-seq-a-input');
-            if (qField) payload.security_question = qField.value;
-            if (aField) payload.security_answer = aField.value;
-
             if (!payload.full_name) {
-                window.portal.showToast('Full Name is required', 'error');
+                if (window.portal) window.portal.showToast('Full Name is required', 'error');
                 return;
             }
 
-            const btn = document.querySelector('button[onclick="window.AdminProfile.saveProfile()"]') || document.activeElement;
+            const btn = document.querySelector('button[onclick*="saveProfile"]') || document.activeElement;
 
             try {
                 if (btn) window.api.setButtonLoading(btn, true, 'Saving...');
                 const res = await window.api.post('/admins/profile', payload);
-                if (res.success) {
-                    window.portal.showToast(res.message, 'success');
-                    const aField = document.getElementById('profile-seq-a-input');
-                    if (aField) aField.value = '';
+                const data = res ? (res.data || res) : {};
+                if (res && (res.success || res.status === 200 || data.success)) {
+                    if (window.portal) window.portal.showToast(data.message || 'Profile saved successfully', 'success');
                     loadAdminProfile();
                 } else {
-                    window.portal.showToast(res.message, 'error');
+                    if (window.portal) window.portal.showToast(data.message || res?.message || 'Save failed', 'error');
                 }
             } catch (e) {
-                window.portal.showToast('System error updating profile', 'error');
+                if (window.portal) window.portal.showToast('System error updating profile', 'error');
             } finally {
                 if (btn) window.api.setButtonLoading(btn, false);
             }
@@ -632,21 +824,30 @@
                 const res = await window.api.post('/admins/profile', {
                     two_fa_enabled: enabled ? 1 : 0
                 });
-                if (res.success) {
-                    document.getElementById('sec-2fa-label').textContent = enabled ? 'ENABLED' : 'DISABLED';
-                    window.portal.showToast('2FA settings updated', 'success');
+                const payload = res ? (res.data || res) : {};
+                if (res && (res.success || res.status === 200 || payload.success)) {
+                    const label = document.getElementById('sec-2fa-label');
+                    if (label) {
+                        label.textContent = enabled ? 'ENABLED (ACTIVE)' : 'DISABLED';
+                        label.className = enabled
+                            ? 'text-[10px] font-mono font-black uppercase tracking-widest px-2.5 py-1 rounded bg-emerald-500/10 text-emerald-600 border border-emerald-500/20'
+                            : 'text-[10px] font-mono font-black uppercase tracking-widest px-2.5 py-1 rounded bg-surface border border-border-subtle text-text-secondary';
+                    }
+                    if (window.portal) window.portal.showToast('Two-Factor Authentication settings updated', 'success');
+                    loadAdminProfile();
                 } else {
-                    document.getElementById('sec-2fa-toggle').checked = !enabled; // revert
-                    window.portal.showToast(res.message, 'error');
+                    document.getElementById('sec-2fa-toggle').checked = !enabled;
+                    if (window.portal) window.portal.showToast(payload.message || 'Error updating 2FA', 'error');
                 }
             } catch (e) {
-                document.getElementById('sec-2fa-toggle').checked = !enabled; // revert
-                window.portal.showToast('System error updating 2FA', 'error');
+                document.getElementById('sec-2fa-toggle').checked = !enabled;
+                if (window.portal) window.portal.showToast('System error updating 2FA', 'error');
             }
         },
 
         updateRolePreview: (role) => {
             const box = document.getElementById('role-preview-box');
+            if (!box) return;
             if (!role) {
                 box.classList.add('hidden');
                 return;
@@ -654,37 +855,88 @@
             box.classList.remove('hidden');
             if (role === 'admin') {
                 box.innerHTML = `
-                    <div class="font-bold mb-2">Admin Permissions:</div>
+                    <div class="font-bold text-text-primary mb-2">Administrator Permissions Summary:</div>
                     <ul class="space-y-1">
-                        <li>✅ Dashboard Access</li>
-                        <li>✅ User Management</li>
-                        <li>✅ Staff Management</li>
-                        <li>✅ Transaction Overview</li>
-                        <li>✅ Branch View</li>
-                        <li>✅ Pending Approvals & KYC Review</li>
-                        <li class="opacity-50 line-through">❌ Suspend or Delete Users</li>
-                        <li class="opacity-50 line-through">❌ Suspend Staff</li>
-                        <li class="opacity-50 line-through">❌ Change Interest Rate</li>
-                        <li class="opacity-50 line-through">❌ Add New Branch</li>
-                        <li class="opacity-50 line-through">❌ Manage Other Admins</li>
+                        <li>✅ Executive Dashboard Access</li>
+                        <li>✅ Customer Accounts & User Management</li>
+                        <li>✅ Staff Management & Shift Oversight</li>
+                        <li>✅ Global Transactions Overview</li>
+                        <li>✅ Branch Operations View</li>
+                        <li>✅ Pending Approvals & KYC Verification</li>
+                        <li class="opacity-50 line-through">❌ Delete or Suspend Other Administrators</li>
+                        <li class="opacity-50 line-through">❌ Alter Global Interest Engine</li>
+                        <li class="opacity-50 line-through">❌ Provision Root Level Super Admins</li>
                     </ul>
                 `;
             } else if (role === 'moderator') {
                 box.innerHTML = `
-                    <div class="font-bold mb-2">Moderator Permissions:</div>
+                    <div class="font-bold text-text-primary mb-2">Moderator Permissions Summary:</div>
                     <ul class="space-y-1">
-                        <li>✅ Dashboard Access</li>
-                        <li>✅ Pending Approvals</li>
-                        <li>✅ Review, Approve and Reject KYC</li>
-                        <li class="opacity-50 line-through">❌ User Management</li>
-                        <li class="opacity-50 line-through">❌ Staff Management</li>
-                        <li class="opacity-50 line-through">❌ Transaction Overview</li>
-                        <li class="opacity-50 line-through">❌ Branch Management</li>
-                        <li class="opacity-50 line-through">❌ Interest Rate Settings</li>
-                        <li class="opacity-50 line-through">❌ Admin Management</li>
-                        <li class="opacity-50 line-through">❌ All other features</li>
+                        <li>✅ Executive Dashboard Overview</li>
+                        <li>✅ Pending KYC Verifications & Review</li>
+                        <li>✅ Support Document Auditing</li>
+                        <li class="opacity-50 line-through">❌ User Management & Status Modification</li>
+                        <li class="opacity-50 line-through">❌ Staff Operations</li>
+                        <li class="opacity-50 line-through">❌ Financial Accounting & Transactions</li>
+                        <li class="opacity-50 line-through">❌ Branch Configuration</li>
                     </ul>
                 `;
+            }
+        },
+
+        checkAddStrength: (val) => {
+            const bar = document.getElementById('add-pw-bar');
+            if (!bar) return;
+            if (!val) {
+                bar.style.width = '0%';
+                return;
+            }
+            let score = 0;
+            if (val.length >= 8) score += 25;
+            if (/[A-Z]/.test(val)) score += 25;
+            if (/[0-9]/.test(val)) score += 25;
+            if (/[^A-Za-z0-9]/.test(val)) score += 25;
+
+            bar.style.width = score + '%';
+            if (score <= 25) {
+                bar.style.background = '#EF4444';
+            } else if (score <= 50) {
+                bar.style.background = '#F59E0B';
+            } else if (score <= 75) {
+                bar.style.background = '#3B82F6';
+            } else {
+                bar.style.background = '#10B981';
+            }
+        },
+
+        previewNewPhoto: (input) => {
+            const preview = document.getElementById('new-avatar-preview');
+            const errEl = document.getElementById('err-add-photo');
+            if (errEl) errEl.classList.add('hidden');
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                if (file.size > 10 * 1024 * 1024) {
+                    if (errEl) {
+                        errEl.textContent = 'File size exceeds 10MB limit';
+                        errEl.classList.remove('hidden');
+                    }
+                    input.value = '';
+                    if (preview) preview.classList.add('hidden');
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    if (preview) {
+                        preview.src = e.target.result;
+                        preview.classList.remove('hidden');
+                    }
+                };
+                reader.readAsDataURL(file);
+            } else {
+                if (preview) {
+                    preview.src = '';
+                    preview.classList.add('hidden');
+                }
             }
         },
 
@@ -695,17 +947,31 @@
                 modal.classList.add('flex');
                 document.body.style.overflow = 'hidden';
 
-                // Fetch prospective Admin ID
+                // Reset error messages and borders
+                document.querySelectorAll('[id^=err-add-]').forEach(el => {
+                    el.textContent = '';
+                    el.classList.add('hidden');
+                });
+                document.querySelectorAll('[id^=add-]').forEach(el => {
+                    el.classList.remove('!border-danger');
+                });
+
                 try {
                     const res = await window.api.get('/admins/next-id');
-                    if (res.success) {
-                        document.getElementById('add-admin-id').value = res.next_id;
+                    if (res && (res.success || res.data)) {
+                        const payload = res.data || res;
+                        const nextId = payload.next_id || res.next_id;
+                        if (nextId) {
+                            const idInput = document.getElementById('add-admin-id');
+                            if (idInput) idInput.value = nextId;
+                        }
                     }
                 } catch (e) {
                     console.error('Failed to fetch next admin ID');
                 }
             }
         },
+
         closeAddModal: () => {
             const modal = document.getElementById('add-admin-modal');
             if (modal) {
@@ -717,35 +983,59 @@
 
         submitAddAdmin: async () => {
             const btn = document.getElementById('add-admin-submit-btn');
-
-            // Clear errors
-            document.querySelectorAll('[id^=err-add-]').forEach(el => el.classList.add('hidden'));
+            
+            // Clear prior errors
+            document.querySelectorAll('[id^=err-add-]').forEach(el => {
+                el.textContent = '';
+                el.classList.add('hidden');
+            });
+            document.querySelectorAll('[id^=add-]').forEach(el => {
+                el.classList.remove('!border-danger');
+            });
 
             const fields = ['name', 'dob', 'gender', 'phone', 'email', 'pw', 'conf-pw', 'seq-q', 'seq-a', 'role'];
             const vals = {};
             let hasErr = false;
 
             fields.forEach(f => {
-                vals[f] = document.getElementById('add-' + f).value;
+                const el = document.getElementById('add-' + f);
+                vals[f] = el ? el.value.trim() : '';
                 if (!vals[f]) {
                     const e = document.getElementById('err-add-' + f);
-                    e.textContent = 'This field is required';
-                    e.classList.remove('hidden');
+                    if (e) {
+                        e.textContent = 'This field is required';
+                        e.classList.remove('hidden');
+                    }
+                    if (el) el.classList.add('!border-danger');
                     hasErr = true;
                 }
             });
 
-            if (vals.pw !== vals['conf-pw']) {
+            if (vals.pw && vals['conf-pw'] && vals.pw !== vals['conf-pw']) {
                 const e = document.getElementById('err-add-conf-pw');
-                e.textContent = 'Passwords do not match';
-                e.classList.remove('hidden');
+                if (e) {
+                    e.textContent = 'Passwords do not match';
+                    e.classList.remove('hidden');
+                }
+                const confEl = document.getElementById('add-conf-pw');
+                if (confEl) confEl.classList.add('!border-danger');
                 hasErr = true;
             }
 
-            if (hasErr) return;
+            if (hasErr) {
+                const firstErr = document.querySelector('[id^=err-add-]:not(.hidden)');
+                if (firstErr) {
+                    firstErr.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+                notify('Please fill all required fields', 'warning');
+                return;
+            }
 
-            btn.disabled = true;
-            btn.querySelector('span:last-child').classList.remove('hidden');
+            if (btn) {
+                btn.disabled = true;
+                const spinner = btn.querySelector('span:last-child');
+                if (spinner) spinner.classList.remove('hidden');
+            }
 
             const formData = new FormData();
             formData.append('full_name', vals.name);
@@ -760,78 +1050,78 @@
             formData.append('admin_role', vals.role);
 
             const fileInput = document.getElementById('new-admin-photo');
-            if (fileInput.files.length > 0) {
+            if (fileInput && fileInput.files && fileInput.files.length > 0) {
                 formData.append('profile_photo', fileInput.files[0]);
             }
 
             try {
                 const response = await window.api.upload('/admins', formData);
-                if (response.success) {
+                const payload = response ? (response.data || response) : {};
+                const isSuccess = response && (response.success === true || response.status === 200 || response.status === 201 || payload.success === true);
+
+                if (isSuccess) {
                     window.AdminProfile.closeAddModal();
 
-                    // Clear form
                     fields.forEach(f => {
                         const input = document.getElementById('add-' + f);
-                        if (input) {
-                            input.value = '';
-                            // Reset custom dropdown labels if applicable
-                            const dropdown = input.closest('.finzo-dropdown');
-                            if (dropdown) {
-                                const label = dropdown.querySelector('.dropdown-label');
-                                if (label) {
-                                    if (f === 'gender') label.textContent = 'Select Gender';
-                                    else if (f === 'role') label.textContent = 'Select Role';
-                                    else label.textContent = 'Select Option';
-                                }
-                                dropdown.querySelectorAll('.finzo-dropdown-option').forEach(opt => opt.classList.remove('is-selected'));
-                            }
-                        }
+                        if (input) input.value = '';
                     });
-                    document.getElementById('new-avatar-preview').src = '';
-                    document.getElementById('new-avatar-preview').classList.add('hidden');
-                    document.getElementById('role-preview-box').classList.add('hidden');
-                    document.getElementById('add-pw-bar').style.width = '0%';
+                    const photoPrev = document.getElementById('new-avatar-preview');
+                    if (photoPrev) { photoPrev.src = ''; photoPrev.classList.add('hidden'); }
+                    const photoInput = document.getElementById('new-admin-photo');
+                    if (photoInput) photoInput.value = '';
+                    const roleBox = document.getElementById('role-preview-box');
+                    if (roleBox) roleBox.classList.add('hidden');
+                    const pwBar = document.getElementById('add-pw-bar');
+                    if (pwBar) pwBar.style.width = '0%';
 
-                    window.portal.showToast(`Admin ${response.admin_name} has been added successfully`, 'success');
-                    loadAdminList(); // Refresh list automatically
+                    const createdName = payload.admin_name || vals.name;
+                    notify(payload.message || `Admin ${createdName} provisioned successfully`, 'success');
+                    loadAdminList();
                 } else {
-                    if (response.field) {
-                        const fieldMap = {
-                            'full_name': 'name',
-                            'date_of_birth': 'dob',
-                            'gender': 'gender',
-                            'phone': 'phone',
-                            'email': 'email',
-                            'password': 'pw',
-                            'confirm_password': 'conf-pw',
-                            'security_question': 'seq-q',
-                            'security_answer': 'seq-a',
-                            'admin_role': 'role'
-                        };
-                        const targetId = 'err-add-' + (fieldMap[response.field] || response.field);
+                    const errMsg = payload.message || response?.message || 'Provisioning failed';
+                    const errors = payload.errors || response?.errors || {};
+                    const fieldKey = payload.field || response?.field || (Object.keys(errors).length > 0 ? Object.keys(errors)[0] : null);
+
+                    const fieldMap = {
+                        'full_name': 'name',
+                        'date_of_birth': 'dob',
+                        'gender': 'gender',
+                        'phone': 'phone',
+                        'email': 'email',
+                        'password': 'pw',
+                        'confirm_password': 'conf-pw',
+                        'security_question': 'seq-q',
+                        'security_answer': 'seq-a',
+                        'admin_role': 'role',
+                        'profile_photo': 'photo'
+                    };
+
+                    if (fieldKey) {
+                        const targetId = 'err-add-' + (fieldMap[fieldKey] || fieldKey);
                         const e = document.getElementById(targetId);
                         if (e) {
-                            e.textContent = response.message;
+                            e.textContent = errors[fieldKey] || errMsg;
                             e.classList.remove('hidden');
-                        } else {
-                            window.portal.showToast(response.message, 'error');
+                            e.scrollIntoView({ behavior: 'smooth', block: 'center' });
                         }
-                    } else {
-                        window.portal.showToast(response.message || 'Operation failed', 'error');
                     }
+                    notify(errMsg, 'error');
                 }
             } catch (err) {
-                window.portal.showToast('System error adding admin', 'error');
+                console.error('[Provision Admin Error]:', err);
+                notify('System error provisioning admin. Please try again.', 'error');
             } finally {
-                btn.disabled = false;
-                btn.querySelector('span:last-child').classList.add('hidden');
+                if (btn) {
+                    btn.disabled = false;
+                    const spinner = btn.querySelector('span:last-child');
+                    if (spinner) spinner.classList.add('hidden');
+                }
             }
         },
 
-        // Admin List Filtering
-        filterAdminList: filterAdminList,
-
         // Activity Pagination
+
         prevActivityPage: () => {
             if (currentActivityPage > 1) {
                 currentActivityPage--;
@@ -853,15 +1143,15 @@
             const currPw = document.getElementById('sq-curr-pw').value;
 
             if (!question || question.length < 10) {
-                window.portal.showToast('Security question must be at least 10 characters', 'error');
+                if (window.portal) window.portal.showToast('Security question must be at least 10 characters', 'error');
                 return;
             }
             if (!answer || answer.length < 3) {
-                window.portal.showToast('Security answer must be at least 3 characters', 'error');
+                if (window.portal) window.portal.showToast('Security answer must be at least 3 characters', 'error');
                 return;
             }
             if (!currPw) {
-                window.portal.showToast('Current password is required', 'error');
+                if (window.portal) window.portal.showToast('Current password is required to verify changes', 'error');
                 return;
             }
 
@@ -874,27 +1164,17 @@
                     security_answer: answer,
                     current_password: currPw
                 });
-                if (res.success) {
-                    window.portal.showToast('Security question saved successfully', 'success');
+                const payload = res ? (res.data || res) : {};
+                if (res && (res.success || res.status === 200 || payload.success)) {
+                    if (window.portal) window.portal.showToast(payload.message || 'Security question saved successfully', 'success');
                     document.getElementById('sq-answer').value = '';
                     document.getElementById('sq-curr-pw').value = '';
-                    // Update badge to Set
-                    const sqContainer = document.getElementById('sq-status-container');
-                    if (sqContainer) {
-                        sqContainer.innerHTML = `
-                            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 dark:bg-emerald-500/10 dark:border-emerald-500/20">
-                                <span class="material-symbols-outlined text-emerald-500 text-[14px]" aria-hidden="true">check_circle</span>
-                                <span class="text-[10px] font-black uppercase tracking-widest text-emerald-600 dark:text-emerald-400">Security Question Set ✓</span>
-                            </div>`;
-                    }
-                    if (btn) {
-                        btn.dataset.originalText = `<span class="material-symbols-outlined text-[18px]" aria-hidden="true">save</span> <span id="sq-btn-text">Update Security Question</span>`;
-                    }
+                    loadAdminProfile();
                 } else {
-                    window.portal.showToast(res.message || 'Failed to save security question', 'error');
+                    if (window.portal) window.portal.showToast(payload.message || res?.message || 'Failed to save security question', 'error');
                 }
             } catch (err) {
-                window.portal.showToast('System error saving security question', 'error');
+                if (window.portal) window.portal.showToast('System error saving security question', 'error');
             } finally {
                 if (btn) window.api.setButtonLoading(btn, false);
             }
@@ -905,7 +1185,7 @@
             pendingUnlockName = adminName;
             const overlay = document.getElementById('unlock-confirm-overlay');
             const msg = document.getElementById('unlock-confirm-msg');
-            if (msg) msg.textContent = `Unlock ${adminName}'s account? They will be able to login with their existing password immediately.`;
+            if (msg) msg.textContent = `Unlock ${adminName}'s account? They will be able to login with their credentials immediately.`;
             if (overlay) {
                 overlay.classList.remove('hidden');
                 overlay.classList.add('flex');
@@ -925,44 +1205,60 @@
         confirmUnlock: async () => {
             if (!pendingUnlockAdminId) return;
             const btn = document.getElementById('confirm-unlock-btn');
-            const origHtml = btn.innerHTML;
-            btn.disabled = true;
-            btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-[16px]" aria-hidden="true">progress_activity</span> Unlocking...';
+            const origHtml = btn ? btn.innerHTML : '';
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-[16px]" aria-hidden="true">progress_activity</span> Unlocking...';
+            }
 
             try {
                 const res = await window.api.post('/admins/unlock', {
                     target_admin_id: pendingUnlockAdminId
                 });
+                const payload = res ? (res.data || res) : {};
                 window.AdminProfile.closeUnlockConfirm();
-                if (res.success) {
-                    window.portal.showToast(res.message, 'success');
-                    // Reload locked list
+                if (res && (res.success || res.status === 200 || payload.success)) {
+                    if (window.portal) window.portal.showToast(payload.message || 'Account unlocked successfully', 'success');
                     loadLockedAdmins();
+                    loadAdminList();
                 } else {
-                    window.portal.showToast(res.message || 'Failed to unlock account', 'error');
+                    if (window.portal) window.portal.showToast(payload.message || res?.message || 'Unlock failed', 'error');
                 }
             } catch (err) {
-                window.portal.showToast('System error unlocking account', 'error');
-                window.AdminProfile.closeUnlockConfirm();
+                if (window.portal) window.portal.showToast('System error unlocking account', 'error');
             } finally {
-                btn.disabled = false;
-                btn.innerHTML = origHtml;
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = origHtml;
+                }
             }
         }
     };
 
-
-    // Initialization
+    // DOM Ready initialization
     document.addEventListener('DOMContentLoaded', () => {
         loadAdminProfile();
 
-        // Escape keys
+        // Listen for Esc key to dismiss modals
         window.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
-                window.AdminProfile.closeAddModal();
-                window.AdminProfile.closeDeleteModal();
+                if (window.AdminProfile.closeAddModal) window.AdminProfile.closeAddModal();
+                if (window.AdminProfile.closeUnlockConfirm) window.AdminProfile.closeUnlockConfirm();
             }
+        });
+
+        // Clear error indicators on user interaction
+        document.querySelectorAll('#add-admin-modal input').forEach(input => {
+            const clearErr = () => {
+                input.classList.remove('!border-danger');
+                const errId = input.id.replace('add-', 'err-add-');
+                const err = document.getElementById(errId);
+                if (err) err.classList.add('hidden');
+            };
+            input.addEventListener('input', clearErr);
+            input.addEventListener('change', clearErr);
         });
     });
 
 })();
+

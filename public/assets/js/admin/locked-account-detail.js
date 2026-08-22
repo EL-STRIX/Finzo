@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!userId) {
         alert('User ID missing');
-        window.location.href = 'admin-locked-accounts.html';
+        window.location.href = 'admin-locked-accounts.php';
         return;
     }
 
@@ -24,11 +24,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 populateUI(user);
                 renderAuditLogs(logs);
             } else {
-                window.FinzoUtils?.showToast(response.message || 'Failed to load details', 'error');
+                window.showToast(response.message || 'Failed to load details', 'error');
             }
         } catch (error) {
             console.error('Error:', error);
-            window.FinzoUtils?.showToast('Network error loading details', 'error');
+            window.showToast('Network error loading details', 'error');
         }
     }
 
@@ -44,7 +44,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const avatarEl = document.getElementById('d-avatar');
         if (avatarEl) {
             if (user.profile_picture) {
-                avatarEl.innerHTML = `<img src="/Finzo/public/assets/${user.profile_picture}" class="w-full h-full object-cover rounded-2xl" alt="${user.full_name}">`;
+                const photoSrc = user.profile_picture.startsWith('http') ? user.profile_picture : (user.profile_picture.startsWith('/') ? user.profile_picture : `/Finzo/${user.profile_picture}`);
+                avatarEl.innerHTML = `<img src="${photoSrc}" class="w-full h-full object-cover rounded-2xl" alt="${user.full_name}" onerror="this.parentElement.textContent='${user.initials || '??'}'">`;
             } else {
                 avatarEl.textContent = user.initials || '??';
             }

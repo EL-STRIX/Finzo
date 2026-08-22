@@ -28,18 +28,26 @@
             },
         };
 
-        if (body && method !== 'GET') {
+        if (method !== 'GET') {
             const csrf = window.csrfToken || (document.querySelector('meta[name="csrf-token"]') ? document.querySelector('meta[name="csrf-token"]').getAttribute('content') : '');
             
-            if (isForm || body instanceof FormData) {
-                fetchOpts.body = body instanceof FormData ? body : objectToFormData(body);
-                if (csrf && !fetchOpts.body.has('csrf_token')) {
-                    fetchOpts.body.append('csrf_token', csrf);
+            if (csrf) {
+                fetchOpts.headers['X-CSRF-Token'] = csrf;
+            }
+
+            if (body) {
+                if (isForm || body instanceof FormData) {
+                    fetchOpts.body = body instanceof FormData ? body : objectToFormData(body);
+                    if (csrf && !fetchOpts.body.has('csrf_token')) {
+                        fetchOpts.body.append('csrf_token', csrf);
+                    }
+                } else {
+                    if (csrf && typeof body === 'object' && body !== null) {
+                        body.csrf_token = csrf;
+                    }
+                    fetchOpts.headers['Content-Type'] = 'application/json';
+                    fetchOpts.body = JSON.stringify(body);
                 }
-            } else {
-                if (csrf) body.csrf_token = csrf;
-                fetchOpts.headers['Content-Type'] = 'application/x-www-form-urlencoded';
-                fetchOpts.body = objectToURLParams(body);
             }
         }
 
@@ -66,8 +74,21 @@
             const data = await res.json();
             
             if (!res.ok) {
-                if (res.status === 401 && data.redirect) {
-                    window.location.href = data.redirect;
+                if (res.status === 401 && !endpoint.includes('/auth/')) {
+                    if (data.redirect) {
+                        window.location.href = data.redirect;
+                        return data;
+                    }
+                    
+                    // Fallback to manual redirect based on path
+                    const path = window.location.pathname;
+                    if (path.includes('admin')) {
+                        window.location.href = '/Finzo/public/views/auth/admin-login.php';
+                    } else if (path.includes('staff')) {
+                        window.location.href = '/Finzo/public/views/auth/staff-login.php';
+                    } else {
+                        window.location.href = '/Finzo/public/views/auth/login.php';
+                    }
                     return data;
                 }
                 // Return full server response so field-level errors (data.errors) reach the caller
@@ -93,7 +114,9 @@
             return apiCall(url, { method: 'GET' });
         },
         post: (endpoint, body, isForm = false) => apiCall(endpoint, { method: 'POST', body, isForm }),
+        put: (endpoint, body, isForm = false) => apiCall(endpoint, { method: 'PUT', body, isForm }),
         patch: (endpoint, body, isForm = false) => apiCall(endpoint, { method: 'PATCH', body, isForm }),
+        delete: (endpoint, body = null) => apiCall(endpoint, { method: 'DELETE', body }),
         upload: (endpoint, formData) => apiCall(endpoint, { method: 'POST', body: formData, isForm: true }),
         
         // Utils

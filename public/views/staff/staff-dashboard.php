@@ -93,6 +93,7 @@ ob_start();
                     </table>
                 </div>
             </div>
+<script defer src="/Finzo/public/assets/js/staff/staff-dashboard.js"></script>
 <?php
 $slot = ob_get_clean();
 include __DIR__ . '/../layouts/app.php';

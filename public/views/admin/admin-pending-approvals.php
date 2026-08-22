@@ -1,78 +1,94 @@
 <?php
 $portal = 'admin';
-$pageTitle = 'Finzo Admin';
+$pageTitle = 'Finzo Admin - Pending Approvals';
+$pageHeader = '
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div>
+        <h1 class="text-xl font-headline font-black text-text-primary tracking-tight">Pending Approvals</h1>
+        <p class="text-[10px] font-black text-text-secondary uppercase tracking-widest mt-0.5">Review and action account applications awaiting approval</p>
+    </div>
+</div>
+';
 ob_start();
 ?>
 <!-- STAT CARDS -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-10">
                 <div class="ds-card p-5 flex items-center gap-4">
-                    <div class="w-12 h-12 rounded-xl bg-warning-surface dark:bg-warning-surface/10 text-warning-base flex items-center justify-center shrink-0">
+                    <div class="w-12 h-12 rounded-xl bg-warning-bg text-warning flex items-center justify-center shrink-0">
                         <span class="material-symbols-outlined" aria-hidden="true">hourglass_empty</span>
                     </div>
                     <div>
-                        <div class="admin-stat-label text-xs font-bold uppercase tracking-widest text-text-muted">PENDING REVIEW</div>
-                        <div class="text-xl font-black mt-1 skeleton min-w-[40px]">—</div>
+                        <div class="admin-stat-label text-[10px] font-black uppercase tracking-widest text-text-secondary">PENDING REVIEW</div>
+                        <div class="text-xl font-black mt-1 text-text-primary skeleton min-w-[40px]">—</div>
                     </div>
                 </div>
                 <div class="ds-card p-5 flex items-center gap-4">
-                    <div class="w-12 h-12 rounded-xl bg-primary-surface dark:bg-primary-surface/10 text-info-base flex items-center justify-center shrink-0">
+                    <div class="w-12 h-12 rounded-xl bg-info-bg text-info flex items-center justify-center shrink-0">
                         <span class="material-symbols-outlined" aria-hidden="true">rate_review</span>
                     </div>
                     <div>
-                        <div class="admin-stat-label text-xs font-bold uppercase tracking-widest text-text-muted">UNDER REVIEW</div>
-                        <div class="text-xl font-black mt-1 skeleton min-w-[40px]">—</div>
+                        <div class="admin-stat-label text-[10px] font-black uppercase tracking-widest text-text-secondary">UNDER REVIEW</div>
+                        <div class="text-xl font-black mt-1 text-text-primary skeleton min-w-[40px]">—</div>
                     </div>
                 </div>
                 <div class="ds-card p-5 flex items-center gap-4">
-                    <div class="w-12 h-12 rounded-xl bg-success-surface dark:bg-success-surface/10 text-success-base flex items-center justify-center shrink-0">
+                    <div class="w-12 h-12 rounded-xl bg-success-bg text-success flex items-center justify-center shrink-0">
                         <span class="material-symbols-outlined" aria-hidden="true">check_circle</span>
                     </div>
                     <div>
-                        <div class="admin-stat-label text-xs font-bold uppercase tracking-widest text-text-muted">APPROVED TODAY</div>
-                        <div class="text-xl font-black mt-1 skeleton min-w-[40px]">—</div>
+                        <div class="admin-stat-label text-[10px] font-black uppercase tracking-widest text-text-secondary">APPROVED TODAY</div>
+                        <div class="text-xl font-black mt-1 text-text-primary skeleton min-w-[40px]">—</div>
                     </div>
                 </div>
                 <div class="ds-card p-5 flex items-center gap-4">
-                    <div class="w-12 h-12 rounded-xl bg-primary-surface dark:bg-primary-surface/10 text-primary-base flex items-center justify-center shrink-0">
+                    <div class="w-12 h-12 rounded-xl bg-primary-50 text-primary flex items-center justify-center shrink-0">
                         <span class="material-symbols-outlined" aria-hidden="true">verified</span>
                     </div>
                     <div>
-                        <div class="admin-stat-label text-xs font-bold uppercase tracking-widest text-text-muted">TOTAL APPROVED</div>
-                        <div class="text-xl font-black mt-1 skeleton min-w-[40px]">—</div>
+                        <div class="admin-stat-label text-[10px] font-black uppercase tracking-widest text-text-secondary">TOTAL APPROVED</div>
+                        <div class="text-xl font-black mt-1 text-text-primary skeleton min-w-[40px]">—</div>
                     </div>
                 </div>
             </div>
 
+            <!-- Empty State -->
+            <div id="pending-empty" class="hidden ds-card p-12 flex flex-col items-center justify-center text-center mb-6">
+                <span class="material-symbols-outlined text-4xl text-text-muted/30 mb-3" aria-hidden="true">inbox</span>
+                <div class="text-sm font-bold text-text-muted uppercase tracking-widest">No pending applications at the moment.</div>
+            </div>
+
             <!-- FILTERS + TABS + TABLE -->
-            <div class="ds-card overflow-hidden">
-                <div class="p-4 sm:p-6 border-b border-surface-border dark:border-white/5 bg-surface-subtle/20 dark:bg-white/5">
+            <div class="ds-card overflow-hidden relative z-10 shadow-2xl transition-all duration-300">
+                <div class="absolute -right-20 -top-20 w-64 h-64 bg-primary/5 rounded-full blur-3xl -z-10 pointer-events-none"></div>
+                <div class="absolute -left-20 -bottom-20 w-64 h-64 bg-accent/5 rounded-full blur-3xl -z-10 pointer-events-none"></div>
+                <div class="p-4 sm:p-6 border-b border-border-subtle bg-background/40 backdrop-blur-xl relative z-10">
                     <div class="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
                         <!-- Search -->
                         <div class="w-full md:w-96">
-                            <label for="approval-search" class="fin-label mb-2">Search Applications</label>
+                            <label for="search-pending" class="fin-label mb-2 text-[10px] uppercase text-text-secondary font-black tracking-widest">Search Applications</label>
                             <div class="relative">
-                                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" aria-hidden="true">search</span>
-                                <input type="text" id="approval-search" placeholder="Search by name or user ID..." class="fin-input pl-12">
+                                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-text-secondary" aria-hidden="true">search</span>
+                                <input type="text" id="search-pending" placeholder="Search by name or user ID..." class="fin-input pl-12 w-full">
                             </div>
                         </div>
 
                         <!-- Status Tabs -->
                         <div class="flex flex-wrap gap-2">
-                            <button class="tab-btn px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all duration-200 bg-primary-base text-white shadow-lg shadow-primary-base/20 scale-[1.02] dark:bg-sky-500/20 dark:text-sky-300 dark:shadow-none dark:ring-1 dark:ring-sky-500/30" data-status="all">
+                            <button class="tab-btn btn btn-primary px-4 py-2.5 rounded-xl !text-[10px] font-black uppercase tracking-widest transition-all duration-200" data-status="all">
                                 All
                             </button>
-                            <button class="tab-btn px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all duration-200 bg-surface-hover text-text-muted hover:bg-surface-border/80 hover:text-text-main hover:scale-[1.01] dark:bg-white/5 dark:text-text-muted dark:hover:bg-white/10 dark:hover:text-text-muted" data-status="pending">
-                                <span class="material-symbols-outlined" style="font-size:13px;vertical-align:-2px;" aria-hidden="true">hourglass_empty</span>
+                            <button class="tab-btn btn btn-secondary px-4 py-2.5 rounded-xl !text-[10px] font-black uppercase tracking-widest transition-all duration-200" data-status="pending">
+                                <span class="material-symbols-outlined text-[13px] align-[-2px] mr-1" aria-hidden="true">hourglass_empty</span>
                                 Pending
                             </button>
-                            <button class="tab-btn px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all duration-200 bg-surface-hover text-text-muted hover:bg-surface-border/80 hover:text-text-main hover:scale-[1.01] dark:bg-white/5 dark:text-text-muted dark:hover:bg-white/10 dark:hover:text-text-muted" data-status="under_review">
-                                <span class="material-symbols-outlined" style="font-size:13px;vertical-align:-2px;" aria-hidden="true">rate_review</span>
+                            <button class="tab-btn btn btn-secondary px-4 py-2.5 rounded-xl !text-[10px] font-black uppercase tracking-widest transition-all duration-200" data-status="under_review">
+                                <span class="material-symbols-outlined text-[13px] align-[-2px] mr-1" aria-hidden="true">rate_review</span>
                                 Under Review
                             </button>
                         </div>
                     </div>
                 </div>
-                <div class="overflow-x-auto w-full">
+                <div class="ds-table-wrapper w-full border-0 shadow-none rounded-none bg-transparent">
                     <table id="approvals-table" class="ds-table w-full text-left min-w-[1300px]">
                         <thead scope="col">
                             <tr>
@@ -86,21 +102,21 @@ ob_start();
                                 <th class="text-right" scope="col">Action</th>
                             </tr>
                         </thead>
-                        <tbody id="applications-table-body">
+                        <tbody id="pending-tbody">
                             <!-- Data injected by pending-approvals.js -->
                         </tbody>
                     </table>
                 </div>
 
                 <!-- PAGINATION -->
-                <div class="p-4 sm:p-6 bg-surface-subtle/50 dark:bg-white/5 border-t border-surface-border dark:border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4">
-                    <div id="pagination-info" class="text-xs font-bold opacity-40 uppercase tracking-widest">Showing 0-0 of 0 Items</div>
+                <div class="p-4 sm:p-6 bg-surface-subtle border-t border-border-subtle flex flex-col sm:flex-row justify-between items-center gap-4">
+                    <div class="text-[10px] font-bold text-text-secondary uppercase tracking-widest">Total Pending: <span id="pending-count">0</span></div>
                     <div class="flex items-center gap-2">
-                        <button id="prev-btn" class="btn btn-secondary px-4 !py-2 !text-xs disabled:opacity-50 disabled:cursor-not-allowed">Previous</button>
+                        <button id="prev-btn" class="px-4 py-2 bg-surface border border-border-subtle rounded-lg text-[10px] font-black uppercase tracking-widest text-text-secondary hover:bg-background disabled:opacity-50 disabled:cursor-not-allowed transition-all">Previous</button>
                         <div id="page-numbers" class="flex gap-1.5">
-                            <!-- Page numbers injected by pending-approvals.js -->
+                            <!-- Pagination injected by JS -->
                         </div>
-                        <button id="next-btn" class="btn btn-secondary px-4 !py-2 !text-xs disabled:opacity-50 disabled:cursor-not-allowed">Next</button>
+                        <button id="next-btn" class="px-4 py-2 bg-surface border border-border-subtle rounded-lg text-[10px] font-black uppercase tracking-widest text-text-secondary hover:bg-background disabled:opacity-50 disabled:cursor-not-allowed transition-all">Next</button>
                     </div>
                 </div>
             </div>

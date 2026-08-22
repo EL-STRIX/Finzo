@@ -63,14 +63,14 @@ ob_start();
     <!-- PAGE HEADER -->
     <div class="mb-8 ds-animate-fade">
       <div class="text-sm font-bold text-text-muted uppercase tracking-wider mb-1">Account Overview</div>
-      <h1 class="font-display text-3xl font-extrabold text-text-main tracking-tight" id="page-greeting"><span class="skeleton" style="width: 250px; height: 32px;"></span></h1>
+      <h1 class="font-display text-3xl font-extrabold text-text-main tracking-tight" id="page-greeting"><span class="skeleton w-[250px] h-[32px]"></span></h1>
       <p class="text-text-muted mt-1">Here's what's happening with your Finzo account today.</p>
     </div>
 
     <div class="flex flex-col lg:flex-row gap-6 mb-6">
       <!-- BALANCE CARD (REVOLUT STYLE) -->
       <div class="w-full lg:w-2/3 ds-animate-slide-up">
-        <div class="ds-card bg-primary-600 text-white p-8 relative overflow-hidden h-full flex flex-col justify-between" style="min-height: 240px; box-shadow: var(--shadow-lg);">
+        <div class="ds-card bg-primary-600 text-white p-8 relative overflow-hidden h-full flex flex-col justify-between min-h-[240px] shadow-lg">
           <!-- Decorative Gradients -->
           <div class="absolute -top-24 -right-24 w-64 h-64 bg-white opacity-5 rounded-full blur-3xl pointer-events-none"></div>
           <div class="absolute -bottom-16 -left-16 w-48 h-48 bg-black opacity-10 rounded-full blur-2xl pointer-events-none"></div>
@@ -99,21 +99,21 @@ ob_start();
       </div>
 
       <!-- ACTIVITY CARD (STRIPE STYLE) -->
-      <div class="w-full lg:w-1/3 ds-animate-slide-up" style="animation-delay: 0.1s;">
+      <div class="w-full lg:w-1/3 ds-animate-slide-up delay-100">
         <div id="activity-card" class="ds-card h-full p-6 flex flex-col justify-center bg-white border border-border-main">
           <div class="mb-6">
             <div class="text-sm font-bold text-text-muted uppercase tracking-wider mb-1">Monthly Activity</div>
-            <div class="font-display text-3xl font-extrabold text-text-main mb-1" id="activity-total"><span class="skeleton" style="width: 100px; height: 32px;"></span></div>
+            <div class="font-display text-3xl font-extrabold text-text-main mb-1" id="activity-total"><span class="skeleton w-[100px] h-[32px]"></span></div>
             <div class="text-sm font-semibold text-success-base" id="activity-trend">↑ 0% from last month</div>
           </div>
           <div class="grid grid-cols-2 gap-4">
             <div class="p-3 rounded-lg bg-surface-subtle">
               <div class="text-xs font-bold text-text-muted uppercase tracking-wider mb-1">Income</div>
-              <div class="font-bold text-text-main" id="activity-income"><span class="skeleton" style="width: 60px; height: 16px;"></span></div>
+              <div class="font-bold text-text-main" id="activity-income"><span class="skeleton w-[60px] h-[16px]"></span></div>
             </div>
             <div class="p-3 rounded-lg bg-surface-subtle">
               <div class="text-xs font-bold text-text-muted uppercase tracking-wider mb-1">Expenses</div>
-              <div class="font-bold text-text-main" id="activity-expenses"><span class="skeleton" style="width: 60px; height: 16px;"></span></div>
+              <div class="font-bold text-text-main" id="activity-expenses"><span class="skeleton w-[60px] h-[16px]"></span></div>
             </div>
           </div>
         </div>
@@ -121,7 +121,7 @@ ob_start();
     </div>
 
     <!-- QUICK ACTIONS -->
-    <div class="mb-8 ds-animate-slide-up" style="animation-delay: 0.2s;">
+    <div class="mb-8 ds-animate-slide-up delay-200">
       <div class="flex items-center gap-3 mb-4">
         <h2 class="font-display text-lg font-bold text-text-main">Quick Actions</h2>
         <div class="w-1 h-1 rounded-full bg-border-main"></div>
@@ -170,7 +170,7 @@ ob_start();
     </div>
 
     <!-- RECENT TRANSACTIONS -->
-    <div class="ds-card ds-animate-slide-up" style="animation-delay: 0.3s;">
+    <div class="ds-card ds-animate-slide-up delay-300">
       <div class="ds-card-header">
         <div>
           <h2 class="font-display text-lg font-bold text-text-main">Recent Transactions</h2>
@@ -216,7 +216,10 @@ ob_start();
 
 <script defer src="/Finzo/public/assets/js/core/utils.js"></script>
   <script defer src="/Finzo/public/assets/js/core/api.js"></script>
+<script defer src="/Finzo/public/assets/js/user/dashboard.js"></script>
 <?php
 $slot = ob_get_clean();
 include __DIR__ . '/../layouts/app.php';
 ?>
+
+

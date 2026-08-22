@@ -26,6 +26,14 @@ class AdminManagementService implements \App\Domain\Contracts\Services\AdminMana
         $this->repository = $repository;
     }
 
+    public function requireSuperAdmin(): void
+    {
+        if ($this->security) {
+            $this->security->enforceSuperAdmin();
+        }
+    }
+
+
 
     /**
      * Get Next Admin Id.
@@ -69,9 +77,15 @@ class AdminManagementService implements \App\Domain\Contracts\Services\AdminMana
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             throw new ApiException('Invalid email format', 422, ['field' => 'email']);
         }
-        if (!validate_phone($phone)) {
-            throw new ApiException('Invalid phone number (must be 10 digits)', 422, ['field' => 'phone']);
+
+        $cleanPhone = preg_replace('/[^0-9]/', '', $phone);
+        if (strlen($cleanPhone) === 12 && str_starts_with($cleanPhone, '91')) {
+            $cleanPhone = substr($cleanPhone, 2);
         }
+        if (strlen($cleanPhone) < 10) {
+            throw new ApiException('Invalid phone number (must be at least 10 digits)', 422, ['field' => 'phone']);
+        }
+        $phone = $cleanPhone;
 
         if ($this->repository->getAdminByEmail($email)) {
             throw new ApiException('An admin with this email already exists', 409, ['field' => 'email']);
@@ -96,15 +110,16 @@ class AdminManagementService implements \App\Domain\Contracts\Services\AdminMana
 
         $photo_path = null;
         if ($file && $file['error'] === UPLOAD_ERR_OK) {
+            $allowed_exts = ['jpg', 'jpeg', 'png', 'webp'];
             $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-            if (!in_array($ext, ['jpg', 'jpeg', 'png']) || !in_array($file['type'], ['image/jpeg', 'image/png'])) {
-                throw new ApiException('Profile photo must be JPG or PNG', 422);
+            if (!in_array($ext, $allowed_exts)) {
+                throw new ApiException('Profile photo must be JPG, PNG, or WEBP', 422, ['field' => 'profile_photo']);
             }
-            if ($file['size'] > 5 * 1024 * 1024) {
-                throw new ApiException('Profile photo max size is 5MB', 422);
+            if ($file['size'] > 10 * 1024 * 1024) {
+                throw new ApiException('Profile photo max size is 10MB', 422, ['field' => 'profile_photo']);
             }
 
-            $upload_dir = UPLOAD_ADMIN_PHOTOS_PATH;
+            $upload_dir = defined('UPLOAD_ADMIN_PHOTOS_PATH') ? UPLOAD_ADMIN_PHOTOS_PATH : (dirname(__DIR__, 3) . '/public/uploads/admin-photos/');
             if (!is_dir($upload_dir)) {
                 mkdir($upload_dir, 0755, true);
             }
@@ -112,10 +127,12 @@ class AdminManagementService implements \App\Domain\Contracts\Services\AdminMana
             $filename = 'admin_' . uniqid() . '.' . $ext;
             $dest = $upload_dir . $filename;
 
-            if (!move_uploaded_file($file['tmp_name'], $dest)) {
-                throw new ApiException('Failed to save profile photo', 500);
+            $saved = (defined('FINZO_TESTING') || php_sapi_name() === 'cli') ? copy($file['tmp_name'], $dest) : move_uploaded_file($file['tmp_name'], $dest);
+            if (!$saved) {
+                throw new ApiException('Failed to save profile photo', 500, ['field' => 'profile_photo']);
             }
             $photo_path = '/uploads/admin-photos/' . $filename;
+
         }
 
         $password_hash = password_hash($password, PASSWORD_BCRYPT);
@@ -124,8 +141,10 @@ class AdminManagementService implements \App\Domain\Contracts\Services\AdminMana
         $access_level = ($admin_role === 'admin') ? 'full' : 'restricted';
 
         $next_admin_id = $this->getNextAdminId();
-        $creator = $this->repository->getAdminById($_SESSION['admin_id']);
-        $creator_admin_id = $creator['admin_id'] ?? null;
+        $creatorId = $_SESSION['admin_id'] ?? (\App\Shared\Security\Auth::user()['id'] ?? 1);
+        $creator = is_numeric($creatorId) ? $this->repository->getAdminById((int)$creatorId) : $this->repository->getAdminByAdminId($creatorId);
+        $creator_admin_id = $creator['admin_id'] ?? 'ADM001';
+
 
         $insertData = [
             'admin_id' => $next_admin_id,
@@ -326,51 +345,55 @@ class AdminManagementService implements \App\Domain\Contracts\Services\AdminMana
         $mime = finfo_file($finfo, $file['tmp_name']);
 
         if (!in_array($mime, $allowed_types)) {
-            throw new ApiException($isProfileEndpoint ? 'Invalid file type. Only JPG, PNG, and WEBP are allowed.' : 'Profile photo must be JPG or PNG', 422);
+            throw new ApiException('Invalid file type. Only JPG, PNG, and WEBP are allowed.', 422);
         }
 
         $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-        if (!$isProfileEndpoint) {
-            if (!in_array($ext, ['jpg', 'jpeg', 'png']) || !in_array($file['type'], ['image/jpeg', 'image/png'])) {
-                throw new ApiException('Profile photo must be JPG or PNG', 422);
-            }
-            if ($file['size'] > 10 * 1024 * 1024) {
-                throw new ApiException('Profile photo max size is 10MB', 422);
-            }
+        if ($file['size'] > 10 * 1024 * 1024) {
+            throw new ApiException('Profile photo max size is 10MB', 422);
         }
 
         $filename = 'admin_' . $adminId . '_' . time() . '.' . $ext;
-
-        // upload-admin-photo uses admin-photos, profile uses avatars
-        $dir = $isProfileEndpoint ? '/uploads/avatars/' : '/uploads/admin-photos/';
-        $upload_dir = dirname(__DIR__, 2) . $dir;
+        $upload_dir = defined('UPLOAD_ADMIN_PHOTOS_PATH') ? UPLOAD_ADMIN_PHOTOS_PATH : (dirname(__DIR__, 3) . '/public/uploads/admin-photos/');
         if (!is_dir($upload_dir)) {
             mkdir($upload_dir, 0755, true);
         }
 
         $target_path = $upload_dir . $filename;
+        $saved = (defined('FINZO_TESTING') || php_sapi_name() === 'cli') ? copy($file['tmp_name'], $target_path) : move_uploaded_file($file['tmp_name'], $target_path);
 
-        if (move_uploaded_file($file['tmp_name'], $target_path)) {
+        if ($saved) {
+
             $admin = $this->repository->getAdminById($adminId);
-            $old_avatar = $admin['profile_photo'];
+            $old_avatar = $admin['profile_photo'] ?? null;
 
-            if ($old_avatar && file_exists(dirname(__DIR__, 2) . '/' . ltrim($old_avatar, '/'))) {
-                @unlink(dirname(__DIR__, 2) . '/' . ltrim($old_avatar, '/'));
+            if ($old_avatar) {
+                $old_full_path = dirname(__DIR__, 3) . '/public' . (str_starts_with($old_avatar, '/') ? $old_avatar : '/' . $old_avatar);
+                if (file_exists($old_full_path)) {
+                    @unlink($old_full_path);
+                }
             }
 
-            $relative_path = ($isProfileEndpoint ? 'uploads/avatars/' : '/uploads/admin-photos/') . $filename;
+            $relative_path = '/uploads/admin-photos/' . $filename;
             $this->repository->updateAdminProfileField($adminId, 'profile_photo', $relative_path);
 
             $_SESSION['admin_profile_photo'] = $relative_path;
 
-            if ($isProfileEndpoint) {
-                return ['success' => true, 'message' => 'Profile photo updated successfully', 'avatar_url' => $relative_path];
-            } else {
-                return ['success' => true, 'photo_url' => $relative_path];
-            }
+            \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
+                new \App\Application\Events\GenericAuditAction('admin_photo_updated', $adminId, \App\Domain\Enums\RoleEnum::ADMIN->value, $adminId, \App\Domain\Enums\RoleEnum::ADMIN->value, 'Profile photo updated')
+            );
+
+            return [
+                'success' => true,
+                'message' => 'Profile photo updated successfully',
+                'photo_url' => $relative_path,
+                'avatar_url' => $relative_path,
+                'profile_photo' => $relative_path
+            ];
         }
         throw new ApiException('Failed to move uploaded file', 500);
     }
+
 
 
     /**
@@ -424,12 +447,22 @@ class AdminManagementService implements \App\Domain\Contracts\Services\AdminMana
             return ['success' => true, 'message' => 'Password updated successfully'];
         }
 
+        if (isset($data['two_fa_enabled'])) {
+            $twoFa = !empty($data['two_fa_enabled']) ? 1 : 0;
+            $this->repository->updateProfileFields($adminId, ["two_fa_enabled = ?"], [$twoFa]);
+            \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
+                new \App\Application\Events\GenericAuditAction('admin_2fa_updated', $adminId, \App\Domain\Enums\RoleEnum::ADMIN->value, $adminId, \App\Domain\Enums\RoleEnum::ADMIN->value, 'Two-factor authentication setting modified')
+            );
+            return ['success' => true, 'message' => 'Two-Factor Authentication preference updated successfully'];
+        }
+
         $fullName = $this->security->cleanInput($data['full_name'] ?? '');
         $phone = $this->security->cleanInput($data['phone'] ?? '');
         $date_of_birth = $this->security->cleanInput($data['date_of_birth'] ?? '');
         $gender = $this->security->cleanInput($data['gender'] ?? '');
         $security_question = isset($data['security_question']) ? $this->security->cleanInput($data['security_question']) : null;
         $security_answer = $data['security_answer'] ?? '';
+
 
         if (strlen($fullName) < 2 || strlen($fullName) > 100) {
             throw new ApiException('Full name must be between 2 and 100 characters', 422, ['field' => 'full_name']);
@@ -456,9 +489,83 @@ class AdminManagementService implements \App\Domain\Contracts\Services\AdminMana
 
         $this->repository->updateProfileFields($adminId, $fields, $params);
         \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('admin_profile_updated', $adminId, \App\Domain\Enums\RoleEnum::ADMIN->value, $adminId, \App\Domain\Enums\RoleEnum::ADMIN->value, 'Profile information updated')
-);
+            new \App\Application\Events\GenericAuditAction('admin_profile_updated', $adminId, \App\Domain\Enums\RoleEnum::ADMIN->value, $adminId, \App\Domain\Enums\RoleEnum::ADMIN->value, 'Profile information updated')
+        );
 
         return ['success' => true, 'message' => 'Profile updated successfully'];
     }
+
+    /**
+     * Update Security Question.
+     *
+     * @param int $adminId
+     * @param array $data
+     * @return array
+     */
+    public function updateSecurityQuestion(int $adminId, array $data): array
+    {
+        $question = $this->security->cleanInput($data['security_question'] ?? '');
+        $answer = $data['security_answer'] ?? '';
+        $current_pwd = $data['current_password'] ?? '';
+
+        if (strlen($question) < 10) {
+            throw new ApiException('Security question must be at least 10 characters', 422, ['field' => 'security_question']);
+        }
+        if (strlen($answer) < 3) {
+            throw new ApiException('Security answer must be at least 3 characters', 422, ['field' => 'security_answer']);
+        }
+        if (empty($current_pwd)) {
+            throw new ApiException('Current password is required to update security settings', 422, ['field' => 'current_password']);
+        }
+
+        $admin = $this->repository->getAdminById($adminId);
+        if (!$admin || !password_verify($current_pwd, $admin['password_hash'])) {
+            throw new ApiException('Incorrect current password', 422, ['field' => 'current_password']);
+        }
+
+        $answerHash = password_hash(strtolower(trim($answer)), PASSWORD_BCRYPT);
+        $this->repository->updateSecurityQuestion($adminId, $question, $answerHash);
+
+        \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
+            new \App\Application\Events\GenericAuditAction('admin_security_question_updated', $adminId, \App\Domain\Enums\RoleEnum::ADMIN->value, $adminId, \App\Domain\Enums\RoleEnum::ADMIN->value, 'Security recovery question updated')
+        );
+
+        return ['success' => true, 'message' => 'Security question configured successfully'];
+    }
+
+    /**
+     * Unlock Locked Admin.
+     *
+     * @param int $targetAdminId
+     * @return array
+     */
+    public function unlockAdmin(int $targetAdminId): array
+    {
+        $this->security->enforcePermission('manage_admins');
+
+        if ($targetAdminId <= 0) {
+            throw new ApiException('Invalid target admin ID', 400);
+        }
+
+        $target = $this->repository->getAdminById($targetAdminId);
+        if (!$target) {
+            throw new ApiException('Admin not found', 404);
+        }
+
+        if ($target['admin_role'] === 'super_admin' && (int)$_SESSION['admin_id'] !== $targetAdminId) {
+            throw new ApiException('Cannot manage another Super Admin account', 403);
+        }
+
+        $this->repository->unlockAdmin($targetAdminId);
+
+        \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
+            new \App\Application\Events\GenericAuditAction('admin_unlocked', $target['admin_id'], \App\Domain\Enums\RoleEnum::ADMIN->value, $_SESSION['admin_id'], \App\Domain\Enums\RoleEnum::ADMIN->value, "Manually unlocked admin account: {$target['full_name']}")
+        );
+
+        return [
+            'success' => true,
+            'message' => "Admin account for {$target['full_name']} has been successfully unlocked."
+        ];
+    }
 }
+

@@ -30,7 +30,7 @@ ob_start();
   </div>
 
   <!-- STATEMENT PREVIEW -->
-  <div class="ds-card ds-animate-slide-up print:shadow-none print:border-none" id="statement-preview" style="animation-delay: 0.1s;">
+  <div class="ds-card ds-animate-slide-up print:shadow-none print:border-none delay-100" id="statement-preview">
     <div class="p-8 print:p-0">
       
       <!-- Print Header -->
@@ -109,7 +109,9 @@ ob_start();
       
     <script defer src="/Finzo/public/assets/js/core/utils.js"></script>
   <script defer src="/Finzo/public/assets/js/core/api.js"></script>
+<script defer src="/Finzo/public/assets/js/user/statement.js"></script>
 <?php
 $slot = ob_get_clean();
 include __DIR__ . '/../layouts/app.php';
 ?>
+

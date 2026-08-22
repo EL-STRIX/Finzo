@@ -149,7 +149,7 @@
                 if (i === 4) pagHtml += `<span class="px-2 opacity-30">...</span>`;
                 continue;
             }
-            pagHtml += `<button onclick="window.DeletedUsers.goToPage(${i})" class="w-8 h-8 flex items-center justify-center rounded-lg text-[11px] font-bold transition-all ${i === currentPage ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'hover:bg-slate-100 dark:hover:bg-white/5'}" ${i === currentPage ? '' : ''}>${i}</button>`;
+            pagHtml += `<button onclick="window.DeletedUsers.goToPage(${i})" class="w-8 h-8 flex items-center justify-center rounded-lg text-[11px] font-black transition-all ${i === currentPage ? 'bg-primary text-text-inverse shadow-sm' : 'bg-surface border border-border-subtle text-text-primary hover:bg-surface-hover hover:border-border-strong cursor-pointer'}">${i}</button>`;
         }
         
         pagHtml += `<button class="btn btn-secondary px-3 py-1.5 text-[11px] rounded-lg ${currentPage >= pages ? 'opacity-30 cursor-not-allowed' : ''}" ${currentPage >= pages ? 'disabled' : ''} onclick="window.DeletedUsers.goPage(1)">Next →</button>`;

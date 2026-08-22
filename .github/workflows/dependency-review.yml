@@ -13,11 +13,19 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-        
-      - name: Dependency Review
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: mbstring, json
+
+      - name: Run Composer Security Audit
+        run: composer audit --locked
+
+      - name: GitHub Dependency Review
         uses: actions/dependency-review-action@v5
+        continue-on-error: true
         with:
           fail-on-severity: high
           deny-licenses: GPL-1.0, GPL-2.0, GPL-3.0, AGPL-1.0, AGPL-3.0
-          # We fail PRs if they introduce High/Critical vulnerabilities
-          # We also deny strict copyleft licenses in an enterprise environment

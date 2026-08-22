@@ -5,7 +5,7 @@ ob_start();
 ?>
 <script defer src="/Finzo/public/assets/js/user/user-shared.js"></script>
 
-<div class="page-content py-8 print:py-0" style="max-width: 600px; margin: 0 auto;">
+<div class="page-content py-8 print:py-0 max-w-[600px] mx-auto">
   
   <div class="mb-8 ds-animate-fade text-center print:hidden">
     <div class="w-16 h-16 bg-success-surface text-success-base rounded-full flex items-center justify-center mx-auto mb-4">
@@ -114,12 +114,15 @@ ob_start();
     </div>
   </div>
   
-  <div class="flex flex-col sm:flex-row gap-3 mt-6 print:hidden ds-animate-slide-up" style="animation-delay: 0.2s;">
+  <div class="flex flex-col sm:flex-row gap-3 mt-6 print:hidden ds-animate-slide-up delay-200">
     <a href="dashboard.php" class="btn btn-secondary flex-1 h-12">Return to Dashboard</a>
     <a href="transfer.php" class="btn btn-primary flex-1 h-12">New Transfer</a>
   <script defer src="/Finzo/public/assets/js/core/utils.js"></script>
   <script defer src="/Finzo/public/assets/js/core/api.js"></script>
+<script defer src="/Finzo/public/assets/js/user/receipt.js"></script>
 <?php
 $slot = ob_get_clean();
 include __DIR__ . '/../layouts/app.php';
 ?>
+
+

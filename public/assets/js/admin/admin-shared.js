@@ -9,19 +9,24 @@ window.AdminPortal = {
         isLoaded: false
     },
 
+
     /**
      * Initial session check
      */
     init: async function() {
         try {
-            const data = await window.api.get('/admin/dashboard');
+            const data = await window.api.get('/admin/auth/session');
             if (data.success) {
-                this.state.admin = data.admin;
-                window.csrfToken = data.csrf_token;
+                const payload = data.data || data;
+                const admin = payload.admin || data.admin;
+                const stats = payload.stats || data.stats;
+                const csrf = payload.csrf_token || data.csrf_token;
+                this.state.admin = admin;
+                window.csrfToken = csrf;
                 const meta = document.querySelector('meta[name="csrf-token"]');
-                if (meta) meta.content = data.csrf_token;
+                if (meta) meta.content = csrf;
                 this.state.isLoaded = true;
-                this.syncHeader(data.admin, data.stats);
+                this.syncHeader(admin, stats);
             }
         } catch (error) {
             console.error('Admin initialization failed:', error);
@@ -36,21 +41,41 @@ window.AdminPortal = {
     syncHeader: function(admin, stats) {
         if (!admin) return;
         
-        const name = admin.full_name;
-        const initials = name.split(' ').filter(word => /^[a-zA-Z]/.test(word)).map(n => n[0]).join('').toUpperCase();
+        const name = admin.full_name || 'Admin';
+        const initials = name.split(' ').filter(word => /^[a-zA-Z]/.test(word)).map(n => n[0]).join('').toUpperCase().substring(0, 2);
 
-        // Update only the topbar admin avatar to prevent overwriting avatars in data tables
-        document.querySelectorAll('header.admin-topbar .admin-avatar').forEach(el => {
+        // Update header name and ID spans
+        const nameEl = document.getElementById('header-profile-name');
+        const idEl = document.getElementById('header-profile-id');
+        if (nameEl) nameEl.textContent = name;
+        if (idEl) idEl.textContent = 'ID: ' + (admin.admin_id || '#' + (admin.id || '---'));
+
+
+        // Update topbar admin avatar
+        document.querySelectorAll('header .header-avatar').forEach(el => {
             if (admin.profile_photo) {
+                let photoSrc = admin.profile_photo;
+                if (!photoSrc.startsWith('http')) {
+                    if (photoSrc.startsWith('/Finzo/public/')) {
+                        // already full
+                    } else if (photoSrc.startsWith('/uploads/') || photoSrc.startsWith('uploads/')) {
+                        photoSrc = '/Finzo/public/' + photoSrc.replace(/^\/+/, '');
+                    } else if (photoSrc.startsWith('/assets/') || photoSrc.startsWith('assets/')) {
+                        photoSrc = '/Finzo/public/' + photoSrc.replace(/^\/+/, '');
+                    } else {
+                        photoSrc = '/Finzo/public/uploads/' + photoSrc.replace(/^\/+/, '');
+                    }
+                }
                 const cacheBuster = '?v=' + new Date().getTime();
-                const src = (admin.profile_photo.startsWith('http') ? admin.profile_photo : `/Finzo/public/assets/${admin.profile_photo}`) + cacheBuster;
+                const src = photoSrc + cacheBuster;
                 el.innerHTML = `<img src="${src}" alt="${name}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
                 el.style.background = 'none';
             } else {
                 el.textContent = initials;
-                el.style.background = window.FinzoUtils.getAvatarGradient(initials);
+                if (window.FinzoUtils) el.style.background = window.FinzoUtils.getAvatarGradient(initials);
             }
         });
+
     },
 
     /**
@@ -81,9 +106,9 @@ window.AdminPortal = {
                     e.preventDefault();
                     try {
                         await window.api.post('/auth/logout');
-                        window.location.href = '/Finzo/public/views/auth/admin-login.html';
+                        window.location.href = '/Finzo/public/views/auth/admin-login.php';
                     } catch (error) {
-                        window.location.href = '/Finzo/public/views/auth/admin-login.html';
+                        window.location.href = '/Finzo/public/views/auth/admin-login.php';
                     }
                 });
             }
@@ -128,7 +153,6 @@ window.AdminPortal = {
 };
 
 // Aliases for broader compatibility across admin scripts
-window.portal = window.AdminPortal;
 window.showToast = window.AdminPortal.showToast;
 
 // Auto-init on load
@@ -218,9 +242,9 @@ document.addEventListener('DOMContentLoaded', () => window.AdminPortal.init());
                 e.preventDefault();
                 try {
                     await window.api.post('/auth/logout');
-                    window.location.href = '/Finzo/public/views/auth/admin-login.html';
+                    window.location.href = '/Finzo/public/views/auth/admin-login.php';
                 } catch (error) {
-                    window.location.href = '/Finzo/public/views/auth/admin-login.html';
+                    window.location.href = '/Finzo/public/views/auth/admin-login.php';
                 }
             });
         }
@@ -228,18 +252,19 @@ document.addEventListener('DOMContentLoaded', () => window.AdminPortal.init());
         // Apply theme to newly loaded components
         applyTheme();
         
-        // Re-bind sidebar toggle
-        const menuBtn = document.getElementById('mobile-menu-btn');
-        const overlay = document.getElementById('sidebar-overlay');
-        if (menuBtn && sidebar && overlay) {
-            menuBtn.addEventListener('click', () => {
-                sidebar.classList.add('mobile-open', 'active');
-                overlay.classList.add('active');
-            });
-            overlay.addEventListener('click', () => {
-                sidebar.classList.remove('mobile-open', 'active');
-                overlay.classList.remove('active');
-            });
-        }
     });
+
+    window.portal = window.AdminPortal;
+
+    const initAdminPortal = () => {
+        if (window.AdminPortal && window.AdminPortal.init) {
+            window.AdminPortal.init();
+        }
+    };
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initAdminPortal);
+    } else {
+        initAdminPortal();
+    }
 })();
+

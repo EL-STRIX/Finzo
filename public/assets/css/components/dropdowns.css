@@ -5,6 +5,11 @@
   width: 100%;
 }
 
+.finzo-dropdown.is-open,
+.finzo-dropdown.open {
+  z-index: 1000 !important;
+}
+
 .finzo-dropdown-trigger {
   display: flex;
   align-items: center;
@@ -12,73 +17,110 @@
   gap: 8px;
   width: 100%;
   height: 48px;
-  padding: 0 var(--space-md);
-  background: var(--color-surface-main);
-  border: 1px solid var(--color-border-main);
-  border-radius: var(--radius-md);
+  padding: 0 var(--space-md, 1rem);
+  background: var(--color-surface, #1C1917);
+  border: 1px solid var(--color-border-subtle, rgba(255, 255, 255, 0.1));
+  border-radius: var(--radius-md, 10px);
   cursor: pointer;
-  transition: var(--transition-fast);
-  font-family: var(--font-body);
+  transition: var(--transition-fast, 0.15s ease);
+  font-family: var(--font-body, inherit);
   font-size: 14px;
   font-weight: 500;
-  color: var(--color-text-main);
+  color: var(--color-text-primary, #ffffff);
   user-select: none;
 }
 
 .finzo-dropdown-trigger:hover {
-  border-color: var(--color-primary-base);
+  border-color: var(--color-primary-base, #D97706);
 }
 
 .finzo-dropdown-trigger:focus-visible {
   outline: none;
-  box-shadow: var(--shadow-focus);
-  border-color: var(--color-primary-base);
+  box-shadow: var(--shadow-focus, 0 0 0 2px rgba(217, 119, 6, 0.4));
+  border-color: var(--color-primary-base, #D97706);
+}
+
+.finzo-dropdown-trigger.is-open .chevron,
+.finzo-dropdown-trigger.open .chevron,
+.finzo-dropdown.is-open .chevron,
+.finzo-dropdown.open .chevron {
+  transform: rotate(180deg);
 }
 
 .finzo-dropdown-menu {
   position: absolute;
-  top: calc(100% + 8px);
+  top: calc(100% + 6px);
   left: 0;
+  right: 0;
   width: 100%;
-  background: var(--color-surface-main);
-  border: 1px solid var(--color-border-subtle);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-dropdown);
-  z-index: 100;
-  display: block;
+  background: #18181b;
+  background-color: rgba(24, 24, 27, 0.98);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--color-border-subtle, rgba(255, 255, 255, 0.15));
+  border-radius: var(--radius-lg, 14px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.6), 0 10px 10px -5px rgba(0, 0, 0, 0.4);
+  z-index: 1000 !important;
+  display: none;
   opacity: 0;
   visibility: hidden;
-  transform: translateY(10px) scale(0.98);
+  transform: translateY(6px) scale(0.98);
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  padding: 8px;
+  padding: 6px;
   max-height: 250px;
   overflow-y: auto;
 }
 
-.finzo-dropdown-menu.is-open {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0) scale(1);
+[data-theme="light"] .finzo-dropdown-menu,
+.light .finzo-dropdown-menu {
+  background: #ffffff;
+  background-color: rgba(255, 255, 255, 0.98);
+  border-color: rgba(0, 0, 0, 0.12);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 10px 10px -5px rgba(0, 0, 0, 0.05);
+}
+
+.finzo-dropdown-menu.is-open,
+.finzo-dropdown-menu.open,
+.finzo-dropdown.is-open .finzo-dropdown-menu,
+.finzo-dropdown.open .finzo-dropdown-menu {
+  opacity: 1 !important;
+  visibility: visible !important;
+  display: block !important;
+  transform: translateY(0) scale(1) !important;
+  pointer-events: auto !important;
 }
 
 .finzo-dropdown-option {
   padding: 10px 14px;
-  font-size: 14px;
-  color: var(--color-text-main);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-primary, #f4f4f5);
   cursor: pointer;
-  border-radius: var(--radius-sm);
-  transition: var(--transition-fast);
+  border-radius: var(--radius-sm, 8px);
+  transition: var(--transition-fast, 0.15s ease);
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
+[data-theme="light"] .finzo-dropdown-option,
+.light .finzo-dropdown-option {
+  color: #18181b;
+}
+
 .finzo-dropdown-option:hover {
-  background: var(--color-surface-hover);
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+}
+
+[data-theme="light"] .finzo-dropdown-option:hover,
+.light .finzo-dropdown-option:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: #000000;
 }
 
 .finzo-dropdown-option.is-selected {
-  background: var(--color-primary-surface);
-  color: var(--color-primary-base);
-  font-weight: 600;
+  background: rgba(217, 119, 6, 0.15);
+  color: #D97706;
+  font-weight: 700;
 }

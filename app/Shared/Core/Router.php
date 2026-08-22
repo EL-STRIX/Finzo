@@ -51,6 +51,23 @@ class Router
 
     public function dispatch(string $method, string $uri): void
     {
+        // Parse JSON body into $_POST for non-GET requests so controllers
+        // that read from $_POST work consistently with JSON payloads.
+        if (!in_array($method, ['GET', 'HEAD', 'OPTIONS'])) {
+            $rawBody = file_get_contents('php://input');
+            if (!empty($rawBody)) {
+                $json = json_decode($rawBody, true);
+                if (is_array($json)) {
+                    $_POST = array_merge($_POST, $json);
+                } else {
+                    parse_str($rawBody, $parsed);
+                    if (is_array($parsed)) {
+                        $_POST = array_merge($_POST, $parsed);
+                    }
+                }
+            }
+        }
+
         // Run Global Security Middleware
         $security = new \App\Presentation\Middleware\SecurityMiddleware();
         $security->handle();
@@ -69,7 +86,7 @@ class Router
         ];
 
         foreach ($basePaths as $base) {
-            if (strpos($uri, $base) === 0) {
+            if (stripos($uri, $base) === 0) {
                 $uri = substr($uri, strlen($base));
                 break;
             }

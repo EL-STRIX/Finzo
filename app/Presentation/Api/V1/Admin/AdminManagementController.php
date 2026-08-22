@@ -22,29 +22,29 @@ class AdminManagementController
 
     public function addAdmin(?string $id = null, ?string $extra = null): array
     {
-
         $this->security->enforcePermission('manage_admins');
 
-        $file = (\App\Shared\Core\Validation\Validator::isSet($_FILES['profile_photo']) && $_FILES['profile_photo']['error'] === UPLOAD_ERR_OK) ? $_FILES['profile_photo'] : null;
+        $file = (isset($_FILES['profile_photo']) && $_FILES['profile_photo']['error'] === UPLOAD_ERR_OK) ? $_FILES['profile_photo'] : null;
         $result = $this->service->addAdmin($_POST, $file);
 
-        $code = $result['code'] ?? 200;
         unset($result['code']);
-
-        if ($code === 201) {
-            json_response($result, 201);
-        }
-
         return $result;
     }
 
     public function adminAction(?string $id = null, ?string $extra = null): array
     {
-
         $this->security->enforcePermission('manage_admins');
 
+        $is_json = (isset($_SERVER['CONTENT_TYPE']) && strpos($_SERVER['CONTENT_TYPE'], 'application/json') !== false);
+        if ($is_json) {
+            $json_input = json_decode(file_get_contents('php://input'), true);
+            if ($json_input !== null) {
+                $_POST = array_merge($_POST, $json_input);
+            }
+        }
+
         $action = $this->security->cleanInput($_POST['action'] ?? '');
-        $target_id = \App\Shared\Core\Validation\Validator::isSet(($id ?? $_POST['admin_id'] ?? null)) ? (int)($id ?? $_POST['admin_id'] ?? null) : 0;
+        $target_id = !empty($id) ? (int)$id : (!empty($_POST['admin_id']) ? (int)$_POST['admin_id'] : 0);
 
         $result = $this->service->handleAdminAction($action, $target_id);
         unset($result['code']);
@@ -55,7 +55,7 @@ class AdminManagementController
     {
         $this->security->enforcePermission('manage_admins');
 
-        $target_id = \App\Shared\Core\Validation\Validator::isSet(($id ?? $_GET['id'] ?? null)) ? (int)($id ?? $_GET['id'] ?? null) : 0;
+        $target_id = !empty($id) ? (int)$id : (!empty($_GET['id']) ? (int)$_GET['id'] : 0);
         return $this->service->getAdminDetail($target_id);
     }
 
@@ -78,11 +78,9 @@ class AdminManagementController
         return ['success' => true, 'next_id' => $next_id];
     }
 
-
-
     public function updateAdminProfile(?string $id = null, ?string $extra = null): array
     {
-        $is_json = (\App\Shared\Core\Validation\Validator::isSet($_SERVER['CONTENT_TYPE']) && strpos($_SERVER['CONTENT_TYPE'], 'application/json') !== false);
+        $is_json = (isset($_SERVER['CONTENT_TYPE']) && strpos($_SERVER['CONTENT_TYPE'], 'application/json') !== false);
         if ($is_json) {
             $json_input = json_decode(file_get_contents('php://input'), true);
             if ($json_input !== null) {
@@ -90,14 +88,12 @@ class AdminManagementController
             }
         }
 
-        if (\App\Shared\Core\Validation\Validator::isSet($_POST['two_fa_enabled']) && count($_POST) <= 2) {
+        if (isset($_POST['two_fa_enabled']) && count($_POST) <= 2) {
             $enable = intval($_POST['two_fa_enabled']);
             $result = $this->service->updateTwoFaSettings(\App\Shared\Security\Auth::user()['id'], $enable);
             unset($result['code']);
             return $result;
         }
-
-
 
         $result = $this->service->updateAdminProfile(\App\Shared\Security\Auth::user()['id'], $_POST);
         unset($result['code']);
@@ -116,5 +112,38 @@ class AdminManagementController
     {
         return $this->service->getAdminProfileForUser(\App\Shared\Security\Auth::user()['id']);
     }
+
+    public function updateSecurityQuestion(?string $id = null, ?string $extra = null): array
+    {
+        $is_json = (isset($_SERVER['CONTENT_TYPE']) && strpos($_SERVER['CONTENT_TYPE'], 'application/json') !== false);
+        if ($is_json) {
+            $json_input = json_decode(file_get_contents('php://input'), true);
+            if ($json_input !== null) {
+                $_POST = array_merge($_POST, $json_input);
+            }
+        }
+
+        $result = $this->service->updateSecurityQuestion(\App\Shared\Security\Auth::user()['id'], $_POST);
+        unset($result['code']);
+        return $result;
+    }
+
+    public function unlockAdmin(?string $id = null, ?string $extra = null): array
+    {
+        $is_json = (isset($_SERVER['CONTENT_TYPE']) && strpos($_SERVER['CONTENT_TYPE'], 'application/json') !== false);
+        if ($is_json) {
+            $json_input = json_decode(file_get_contents('php://input'), true);
+            if ($json_input !== null) {
+                $_POST = array_merge($_POST, $json_input);
+            }
+        }
+
+        $target_id = (int)($id ?? $_POST['target_admin_id'] ?? $_POST['admin_id'] ?? 0);
+        $result = $this->service->unlockAdmin($target_id);
+        unset($result['code']);
+        return $result;
+    }
+
 }
+
 
