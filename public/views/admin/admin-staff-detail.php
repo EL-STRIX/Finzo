@@ -105,6 +105,7 @@ ob_start();
   window.__INITIAL_STAFF__ = <?= json_encode($staff ?? new \stdClass(), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
   window.__INITIAL_ADDRESS__ = <?= json_encode($address ?? new \stdClass(), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
   window.__INITIAL_TRANSACTIONS__ = <?= json_encode($transactions ?? [], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+  window.__STAFF_ID__ = <?= (int)$staffId ?>;
 </script>
 
   <style>

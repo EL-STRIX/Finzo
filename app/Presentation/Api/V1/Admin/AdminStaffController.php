@@ -124,13 +124,17 @@ class AdminStaffController
     public function staffAction(?string $id = null, ?string $extra = null): array
     {
         $input = json_decode(file_get_contents('php://input'), true) ?? [];
-        $staffId = intval($input['staff_id'] ?? ($id ?? $_POST['staff_id'] ?? null) ?? 0);
+        $staffId = intval($input['staff_id'] ?? ($_POST['staff_id'] ?? ($id ?? 0)));
+        if ($staffId === 0 && is_numeric($id)) {
+            $staffId = intval($id);
+        }
+
         $clean = function($val) {
             return $this->security ? $this->security->cleanInput($val) : trim((string)$val);
         };
-        $action = $clean($input['action'] ?? $_POST['action'] ?? '');
-        $reason = $clean($input['reason'] ?? $_POST['reason'] ?? '');
-        $password = $input['password'] ?? $_POST['password'] ?? '';
+        $action = $clean($input['action'] ?? ($_POST['action'] ?? ''));
+        $reason = $clean($input['reason'] ?? ($_POST['reason'] ?? ''));
+        $password = (string)($input['password'] ?? ($_POST['password'] ?? ''));
 
         $admin = \App\Shared\Security\Auth::user();
         $adminId = intval($admin['id'] ?? ($_SESSION['admin_id'] ?? ($_SESSION['user_id'] ?? 0)));

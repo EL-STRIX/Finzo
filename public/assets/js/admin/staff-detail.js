@@ -13,7 +13,7 @@
 
     function init() {
         const urlParams = new URLSearchParams(window.location.search);
-        staffId = urlParams.get('id') || (currentStaff ? currentStaff.id : null);
+        staffId = window.__STAFF_ID__ || urlParams.get('id') || (currentStaff ? currentStaff.id : null);
         
         if (!staffId) {
             const pathParts = window.location.pathname.split('/');
@@ -1098,6 +1098,14 @@
             apiAction = 'delete';
         }
 
+        if (!staffId && window.__STAFF_ID__) {
+            staffId = window.__STAFF_ID__;
+        }
+        if (!staffId) {
+            const urlParams = new URLSearchParams(window.location.search);
+            staffId = urlParams.get('id') || (currentStaff ? currentStaff.id : null);
+        }
+
         if (confirmBtn) {
             confirmBtn.disabled = true;
             confirmBtn.textContent = 'Authorizing...';
@@ -1105,6 +1113,7 @@
 
         try {
             const resp = await window.api.patch('/staff/' + staffId, {
+                staff_id: staffId,
                 action: apiAction,
                 password: password,
                 reason: reason
