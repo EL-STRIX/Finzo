@@ -53,6 +53,10 @@ class AuthController
         // $base is already defined above
         if ($user['status'] === \App\Domain\Enums\AccountStatusEnum::PENDING->value) {
             $redirect = $base . '/public/views/user/complete-profile.php';
+        } elseif ($user['status'] === \App\Domain\Enums\AccountStatusEnum::UNDER_REVIEW->value) {
+            $redirect = $base . '/public/views/user/account-pending.php';
+        } elseif ($user['status'] === \App\Domain\Enums\AccountStatusEnum::REJECTED->value) {
+            $redirect = $base . '/public/views/user/account-rejected.php';
         } else {
             $redirect = $base . '/public/views/user/dashboard.php';
         }

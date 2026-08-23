@@ -77,4 +77,27 @@ class RegistrationFlowTest extends TestCase
             $this->assertStringContainsString('complete-profile.php', $data['redirect'] ?? '');
         }
     }
+
+    public function testLoginPendingUserRedirectsToCompleteProfile()
+    {
+        $unique = time() . rand(1000, 9999);
+        $email = "pending_login_{$unique}@example.com";
+        $phone = '98' . rand(10000000, 99999999);
+        $password = 'SecurePass123!';
+
+        $this->authService->registerUser('Pending User', $email, $phone, $password);
+
+        try {
+            RequestHelper::postJson('api/v1/auth/login', [
+                'csrf_token' => 'dummy_csrf_token',
+                'identity' => $email,
+                'password' => $password
+            ]);
+            $this->fail("Should throw TestResponseException in testing mode");
+        } catch (TestResponseException $e) {
+            $data = json_decode($e->getMessage(), true);
+            $this->assertTrue($data['success'] ?? false);
+            $this->assertStringContainsString('complete-profile.php', $data['redirect'] ?? '');
+        }
+    }
 }
