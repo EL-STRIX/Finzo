@@ -88,11 +88,29 @@ async function fetchUserSession() {
       _userCache.avatarUrl = data.user?.avatar_url || null;
       _userCache._loaded = true;
 
-      // Sync header profile details dynamically
+      // Sync header and sidebar profile details dynamically
       const nameEl = document.getElementById('header-profile-name');
       const idEl = document.getElementById('header-profile-id');
       if (nameEl && _userCache.name) nameEl.textContent = _userCache.name;
       if (idEl && _userCache.customerId) idEl.textContent = 'ID: ' + _userCache.customerId;
+
+      document.querySelectorAll('.user-name').forEach(el => el.textContent = _userCache.name);
+      document.querySelectorAll('.user-id').forEach(el => el.textContent = _userCache.customerId ? 'ID: ' + _userCache.customerId : '');
+      document.querySelectorAll('.user-initials').forEach(el => el.textContent = UserState.initials);
+
+      // Sync status badge in sidebar
+      const statusBadge = document.getElementById('sidebar-status-badge');
+      if (statusBadge) {
+        if (_userCache.status === 'active') {
+          statusBadge.innerHTML = `<div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-success-surface/20 border border-success-base/30 text-success-base text-[10px] font-bold uppercase tracking-widest"><div class="w-1.5 h-1.5 rounded-full bg-success-base"></div>Active</div>`;
+        } else if (_userCache.status === 'under_review') {
+          statusBadge.innerHTML = `<div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-info-surface/20 border border-info-base/30 text-info-base text-[10px] font-bold uppercase tracking-widest"><div class="w-1.5 h-1.5 rounded-full bg-info-base"></div>Under Review</div>`;
+        } else if (_userCache.status === 'rejected') {
+          statusBadge.innerHTML = `<div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-danger-surface/20 border border-danger-base/30 text-danger-base text-[10px] font-bold uppercase tracking-widest"><div class="w-1.5 h-1.5 rounded-full bg-danger-base"></div>Action Required</div>`;
+        } else {
+          statusBadge.innerHTML = `<div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-warning-surface/20 border border-warning-base/30 text-warning-base text-[10px] font-bold uppercase tracking-widest"><div class="w-1.5 h-1.5 rounded-full bg-warning-base animate-pulse"></div>Pending KYC</div>`;
+        }
+      }
 
       if (_userCache.avatarUrl) {
         document.querySelectorAll('header .header-avatar').forEach(el => {
