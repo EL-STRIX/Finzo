@@ -542,9 +542,9 @@
                 const isCurrent = btn.dataset.tab === tabId;
                 btn.setAttribute('aria-selected', isCurrent ? 'true' : 'false');
                 if (isCurrent) {
-                    btn.className = 'profile-tab-btn flex items-center gap-2 px-5 py-3 rounded-t-xl text-xs font-black uppercase tracking-wider transition-all border-b-2 border-black dark:border-white text-black dark:text-white bg-surface shadow-sm cursor-pointer';
+                    btn.className = 'profile-tab-btn flex items-center gap-2 px-4 py-2.5 rounded-t-lg text-xs font-bold uppercase tracking-wider transition-all border-b-2 border-zinc-900 dark:border-white text-zinc-900 dark:text-white bg-surface shadow-2xs cursor-pointer';
                 } else {
-                    btn.className = 'profile-tab-btn flex items-center gap-2 px-5 py-3 rounded-t-xl text-xs font-black uppercase tracking-wider transition-all border-b-2 border-transparent text-text-secondary hover:text-text-primary hover:bg-surface-hover cursor-pointer';
+                    btn.className = 'profile-tab-btn flex items-center gap-2 px-4 py-2.5 rounded-t-lg text-xs font-bold uppercase tracking-wider transition-all border-b-2 border-transparent text-text-secondary hover:text-text-primary hover:bg-surface-hover cursor-pointer';
                 }
             });
 
