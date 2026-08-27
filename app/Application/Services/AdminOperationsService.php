@@ -520,6 +520,12 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
             $where_clauses[] = "u.status = 'pending'";
         } elseif ($filters['status'] === 'under_review') {
             $where_clauses[] = "u.status = 'under_review'";
+        } elseif ($filters['status'] === 'approved' || $filters['status'] === 'active') {
+            $where_clauses[] = "u.status = 'active'";
+        } elseif ($filters['status'] === 'rejected') {
+            $where_clauses[] = "u.status = 'rejected'";
+        } elseif ($filters['status'] === 'all_records') {
+            // Include all applications across all statuses
         } else {
             $where_clauses[] = "u.status IN ('pending', 'under_review')";
         }

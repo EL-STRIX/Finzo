@@ -431,6 +431,8 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
                    CASE u.status
                        WHEN 'pending'      THEN 'Pending Review'
                        WHEN 'under_review' THEN 'Under Review'
+                       WHEN 'active'       THEN 'Approved'
+                       WHEN 'rejected'     THEN 'Rejected'
                        ELSE u.status
                    END as status_text,
                    COALESCE(k.id_type, u.id_type, 'N/A') as id_type

@@ -11,6 +11,28 @@ if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
 $csrfToken = $_SESSION['csrf_token'];
+
+// Pre-load all pending approvals directly in PHP for instant zero-latency page display!
+$initialApps = [];
+$initialStats = [
+    'pending_review' => 0,
+    'under_review' => 0,
+    'approved_today' => 0,
+    'total_approved' => 0
+];
+$initialTotal = 0;
+
+try {
+    $repo = new \App\Infrastructure\Repositories\AdminOperationsRepository();
+    $service = new \App\Application\Services\AdminOperationsService($repo);
+    $preData = $service->getPendingApprovals(['status' => 'all', 'search' => ''], 1, 50);
+    $initialApps = $preData['applications'] ?? [];
+    $initialStats = $preData['stats'] ?? $initialStats;
+    $initialTotal = $preData['total'] ?? count($initialApps);
+} catch (\Throwable $e) {
+    // Graceful fallback
+}
+
 ob_start();
 ?>
 
@@ -51,7 +73,7 @@ ob_start();
             </div>
             <div class="min-w-0">
                 <div class="admin-stat-label text-[10px] font-bold uppercase tracking-wider text-text-secondary">PENDING REVIEW</div>
-                <div class="text-xl sm:text-2xl font-headline font-bold text-text-primary mt-0.5 tracking-tight" id="stat-pending-review">—</div>
+                <div class="text-xl sm:text-2xl font-headline font-bold text-text-primary mt-0.5 tracking-tight" id="stat-pending-review"><?= (int)($initialStats['pending_review'] ?? 0) ?></div>
                 <div class="text-[10px] text-text-secondary truncate mt-0.5">Awaiting verification</div>
             </div>
         </div>
@@ -63,7 +85,7 @@ ob_start();
             </div>
             <div class="min-w-0">
                 <div class="admin-stat-label text-[10px] font-bold uppercase tracking-wider text-text-secondary">UNDER REVIEW</div>
-                <div class="text-xl sm:text-2xl font-headline font-bold text-text-primary mt-0.5 tracking-tight" id="stat-under-review">—</div>
+                <div class="text-xl sm:text-2xl font-headline font-bold text-text-primary mt-0.5 tracking-tight" id="stat-under-review"><?= (int)($initialStats['under_review'] ?? 0) ?></div>
                 <div class="text-[10px] text-text-secondary truncate mt-0.5">Active inspection</div>
             </div>
         </div>
@@ -75,7 +97,7 @@ ob_start();
             </div>
             <div class="min-w-0">
                 <div class="admin-stat-label text-[10px] font-bold uppercase tracking-wider text-text-secondary">APPROVED TODAY</div>
-                <div class="text-xl sm:text-2xl font-headline font-bold text-text-primary mt-0.5 tracking-tight" id="stat-approved-today">—</div>
+                <div class="text-xl sm:text-2xl font-headline font-bold text-text-primary mt-0.5 tracking-tight" id="stat-approved-today"><?= (int)($initialStats['approved_today'] ?? 0) ?></div>
                 <div class="text-[10px] text-text-secondary truncate mt-0.5">Authorized today</div>
             </div>
         </div>
@@ -87,7 +109,7 @@ ob_start();
             </div>
             <div class="min-w-0">
                 <div class="admin-stat-label text-[10px] font-bold uppercase tracking-wider text-text-secondary">TOTAL APPROVED</div>
-                <div class="text-xl sm:text-2xl font-headline font-bold text-text-primary mt-0.5 tracking-tight" id="stat-total-approved">—</div>
+                <div class="text-xl sm:text-2xl font-headline font-bold text-text-primary mt-0.5 tracking-tight" id="stat-total-approved"><?= (int)($initialStats['total_approved'] ?? 0) ?></div>
                 <div class="text-[10px] text-text-secondary truncate mt-0.5">Total active accounts</div>
             </div>
         </div>
@@ -112,7 +134,7 @@ ob_start();
             <!-- Status Tabs -->
             <div class="flex items-center gap-1.5 overflow-x-auto custom-scrollbar">
                 <button type="button" class="tab-btn px-3.5 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all cursor-pointer bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 shadow-xs" data-status="all">
-                    All Applications
+                    All Pending
                 </button>
                 <button type="button" class="tab-btn px-3.5 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all cursor-pointer bg-surface text-text-secondary hover:text-text-primary hover:bg-surface-hover border border-border-subtle" data-status="pending">
                     <span class="material-symbols-outlined text-[14px] align-[-2px] mr-1" aria-hidden="true">hourglass_empty</span>
@@ -122,11 +144,22 @@ ob_start();
                     <span class="material-symbols-outlined text-[14px] align-[-2px] mr-1" aria-hidden="true">rate_review</span>
                     Under Review
                 </button>
+                <button type="button" class="tab-btn px-3.5 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all cursor-pointer bg-surface text-text-secondary hover:text-text-primary hover:bg-surface-hover border border-border-subtle" data-status="approved">
+                    <span class="material-symbols-outlined text-[14px] align-[-2px] mr-1" aria-hidden="true">check_circle</span>
+                    Approved
+                </button>
+                <button type="button" class="tab-btn px-3.5 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all cursor-pointer bg-surface text-text-secondary hover:text-text-primary hover:bg-surface-hover border border-border-subtle" data-status="rejected">
+                    <span class="material-symbols-outlined text-[14px] align-[-2px] mr-1" aria-hidden="true">cancel</span>
+                    Rejected
+                </button>
+                <button type="button" class="tab-btn px-3.5 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all cursor-pointer bg-surface text-text-secondary hover:text-text-primary hover:bg-surface-hover border border-border-subtle" data-status="all_records">
+                    All Records
+                </button>
             </div>
         </div>
 
         <!-- Empty State Container -->
-        <div id="pending-empty" class="hidden p-12 flex flex-col items-center justify-center text-center">
+        <div id="pending-empty" class="<?= empty($initialApps) ? '' : 'hidden ' ?>p-12 flex flex-col items-center justify-center text-center">
             <div class="w-14 h-14 rounded-2xl bg-surface-subtle border border-border-subtle flex items-center justify-center text-text-secondary mb-3 shadow-2xs">
                 <span class="material-symbols-outlined text-3xl" aria-hidden="true">inbox</span>
             </div>
@@ -136,7 +169,7 @@ ob_start();
 
         <!-- Approvals Table -->
         <div class="ds-table-wrapper w-full border-0 shadow-none rounded-none bg-transparent overflow-x-auto">
-            <table id="approvals-table" class="ds-table w-full text-left min-w-[1100px]">
+            <table id="approvals-table" class="<?= empty($initialApps) ? 'hidden ' : '' ?>ds-table w-full text-left min-w-[1100px]">
                 <thead class="bg-surface-subtle border-b border-border-subtle">
                     <tr>
                         <th class="py-2.5 px-4 text-[10px] font-bold text-text-secondary uppercase tracking-wider w-12 text-center" scope="col">#</th>
@@ -150,9 +183,80 @@ ob_start();
                     </tr>
                 </thead>
                 <tbody id="pending-tbody" class="divide-y divide-border-subtle text-xs">
-                    <tr>
-                        <td colspan="8" class="text-center italic opacity-60 py-12 text-xs">Loading pending applications queue...</td>
-                    </tr>
+                    <?php if (!empty($initialApps)): ?>
+                        <?php foreach ($initialApps as $i => $app): 
+                            $rowNum = str_pad((string)($i + 1), 2, '0', STR_PAD_LEFT);
+                            $initials = strtoupper(substr($app['full_name'] ?? 'U', 0, 1));
+                            $dateRaw = $app['kyc_submitted_at'] ?? $app['created_at'] ?? null;
+                            $dateDisplay = $dateRaw ? date('d M Y, h:i A', strtotime($dateRaw)) : '—';
+                            $accType = strtolower($app['account_type'] ?? 'savings');
+                            $isSavings = str_contains($accType, 'saving');
+                            $idType = !empty($app['id_type']) && $app['id_type'] !== 'N/A' ? htmlspecialchars($app['id_type']) : 'Not Uploaded';
+                            $status = $app['status'] ?? 'pending';
+                            $isUnderReview = ($status === 'under_review');
+                            $isActive = ($status === 'active');
+                            $isRejected = ($status === 'rejected');
+                        ?>
+                        <tr class="hover:bg-surface-hover/70 transition-colors">
+                            <td class="py-3 px-4 text-center font-mono text-[11px] font-bold text-text-secondary opacity-60"><?= $rowNum ?></td>
+                            <td class="py-3 px-5">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-9 h-9 rounded-xl bg-surface-subtle border border-border-subtle flex items-center justify-center font-bold text-xs text-text-primary uppercase shrink-0 font-mono shadow-2xs"><?= $initials ?></div>
+                                    <div class="min-w-0">
+                                        <div class="flex items-center gap-2">
+                                            <span class="font-headline font-bold text-xs text-text-primary truncate"><?= htmlspecialchars($app['full_name'] ?? '—') ?></span>
+                                            <span class="font-mono text-[10px] px-1.5 py-0.5 rounded bg-surface-subtle border border-border-subtle text-text-secondary font-semibold"><?= htmlspecialchars($app['customer_id'] ?? 'FNZ-USR-PENDING') ?></span>
+                                        </div>
+                                        <div class="text-[11px] text-text-secondary truncate mt-0.5"><?= htmlspecialchars($app['email'] ?? '—') ?></div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="py-3 px-4 text-xs font-mono font-medium text-text-primary whitespace-nowrap">
+                                <?= !empty($app['phone']) ? '<span class="inline-flex items-center gap-1"><span class="material-symbols-outlined text-[13px] text-text-secondary">call</span>' . htmlspecialchars($app['phone']) . '</span>' : '—' ?>
+                            </td>
+                            <td class="py-3 px-4 whitespace-nowrap">
+                                <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider <?= $isSavings ? 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20' : 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20' ?>">
+                                    <?= $isSavings ? 'Savings' : 'Current' ?>
+                                </span>
+                            </td>
+                            <td class="py-3 px-4 whitespace-nowrap">
+                                <span class="text-xs font-semibold text-text-primary"><?= $idType ?></span>
+                            </td>
+                            <td class="py-3 px-4 text-xs text-text-secondary whitespace-nowrap font-medium">
+                                <?= $dateDisplay ?>
+                            </td>
+                            <td class="py-3 px-4 whitespace-nowrap">
+                                <?php if ($isActive): ?>
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-[10px] font-bold uppercase tracking-wider">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Approved
+                                    </span>
+                                <?php elseif ($isRejected): ?>
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20 text-[10px] font-bold uppercase tracking-wider">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> Rejected
+                                    </span>
+                                <?php elseif ($isUnderReview): ?>
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 text-[10px] font-bold uppercase tracking-wider">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></span> Under Review
+                                    </span>
+                                <?php else: ?>
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 text-[10px] font-bold uppercase tracking-wider">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Pending Review
+                                    </span>
+                                <?php endif; ?>
+                            </td>
+                            <td class="py-3 px-5 text-right whitespace-nowrap">
+                                <a href="admin-review-application.php?id=<?= (int)$app['id'] ?>" class="px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider inline-flex items-center gap-1.5 bg-zinc-900 text-white hover:bg-black dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-100 shadow-xs transition-all cursor-pointer" title="Review &amp; Authorize Application">
+                                    <span class="material-symbols-outlined text-[15px]" aria-hidden="true">rate_review</span>
+                                    <span>Review</span>
+                                </a>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="8" class="text-center italic opacity-60 py-12 text-xs">Loading pending applications queue...</td>
+                        </tr>
+                    <?php endif; ?>
                 </tbody>
             </table>
         </div>
@@ -160,19 +264,19 @@ ob_start();
         <!-- Pagination Bar -->
         <div class="p-4 sm:p-5 bg-surface-subtle border-t border-border-subtle flex flex-col sm:flex-row justify-between items-center gap-4">
             <div class="flex items-center gap-3">
-                <span class="text-xs font-bold text-text-primary uppercase tracking-wider">Queue: <span id="pending-count" class="font-mono text-xs px-1.5 py-0.5 rounded bg-surface border border-border-subtle">0</span></span>
+                <span class="text-xs font-bold text-text-primary uppercase tracking-wider">Queue: <span id="pending-count" class="font-mono text-xs px-1.5 py-0.5 rounded bg-surface border border-border-subtle"><?= (int)$initialTotal ?></span></span>
                 <span class="text-text-secondary text-xs">•</span>
-                <span id="pagination-info" class="text-xs text-text-secondary">Showing 0 to 0 of 0</span>
+                <span id="pagination-info" class="text-xs text-text-secondary">Showing <?= $initialTotal > 0 ? 1 : 0 ?> to <?= count($initialApps) ?> of <?= (int)$initialTotal ?></span>
             </div>
             
             <div class="flex items-center gap-2">
-                <button id="prev-btn" class="px-3.5 py-1.5 bg-surface border border-border-subtle rounded-lg text-xs font-semibold text-text-primary hover:bg-surface-hover disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer shadow-2xs">
+                <button id="prev-btn" class="px-3.5 py-1.5 bg-surface border border-border-subtle rounded-lg text-xs font-semibold text-text-primary hover:bg-surface-hover disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer shadow-2xs" disabled>
                     Previous
                 </button>
                 <div id="page-numbers" class="flex gap-1">
                     <!-- Pagination buttons injected by JS -->
                 </div>
-                <button id="next-btn" class="px-3.5 py-1.5 bg-surface border border-border-subtle rounded-lg text-xs font-semibold text-text-primary hover:bg-surface-hover disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer shadow-2xs">
+                <button id="next-btn" class="px-3.5 py-1.5 bg-surface border border-border-subtle rounded-lg text-xs font-semibold text-text-primary hover:bg-surface-hover disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer shadow-2xs" <?= $initialTotal <= 50 ? 'disabled' : '' ?>>
                     Next
                 </button>
             </div>

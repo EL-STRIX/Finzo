@@ -75,6 +75,15 @@ function isActive($key, $current) {
         ? 'bg-primary/5 dark:bg-primary/10 text-accent border-r-4 border-accent shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] active-nav-item'
         : 'text-text-secondary hover:bg-background hover:text-text-primary border-r-4 border-transparent';
 }
+
+$pendingApprovalsCount = 0;
+try {
+    $sidebarDb = \App\Shared\Core\Database::getInstance();
+    $sidebarStmt = $sidebarDb->query("SELECT COUNT(*) FROM users WHERE status IN ('pending', 'under_review') AND is_deleted = 0");
+    $pendingApprovalsCount = (int)$sidebarStmt->fetchColumn();
+} catch (\Throwable $e) {
+    $pendingApprovalsCount = 0;
+}
 ?>
 <!-- Admin Sidebar -->
 <aside class="admin-sidebar fixed top-16 left-0 h-[calc(100vh-4rem)] w-72 bg-surface border-r border-border-subtle z-40 transition-transform duration-300 -translate-x-full lg:translate-x-0 flex flex-col" id="admin-sidebar">
@@ -110,7 +119,7 @@ function isActive($key, $current) {
                         <span class="material-symbols-outlined text-[20px]" aria-hidden="true">rule</span>
                         <span class="text-sm">Approvals</span>
                     </div>
-                    <span id="pending-badge-count" class="px-2 py-0.5 rounded-full bg-warning-bg text-warning text-[10px] font-black tracking-widest uppercase shadow-sm">...</span>
+                    <span id="pending-badge-count" class="<?= $pendingApprovalsCount > 0 ? '' : 'hidden ' ?>px-2 py-0.5 rounded-full bg-warning-bg text-warning text-[10px] font-black tracking-widest uppercase shadow-sm"><?= $pendingApprovalsCount ?></span>
                 </a>
             </li>
             <li>

@@ -6,7 +6,7 @@
 (function () {
     let currentStatus = 'all';
     let currentPage = 1;
-    const perPage = 10;
+    const perPage = 50;
     let totalPages = 1;
     let searchTimeout = null;
 
@@ -124,13 +124,27 @@
 
             // Status Badge
             const isUnderReview = (app.status === 'under_review');
-            const statusBadge = isUnderReview
-                ? `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 text-[10px] font-bold uppercase tracking-wider">
+            const isActive = (app.status === 'active');
+            const isRejected = (app.status === 'rejected');
+
+            let statusBadge = '';
+            if (isActive) {
+                statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-[10px] font-bold uppercase tracking-wider">
+                     <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Approved
+                   </span>`;
+            } else if (isRejected) {
+                statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20 text-[10px] font-bold uppercase tracking-wider">
+                     <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> Rejected
+                   </span>`;
+            } else if (isUnderReview) {
+                statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 text-[10px] font-bold uppercase tracking-wider">
                      <span class="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></span> Under Review
-                   </span>`
-                : `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 text-[10px] font-bold uppercase tracking-wider">
+                   </span>`;
+            } else {
+                statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 text-[10px] font-bold uppercase tracking-wider">
                      <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Pending Review
                    </span>`;
+            }
 
             // Avatar Handling
             let avatarHtml = `<div class="w-9 h-9 rounded-xl bg-surface-subtle border border-border-subtle flex items-center justify-center font-bold text-xs text-text-primary uppercase shrink-0 font-mono shadow-2xs">${initials}</div>`;
@@ -227,6 +241,7 @@
         const sidebarBadge = document.getElementById('pending-badge-count');
         if (sidebarBadge) {
             sidebarBadge.textContent = String(totalPending);
+            sidebarBadge.classList.toggle('hidden', totalPending === 0);
         }
     }
 
@@ -278,54 +293,6 @@
                     }
                 });
             });
-        }
-    }
-
-    /**
-     * Export queue as CSV
-     */
-    async function exportCSV() {
-        try {
-            const params = {
-                status: currentStatus,
-                search: searchInput ? searchInput.value.trim() : '',
-                page: 1,
-                per_page: 500
-            };
-            const res = await window.api.get('/users/pending', params);
-            const apps = res.applications || [];
-            if (!apps.length) {
-                if (window.showToast) window.showToast('No applications to export', 'info');
-                return;
-            }
-
-            const headers = ['#', 'Customer ID', 'Full Name', 'Email', 'Phone', 'Account Type', 'ID Type', 'Date Applied', 'Status'];
-            const rows = apps.map((a, idx) => [
-                idx + 1,
-                `"${(a.customer_id || '').replace(/"/g, '""')}"`,
-                `"${(a.full_name || '').replace(/"/g, '""')}"`,
-                `"${(a.email || '').replace(/"/g, '""')}"`,
-                `"${(a.phone || '').replace(/"/g, '""')}"`,
-                `"${(a.account_type || 'Savings').replace(/"/g, '""')}"`,
-                `"${(a.id_type || 'N/A').replace(/"/g, '""')}"`,
-                `"${(a.kyc_submitted_at || a.created_at || '').replace(/"/g, '""')}"`,
-                `"${(a.status || 'pending').replace(/"/g, '""')}"`
-            ]);
-
-            const csvContent = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `finzo_pending_approvals_${new Date().toISOString().slice(0, 10)}.csv`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
-            if (window.showToast) window.showToast('CSV Export generated successfully', 'success');
-        } catch (e) {
-            console.error('Export error:', e);
-            if (window.showToast) window.showToast('Failed to export CSV', 'error');
         }
     }
 
@@ -382,7 +349,6 @@
      * Initialize Component
      */
     function init() {
-        loadApplications();
         bindEvents();
     }
 
@@ -391,8 +357,7 @@
         refresh: () => {
             currentPage = 1;
             loadApplications();
-        },
-        exportCSV
+        }
     };
 
     if (document.readyState === 'loading') {
