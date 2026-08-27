@@ -128,11 +128,6 @@
                         </button>
                     </form>
 
-                    <!-- Forgot password link -->
-                    <div class="mt-4 text-center">
-                        <a href="forgot-password.php" class="btn-text text-sm">Forgot password? Use security question</a>
-                    </div>
-
                     <!-- Security Notice Component -->
                     <div class="auth-security-notice">
                         <span class="material-symbols-outlined auth-security-notice-icon">policy</span>
