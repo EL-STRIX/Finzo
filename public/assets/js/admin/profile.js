@@ -205,20 +205,20 @@
                 const sqSet = admin.security_question_set == 1;
 
                 if (badgeSqLabel) {
-                    badgeSqLabel.textContent = sqSet ? 'Recovery: Active ✓' : 'Recovery: Action Required ⚠️';
+                    badgeSqLabel.textContent = sqSet ? 'Recovery: Active' : 'Recovery: Action Required';
                 }
 
                 let secScore = 80;
                 if (sqSet) secScore += 10;
                 if (is2FaEnabled) secScore += 10;
-                if (heroSecScore) heroSecScore.textContent = `${secScore}%`;
+                if (heroSecScore) heroSecScore.textContent = `${secScore}% Verified`;
 
                 if (sqContainer) {
                     if (sqSet) {
                         sqContainer.innerHTML = `
                             <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400">
                                 <span class="material-symbols-outlined text-[14px]" aria-hidden="true">check_circle</span>
-                                <span class="text-[10px] font-black uppercase tracking-widest">Configured ✓</span>
+                                <span class="text-[10px] font-bold uppercase tracking-wider">Configured</span>
                             </div>`;
                         const sqQField = document.getElementById('sq-question');
                         if (sqQField && admin.security_question) sqQField.value = admin.security_question;
@@ -228,7 +228,7 @@
                         sqContainer.innerHTML = `
                             <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400">
                                 <span class="material-symbols-outlined text-[14px]" aria-hidden="true">warning</span>
-                                <span class="text-[10px] font-black uppercase tracking-widest">Action Recommended</span>
+                                <span class="text-[10px] font-bold uppercase tracking-wider">Action Recommended</span>
                             </div>`;
                     }
                 }
@@ -369,10 +369,9 @@
                         ? `<span class="px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-widest bg-rose-500/10 text-rose-600 border border-rose-500/20">Wrong Password (3x)</span>`
                         : `<span class="px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-widest bg-amber-500/10 text-amber-600 border border-amber-500/20">Wrong Answer (5x)</span>`;
 
-                    const attemptsColor = a.answer_attempts >= 3 ? 'text-rose-600 font-bold' : 'text-text-secondary';
                     const sqHtml = a.security_question_set
-                        ? `<span class="text-emerald-600 text-xs font-bold">Yes ✓</span>`
-                        : `<span class="text-rose-500 text-xs font-bold">No ✕</span>`;
+                        ? `<span class="inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400 text-xs font-semibold"><span class="material-symbols-outlined text-[14px]">check_circle</span> Configured</span>`
+                        : `<span class="inline-flex items-center gap-1 text-text-secondary text-xs font-medium"><span class="material-symbols-outlined text-[14px]">remove_circle_outline</span> Not Set</span>`;
 
                     return `<tr class="hover:bg-rose-500/5 transition-colors border-b border-border-subtle last:border-0">
                         <td class="py-4 px-6">
@@ -855,31 +854,29 @@
             box.classList.remove('hidden');
             if (role === 'admin') {
                 box.innerHTML = `
-                    <div class="font-bold text-text-primary mb-2">Administrator Permissions Summary:</div>
-                    <ul class="space-y-1">
-                        <li>✅ Executive Dashboard Access</li>
-                        <li>✅ Customer Accounts & User Management</li>
-                        <li>✅ Staff Management & Shift Oversight</li>
-                        <li>✅ Global Transactions Overview</li>
-                        <li>✅ Branch Operations View</li>
-                        <li>✅ Pending Approvals & KYC Verification</li>
-                        <li class="opacity-50 line-through">❌ Delete or Suspend Other Administrators</li>
-                        <li class="opacity-50 line-through">❌ Alter Global Interest Engine</li>
-                        <li class="opacity-50 line-through">❌ Provision Root Level Super Admins</li>
-                    </ul>
+                    <div class="font-bold text-text-primary mb-2 text-xs uppercase tracking-wider">Administrator Role Permissions:</div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                        <div class="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400"><span class="material-symbols-outlined text-[14px]">check_circle</span> Dashboard &amp; Analytics Access</div>
+                        <div class="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400"><span class="material-symbols-outlined text-[14px]">check_circle</span> Customer Account Management</div>
+                        <div class="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400"><span class="material-symbols-outlined text-[14px]">check_circle</span> Staff Management &amp; Oversight</div>
+                        <div class="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400"><span class="material-symbols-outlined text-[14px]">check_circle</span> Global Transactions Ledger</div>
+                        <div class="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400"><span class="material-symbols-outlined text-[14px]">check_circle</span> Branch Operations Access</div>
+                        <div class="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400"><span class="material-symbols-outlined text-[14px]">check_circle</span> Pending KYC Approvals</div>
+                        <div class="flex items-center gap-1.5 text-text-secondary opacity-75"><span class="material-symbols-outlined text-[14px]">block</span> Root Level Super Admin Access</div>
+                        <div class="flex items-center gap-1.5 text-text-secondary opacity-75"><span class="material-symbols-outlined text-[14px]">block</span> Core Accounting Engine Modifications</div>
+                    </div>
                 `;
             } else if (role === 'moderator') {
                 box.innerHTML = `
-                    <div class="font-bold text-text-primary mb-2">Moderator Permissions Summary:</div>
-                    <ul class="space-y-1">
-                        <li>✅ Executive Dashboard Overview</li>
-                        <li>✅ Pending KYC Verifications & Review</li>
-                        <li>✅ Support Document Auditing</li>
-                        <li class="opacity-50 line-through">❌ User Management & Status Modification</li>
-                        <li class="opacity-50 line-through">❌ Staff Operations</li>
-                        <li class="opacity-50 line-through">❌ Financial Accounting & Transactions</li>
-                        <li class="opacity-50 line-through">❌ Branch Configuration</li>
-                    </ul>
+                    <div class="font-bold text-text-primary mb-2 text-xs uppercase tracking-wider">Moderator Role Permissions:</div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                        <div class="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400"><span class="material-symbols-outlined text-[14px]">check_circle</span> Operational Overview Access</div>
+                        <div class="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400"><span class="material-symbols-outlined text-[14px]">check_circle</span> KYC Verifications &amp; Review</div>
+                        <div class="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400"><span class="material-symbols-outlined text-[14px]">check_circle</span> Identity Documentation Audit</div>
+                        <div class="flex items-center gap-1.5 text-text-secondary opacity-75"><span class="material-symbols-outlined text-[14px]">block</span> User Account Modification</div>
+                        <div class="flex items-center gap-1.5 text-text-secondary opacity-75"><span class="material-symbols-outlined text-[14px]">block</span> Staff Operational Controls</div>
+                        <div class="flex items-center gap-1.5 text-text-secondary opacity-75"><span class="material-symbols-outlined text-[14px]">block</span> Financial Accounting Overrides</div>
+                    </div>
                 `;
             }
         },
