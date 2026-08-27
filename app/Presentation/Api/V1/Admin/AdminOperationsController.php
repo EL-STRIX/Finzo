@@ -188,11 +188,14 @@ class AdminOperationsController
     public function pendingApprovals(?string $id = null, ?string $extra = null): array
     {
         $filters = [
-            'status' => $this->security->cleanInput($_GET['status'] ?? 'all'),
-            'search' => $this->security->cleanInput($_GET['search'] ?? '')
+            'status'       => $this->security->cleanInput($_GET['status'] ?? 'all'),
+            'search'       => $this->security->cleanInput($_GET['search'] ?? ''),
+            'account_type' => $this->security->cleanInput($_GET['account_type'] ?? 'all'),
+            'id_type'      => $this->security->cleanInput($_GET['id_type'] ?? 'all'),
+            'sort'         => $this->security->cleanInput($_GET['sort'] ?? 'newest'),
         ];
         $page     = max(1, intval($_GET['page'] ?? 1));
-        $per_page = min(50, max(10, intval($_GET['per_page'] ?? 10)));
+        $per_page = min(100, max(10, intval($_GET['per_page'] ?? 50)));
 
         $data = $this->service->getPendingApprovals($filters, $page, $per_page);
         $data['success'] = true;

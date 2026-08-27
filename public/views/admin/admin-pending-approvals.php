@@ -25,7 +25,13 @@ $initialTotal = 0;
 try {
     $repo = new \App\Infrastructure\Repositories\AdminOperationsRepository();
     $service = new \App\Application\Services\AdminOperationsService($repo);
-    $preData = $service->getPendingApprovals(['status' => 'all', 'search' => ''], 1, 50);
+    $preData = $service->getPendingApprovals([
+        'status'       => 'all',
+        'search'       => '',
+        'account_type' => 'all',
+        'id_type'      => 'all',
+        'sort'         => 'newest'
+    ], 1, 50);
     $initialApps = $preData['applications'] ?? [];
     $initialStats = $preData['stats'] ?? $initialStats;
     $initialTotal = $preData['total'] ?? count($initialApps);
@@ -63,11 +69,11 @@ ob_start();
     </div>
 
     <!-- ═══════════════════════════════════════════════════════════════ -->
-    <!-- 2. STAT TELEMETRY CARDS                                         -->
+    <!-- 2. STAT TELEMETRY CARDS (INTERACTIVE FILTERS)                   -->
     <!-- ═══════════════════════════════════════════════════════════════ -->
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
         <!-- Card 1: Pending Review -->
-        <div class="ds-card p-5 bg-surface border border-border-subtle rounded-xl shadow-xs flex items-center gap-4">
+        <div class="stat-filter-card ds-card p-5 bg-surface border border-border-subtle hover:border-amber-500/50 rounded-xl shadow-xs flex items-center gap-4 cursor-pointer transition-all hover:scale-[1.01]" data-status="pending" title="Click to filter by Pending Review">
             <div class="w-12 h-12 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 flex items-center justify-center shrink-0">
                 <span class="material-symbols-outlined text-[24px]" aria-hidden="true">hourglass_empty</span>
             </div>
@@ -79,7 +85,7 @@ ob_start();
         </div>
 
         <!-- Card 2: Under Review -->
-        <div class="ds-card p-5 bg-surface border border-border-subtle rounded-xl shadow-xs flex items-center gap-4">
+        <div class="stat-filter-card ds-card p-5 bg-surface border border-border-subtle hover:border-blue-500/50 rounded-xl shadow-xs flex items-center gap-4 cursor-pointer transition-all hover:scale-[1.01]" data-status="under_review" title="Click to filter by Under Review">
             <div class="w-12 h-12 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 flex items-center justify-center shrink-0">
                 <span class="material-symbols-outlined text-[24px]" aria-hidden="true">rate_review</span>
             </div>
@@ -91,7 +97,7 @@ ob_start();
         </div>
 
         <!-- Card 3: Approved Today -->
-        <div class="ds-card p-5 bg-surface border border-border-subtle rounded-xl shadow-xs flex items-center gap-4">
+        <div class="stat-filter-card ds-card p-5 bg-surface border border-border-subtle hover:border-emerald-500/50 rounded-xl shadow-xs flex items-center gap-4 cursor-pointer transition-all hover:scale-[1.01]" data-status="approved" title="Click to filter by Approved">
             <div class="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 flex items-center justify-center shrink-0">
                 <span class="material-symbols-outlined text-[24px]" aria-hidden="true">check_circle</span>
             </div>
@@ -103,7 +109,7 @@ ob_start();
         </div>
 
         <!-- Card 4: Total Approved -->
-        <div class="ds-card p-5 bg-surface border border-border-subtle rounded-xl shadow-xs flex items-center gap-4">
+        <div class="stat-filter-card ds-card p-5 bg-surface border border-border-subtle hover:border-zinc-500/50 rounded-xl shadow-xs flex items-center gap-4 cursor-pointer transition-all hover:scale-[1.01]" data-status="approved" title="Click to filter by Approved">
             <div class="w-12 h-12 rounded-xl bg-zinc-500/10 text-zinc-700 dark:text-zinc-300 border border-border-subtle flex items-center justify-center shrink-0">
                 <span class="material-symbols-outlined text-[24px]" aria-hidden="true">verified</span>
             </div>
@@ -116,44 +122,94 @@ ob_start();
     </div>
 
     <!-- ═══════════════════════════════════════════════════════════════ -->
-    <!-- 3. QUEUE CONTAINER (SEARCH + TABS + DATA TABLE)                 -->
+    <!-- 3. QUEUE CONTAINER (COMPREHENSIVE FILTERS + DATA TABLE)          -->
     <!-- ═══════════════════════════════════════════════════════════════ -->
     <div class="ds-card bg-surface border border-border-subtle rounded-xl shadow-xs overflow-hidden">
         
-        <!-- Controls Toolbar -->
+        <!-- Controls Toolbar: Search + Status Tabs -->
         <div class="p-4 sm:p-5 border-b border-border-subtle bg-surface-subtle flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
             <!-- Search -->
             <div class="w-full md:w-96">
                 <label for="search-pending" class="sr-only">Search Applications</label>
-                <div class="fin-input-wrapper">
+                <div class="fin-input-wrapper relative">
                     <span class="material-symbols-outlined input-icon-left text-text-secondary">search</span>
-                    <input type="text" id="search-pending" placeholder="Search by name, customer ID, email, or phone..." class="fin-input has-icon-left bg-surface text-text-primary border-border-subtle text-xs rounded-lg">
+                    <input type="text" id="search-pending" placeholder="Search by name, customer ID, email, or phone..." class="fin-input has-icon-left bg-surface text-text-primary border-border-subtle text-xs rounded-lg pr-8">
+                    <button type="button" id="btn-clear-search" class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-text-secondary hover:text-text-primary" title="Clear search">
+                        <span class="material-symbols-outlined text-[16px]">close</span>
+                    </button>
                 </div>
             </div>
 
             <!-- Status Tabs -->
             <div class="flex items-center gap-1.5 overflow-x-auto custom-scrollbar">
-                <button type="button" class="tab-btn px-3.5 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all cursor-pointer bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 shadow-xs" data-status="all">
+                <button type="button" class="tab-btn px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all cursor-pointer bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 shadow-xs" data-status="all">
                     All Pending
                 </button>
-                <button type="button" class="tab-btn px-3.5 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all cursor-pointer bg-surface text-text-secondary hover:text-text-primary hover:bg-surface-hover border border-border-subtle" data-status="pending">
+                <button type="button" class="tab-btn px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all cursor-pointer bg-surface text-text-secondary hover:text-text-primary hover:bg-surface-hover border border-border-subtle" data-status="pending">
                     <span class="material-symbols-outlined text-[14px] align-[-2px] mr-1" aria-hidden="true">hourglass_empty</span>
                     Pending Review
                 </button>
-                <button type="button" class="tab-btn px-3.5 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all cursor-pointer bg-surface text-text-secondary hover:text-text-primary hover:bg-surface-hover border border-border-subtle" data-status="under_review">
+                <button type="button" class="tab-btn px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all cursor-pointer bg-surface text-text-secondary hover:text-text-primary hover:bg-surface-hover border border-border-subtle" data-status="under_review">
                     <span class="material-symbols-outlined text-[14px] align-[-2px] mr-1" aria-hidden="true">rate_review</span>
                     Under Review
                 </button>
-                <button type="button" class="tab-btn px-3.5 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all cursor-pointer bg-surface text-text-secondary hover:text-text-primary hover:bg-surface-hover border border-border-subtle" data-status="approved">
+                <button type="button" class="tab-btn px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all cursor-pointer bg-surface text-text-secondary hover:text-text-primary hover:bg-surface-hover border border-border-subtle" data-status="approved">
                     <span class="material-symbols-outlined text-[14px] align-[-2px] mr-1" aria-hidden="true">check_circle</span>
                     Approved
                 </button>
-                <button type="button" class="tab-btn px-3.5 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all cursor-pointer bg-surface text-text-secondary hover:text-text-primary hover:bg-surface-hover border border-border-subtle" data-status="rejected">
+                <button type="button" class="tab-btn px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all cursor-pointer bg-surface text-text-secondary hover:text-text-primary hover:bg-surface-hover border border-border-subtle" data-status="rejected">
                     <span class="material-symbols-outlined text-[14px] align-[-2px] mr-1" aria-hidden="true">cancel</span>
                     Rejected
                 </button>
-                <button type="button" class="tab-btn px-3.5 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all cursor-pointer bg-surface text-text-secondary hover:text-text-primary hover:bg-surface-hover border border-border-subtle" data-status="all_records">
+                <button type="button" class="tab-btn px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all cursor-pointer bg-surface text-text-secondary hover:text-text-primary hover:bg-surface-hover border border-border-subtle" data-status="all_records">
                     All Records
+                </button>
+            </div>
+        </div>
+
+        <!-- Filter Sub-bar: Account Type + ID Document + Sort Order + Reset -->
+        <div class="px-4 sm:px-5 py-3 border-b border-border-subtle bg-surface flex flex-wrap items-center justify-between gap-3 text-xs">
+            <div class="flex flex-wrap items-center gap-3">
+                <!-- Account Type Filter -->
+                <div class="flex items-center gap-1.5">
+                    <label for="filter-account-type" class="text-[11px] font-bold text-text-secondary uppercase tracking-wider">Account:</label>
+                    <select id="filter-account-type" class="bg-surface-subtle text-text-primary border border-border-subtle rounded-lg px-2.5 py-1.5 text-xs font-medium cursor-pointer focus:outline-none focus:border-primary">
+                        <option value="all">All Accounts</option>
+                        <option value="savings">Savings Account</option>
+                        <option value="current">Current Account</option>
+                    </select>
+                </div>
+
+                <!-- ID Document Filter -->
+                <div class="flex items-center gap-1.5">
+                    <label for="filter-id-type" class="text-[11px] font-bold text-text-secondary uppercase tracking-wider">Document:</label>
+                    <select id="filter-id-type" class="bg-surface-subtle text-text-primary border border-border-subtle rounded-lg px-2.5 py-1.5 text-xs font-medium cursor-pointer focus:outline-none focus:border-primary">
+                        <option value="all">All ID Types</option>
+                        <option value="aadhaar">Aadhaar Card</option>
+                        <option value="pan">PAN Card</option>
+                        <option value="passport">Passport</option>
+                        <option value="voter">Voter ID</option>
+                        <option value="driving">Driving License</option>
+                    </select>
+                </div>
+
+                <!-- Sort Order Filter -->
+                <div class="flex items-center gap-1.5">
+                    <label for="filter-sort" class="text-[11px] font-bold text-text-secondary uppercase tracking-wider">Sort:</label>
+                    <select id="filter-sort" class="bg-surface-subtle text-text-primary border border-border-subtle rounded-lg px-2.5 py-1.5 text-xs font-medium cursor-pointer focus:outline-none focus:border-primary">
+                        <option value="newest">Newest First</option>
+                        <option value="oldest">Oldest First</option>
+                        <option value="name_asc">Name (A-Z)</option>
+                        <option value="name_desc">Name (Z-A)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Reset Filters -->
+            <div>
+                <button type="button" id="btn-reset-filters" class="text-xs text-text-secondary hover:text-text-primary font-semibold inline-flex items-center gap-1 transition-colors cursor-pointer" title="Reset all filters">
+                    <span class="material-symbols-outlined text-[14px]">restart_alt</span>
+                    <span>Reset Filters</span>
                 </button>
             </div>
         </div>
@@ -163,8 +219,11 @@ ob_start();
             <div class="w-14 h-14 rounded-2xl bg-surface-subtle border border-border-subtle flex items-center justify-center text-text-secondary mb-3 shadow-2xs">
                 <span class="material-symbols-outlined text-3xl" aria-hidden="true">inbox</span>
             </div>
-            <div class="text-sm font-bold text-text-primary">No Pending Applications Found</div>
-            <p class="text-xs text-text-secondary max-w-sm mt-1">All account applications have been processed or no applicants match your search filters.</p>
+            <div class="text-sm font-bold text-text-primary">No Applications Found</div>
+            <p class="text-xs text-text-secondary max-w-sm mt-1">No customer applications match your active search and filter criteria. Try adjusting or resetting filters.</p>
+            <button type="button" onclick="document.getElementById('btn-reset-filters') && document.getElementById('btn-reset-filters').click()" class="mt-3 px-3.5 py-1.5 rounded-lg text-xs font-bold bg-surface border border-border-subtle text-text-primary hover:bg-surface-hover transition-colors">
+                Clear All Filters
+            </button>
         </div>
 
         <!-- Approvals Table -->

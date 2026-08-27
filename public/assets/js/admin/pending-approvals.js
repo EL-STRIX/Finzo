@@ -1,6 +1,6 @@
 /**
  * Finzo Admin — Pending Account Approvals Handler
- * Manages the KYC & account opening authorization queue
+ * Manages the KYC & account opening authorization queue with comprehensive filtering
  */
 
 (function () {
@@ -10,8 +10,14 @@
     let totalPages = 1;
     let searchTimeout = null;
 
+    // DOM Elements
     const tbody = document.getElementById('pending-tbody');
     const searchInput = document.getElementById('search-pending');
+    const btnClearSearch = document.getElementById('btn-clear-search');
+    const accountTypeSelect = document.getElementById('filter-account-type');
+    const idTypeSelect = document.getElementById('filter-id-type');
+    const sortSelect = document.getElementById('filter-sort');
+    const btnResetFilters = document.getElementById('btn-reset-filters');
     const countEl = document.getElementById('pending-count');
     const paginationInfo = document.getElementById('pagination-info');
     const pageNumbers = document.getElementById('page-numbers');
@@ -25,7 +31,7 @@
      */
     function showSkeleton() {
         if (!tbody) return;
-        tbody.innerHTML = Array.from({ length: 5 }, (_, i) => `
+        tbody.innerHTML = Array.from({ length: 5 }, () => `
             <tr class="animate-pulse">
                 <td class="py-3.5 px-4 text-center"><div class="h-4 w-6 bg-surface-subtle rounded mx-auto"></div></td>
                 <td class="py-3.5 px-5">
@@ -61,16 +67,23 @@
     }
 
     /**
-     * Load pending applications from API
+     * Load applications from API applying all active filters
      */
     async function loadApplications() {
         showSkeleton();
 
         try {
             const searchVal = searchInput ? searchInput.value.trim() : '';
+            const accountTypeVal = accountTypeSelect ? accountTypeSelect.value : 'all';
+            const idTypeVal = idTypeSelect ? idTypeSelect.value : 'all';
+            const sortVal = sortSelect ? sortSelect.value : 'newest';
+
             const params = {
                 status: currentStatus,
                 search: searchVal,
+                account_type: accountTypeVal,
+                id_type: idTypeVal,
+                sort: sortVal,
                 page: currentPage,
                 per_page: perPage
             };
@@ -220,22 +233,6 @@
         const elTotal = document.getElementById('stat-total-approved');
         if (elTotal) elTotal.textContent = String(tApproved);
 
-        // Backward compatibility: check .admin-stat-label
-        const labelMap = {
-            'PENDING REVIEW': String(pReview),
-            'UNDER REVIEW': String(uReview),
-            'APPROVED TODAY': String(aToday),
-            'TOTAL APPROVED': String(tApproved)
-        };
-        document.querySelectorAll('.admin-stat-label').forEach(lbl => {
-            const k = lbl.textContent.trim();
-            const valEl = lbl.nextElementSibling;
-            if (valEl && labelMap[k] !== undefined) {
-                valEl.classList.remove('skeleton');
-                valEl.textContent = labelMap[k];
-            }
-        });
-
         // Sidebar badge counter
         const totalPending = pReview + uReview;
         const sidebarBadge = document.getElementById('pending-badge-count');
@@ -297,35 +294,111 @@
     }
 
     /**
-     * Bind DOM Event Listeners
+     * Activate a specific status tab visually
+     */
+    function setActiveTab(status) {
+        currentStatus = status;
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            const btnStatus = btn.getAttribute('data-status');
+            if (btnStatus === status) {
+                btn.className = 'tab-btn px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all cursor-pointer bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 shadow-xs';
+            } else {
+                btn.className = 'tab-btn px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all cursor-pointer bg-surface text-text-secondary hover:text-text-primary hover:bg-surface-hover border border-border-subtle';
+            }
+        });
+    }
+
+    /**
+     * Bind DOM Event Listeners for all filters
      */
     function bindEvents() {
-        // Status Filter Tabs
+        // 1. Status Filter Tabs
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.addEventListener('click', function () {
-                document.querySelectorAll('.tab-btn').forEach(b => {
-                    b.className = 'tab-btn px-3.5 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all cursor-pointer bg-surface text-text-secondary hover:text-text-primary hover:bg-surface-hover border border-border-subtle';
-                });
-                this.className = 'tab-btn px-3.5 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all cursor-pointer bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 shadow-xs';
-
-                currentStatus = this.getAttribute('data-status') || 'all';
+                const status = this.getAttribute('data-status') || 'all';
+                setActiveTab(status);
                 currentPage = 1;
                 loadApplications();
             });
         });
 
-        // Search Input with Debounce
+        // 2. Interactive Stat Filter Cards
+        document.querySelectorAll('.stat-filter-card').forEach(card => {
+            card.addEventListener('click', function () {
+                const status = this.getAttribute('data-status');
+                if (status) {
+                    setActiveTab(status);
+                    currentPage = 1;
+                    loadApplications();
+                }
+            });
+        });
+
+        // 3. Search Input with 300ms debounce
         if (searchInput) {
             searchInput.addEventListener('input', () => {
+                const val = searchInput.value.trim();
+                if (btnClearSearch) {
+                    btnClearSearch.classList.toggle('hidden', val.length === 0);
+                }
                 clearTimeout(searchTimeout);
                 searchTimeout = setTimeout(() => {
                     currentPage = 1;
                     loadApplications();
-                }, 350);
+                }, 300);
             });
         }
 
-        // Pagination Buttons
+        // 4. Clear Search Button
+        if (btnClearSearch && searchInput) {
+            btnClearSearch.addEventListener('click', () => {
+                searchInput.value = '';
+                btnClearSearch.classList.add('hidden');
+                currentPage = 1;
+                loadApplications();
+                searchInput.focus();
+            });
+        }
+
+        // 5. Account Type Dropdown
+        if (accountTypeSelect) {
+            accountTypeSelect.addEventListener('change', () => {
+                currentPage = 1;
+                loadApplications();
+            });
+        }
+
+        // 6. ID Type Dropdown
+        if (idTypeSelect) {
+            idTypeSelect.addEventListener('change', () => {
+                currentPage = 1;
+                loadApplications();
+            });
+        }
+
+        // 7. Sort Order Dropdown
+        if (sortSelect) {
+            sortSelect.addEventListener('change', () => {
+                currentPage = 1;
+                loadApplications();
+            });
+        }
+
+        // 8. Reset All Filters Button
+        if (btnResetFilters) {
+            btnResetFilters.addEventListener('click', () => {
+                if (searchInput) searchInput.value = '';
+                if (btnClearSearch) btnClearSearch.classList.add('hidden');
+                if (accountTypeSelect) accountTypeSelect.value = 'all';
+                if (idTypeSelect) idTypeSelect.value = 'all';
+                if (sortSelect) sortSelect.value = 'newest';
+                setActiveTab('all');
+                currentPage = 1;
+                loadApplications();
+            });
+        }
+
+        // 9. Pagination Buttons
         if (prevBtn) {
             prevBtn.addEventListener('click', () => {
                 if (currentPage > 1) {
@@ -355,6 +428,11 @@
     // Expose public API
     window.PendingApprovals = {
         refresh: () => {
+            currentPage = 1;
+            loadApplications();
+        },
+        setFilter: (status) => {
+            setActiveTab(status);
             currentPage = 1;
             loadApplications();
         }

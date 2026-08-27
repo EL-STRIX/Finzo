@@ -418,10 +418,16 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
     // ---------------------------------------------------------
     public function countPendingApprovals(string $whereSql, array $params): int
     {
-        return (int)$this->fetchOne("SELECT COUNT(*) as count FROM users u WHERE {$whereSql}", $params)['count'] ?? 0;
+        return (int)$this->fetchOne("
+            SELECT COUNT(DISTINCT u.id) as count 
+            FROM users u 
+            LEFT JOIN accounts a ON u.customer_id = a.user_id
+            LEFT JOIN kyc_applications k ON u.customer_id = k.user_id
+            WHERE {$whereSql}
+        ", $params)['count'] ?? 0;
     }
 
-    public function getPendingApprovals(string $whereSql, array $params, int $perPage, int $offset) {
+    public function getPendingApprovals(string $whereSql, array $params, int $perPage, int $offset, string $orderBy = 'u.kyc_submitted_at DESC, u.created_at DESC') {
         return $this->fetchAll("
             SELECT u.id, u.customer_id, u.full_name, u.email, u.phone, u.status,
                    u.kyc_submitted_at, u.created_at, u.profile_picture,
@@ -440,7 +446,7 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
             LEFT JOIN accounts a ON u.customer_id = a.user_id
             LEFT JOIN kyc_applications k ON u.customer_id = k.user_id
             WHERE {$whereSql}
-            ORDER BY u.kyc_submitted_at DESC, u.created_at DESC
+            ORDER BY {$orderBy}
             LIMIT {$perPage} OFFSET {$offset}
         ", $params);
     }

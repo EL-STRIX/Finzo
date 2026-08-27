@@ -530,11 +530,26 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
             $where_clauses[] = "u.status IN ('pending', 'under_review')";
         }
 
+        // Search Filter (Full name, Customer ID, Email, Phone)
         if (!empty($filters['search'])) {
-            $where_clauses[] = "(u.full_name LIKE ? OR u.customer_id LIKE ?)";
+            $where_clauses[] = "(u.full_name LIKE ? OR u.customer_id LIKE ? OR u.email LIKE ? OR u.phone LIKE ?)";
             $s = "%{$filters['search']}%";
             $params[] = $s;
             $params[] = $s;
+            $params[] = $s;
+            $params[] = $s;
+        }
+
+        // Account Type Filter
+        if (!empty($filters['account_type']) && $filters['account_type'] !== 'all') {
+            $where_clauses[] = "LOWER(COALESCE(a.account_type, k.account_type, 'savings')) = ?";
+            $params[] = strtolower($filters['account_type']);
+        }
+
+        // ID Type Filter
+        if (!empty($filters['id_type']) && $filters['id_type'] !== 'all') {
+            $where_clauses[] = "LOWER(COALESCE(k.id_type, u.id_type, '')) = ?";
+            $params[] = strtolower($filters['id_type']);
         }
 
         $where_sql = implode(' AND ', $where_clauses);
@@ -543,7 +558,15 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
         $pages  = max(1, ceil($total / $perPage));
         $offset = ($page - 1) * $perPage;
 
-        $applications = $this->repository->getPendingApprovals($where_sql, $params, $perPage, $offset);
+        $sort = $filters['sort'] ?? 'newest';
+        $orderBy = match ($sort) {
+            'oldest'    => 'u.kyc_submitted_at ASC, u.created_at ASC',
+            'name_asc'  => 'u.full_name ASC',
+            'name_desc' => 'u.full_name DESC',
+            default     => 'u.kyc_submitted_at DESC, u.created_at DESC'
+        };
+
+        $applications = $this->repository->getPendingApprovals($where_sql, $params, $perPage, $offset, $orderBy);
 
         foreach ($applications as &$app) {
             $profile_pic_url = $app['profile_picture'] ? APP_URL . '/' . $app['profile_picture'] : null;
