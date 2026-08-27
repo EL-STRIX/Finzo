@@ -213,7 +213,7 @@ function send_rejected_email($email, $name, $reason)
 }
 
 /**
- * Send a password reset email with token link.
+ * Send a password reset email (Disabled — Coming Soon).
  *
  * @param string $email Customer email
  * @param string $name Customer full name
@@ -222,14 +222,5 @@ function send_rejected_email($email, $name, $reason)
  */
 function send_password_reset_email($email, $name, $token)
 {
-    $reset_link = APP_URL . '/views/auth/reset-password.html?token=' . $token;
-
-    $html = "<h2>Hi {$name},</h2>"
-          . "<p>We received a request to reset your Finzo account password.</p>"
-          . "<p>Click the link below to reset your password:</p>"
-          . "<p><a href='{$reset_link}' style='display:inline-block;padding:12px 24px;background:#1a237e;color:#fff;text-decoration:none;border-radius:6px;'>Reset Password</a></p>"
-          . "<p>This link will expire in 1 hour.</p>"
-          . "<p>If you did not request this, please ignore this email.</p>";
-
-    return send_email($email, $name, 'Finzo — Password Reset Request', $html);
+    return ['success' => false, 'message' => 'Email password recovery is currently under development (Coming Soon).'];
 }

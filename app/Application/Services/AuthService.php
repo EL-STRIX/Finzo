@@ -241,33 +241,8 @@ class AuthService implements \App\Domain\Contracts\Services\AuthServiceInterface
      */
     public function forgotPassword(string $email): bool
     {
-        $user = $this->repository->findUserByEmail($email);
-
-        if (!$user) {
-            // Silently succeed to prevent email enumeration
-            return true;
-        }
-
-        try {
-            $this->repository->deletePasswordResets($user['customer_id']);
-
-            $token = bin2hex(random_bytes(32));
-            $expires_at = date('Y-m-d H:i:s', time() + 3600);
-
-            $this->repository->createPasswordReset($user['customer_id'], $token, $expires_at);
-
-            require_once FINZO_ROOT . '/config/mailer.php';
-            try {
-                send_password_reset_email($user['email'], $user['full_name'], $token);
-            } catch (\Throwable $mailError) {
-                \App\Shared\Core\Logging\Logger::getInstance()->warning('Failed to send password reset email', ['context' => $mailError->getMessage()]);
-            }
-
-            return true;
-        } catch (PDOException $e) {
-            \App\Shared\Core\Logging\Logger::getInstance()->error('Forgot password error: ', ['context' => $e->getMessage()]);
-            throw new ApiException('An error occurred. Please try again.', 500);
-        }
+        // Email password recovery is currently disabled (Coming Soon)
+        return false;
     }
     /**
      * Reset Password.

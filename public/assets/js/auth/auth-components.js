@@ -500,7 +500,6 @@ function initAuthFormSubmission() {
         { selector: 'form[data-action="admin-login"]',       endpoint: '/auth/admin-login' },
         { selector: 'form[data-action="staff-login"]',       endpoint: '/auth/staff-login' },
         { selector: 'form[data-action="register"]',         endpoint: '/auth/register' },
-        { selector: 'form[data-action="forgot-password"]',  endpoint: '/auth/forgot-password' },
         { selector: 'form[data-action="reset-password"]',   endpoint: '/auth/reset-password' },
     ];
 

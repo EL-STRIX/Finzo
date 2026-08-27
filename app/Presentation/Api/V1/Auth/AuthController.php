@@ -148,16 +148,9 @@ class AuthController
 
     public function forgotPassword(?string $id = null, ?string $extra = null): array
     {
-        $email = $this->security->cleanInput($_POST['email'] ?? '');
-        $csrfToken = $_POST['csrf_token'] ?? '';
-
-        \App\Presentation\Validators\AuthValidator::validateForgotPassword($email, $csrfToken, $this->security);
-
-        $this->service->forgotPassword($email);
-
         return [
-            'success' => true,
-            'message' => 'If an account with this email exists, a password reset link has been sent.'
+            'success' => false,
+            'message' => 'Email password recovery is currently under development (Coming Soon). Please contact your administrator to reset your password.'
         ];
     }
 
