@@ -49,13 +49,6 @@ ob_start();
     <!-- ═══════════════════════════════════════════════════════════════ -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border-subtle">
         <div>
-            <div class="flex items-center gap-2 text-[11px] font-bold text-text-secondary uppercase tracking-wider mb-1">
-                <span>Administration</span>
-                <span>/</span>
-                <span>Operations</span>
-                <span>/</span>
-                <span class="text-text-primary font-bold">Pending Approvals</span>
-            </div>
             <h1 class="text-xl sm:text-2xl font-headline font-bold text-text-primary tracking-tight">Pending Account Approvals</h1>
             <p class="text-xs text-text-secondary mt-0.5">Review, verify submitted KYC documentation, and authorize new customer banking accounts.</p>
         </div>
