@@ -90,13 +90,14 @@
 
             const response = await window.api.get('/users/pending', params);
 
-            if (response && (response.success || response.status === 'success')) {
-                const apps = response.applications || [];
-                const total = response.total || apps.length;
-                totalPages = response.pages || Math.max(1, Math.ceil(total / perPage));
+            if (response && (response.success || response.status === 'success' || response.status === 200)) {
+                const payload = (response.data && typeof response.data === 'object' && !Array.isArray(response.data)) ? response.data : response;
+                const apps = payload.applications || response.applications || (Array.isArray(response.data) ? response.data : []);
+                const total = payload.total ?? response.total ?? apps.length;
+                totalPages = payload.pages || response.pages || Math.max(1, Math.ceil(total / perPage));
 
                 renderTable(apps, total);
-                updateStats(response.stats || {});
+                updateStats(payload.stats || response.stats || {});
                 updatePagination(total);
             } else {
                 if (tbody) {

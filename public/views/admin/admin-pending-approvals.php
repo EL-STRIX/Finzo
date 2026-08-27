@@ -52,13 +52,6 @@ ob_start();
             <h1 class="text-2xl font-headline font-black text-text-primary tracking-tight">Pending Account Approvals</h1>
             <p class="text-xs font-bold text-text-secondary uppercase tracking-widest mt-1">Review, verify submitted KYC documentation, and authorize new customer banking accounts</p>
         </div>
-
-        <div class="flex items-center gap-2.5 shrink-0">
-            <button type="button" onclick="window.PendingApprovals && window.PendingApprovals.refresh()" class="px-3.5 py-2 text-xs font-semibold rounded-lg bg-surface text-text-primary hover:bg-surface-hover border border-border-subtle shadow-xs inline-flex items-center gap-1.5 transition-colors cursor-pointer" title="Refresh Application Queue">
-                <span class="material-symbols-outlined text-[16px]" aria-hidden="true">refresh</span>
-                <span>Refresh</span>
-            </button>
-        </div>
     </div>
 
     <!-- ═══════════════════════════════════════════════════════════════ -->
