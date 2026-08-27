@@ -37,10 +37,6 @@ ob_start();
                 <span class="material-symbols-outlined text-[16px]" aria-hidden="true">refresh</span>
                 <span>Refresh</span>
             </button>
-            <button type="button" onclick="window.PendingApprovals && window.PendingApprovals.exportCSV()" class="px-3.5 py-2 text-xs font-semibold rounded-lg bg-surface text-text-primary hover:bg-surface-hover border border-border-subtle shadow-xs inline-flex items-center gap-1.5 transition-colors cursor-pointer" title="Export Current View to CSV">
-                <span class="material-symbols-outlined text-[16px]" aria-hidden="true">download</span>
-                <span>Export CSV</span>
-            </button>
         </div>
     </div>
 

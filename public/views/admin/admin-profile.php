@@ -32,12 +32,7 @@ ob_start();
             <p class="text-xs text-text-secondary mt-0.5">Account identity, delegated system authorities, security credentials, and personal audit log.</p>
         </div>
 
-        <div class="flex items-center gap-2.5 shrink-0">
-            <button type="button" onclick="window.AdminProfile.exportActivityCSV()" class="px-3.5 py-2 text-xs font-semibold rounded-lg bg-surface text-text-primary hover:bg-surface-hover border border-border-subtle shadow-xs inline-flex items-center gap-1.5 transition-colors cursor-pointer" title="Export Activity Log to CSV">
-                <span class="material-symbols-outlined text-[16px]" aria-hidden="true">download</span>
-                <span>Export Activity Log</span>
-            </button>
-        </div>
+
     </div>
 
     <!-- ═══════════════════════════════════════════════════════════════ -->
