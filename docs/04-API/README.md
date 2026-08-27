@@ -9,7 +9,7 @@ last_updated: "2026-07-22"
 # Finzo API Documentation Suite
 
 ## Welcome
-Welcome to the `docs/04-API/` documentation suite. This directory contains 100% synchronized, auto-generated, and curated Enterprise API documentation for the Finzo Banking System.
+Welcome to the `docs/04-API/` documentation suite. This directory contains the complete Enterprise API reference for the Finzo Banking System.
 
 ## Navigation
 - [API Overview](API-Overview.md)
