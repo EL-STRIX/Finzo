@@ -1,6 +1,6 @@
 <?php
 $portal = 'admin';
-$pageTitle = 'Finzo Admin — Profile & Settings';
+$pageTitle = 'Finzo Admin — Administrator Profile & Governance';
 // Admin portal guard — server-side authentication & role check
 include __DIR__ . '/_guard.php';
 if (!defined('FINZO_ROOT')) {
@@ -17,43 +17,52 @@ ob_start();
 <div class="space-y-6">
 
     <!-- ═══════════════════════════════════════════════════════════════ -->
-    <!-- 1. PAGE TITLE HEADER                                            -->
+    <!-- 1. BREADCRUMBS & PAGE HEADER                                    -->
     <!-- ═══════════════════════════════════════════════════════════════ -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border-subtle">
         <div>
-            <h1 class="text-xl sm:text-2xl font-headline font-bold text-text-primary tracking-tight">Admin Profile</h1>
-            <p class="text-xs text-text-secondary mt-0.5">Manage your administrator account details, security credentials, and view activity history.</p>
+            <div class="flex items-center gap-2 text-[11px] font-bold text-text-secondary uppercase tracking-wider mb-1">
+                <span>Administration</span>
+                <span>/</span>
+                <span>System Access</span>
+                <span>/</span>
+                <span class="text-text-primary font-bold">Officer Profile</span>
+            </div>
+            <h1 class="text-xl sm:text-2xl font-headline font-bold text-text-primary tracking-tight">Administrator Profile</h1>
+            <p class="text-xs text-text-secondary mt-0.5">Account identity, delegated system authorities, security credentials, and personal audit log.</p>
         </div>
-        <div>
+
+        <div class="flex items-center gap-2.5 shrink-0">
             <button type="button" onclick="window.AdminProfile.exportActivityCSV()" class="px-3.5 py-2 text-xs font-semibold rounded-lg bg-surface text-text-primary hover:bg-surface-hover border border-border-subtle shadow-xs inline-flex items-center gap-1.5 transition-colors cursor-pointer" title="Export Activity Log to CSV">
                 <span class="material-symbols-outlined text-[16px]" aria-hidden="true">download</span>
-                <span>Export Activity</span>
+                <span>Export Activity Log</span>
             </button>
         </div>
     </div>
 
     <!-- ═══════════════════════════════════════════════════════════════ -->
-    <!-- 2. OFFICER SUMMARY CARD                                         -->
+    <!-- 2. OFFICER SUMMARY DOSSIER CARD                                 -->
     <!-- ═══════════════════════════════════════════════════════════════ -->
     <div class="ds-card p-5 sm:p-6 bg-surface border border-border-subtle rounded-xl shadow-xs">
-        <div class="flex flex-col sm:flex-row items-center sm:items-start justify-between gap-5 text-center sm:text-left">
+        <div class="flex flex-col md:flex-row items-center md:items-start justify-between gap-6 text-center md:text-left">
             
+            <!-- Left: Portrait & Core Identity -->
             <div class="flex flex-col sm:flex-row items-center sm:items-start gap-4">
-                <!-- Profile Avatar -->
+                <!-- Officer Portrait -->
                 <div class="relative shrink-0">
-                    <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-xl bg-surface-subtle border border-border-subtle flex items-center justify-center text-xl font-bold text-text-primary shadow-xs overflow-hidden relative" id="avatar-preview-container">
+                    <div class="w-18 h-18 sm:w-20 sm:h-20 rounded-xl bg-surface-subtle border border-border-subtle flex items-center justify-center text-xl font-bold text-text-primary shadow-xs overflow-hidden relative" id="avatar-preview-container">
                         <span id="avatar-initials" class="uppercase select-none font-mono font-bold">--</span>
-                        <img loading="lazy" id="avatar-img-preview" src="" class="hidden w-full h-full object-cover" alt="Profile avatar">
+                        <img loading="lazy" id="avatar-img-preview" src="" class="hidden w-full h-full object-cover" alt="Profile photo">
                     </div>
 
                     <!-- Photo Upload Trigger -->
-                    <label for="photo-upload" class="absolute -bottom-1 -right-1 w-6 h-6 bg-zinc-900 text-white hover:bg-black dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-100 rounded-md flex items-center justify-center cursor-pointer shadow-xs transition-transform hover:scale-105 active:scale-95 border border-surface" title="Change Photo">
+                    <label for="photo-upload" class="absolute -bottom-1 -right-1 w-6 h-6 bg-zinc-900 text-white hover:bg-black dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-100 rounded-md flex items-center justify-center cursor-pointer shadow-xs transition-transform hover:scale-105 active:scale-95 border border-surface" title="Update Profile Photo">
                         <span class="material-symbols-outlined text-[13px]" aria-hidden="true">photo_camera</span>
                     </label>
                     <input type="file" id="photo-upload" accept="image/jpeg, image/png" class="hidden" onchange="window.AdminProfile.uploadPhoto(this)">
                 </div>
 
-                <!-- Name, ID, Badges -->
+                <!-- Name, Roles, Badges -->
                 <div class="space-y-1.5">
                     <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2">
                         <h2 class="text-lg font-headline font-bold text-text-primary tracking-tight" id="profile-name-display">Loading...</h2>
@@ -62,10 +71,13 @@ ob_start();
                             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                             Active
                         </span>
+                        <span id="badge-access" class="px-2 py-0.5 rounded bg-surface-subtle text-text-primary border border-border-subtle text-[10px] font-bold uppercase tracking-wider">
+                            Full Access
+                        </span>
                     </div>
 
                     <!-- Copyable ID & Email -->
-                    <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2 text-xs">
+                    <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2 text-xs text-text-secondary">
                         <button type="button" onclick="window.AdminProfile.copyText(document.getElementById('profile-admin-id-input').value, 'Admin ID')" class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-surface-subtle hover:bg-surface-hover border border-border-subtle font-mono text-[11px] font-medium text-text-primary transition-colors cursor-pointer" title="Copy Admin ID">
                             <span class="material-symbols-outlined text-[13px] text-text-secondary" aria-hidden="true">badge</span>
                             <span id="hero-admin-id-text">ID: ---</span>
@@ -77,20 +89,27 @@ ob_start();
                             <span id="hero-email-text">admin@finzo.com</span>
                             <span class="material-symbols-outlined text-[11px] opacity-40 hover:opacity-100" aria-hidden="true">content_copy</span>
                         </button>
+
+                        <span class="text-text-secondary hidden sm:inline">&bull;</span>
+                        <span id="badge-sq-status" class="inline-flex items-center gap-1 text-[11px]">
+                            <span class="material-symbols-outlined text-[13px]" aria-hidden="true">shield</span>
+                            <span id="badge-sq-label">Recovery: Checking...</span>
+                        </span>
                     </div>
                 </div>
             </div>
 
-            <!-- Status Badges (Right side) -->
-            <div class="flex flex-wrap items-center justify-center sm:justify-end gap-2 text-xs">
-                <span id="badge-access" class="px-2.5 py-1 rounded-lg bg-surface-subtle text-text-primary border border-border-subtle text-[10px] font-bold uppercase tracking-wider">
-                    Full Access
-                </span>
-                <span id="badge-sq-status" class="px-2.5 py-1 rounded-lg bg-surface-subtle text-text-secondary border border-border-subtle text-[10px] font-bold uppercase tracking-wider flex items-center gap-1">
-                    <span class="material-symbols-outlined text-[13px]" aria-hidden="true">shield</span>
-                    <span id="badge-sq-label">Recovery: Checking...</span>
-                </span>
-                <!-- Hidden anchors for JS parity -->
+            <!-- Right: Account Induction Metadata -->
+            <div class="flex flex-wrap md:flex-col items-center md:items-end justify-center gap-1.5 text-xs text-text-secondary pt-2 md:pt-0 border-t md:border-t-0 border-border-subtle">
+                <div class="flex items-center gap-1.5">
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-text-secondary">Inducted:</span>
+                    <span class="font-semibold text-text-primary" id="hero-joined-date">—</span>
+                </div>
+                <div class="flex items-center gap-1.5">
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-text-secondary">Provisioned By:</span>
+                    <span class="font-semibold text-text-primary" id="hero-added-by">System</span>
+                </div>
+                <!-- Hidden anchors to satisfy JS parity -->
                 <span id="hero-security-score" class="hidden"></span>
                 <span id="hero-session-status" class="hidden"></span>
             </div>
@@ -109,7 +128,12 @@ ob_start();
 
         <button type="button" role="tab" aria-selected="false" data-tab="tab-security" onclick="window.AdminProfile.switchTab('tab-security')" class="profile-tab-btn flex items-center gap-2 px-4 py-2.5 rounded-t-lg text-xs font-bold uppercase tracking-wider transition-all border-b-2 border-transparent text-text-secondary hover:text-text-primary hover:bg-surface-hover cursor-pointer">
             <span class="material-symbols-outlined text-[16px]" aria-hidden="true">lock</span>
-            <span>Security &amp; Password</span>
+            <span>Security &amp; Credentials</span>
+        </button>
+
+        <button type="button" role="tab" aria-selected="false" data-tab="tab-permissions" onclick="window.AdminProfile.switchTab('tab-permissions')" class="profile-tab-btn flex items-center gap-2 px-4 py-2.5 rounded-t-lg text-xs font-bold uppercase tracking-wider transition-all border-b-2 border-transparent text-text-secondary hover:text-text-primary hover:bg-surface-hover cursor-pointer">
+            <span class="material-symbols-outlined text-[16px]" aria-hidden="true">policy</span>
+            <span>Roles &amp; Permissions</span>
         </button>
 
         <button type="button" role="tab" aria-selected="false" data-tab="tab-activity" onclick="window.AdminProfile.switchTab('tab-activity')" class="profile-tab-btn flex items-center gap-2 px-4 py-2.5 rounded-t-lg text-xs font-bold uppercase tracking-wider transition-all border-b-2 border-transparent text-text-secondary hover:text-text-primary hover:bg-surface-hover cursor-pointer">
@@ -129,7 +153,7 @@ ob_start();
     <div id="tab-overview" class="tab-panel space-y-6">
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             
-            <!-- Left: Personal Information (2 cols) -->
+            <!-- Left: Personal Information Form (2 cols) -->
             <div class="lg:col-span-2 space-y-6">
                 <div class="ds-card p-5 sm:p-6 bg-surface border border-border-subtle rounded-xl shadow-xs">
                     <div class="flex items-center justify-between pb-3.5 mb-4 border-b border-border-subtle">
@@ -138,7 +162,7 @@ ob_start();
                                 <span class="material-symbols-outlined text-text-secondary text-[18px]" aria-hidden="true">badge</span>
                                 Personal Information
                             </h3>
-                            <p class="text-xs text-text-secondary mt-0.5">Your official administrator account details.</p>
+                            <p class="text-xs text-text-secondary mt-0.5">Your official administrator profile details.</p>
                         </div>
                         <span class="px-2 py-0.5 bg-surface-subtle text-text-secondary text-[10px] font-mono font-bold rounded border border-border-subtle" id="meta-role-label">System Role</span>
                     </div>
@@ -156,7 +180,7 @@ ob_start();
                             <label for="profile-name-input" class="fin-label mb-1 block text-[10px] font-bold text-text-secondary uppercase tracking-wider">Full Name *</label>
                             <div class="fin-input-wrapper">
                                 <span class="material-symbols-outlined input-icon-left text-text-secondary">person</span>
-                                <input type="text" id="profile-name-input" class="fin-input has-icon-left bg-surface text-text-primary border-border-subtle text-xs" placeholder="e.g. Sujay Paul">
+                                <input type="text" id="profile-name-input" class="fin-input has-icon-left bg-surface text-text-primary border-border-subtle text-xs" placeholder="Full Legal Name">
                             </div>
                         </div>
 
@@ -206,7 +230,7 @@ ob_start();
                     </div>
 
                     <div class="mt-6 pt-4 border-t border-border-subtle flex items-center justify-between">
-                        <span class="text-xs text-text-secondary">All changes are saved directly to database</span>
+                        <span class="text-xs text-text-secondary">Changes are saved directly to database</span>
                         <button type="button" onclick="window.AdminProfile.saveProfile()" class="px-5 py-2 rounded-lg text-xs font-bold uppercase tracking-wider inline-flex items-center gap-1.5 bg-zinc-900 text-white hover:bg-black dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-100 shadow-xs transition-all cursor-pointer">
                             <span class="material-symbols-outlined text-[16px]" aria-hidden="true">save</span>
                             <span>Save Changes</span>
@@ -215,9 +239,9 @@ ob_start();
                 </div>
             </div>
 
-            <!-- Right: Account Overview & 2FA (1 col) -->
+            <!-- Right: Account Overview & Session Telemetry (1 col) -->
             <div class="space-y-6">
-                <!-- Session & Role Details -->
+                <!-- Account Security Parameters -->
                 <div class="ds-card p-5 bg-surface border border-border-subtle rounded-xl shadow-xs space-y-3">
                     <div class="flex items-center gap-2.5 pb-3 border-b border-border-subtle">
                         <div class="w-8 h-8 rounded-lg bg-surface-subtle text-text-primary flex items-center justify-center border border-border-subtle">
@@ -225,7 +249,7 @@ ob_start();
                         </div>
                         <div>
                             <h3 class="font-headline font-bold text-sm text-text-primary">Account Overview</h3>
-                            <p class="text-[10px] text-text-secondary">Security and access details</p>
+                            <p class="text-[10px] text-text-secondary">Role scope and session details</p>
                         </div>
                     </div>
 
@@ -243,7 +267,7 @@ ob_start();
                             <span class="font-mono font-bold text-text-primary" id="sec-last-ip">—</span>
                         </div>
                         <div class="flex justify-between items-center py-1">
-                            <span class="text-text-secondary">Password Changed</span>
+                            <span class="text-text-secondary">Password Last Changed</span>
                             <span class="font-semibold text-text-primary" id="sec-last-pwd">—</span>
                         </div>
                     </div>
@@ -258,7 +282,7 @@ ob_start();
                             <div class="w-10 h-5 bg-zinc-300 dark:bg-zinc-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white dark:after:bg-zinc-900 after:border-border-subtle after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-zinc-900 dark:peer-checked:bg-white dark:peer-checked:after:bg-zinc-900"></div>
                         </label>
                     </div>
-                    <p class="text-xs text-text-secondary leading-relaxed">Require two-factor authentication when signing into your administrator account.</p>
+                    <p class="text-xs text-text-secondary leading-relaxed">Require two-factor verification on logins and sensitive administrative actions.</p>
                     <div class="pt-1">
                         <span class="text-[10px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-surface-subtle border border-border-subtle text-text-secondary" id="sec-2fa-label">DISABLED</span>
                     </div>
@@ -269,7 +293,7 @@ ob_start();
     </div>
 
     <!-- ═══════════════════════════════════════════════════════════════ -->
-    <!-- 5. TAB 2: SECURITY & PASSWORD                                   -->
+    <!-- 5. TAB 2: SECURITY & CREDENTIALS                                -->
     <!-- ═══════════════════════════════════════════════════════════════ -->
     <div id="tab-security" class="tab-panel hidden space-y-6">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -282,7 +306,7 @@ ob_start();
                     </div>
                     <div>
                         <h3 class="font-headline font-bold text-sm text-text-primary">Change Password</h3>
-                        <p class="text-xs text-text-secondary mt-0.5">Update your administrator password regularly to keep your account secure.</p>
+                        <p class="text-xs text-text-secondary mt-0.5">Regular password updates protect against credential compromise.</p>
                     </div>
                 </div>
 
@@ -291,7 +315,7 @@ ob_start();
                         <label for="curr-pw" class="fin-label mb-1 block text-[10px] font-bold text-text-secondary uppercase tracking-wider">Current Password *</label>
                         <div class="fin-input-wrapper relative">
                             <span class="material-symbols-outlined input-icon-left text-text-secondary">lock</span>
-                            <input type="password" id="curr-pw" class="fin-input has-icon-left pr-10 bg-surface text-text-primary border-border-subtle text-xs" placeholder="Enter your current password">
+                            <input type="password" id="curr-pw" class="fin-input has-icon-left pr-10 bg-surface text-text-primary border-border-subtle text-xs" placeholder="Enter current password">
                             <button type="button" onclick="window.AdminProfile.togglePW('curr-pw')" class="absolute right-3 text-text-secondary hover:text-text-primary focus:outline-none cursor-pointer" title="Toggle Visibility">
                                 <span class="material-symbols-outlined text-[17px]">visibility</span>
                             </button>
@@ -322,7 +346,7 @@ ob_start();
                         <label for="conf-pw" class="fin-label mb-1 block text-[10px] font-bold text-text-secondary uppercase tracking-wider">Confirm New Password *</label>
                         <div class="fin-input-wrapper relative">
                             <span class="material-symbols-outlined input-icon-left text-text-secondary">check_circle</span>
-                            <input type="password" id="conf-pw" class="fin-input has-icon-left pr-10 bg-surface text-text-primary border-border-subtle text-xs" placeholder="Re-enter your new password">
+                            <input type="password" id="conf-pw" class="fin-input has-icon-left pr-10 bg-surface text-text-primary border-border-subtle text-xs" placeholder="Confirm new password">
                             <button type="button" onclick="window.AdminProfile.togglePW('conf-pw')" class="absolute right-3 text-text-secondary hover:text-text-primary focus:outline-none cursor-pointer" title="Toggle Visibility">
                                 <span class="material-symbols-outlined text-[17px]">visibility</span>
                             </button>
@@ -346,13 +370,13 @@ ob_start();
                         </div>
                         <div>
                             <h3 class="font-headline font-bold text-sm text-text-primary">Security Question</h3>
-                            <p class="text-xs text-text-secondary mt-0.5">Used to verify your identity if your account is locked.</p>
+                            <p class="text-xs text-text-secondary mt-0.5">Used for identity challenge if your account is locked.</p>
                         </div>
                     </div>
                     <div id="sq-status-container"></div>
                 </div>
 
-                <p class="text-xs text-text-secondary leading-relaxed">Set up a secret question and answer to unlock your administrator account if it becomes locked after multiple failed sign-in attempts.</p>
+                <p class="text-xs text-text-secondary leading-relaxed">Configure a secret question and answer to verify your identity and unlock your account after failed login attempts.</p>
 
                 <form id="sq-setup-form" onsubmit="window.AdminProfile.saveSecurityQuestion(event)" class="space-y-3.5">
                     <div>
@@ -361,11 +385,11 @@ ob_start();
                     </div>
                     <div>
                         <label for="sq-answer" class="fin-label mb-1 block text-[10px] font-bold text-text-secondary uppercase tracking-wider">Secret Answer *</label>
-                        <input type="password" id="sq-answer" class="fin-input bg-surface text-text-primary border-border-subtle text-xs" placeholder="Enter your confidential answer" minlength="3" required>
+                        <input type="password" id="sq-answer" class="fin-input bg-surface text-text-primary border-border-subtle text-xs" placeholder="Enter confidential answer" minlength="3" required>
                     </div>
                     <div class="pt-2 border-t border-border-subtle">
-                        <label for="sq-curr-pw" class="fin-label mb-1 block text-[10px] font-bold text-text-secondary uppercase tracking-wider">Current Password (to confirm identity) *</label>
-                        <input type="password" id="sq-curr-pw" class="fin-input bg-surface text-text-primary border-border-subtle text-xs" placeholder="Enter your current password" required>
+                        <label for="sq-curr-pw" class="fin-label mb-1 block text-[10px] font-bold text-text-secondary uppercase tracking-wider">Current Password (to verify changes) *</label>
+                        <input type="password" id="sq-curr-pw" class="fin-input bg-surface text-text-primary border-border-subtle text-xs" placeholder="Enter current password" required>
                     </div>
                     <div class="pt-2 flex justify-end">
                         <button type="submit" id="btn-save-sq" class="px-5 py-2 rounded-lg text-xs font-bold uppercase tracking-wider bg-zinc-900 text-white hover:bg-black dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-100 shadow-xs transition-all cursor-pointer">
@@ -379,7 +403,164 @@ ob_start();
     </div>
 
     <!-- ═══════════════════════════════════════════════════════════════ -->
-    <!-- 6. TAB 3: ACTIVITY LOG                                          -->
+    <!-- 6. TAB 3: ROLES & PERMISSIONS MATRIX (REAL BANKING FEATURE)     -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <div id="tab-permissions" class="tab-panel hidden space-y-6">
+        <div class="ds-card p-5 sm:p-6 bg-surface border border-border-subtle rounded-xl shadow-xs space-y-5">
+            <div class="flex items-center justify-between pb-3.5 border-b border-border-subtle">
+                <div>
+                    <h3 class="font-headline font-bold text-sm text-text-primary flex items-center gap-2">
+                        <span class="material-symbols-outlined text-text-secondary text-[18px]" aria-hidden="true">policy</span>
+                        Assigned Operational Permissions
+                    </h3>
+                    <p class="text-xs text-text-secondary mt-0.5">Overview of active system access rights and operational boundaries granted to your role.</p>
+                </div>
+                <span class="px-2.5 py-1 rounded bg-surface-subtle border border-border-subtle text-[11px] font-bold text-text-primary">
+                    Finzo RBAC Policy
+                </span>
+            </div>
+
+            <!-- Permissions Category Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                
+                <!-- Category 1: Customer Account Operations -->
+                <div class="p-4 rounded-xl bg-surface-subtle border border-border-subtle space-y-3">
+                    <div class="flex items-center gap-2 text-text-primary">
+                        <span class="material-symbols-outlined text-[18px]">account_balance</span>
+                        <span class="text-xs font-bold uppercase tracking-wider">Customer Accounts</span>
+                    </div>
+                    <div class="space-y-2 text-xs">
+                        <div class="flex items-center justify-between">
+                            <span class="text-text-secondary">View Customer Accounts</span>
+                            <span class="text-emerald-600 dark:text-emerald-400 font-bold text-[11px]">Granted</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-text-secondary">Review Pending KYC</span>
+                            <span class="text-emerald-600 dark:text-emerald-400 font-bold text-[11px]">Granted</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-text-secondary">Suspend / Lock Accounts</span>
+                            <span class="text-emerald-600 dark:text-emerald-400 font-bold text-[11px]">Granted</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Category 2: Staff & Branch Operations -->
+                <div class="p-4 rounded-xl bg-surface-subtle border border-border-subtle space-y-3">
+                    <div class="flex items-center gap-2 text-text-primary">
+                        <span class="material-symbols-outlined text-[18px]">store</span>
+                        <span class="text-xs font-bold uppercase tracking-wider">Staff &amp; Branches</span>
+                    </div>
+                    <div class="space-y-2 text-xs">
+                        <div class="flex items-center justify-between">
+                            <span class="text-text-secondary">View Branch Records</span>
+                            <span class="text-emerald-600 dark:text-emerald-400 font-bold text-[11px]">Granted</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-text-secondary">Staff Oversight &amp; Roster</span>
+                            <span class="text-emerald-600 dark:text-emerald-400 font-bold text-[11px]">Granted</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-text-secondary">Create / Close Branches</span>
+                            <span class="text-text-secondary font-medium text-[11px]">Admin / Super Admin</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Category 3: General Ledger & Finance -->
+                <div class="p-4 rounded-xl bg-surface-subtle border border-border-subtle space-y-3">
+                    <div class="flex items-center gap-2 text-text-primary">
+                        <span class="material-symbols-outlined text-[18px]">receipt_long</span>
+                        <span class="text-xs font-bold uppercase tracking-wider">General Ledger</span>
+                    </div>
+                    <div class="space-y-2 text-xs">
+                        <div class="flex items-center justify-between">
+                            <span class="text-text-secondary">Inspect Transactions</span>
+                            <span class="text-emerald-600 dark:text-emerald-400 font-bold text-[11px]">Granted</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-text-secondary">General Ledger Auditing</span>
+                            <span class="text-emerald-600 dark:text-emerald-400 font-bold text-[11px]">Granted</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-text-secondary">Financial Reporting</span>
+                            <span class="text-emerald-600 dark:text-emerald-400 font-bold text-[11px]">Granted</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Category 4: Products & Services -->
+                <div class="p-4 rounded-xl bg-surface-subtle border border-border-subtle space-y-3">
+                    <div class="flex items-center gap-2 text-text-primary">
+                        <span class="material-symbols-outlined text-[18px]">credit_card</span>
+                        <span class="text-xs font-bold uppercase tracking-wider">Products &amp; Cards</span>
+                    </div>
+                    <div class="space-y-2 text-xs">
+                        <div class="flex items-center justify-between">
+                            <span class="text-text-secondary">Card Issuance Auditing</span>
+                            <span class="text-emerald-600 dark:text-emerald-400 font-bold text-[11px]">Granted</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-text-secondary">Loan Applications Review</span>
+                            <span class="text-emerald-600 dark:text-emerald-400 font-bold text-[11px]">Granted</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-text-secondary">Configure Interest Rates</span>
+                            <span class="text-text-secondary font-medium text-[11px]">Admin / Super Admin</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Category 5: Audit & Security -->
+                <div class="p-4 rounded-xl bg-surface-subtle border border-border-subtle space-y-3">
+                    <div class="flex items-center gap-2 text-text-primary">
+                        <span class="material-symbols-outlined text-[18px]">shield</span>
+                        <span class="text-xs font-bold uppercase tracking-wider">Audit &amp; Security</span>
+                    </div>
+                    <div class="space-y-2 text-xs">
+                        <div class="flex items-center justify-between">
+                            <span class="text-text-secondary">System Audit Trail Access</span>
+                            <span class="text-emerald-600 dark:text-emerald-400 font-bold text-[11px]">Granted</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-text-secondary">Security Question Self-Reset</span>
+                            <span class="text-emerald-600 dark:text-emerald-400 font-bold text-[11px]">Granted</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-text-secondary">Export Audit CSV</span>
+                            <span class="text-emerald-600 dark:text-emerald-400 font-bold text-[11px]">Granted</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Category 6: Governance & Administration -->
+                <div class="p-4 rounded-xl bg-surface-subtle border border-border-subtle space-y-3">
+                    <div class="flex items-center gap-2 text-text-primary">
+                        <span class="material-symbols-outlined text-[18px]">admin_panel_settings</span>
+                        <span class="text-xs font-bold uppercase tracking-wider">Admin Governance</span>
+                    </div>
+                    <div class="space-y-2 text-xs">
+                        <div class="flex items-center justify-between">
+                            <span class="text-text-secondary">Unlock Admin Accounts</span>
+                            <span class="text-purple-600 dark:text-purple-400 font-bold text-[11px]">Super Admin</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-text-secondary">Provision New Admin</span>
+                            <span class="text-purple-600 dark:text-purple-400 font-bold text-[11px]">Super Admin</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-text-secondary">Manage System Roles</span>
+                            <span class="text-purple-600 dark:text-purple-400 font-bold text-[11px]">Super Admin</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- 7. TAB 4: ACTIVITY LOG                                          -->
     <!-- ═══════════════════════════════════════════════════════════════ -->
     <div id="tab-activity" class="tab-panel hidden space-y-6">
         <div class="ds-card bg-surface border border-border-subtle rounded-xl shadow-xs overflow-hidden">
@@ -455,7 +636,7 @@ ob_start();
     </div>
 
     <!-- ═══════════════════════════════════════════════════════════════ -->
-    <!-- 7. TAB 4: ADMIN MANAGEMENT (Super Admin Only)                    -->
+    <!-- 8. TAB 5: ADMIN MANAGEMENT (Super Admin Only)                    -->
     <!-- ═══════════════════════════════════════════════════════════════ -->
     <div id="tab-directory" class="tab-panel hidden space-y-6">
         
@@ -579,7 +760,7 @@ ob_start();
 </div>
 
 <!-- ═══════════════════════════════════════════════════════════════ -->
-<!-- 8. MODALS                                                       -->
+<!-- 9. MODALS                                                       -->
 <!-- ═══════════════════════════════════════════════════════════════ -->
 
 <!-- ADD ADMIN MODAL -->

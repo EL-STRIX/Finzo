@@ -178,6 +178,17 @@
 
 
 
+                // Induction Metadata
+                const heroJoined = document.getElementById('hero-joined-date');
+                if (heroJoined && admin.created_at) {
+                    const d = new Date(admin.created_at);
+                    heroJoined.textContent = d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+                }
+                const heroCreatedBy = document.getElementById('hero-added-by');
+                if (heroCreatedBy) {
+                    heroCreatedBy.textContent = admin.created_by_name || admin.created_by || 'System';
+                }
+
                 // Security Card Telemetry
                 const secLogin = document.getElementById('sec-last-login');
                 if (secLogin) secLogin.textContent = admin.last_login_at ? (window.FinzoUtils ? window.FinzoUtils.timeAgo(admin.last_login_at) : admin.last_login_at) : 'Active Now';
