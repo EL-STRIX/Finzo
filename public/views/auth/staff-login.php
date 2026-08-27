@@ -102,7 +102,7 @@
                         <div class="fin-input-container">
                             <div class="flex justify-between items-center mb-1">
                                 <label for="staff-password" class="fin-label fin-label-required">Password</label>
-                                <a href="forgot-password.php" class="btn-text">Forgot password?</a>
+                                <a href="forgot-password.php?role=staff" class="btn-text">Forgot password?</a>
                             </div>
                             <div class="fin-input-wrapper">
                                 <span class="material-symbols-outlined input-icon-left">lock</span>

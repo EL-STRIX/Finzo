@@ -108,7 +108,10 @@
 
                         <!-- Security Token / Password Input Component -->
                         <div class="fin-input-container">
-                            <label for="admin-token" class="fin-label fin-label-required">Security Token / Password</label>
+                            <div class="flex justify-between items-center mb-1">
+                                <label for="admin-token" class="fin-label fin-label-required">Security Token / Password</label>
+                                <a href="forgot-password.php?role=admin" class="btn-text">Forgot password?</a>
+                            </div>
                             <div class="fin-input-wrapper">
                                 <span class="material-symbols-outlined input-icon-left">vpn_key</span>
                                 <input type="password" id="admin-token" name="password" class="fin-input has-icon-left has-icon-right" placeholder="Enter security token or password" required autocomplete="current-password" />
