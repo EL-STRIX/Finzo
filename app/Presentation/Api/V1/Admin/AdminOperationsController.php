@@ -232,7 +232,15 @@ class AdminOperationsController
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $userId = intval($_POST['user_id'] ?? 0);
+            $is_json = (isset($_SERVER['CONTENT_TYPE']) && strpos($_SERVER['CONTENT_TYPE'], 'application/json') !== false);
+            if ($is_json) {
+                $json_input = json_decode(file_get_contents('php://input'), true);
+                if ($json_input !== null) {
+                    $_POST = array_merge($_POST, $json_input);
+                }
+            }
+
+            $userId = intval($_POST['user_id'] ?? ($id ?? 0));
             $action  = $this->security->cleanInput($_POST['action'] ?? '');
             $reason  = $this->security->cleanInput($_POST['reason'] ?? '');
             $notes   = $this->security->cleanInput($_POST['notes'] ?? '');

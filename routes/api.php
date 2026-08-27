@@ -64,6 +64,8 @@ $router->get('/api/v1/users/locked', [AdminOperationsController::class, 'lockedA
 $router->get('/api/v1/users/locked/{id}', [AdminOperationsController::class, 'lockedAccountDetail'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->post('/api/v1/users/locked/{id}/unlock', [AdminOperationsController::class, 'unlockAccount'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->get('/api/v1/users/pending', [AdminOperationsController::class, 'pendingApprovals'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
+$router->get('/api/v1/admin/applications/{id}', [AdminOperationsController::class, 'reviewApplication'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
+$router->post('/api/v1/admin/applications/{id}/review', [AdminOperationsController::class, 'reviewApplication'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->get('/api/v1/users/{id}', [AdminOperationsController::class, 'userDetail'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->get('/api/v1/users/{id}/kyc', [AdminOperationsController::class, 'viewKycDocument'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->patch('/api/v1/users/{id}', [AdminOperationsController::class, 'userAction'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
@@ -106,6 +108,7 @@ $router->post('/api/v1/branches/{id}/status', [AdminBranchController::class, 'up
 $router->post('/api/v1/branches/{id}/delete', [AdminBranchController::class, 'deleteBranch'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 
 use App\Presentation\Api\V1\Admin\AdminLoanController;
+$router->get('/api/v1/admin/loan-products', [AdminLoanController::class, 'products'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->post('/api/v1/admin/loan-products', [AdminLoanController::class, 'createProduct'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->get('/api/v1/admin/loan-applications', [AdminLoanController::class, 'applications'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->post('/api/v1/admin/loan-applications/approve', [AdminLoanController::class, 'approveApplication'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
@@ -114,6 +117,7 @@ $router->get('/api/v1/admin/loans/{id}/schedules', [AdminLoanController::class, 
 $router->post('/api/v1/admin/loans/{id}/foreclose', [AdminLoanController::class, 'foreclose'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 
 use App\Presentation\Api\V1\Admin\AdminCardController;
+$router->get('/api/v1/admin/card-products', [AdminCardController::class, 'products'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->post('/api/v1/admin/card-products', [AdminCardController::class, 'createProduct'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->get('/api/v1/admin/card-requests', [AdminCardController::class, 'requests'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->post('/api/v1/admin/card-requests/issue', [AdminCardController::class, 'issueCard'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);

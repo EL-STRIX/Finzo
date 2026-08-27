@@ -425,7 +425,7 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
         return $this->fetchAll("
             SELECT u.id, u.customer_id, u.full_name, u.email, u.phone, u.status,
                    u.kyc_submitted_at, u.created_at, u.profile_picture,
-                   a.account_type,
+                   COALESCE(a.account_type, k.account_type, 'savings') as account_type,
                    k.application_no, k.submission_count, k.submitted_at,
                    SUBSTRING(u.full_name, 1, 1) as initials,
                    CASE u.status
@@ -433,7 +433,7 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
                        WHEN 'under_review' THEN 'Under Review'
                        ELSE u.status
                    END as status_text,
-                   k.id_type
+                   COALESCE(k.id_type, u.id_type, 'N/A') as id_type
             FROM users u
             LEFT JOIN accounts a ON u.customer_id = a.user_id
             LEFT JOIN kyc_applications k ON u.customer_id = k.user_id
@@ -448,8 +448,8 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
             SELECT
                 SUM(CASE WHEN status = 'pending'      THEN 1 ELSE 0 END) as pending_review,
                 SUM(CASE WHEN status = 'under_review' THEN 1 ELSE 0 END) as under_review,
-                SUM(CASE WHEN status = 'active' AND DATE(kyc_submitted_at) = CURDATE() THEN 1 ELSE 0 END) as approved_today,
-                SUM(CASE WHEN status = 'rejected' AND DATE(kyc_submitted_at) = CURDATE() THEN 1 ELSE 0 END) as rejected_today,
+                SUM(CASE WHEN status = 'active' AND DATE(updated_at) = CURDATE() THEN 1 ELSE 0 END) as approved_today,
+                SUM(CASE WHEN status = 'rejected' AND DATE(updated_at) = CURDATE() THEN 1 ELSE 0 END) as rejected_today,
                 SUM(CASE WHEN status = 'active' THEN 1 ELSE 0 END) as total_approved
             FROM users WHERE is_deleted = 0
         ", []);
