@@ -3,8 +3,8 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport" />
-    <meta name="description" content="Finzo Enterprise Banking - Device Verification Multi-Factor Authentication" />
-    <title>Finzo | Device Verification</title>
+    <meta name="description" content="Finzo Enterprise Banking - Phone OTP Verification Coming Soon" />
+    <title>Finzo | Phone OTP Verification</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -20,18 +20,14 @@
     <link rel="stylesheet" href="/Finzo/public/assets/css/components/cards.css" />
     <link rel="stylesheet" href="/Finzo/public/assets/css/components/badges.css" />
     <link rel="stylesheet" href="/Finzo/public/assets/css/layouts/auth.css" />
-
-    <script src="/Finzo/public/assets/js/core/api.js"></script>
-    <script src="/Finzo/public/assets/js/auth/auth-components.js" defer></script>
-    <script defer src="/Finzo/public/assets/js/core/ui-components.js"></script>
 </head>
 <body class="bg-gray-50 font-body text-on-surface">
     <main class="auth-page-wrapper">
         <div class="auth-split-grid">
-            <!-- Left Side: Hero Illustration & Security Banner -->
+            <!-- Left Side -->
             <div class="auth-left-panel">
-                <img loading="lazy" src="/Finzo/public/assets/images/customer_bg.png" alt="Multi Factor Authentication Illustration" class="auth-hero-img-bg" />
-                <img loading="lazy" src="/Finzo/public/assets/images/customer_bg.png" alt="Multi Factor Authentication Illustration" class="auth-hero-img-secondary" />
+                <img loading="lazy" src="/Finzo/public/assets/images/customer_bg.png" alt="Phone Verification Illustration" class="auth-hero-img-bg" />
+                <img loading="lazy" src="/Finzo/public/assets/images/customer_bg.png" alt="Phone Verification Illustration" class="auth-hero-img-secondary" />
                 <div class="auth-hero-overlay"></div>
                 
                 <div class="auth-hero-content">
@@ -42,16 +38,16 @@
                             </div>
                             <span class="auth-brand-name">Finzo</span>
                         </a>
-                        <h2 class="auth-hero-headline">Two-step verification.</h2>
-                        <p class="auth-hero-subtitle">We sent a one-time code to your registered phone number. Enter it to confirm your identity and sign in.</p>
+                        <h2 class="auth-hero-headline">SMS verification is coming.</h2>
+                        <p class="auth-hero-subtitle">Phone-based two-factor authentication is planned for an upcoming release. Your account is currently protected through security question-based verification.</p>
                     </div>
                     
                     <div>
                         <div class="auth-hero-security-card">
                             <span class="material-symbols-outlined auth-hero-security-icon">smartphone</span>
                             <div>
-                                <h4 class="auth-hero-security-title">New device detected</h4>
-                                <p class="auth-hero-security-desc">When you sign in from a new or unrecognized device, we require a verification code to confirm it's you.</p>
+                                <h4 class="auth-hero-security-title">SMS OTP — Planned Feature</h4>
+                                <p class="auth-hero-security-desc">When enabled, a 6-digit one-time code will be sent to your registered phone number each time you sign in from a new device.</p>
                             </div>
                         </div>
                         <div class="auth-hero-footer">
@@ -61,56 +57,69 @@
                 </div>
             </div>
 
-            <!-- Right Side: Auth Component Container -->
+            <!-- Right Side -->
             <div class="auth-right-area">
-                <div class="auth-card-container">
+                <div class="auth-card-container text-center">
                     <!-- Mobile Logo -->
                     <a href="/Finzo/public/index.html" class="auth-mobile-logo" aria-label="Finzo Homepage">
                         <span class="material-symbols-outlined text-2xl">account_balance</span>
                     </a>
                     
-                    <!-- Page Header Component -->
+                    <!-- Icon -->
+                    <div class="w-16 h-16 bg-amber-50 border border-amber-100 text-amber-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <span class="material-symbols-outlined text-3xl">phonelink_lock</span>
+                    </div>
+
+                    <!-- Page Header -->
                     <div class="auth-page-header">
-                        <h1 class="auth-page-title">Device Verification</h1>
-                        <p class="auth-page-subtitle">A 6-digit security code was sent to your phone ending in <strong>••45</strong>.</p>
+                        <h1 class="auth-page-title">Phone OTP Verification</h1>
+                        <div class="flex items-center justify-center gap-2 mt-1">
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-700 border border-amber-200">
+                                <span class="material-symbols-outlined" style="font-size:14px">schedule</span>
+                                Coming Soon
+                            </span>
+                        </div>
                     </div>
 
-                    <!-- OTP Form Component -->
-                    <form action="#" method="POST" class="text-center" novalidate>
-                        <!-- 6-Digit OTP Grid Component -->
-                        <div class="fin-otp-container mb-8">
-                            <div class="fin-otp-grid">
-                                <input type="text" maxlength="1" class="fin-otp-input" aria-label="OTP Digit 1" required autofocus />
-                                <input type="text" maxlength="1" class="fin-otp-input" aria-label="OTP Digit 2" required />
-                                <input type="text" maxlength="1" class="fin-otp-input" aria-label="OTP Digit 3" required />
-                                <input type="text" maxlength="1" class="fin-otp-input" aria-label="OTP Digit 4" required />
-                                <input type="text" maxlength="1" class="fin-otp-input" aria-label="OTP Digit 5" required />
-                                <input type="text" maxlength="1" class="fin-otp-input" aria-label="OTP Digit 6" required />
-                            </div>
+                    <!-- Info Alert -->
+                    <div class="alert alert-info text-left" role="status">
+                        <span class="material-symbols-outlined alert-icon">info</span>
+                        <div>
+                            SMS-based two-factor authentication is currently under development and will be available in a future release. Your account remains secure through existing verification methods.
                         </div>
+                    </div>
 
-                        <!-- Primary Submit Button -->
-                        <button type="submit" class="btn btn-primary btn-full mb-4">
-                            <span>Verify Identity</span>
-                            <span class="material-symbols-outlined text-[18px]">verified_user</span>
-                        </button>
-
-                        <!-- Resend Component with Countdown -->
-                        <p class="text-xs text-gray-500 font-medium">
-                            Didn't receive the code? 
-                            <button type="button" class="btn-text" data-action="resend-otp">Resend Code in 00:45</button>
+                    <!-- Feature Preview -->
+                    <div class="text-left mt-5 p-4 rounded-lg border border-gray-100 bg-gray-50">
+                        <p class="text-xs font-semibold text-gray-700 mb-3 flex items-center gap-1.5">
+                            <span class="material-symbols-outlined text-[16px] text-primary">upcoming</span>
+                            What's planned
                         </p>
-                    </form>
-
-                    <!-- Security Notice Component -->
-                    <div class="auth-security-notice text-left mt-8">
-                        <span class="material-symbols-outlined auth-security-notice-icon">phonelink_lock</span>
-                        <div class="auth-security-notice-text">
-                            <strong>Important:</strong> OTP codes expire in 5 minutes. Never share this code with anyone, including Finzo staff.
-                        </div>
+                        <ul class="space-y-2 text-sm text-gray-600">
+                            <li class="flex items-start gap-2">
+                                <span class="material-symbols-outlined text-[16px] text-gray-400 mt-0.5">circle</span>
+                                <span>6-digit SMS code sent to your registered phone number.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="material-symbols-outlined text-[16px] text-gray-400 mt-0.5">circle</span>
+                                <span>Triggered automatically on new device sign-ins.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="material-symbols-outlined text-[16px] text-gray-400 mt-0.5">circle</span>
+                                <span>Code expires in 5 minutes for maximum security.</span>
+                            </li>
+                        </ul>
                     </div>
 
-                    <!-- Trust Badges Component -->
+                    <!-- Action Buttons -->
+                    <div class="space-y-3 mt-6">
+                        <a href="login.php" class="btn btn-primary btn-full">
+                            <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+                            <span>Return to Sign In</span>
+                        </a>
+                    </div>
+
+                    <!-- Trust Badges -->
                     <div class="trust-badge-group">
                         <span class="trust-badge"><span class="material-symbols-outlined">enhanced_encryption</span> 256-bit Encryption</span>
                         <span class="trust-badge"><span class="material-symbols-outlined">gpp_good</span> Privacy Protected</span>

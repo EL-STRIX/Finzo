@@ -43,15 +43,15 @@
                             <span class="auth-brand-name">Finzo</span>
                         </a>
                         <h2 class="auth-hero-headline">Set a new password.</h2>
-                        <p class="auth-hero-subtitle">Choose a strong password to protect your account and keep your banking information secure.</p>
+                        <p class="auth-hero-subtitle">Your administrator has generated a temporary access password. Set a new strong password to secure your account going forward.</p>
                     </div>
                     
                     <div>
                         <div class="auth-hero-security-card">
                             <span class="material-symbols-outlined auth-hero-security-icon">published_with_changes</span>
                             <div>
-                                <h4 class="auth-hero-security-title">All other sessions will be signed out</h4>
-                                <p class="auth-hero-security-desc">When you change your password, any active sessions on other devices will be ended for your protection.</p>
+                                <h4 class="auth-hero-security-title">Change your temporary password</h4>
+                                <p class="auth-hero-security-desc">You have been provided a temporary password by your administrator. You must change it now. All other active sessions will be ended immediately upon completion.</p>
                             </div>
                         </div>
                         <div class="auth-hero-footer">

@@ -102,7 +102,7 @@
                         <div class="fin-input-container">
                             <div class="flex justify-between items-center mb-1">
                                 <label for="staff-password" class="fin-label fin-label-required">Password</label>
-                                <a href="forgot-password.php" class="btn-text">Reset Password</a>
+                                <a href="forgot-password.php" class="btn-text">Forgot password?</a>
                             </div>
                             <div class="fin-input-wrapper">
                                 <span class="material-symbols-outlined input-icon-left">lock</span>
@@ -134,7 +134,7 @@
                     <!-- Trust Badges Component -->
                     <div class="trust-badge-group">
                         <span class="trust-badge"><span class="material-symbols-outlined">enhanced_encryption</span> Encrypted Connection</span>
-                        <span class="trust-badge"><span class="material-symbols-outlined">verified_user</span> Dual-Factor MFA</span>
+                        <span class="trust-badge"><span class="material-symbols-outlined">verified_user</span> Audit Logged</span>
                     </div>
                 </div>
             </div>

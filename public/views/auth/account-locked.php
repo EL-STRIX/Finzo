@@ -43,7 +43,7 @@
                             <span class="auth-brand-name">Finzo</span>
                         </a>
                         <h2 class="auth-hero-headline">Your account has been locked.</h2>
-                        <p class="auth-hero-subtitle">Too many failed login attempts were detected. Your account has been temporarily suspended to prevent unauthorized access.</p>
+                        <p class="auth-hero-subtitle">Too many failed login attempts were detected. Your account has been suspended. Contact your branch administrator to generate a new access password.</p>
                     </div>
                     
                     <div>
@@ -84,8 +84,30 @@
                     <div class="alert alert-danger text-left" role="alert">
                         <span class="material-symbols-outlined alert-icon">error</span>
                         <div>
-                            Too many consecutive failed login attempts. Access to this account has been suspended for <strong>30 minutes</strong>.
+                            Too many consecutive failed login attempts. Your account has been <strong>locked</strong> and requires administrator intervention to restore access.
                         </div>
+                    </div>
+
+                    <!-- Recovery Instructions Block -->
+                    <div class="text-left p-4 rounded-lg border border-gray-100 bg-gray-50 mt-2">
+                        <p class="text-xs font-semibold text-gray-700 mb-3 flex items-center gap-1.5">
+                            <span class="material-symbols-outlined text-[16px] text-primary">checklist</span>
+                            How to restore access
+                        </p>
+                        <ol class="space-y-2 text-sm text-gray-600">
+                            <li class="flex items-start gap-2">
+                                <span class="text-primary font-bold mt-0.5">1.</span>
+                                <span>Contact your branch administrator or visit your nearest Finzo branch.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-primary font-bold mt-0.5">2.</span>
+                                <span>The administrator will verify your identity and generate a new temporary password.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-primary font-bold mt-0.5">3.</span>
+                                <span>Sign in using the provided temporary password and change it immediately.</span>
+                            </li>
+                        </ol>
                     </div>
 
                     <!-- Contact Support Block -->
@@ -96,13 +118,7 @@
                                 <span class="auth-contact-icon">
                                     <span class="material-symbols-outlined">phone</span>
                                 </span>
-                                <span>24/7 Fraud &amp; Security Hotline: +1-800-555-0199</span>
-                            </a>
-                            <a href="mailto:support@finzo.com" class="auth-contact-item">
-                                <span class="auth-contact-icon">
-                                    <span class="material-symbols-outlined">mail</span>
-                                </span>
-                                <span>Email Support: support@finzo.com</span>
+                                <span>24/7 Security Hotline: +1-800-555-0199</span>
                             </a>
                         </div>
                     </div>
@@ -119,7 +135,7 @@
                     <div class="auth-security-notice text-left mt-6">
                         <span class="material-symbols-outlined auth-security-notice-icon">shield</span>
                         <div class="auth-security-notice-text">
-                            <strong>Security Notice:</strong> Your account will automatically unlock after 30 minutes. If you did not initiate these login attempts, contact our security team immediately.
+                            <strong>Security Notice:</strong> This account will remain locked until an administrator manually restores access. If you did not initiate these attempts, report it to the security hotline immediately.
                         </div>
                     </div>
 

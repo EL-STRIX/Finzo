@@ -3,8 +3,8 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport" />
-    <meta name="description" content="Finzo Enterprise Banking - Email Verification Sent" />
-    <title>Finzo | Check Your Email</title>
+    <meta name="description" content="Finzo Enterprise Banking - Email Verification Coming Soon" />
+    <title>Finzo | Email Verification</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -20,18 +20,14 @@
     <link rel="stylesheet" href="/Finzo/public/assets/css/components/cards.css" />
     <link rel="stylesheet" href="/Finzo/public/assets/css/components/badges.css" />
     <link rel="stylesheet" href="/Finzo/public/assets/css/layouts/auth.css" />
-
-    <script src="/Finzo/public/assets/js/core/api.js"></script>
-    <script src="/Finzo/public/assets/js/auth/auth-components.js" defer></script>
-    <script defer src="/Finzo/public/assets/js/core/ui-components.js"></script>
 </head>
 <body class="bg-gray-50 font-body text-on-surface">
     <main class="auth-page-wrapper">
         <div class="auth-split-grid">
-            <!-- Left Side: Hero Illustration & Security Banner -->
+            <!-- Left Side -->
             <div class="auth-left-panel">
-                <img loading="lazy" src="/Finzo/public/assets/images/customer_bg.png" alt="Identity Confirmation Illustration" class="auth-hero-img-bg" />
-                <img loading="lazy" src="/Finzo/public/assets/images/customer_bg.png" alt="Identity Confirmation Illustration" class="auth-hero-img-secondary" />
+                <img loading="lazy" src="/Finzo/public/assets/images/customer_bg.png" alt="Email Verification Illustration" class="auth-hero-img-bg" />
+                <img loading="lazy" src="/Finzo/public/assets/images/customer_bg.png" alt="Email Verification Illustration" class="auth-hero-img-secondary" />
                 <div class="auth-hero-overlay"></div>
                 
                 <div class="auth-hero-content">
@@ -42,16 +38,16 @@
                             </div>
                             <span class="auth-brand-name">Finzo</span>
                         </a>
-                        <h2 class="auth-hero-headline">Verify your email address.</h2>
-                        <p class="auth-hero-subtitle">We need to confirm your email before activating your account. Check your inbox for the verification link we sent.</p>
+                        <h2 class="auth-hero-headline">Email verification is on its way.</h2>
+                        <p class="auth-hero-subtitle">We're building a fully automated email verification system. For now, account activation is handled directly by your branch administrator.</p>
                     </div>
                     
                     <div>
                         <div class="auth-hero-security-card">
-                            <span class="material-symbols-outlined auth-hero-security-icon">mark_email_read</span>
+                            <span class="material-symbols-outlined auth-hero-security-icon">schedule</span>
                             <div>
-                                <h4 class="auth-hero-security-title">Secure verification link</h4>
-                                <p class="auth-hero-security-desc">The link in your email is valid for 30 minutes and can only be used once. After it expires, you can request a new one.</p>
+                                <h4 class="auth-hero-security-title">Feature under development</h4>
+                                <p class="auth-hero-security-desc">Automated email verification will be enabled in a future platform release. Your account security remains fully protected through alternative verification methods.</p>
                             </div>
                         </div>
                         <div class="auth-hero-footer">
@@ -61,7 +57,7 @@
                 </div>
             </div>
 
-            <!-- Right Side: Auth Component Container -->
+            <!-- Right Side -->
             <div class="auth-right-area">
                 <div class="auth-card-container text-center">
                     <!-- Mobile Logo -->
@@ -69,47 +65,61 @@
                         <span class="material-symbols-outlined text-2xl">account_balance</span>
                     </a>
                     
-                    <!-- Emblem Component -->
-                    <div class="w-16 h-16 bg-blue-50 border border-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <!-- Icon -->
+                    <div class="w-16 h-16 bg-amber-50 border border-amber-100 text-amber-500 rounded-full flex items-center justify-center mx-auto mb-6">
                         <span class="material-symbols-outlined text-3xl">mark_email_unread</span>
                     </div>
 
-                    <!-- Page Header Component -->
+                    <!-- Page Header -->
                     <div class="auth-page-header">
-                        <h1 class="auth-page-title">Check Your Email</h1>
-                        <p class="auth-page-subtitle">We sent a secure verification link to your registered email address.</p>
-                    </div>
-
-                    <!-- Alert Info Component -->
-                    <div class="alert alert-info text-left" role="status">
-                        <span class="material-symbols-outlined alert-icon">info</span>
-                        <div>
-                            Click the secure link inside the email to complete your registration. The link will expire in 30 minutes.
+                        <h1 class="auth-page-title">Email Verification</h1>
+                        <div class="flex items-center justify-center gap-2 mt-1">
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-700 border border-amber-200">
+                                <span class="material-symbols-outlined" style="font-size:14px">schedule</span>
+                                Coming Soon
+                            </span>
                         </div>
                     </div>
 
-                    <!-- Buttons Group Component -->
+                    <!-- Info Alert -->
+                    <div class="alert alert-info text-left" role="status">
+                        <span class="material-symbols-outlined alert-icon">info</span>
+                        <div>
+                            Email verification is currently under development. Your account will be activated by your branch administrator once your registration is reviewed.
+                        </div>
+                    </div>
+
+                    <!-- What to do next box -->
+                    <div class="text-left mt-5 p-4 rounded-lg border border-gray-100 bg-gray-50">
+                        <p class="text-xs font-semibold text-gray-700 mb-3 flex items-center gap-1.5">
+                            <span class="material-symbols-outlined text-[16px] text-primary">checklist</span>
+                            What to do next
+                        </p>
+                        <ol class="space-y-2 text-sm text-gray-600">
+                            <li class="flex items-start gap-2">
+                                <span class="text-primary font-bold mt-0.5">1.</span>
+                                <span>Visit your nearest Finzo branch with your registered details.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-primary font-bold mt-0.5">2.</span>
+                                <span>A branch administrator will verify and activate your account manually.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-primary font-bold mt-0.5">3.</span>
+                                <span>Once activated, you can sign in with your credentials.</span>
+                            </li>
+                        </ol>
+                    </div>
+
+                    <!-- Action Buttons -->
                     <div class="space-y-3 mt-6">
                         <a href="login.php" class="btn btn-primary btn-full">
                             <span class="material-symbols-outlined text-[18px]">arrow_back</span>
                             <span>Return to Sign In</span>
                         </a>
-
-                        <button type="button" class="btn btn-secondary btn-full" data-action="resend-email-verification">
-                            <span class="material-symbols-outlined text-[18px]">refresh</span>
-                            <span>Resend Verification Email</span>
-                        </button>
                     </div>
 
-                    <!-- Security Notice Component -->
-                    <div class="auth-security-notice text-left mt-8">
-                        <span class="material-symbols-outlined auth-security-notice-icon">forward_to_inbox</span>
-                        <div class="auth-security-notice-text">
-                            <strong>Tip:</strong> If you don't see the email within a few minutes, please check your spam or junk folder.
-                        </div>
-                    </div>
-
-                    <!-- Trust Badges Component -->
+                    <!-- Trust Badges -->
                     <div class="trust-badge-group">
                         <span class="trust-badge"><span class="material-symbols-outlined">enhanced_encryption</span> 256-bit Encryption</span>
                         <span class="trust-badge"><span class="material-symbols-outlined">gpp_good</span> Privacy Protected</span>

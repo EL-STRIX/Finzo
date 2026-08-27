@@ -140,7 +140,7 @@
                     <div class="auth-security-notice">
                         <span class="material-symbols-outlined auth-security-notice-icon">shield</span>
                         <div class="auth-security-notice-text">
-                            <strong>Protected Session:</strong> Never share your online banking credentials or OTP with anyone. Finzo staff will never request your password.
+                            <strong>Protected Session:</strong> Never share your online banking credentials with anyone. Finzo staff will never request your password or personal access codes.
                         </div>
                     </div>
 

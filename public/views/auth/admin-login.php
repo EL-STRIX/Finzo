@@ -128,6 +128,11 @@
                         </button>
                     </form>
 
+                    <!-- Forgot password link -->
+                    <div class="mt-4 text-center">
+                        <a href="forgot-password.php" class="btn-text text-sm">Forgot password? Use security question</a>
+                    </div>
+
                     <!-- Security Notice Component -->
                     <div class="auth-security-notice">
                         <span class="material-symbols-outlined auth-security-notice-icon">policy</span>
@@ -139,7 +144,7 @@
                     <!-- Trust Badges Component -->
                     <div class="trust-badge-group">
                         <span class="trust-badge"><span class="material-symbols-outlined">admin_panel_settings</span> Zero-Trust Control</span>
-                        <span class="trust-badge"><span class="material-symbols-outlined">fingerprint</span> Hardware Token SSL</span>
+                        <span class="trust-badge"><span class="material-symbols-outlined">enhanced_encryption</span> 256-bit Encrypted</span>
                     </div>
                 </div>
             </div>
