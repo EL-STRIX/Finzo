@@ -4,8 +4,8 @@ $pageTitle = 'Finzo Admin — Roles & Permissions';
 $pageHeader = '
 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
     <div>
-        <h1 class="text-xl font-headline font-black text-text-primary tracking-tight">Roles & Permissions</h1>
-        <p class="text-xs font-bold text-text-secondary uppercase tracking-widest mt-0.5">Manage enterprise access control levels</p>
+        <h1 class="text-2xl font-headline font-black text-text-primary tracking-tight">Roles & Permissions</h1>
+        <p class="text-xs font-bold text-text-secondary uppercase tracking-widest mt-1">Manage enterprise access control levels</p>
     </div>
     <div class="flex items-center gap-3">
         <button id="btn-create-role" class="btn btn-primary !px-5 flex items-center gap-2">

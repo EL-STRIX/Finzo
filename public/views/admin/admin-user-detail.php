@@ -33,14 +33,14 @@ ob_start();
     <div class="space-y-6 sm:space-y-8">
       
       <!-- TOP NAVIGATION -->
-      <div class="flex items-center justify-between gap-4 relative z-10">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 relative z-10">
         <div class="flex items-center gap-4">
-          <a href="admin-users.php" class="w-10 h-10 flex items-center justify-center rounded-xl bg-surface border border-border-subtle hover:bg-background transition-all text-text-secondary hover:text-text-primary shadow-sm" aria-label="Back to Users">
+          <a href="admin-users.php" class="w-10 h-10 flex items-center justify-center rounded-xl bg-surface border border-border-subtle hover:bg-background transition-all text-text-secondary hover:text-text-primary shadow-sm shrink-0" aria-label="Back to Users">
             <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
           </a>
           <div>
-            <div class="text-[10px] font-black tracking-widest uppercase text-text-secondary">USER DOSSIER & PROFILE</div>
-            <div id="topbar-user-name" class="text-xl sm:text-2xl font-headline font-black tracking-tight text-text-primary">Loading User Profile...</div>
+            <h1 id="topbar-user-name" class="text-2xl font-headline font-black tracking-tight text-text-primary">Loading User Profile...</h1>
+            <p class="text-xs font-bold text-text-secondary uppercase tracking-widest mt-1">User Account Dossier &amp; Identity Records</p>
           </div>
         </div>
       </div>

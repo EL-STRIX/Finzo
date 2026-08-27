@@ -17,22 +17,13 @@ ob_start();
 <div class="space-y-6">
 
     <!-- ═══════════════════════════════════════════════════════════════ -->
-    <!-- 1. BREADCRUMBS & PAGE HEADER                                    -->
+    <!-- 1. PAGE HEADER                                                  -->
     <!-- ═══════════════════════════════════════════════════════════════ -->
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border-subtle">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 relative z-10">
         <div>
-            <div class="flex items-center gap-2 text-[11px] font-bold text-text-secondary uppercase tracking-wider mb-1">
-                <span>Administration</span>
-                <span>/</span>
-                <span>System Access</span>
-                <span>/</span>
-                <span class="text-text-primary font-bold">Officer Profile</span>
-            </div>
-            <h1 class="text-xl sm:text-2xl font-headline font-bold text-text-primary tracking-tight">Administrator Profile</h1>
-            <p class="text-xs text-text-secondary mt-0.5">Account identity, delegated system authorities, security credentials, and personal audit log.</p>
+            <h1 class="text-2xl font-headline font-black text-text-primary tracking-tight">Administrator Profile</h1>
+            <p class="text-xs font-bold text-text-secondary uppercase tracking-widest mt-1">Account identity, delegated system authorities, security credentials, and personal audit log</p>
         </div>
-
-
     </div>
 
     <!-- ═══════════════════════════════════════════════════════════════ -->

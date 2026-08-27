@@ -1,6 +1,8 @@
 <?php
 $portal = 'admin';
 $pageTitle = 'Finzo Admin — Audit Trail & Compliance Log';
+// Admin portal guard — server-side authentication & role check
+include __DIR__ . '/_guard.php';
 ob_start();
 ?>
 

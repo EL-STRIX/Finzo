@@ -4,8 +4,8 @@ $pageTitle = 'Suspended Users';
 $pageHeader = '
 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
     <div>
-        <h1 class="text-xl font-headline font-black text-text-primary tracking-tight">Suspended Users</h1>
-        <p class="text-xs font-bold text-text-secondary uppercase tracking-widest mt-0.5">Review and manage suspended customer accounts</p>
+        <h1 class="text-2xl font-headline font-black text-text-primary tracking-tight">Suspended Users</h1>
+        <p class="text-xs font-bold text-text-secondary uppercase tracking-widest mt-1">Review and manage suspended customer accounts</p>
     </div>
 </div>
 ';

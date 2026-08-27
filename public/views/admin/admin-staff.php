@@ -1,6 +1,8 @@
 <?php
 $portal = 'admin';
 $pageTitle = 'Finzo Admin — Staff Management';
+// Admin portal guard — server-side authentication & role check
+include __DIR__ . '/_guard.php';
 if (!defined('FINZO_ROOT')) {
     require_once dirname(__DIR__, 3) . '/bootstrap/app.php';
 }

@@ -4,8 +4,8 @@ $pageTitle = 'Interest Rates';
 $pageHeader = '
 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
     <div>
-        <h1 class="text-xl font-headline font-black text-text-primary tracking-tight">Interest Rates</h1>
-        <p class="text-[10px] font-black text-text-secondary uppercase tracking-widest mt-0.5">Configure system-wide interest rates and policies</p>
+        <h1 class="text-2xl font-headline font-black text-text-primary tracking-tight">Interest Rates</h1>
+        <p class="text-xs font-bold text-text-secondary uppercase tracking-widest mt-1">Configure system-wide interest rates and policies</p>
     </div>
 </div>
 ';

@@ -1,6 +1,8 @@
 <?php
 $portal = 'admin';
 $pageTitle = 'Finzo Admin — Dashboard';
+// Admin portal guard — server-side authentication & role check
+include __DIR__ . '/_guard.php';
 $useCharts = true;
 ob_start();
 ?>
@@ -209,7 +211,7 @@ ob_start();
                     <h3 class="font-headline font-bold text-lg flex items-center gap-2 text-text-primary">
                         <span class="material-symbols-outlined text-primary" aria-hidden="true">history</span> Recent Onboarding
                     </h3>
-                    <a href="/Finzo/admin/users" class="text-xs font-black text-primary hover:underline uppercase tracking-widest">View All Users</a>
+                    <a href="/Finzo/public/views/admin/admin-users.php" class="text-xs font-black text-primary hover:underline uppercase tracking-widest">View All Users</a>
                 </div>
                 <div class="ds-table-wrapper border-0 rounded-none shadow-none bg-transparent overflow-x-auto">
                     <table class="ds-table w-full text-left min-w-[800px]">

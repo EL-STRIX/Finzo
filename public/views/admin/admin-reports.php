@@ -4,8 +4,8 @@ $pageTitle = 'Finzo Admin — Advanced Reporting';
 $pageHeader = '
 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
     <div>
-        <h1 class="text-xl font-headline font-black text-text-primary tracking-tight">Advanced Reports</h1>
-        <p class="text-xs font-bold text-text-secondary uppercase tracking-widest mt-0.5">Generate financial and demographic insights</p>
+        <h1 class="text-2xl font-headline font-black text-text-primary tracking-tight">Advanced Reports</h1>
+        <p class="text-xs font-bold text-text-secondary uppercase tracking-widest mt-1">Generate financial and demographic insights</p>
     </div>
 </div>
 ';

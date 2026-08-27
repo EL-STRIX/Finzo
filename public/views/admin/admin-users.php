@@ -1,6 +1,8 @@
 <?php
 $portal = 'admin';
 $pageTitle = 'Finzo Admin — User Management';
+// Admin portal guard — server-side authentication & role check
+include __DIR__ . '/_guard.php';
 ob_start();
 ?>
             <!-- TOP PAGE HEADER & ACTION BAR -->

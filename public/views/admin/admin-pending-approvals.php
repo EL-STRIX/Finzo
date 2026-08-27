@@ -45,12 +45,12 @@ ob_start();
 <div class="space-y-6">
 
     <!-- ═══════════════════════════════════════════════════════════════ -->
-    <!-- 1. BREADCRUMBS & PAGE HEADER                                    -->
+    <!-- 1. PAGE HEADER                                                  -->
     <!-- ═══════════════════════════════════════════════════════════════ -->
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border-subtle">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 relative z-10">
         <div>
-            <h1 class="text-xl sm:text-2xl font-headline font-bold text-text-primary tracking-tight">Pending Account Approvals</h1>
-            <p class="text-xs text-text-secondary mt-0.5">Review, verify submitted KYC documentation, and authorize new customer banking accounts.</p>
+            <h1 class="text-2xl font-headline font-black text-text-primary tracking-tight">Pending Account Approvals</h1>
+            <p class="text-xs font-bold text-text-secondary uppercase tracking-widest mt-1">Review, verify submitted KYC documentation, and authorize new customer banking accounts</p>
         </div>
 
         <div class="flex items-center gap-2.5 shrink-0">

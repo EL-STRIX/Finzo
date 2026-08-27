@@ -3,18 +3,14 @@ $portal = 'admin';
 $pageTitle = 'Locked Account Detail';
 $pageHeader = '
 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-    <div>
-        <div class="flex items-center gap-2 mb-2">
-            <a href="admin-locked-accounts.php" class="w-8 h-8 flex items-center justify-center rounded-xl bg-surface-hover hover:bg-border-subtle transition-colors text-text-secondary">
-                <span class="material-symbols-outlined text-sm" aria-hidden="true">arrow_back</span>
-            </a>
-            <div class="flex items-center gap-1.5 text-[10px] font-black tracking-widest uppercase text-text-secondary">
-                <span>Locked Accounts</span>
-                <span class="material-symbols-outlined text-xs" aria-hidden="true">chevron_right</span>
-                <span class="text-primary whitespace-nowrap">Security Detail</span>
-            </div>
+    <div class="flex items-center gap-4">
+        <a href="admin-locked-accounts.php" class="w-10 h-10 flex items-center justify-center rounded-xl bg-surface border border-border-subtle hover:bg-surface-hover transition-colors text-text-secondary hover:text-text-primary shadow-xs shrink-0" title="Back to Locked Accounts">
+            <span class="material-symbols-outlined text-base" aria-hidden="true">arrow_back</span>
+        </a>
+        <div>
+            <h1 class="text-2xl font-headline font-black text-text-primary tracking-tight">Security Incident</h1>
+            <p class="text-xs font-bold text-text-secondary uppercase tracking-widest mt-1">Locked Account Investigation &amp; Remediation Dossier</p>
         </div>
-        <h1 class="text-xl font-headline font-black text-text-primary tracking-tight">Security Incident</h1>
     </div>
 </div>
 ';

@@ -4,9 +4,8 @@ $pageTitle = 'Finzo Admin — Suspended Staff';
 $pageHeader = '
 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
     <div>
-        <div class="text-[10px] font-black text-text-secondary uppercase tracking-widest mb-1">Personnel Governance</div>
-        <h1 class="text-xl sm:text-2xl font-headline font-black text-text-primary tracking-tight">Suspended Staff</h1>
-        <p class="text-xs font-bold text-text-secondary mt-0.5">Review, investigate, and manage deactivated or suspended employee terminals</p>
+        <h1 class="text-2xl font-headline font-black text-text-primary tracking-tight">Suspended Staff</h1>
+        <p class="text-xs font-bold text-text-secondary uppercase tracking-widest mt-1">Review, investigate, and manage deactivated or suspended employee terminals</p>
     </div>
     <div class="flex items-center gap-3">
         <a href="admin-staff.php" class="px-4 py-2.5 rounded-xl bg-surface border border-border-subtle hover:bg-surface-hover transition-all text-xs font-black uppercase tracking-wider text-text-primary shadow-sm flex items-center gap-2">

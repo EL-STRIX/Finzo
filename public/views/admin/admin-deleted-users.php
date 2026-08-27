@@ -4,8 +4,8 @@ $pageTitle = 'Deleted Users';
 $pageHeader = '
 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
     <div>
-        <h1 class="text-xl font-headline font-black text-text-primary tracking-tight">Deleted Users</h1>
-        <p class="text-xs font-bold text-text-secondary uppercase tracking-widest mt-0.5">View and restore soft-deleted user accounts</p>
+        <h1 class="text-2xl font-headline font-black text-text-primary tracking-tight">Deleted Users</h1>
+        <p class="text-xs font-bold text-text-secondary uppercase tracking-widest mt-1">View and restore soft-deleted user accounts</p>
     </div>
 </div>
 ';
