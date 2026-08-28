@@ -192,8 +192,8 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
         return $this->fetchAll("
             SELECT id, full_name, email, status, created_at, profile_picture
             FROM users
-            WHERE is_deleted = 0
-            ORDER BY created_at DESC
+            WHERE is_deleted = 0 AND (status IN ('active', 'under_review') OR (status = 'pending' AND kyc_submitted_at IS NOT NULL))
+            ORDER BY COALESCE(kyc_submitted_at, created_at) DESC
             LIMIT 10
         ", []);
     }
