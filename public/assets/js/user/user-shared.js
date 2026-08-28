@@ -782,10 +782,11 @@ window.FinzoSession = {
   },
   async logout() {
     try {
-      await window.api.post('/auth/logout', {});
+      const data = await window.api.post('/auth/logout', {});
       localStorage.removeItem(STATE_KEYS.STATUS);
       localStorage.removeItem(STATE_KEYS.NOTIF_COUNT);
-      window.location.href = '/Finzo/public/index.php';
+      const redirectUrl = (data && data.redirect) ? data.redirect.replace(/\/public\/public\//g, '/public/') : '/Finzo/public/views/auth/login.php';
+      window.location.href = redirectUrl;
     } catch (e) {
       window.location.href = '/Finzo/public/views/auth/login.php';
     }
