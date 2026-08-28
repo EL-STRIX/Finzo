@@ -6,7 +6,9 @@ function escapeHtml(str) {
   return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
-(async function initProfile() {
+document.addEventListener('DOMContentLoaded', initProfile);
+
+async function initProfile() {
   try {
     if (typeof fetchUserSession === 'function') {
       await fetchUserSession();
@@ -174,7 +176,7 @@ function escapeHtml(str) {
   } catch (err) {
     console.error('Failed to populate profile details:', err);
   }
-})();
+}
 
 function updateIdMask() {
   const el = document.getElementById('view-id-number');
