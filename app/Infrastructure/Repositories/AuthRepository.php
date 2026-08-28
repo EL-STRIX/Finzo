@@ -10,13 +10,16 @@ class AuthRepository extends BaseRepository implements \App\Domain\Contracts\Rep
 
     public function findUserByIdentity(string $identity): array|false
     {
+        $cleanIdentity = trim($identity);
+        $normalizedPhone = normalize_phone($cleanIdentity);
+
         return $this->fetchOne("
             SELECT u.id, u.customer_id, u.full_name, u.email, u.phone, u.password_hash, u.status, u.failed_attempts, u.locked_until
             FROM users u
             LEFT JOIN accounts a ON u.customer_id = a.user_id
-            WHERE (u.email = ? OR a.account_no = ?) AND u.is_deleted = 0
+            WHERE (u.email = ? OR u.customer_id = ? OR u.phone = ? OR u.phone = ? OR a.account_no = ?) AND u.is_deleted = 0
             LIMIT 1
-        ", [$identity, $identity]);
+        ", [$cleanIdentity, $cleanIdentity, $cleanIdentity, $normalizedPhone, $cleanIdentity]);
     }
 
     public function findUserByEmail(string $email): array|false

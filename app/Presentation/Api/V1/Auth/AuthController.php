@@ -9,9 +9,9 @@ use App\Shared\Core\Exceptions\ApiException;
 
 class AuthController
 {
-    protected SecurityService $security;
+    protected ?\App\Domain\Contracts\Security\SecurityServiceInterface $security = null;
 
-    private AuthService $service;
+    private \App\Domain\Contracts\Services\AuthServiceInterface $service;
 
     public function __construct(\App\Domain\Contracts\Services\AuthServiceInterface $service, ?\App\Domain\Contracts\Security\SecurityServiceInterface $security = null)
     {
