@@ -81,7 +81,7 @@ async function fetchUserSession() {
       _userCache.status = data.user?.status || 'pending';
       _userCache.id = data.user?.id || 0;
       _userCache.customerId = data.user?.customer_id || '';
-      _userCache.name = data.user?.name || 'User';
+      _userCache.name = data.user?.name || data.user?.full_name || 'User';
       _userCache.email = data.user?.email || '';
       _userCache.phone = data.user?.phone || '';
       _userCache.accountNo = data.account?.account_no || '';

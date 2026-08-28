@@ -10,6 +10,23 @@ ob_start();
     <h1 class="font-display text-3xl font-extrabold text-text-main tracking-tight">Your Profile</h1>
     <p class="text-text-muted mt-1">View and manage your registered personal details, address, identity documentation, and financial profile.</p>
 </div>
+
+<!-- KYC Onboarding Banner for Pending/Rejected Users -->
+<div id="kyc-notice-banner" class="hidden mb-6 p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 flex flex-col sm:flex-row items-center justify-between gap-4">
+    <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-lg bg-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center font-bold text-xl shrink-0">
+            <span class="material-symbols-outlined">assignment_ind</span>
+        </div>
+        <div>
+            <h4 class="font-display text-sm font-bold text-text-main" id="kyc-banner-title">KYC Onboarding Pending</h4>
+            <p class="text-xs text-text-muted mt-0.5" id="kyc-banner-desc">Please complete your identity and address verification to activate full banking features.</p>
+        </div>
+    </div>
+    <a href="complete-profile.php" id="kyc-banner-btn" class="btn btn-primary text-xs shrink-0">
+        <span>Complete KYC Onboarding</span>
+        <span class="material-symbols-outlined text-sm">arrow_forward</span>
+    </a>
+</div>
   
 <div class="flex flex-col lg:flex-row gap-6">
     <!-- LEFT PANE: Identity Summary & Account Ledger -->

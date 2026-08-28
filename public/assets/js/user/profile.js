@@ -41,12 +41,36 @@ async function initProfile() {
       balance: typeof UserState !== 'undefined' ? UserState.balance : 0,
     };
 
+    const resolvedName = user.full_name || user.name || (typeof UserState !== 'undefined' ? UserState.name : '') || 'Customer Profile';
+    const resolvedCustId = user.customer_id || (typeof UserState !== 'undefined' ? UserState.customerId : '') || 'FNZ-USR-PENDING';
+    const resolvedEmail = user.email || (typeof UserState !== 'undefined' ? UserState.email : '') || '';
+    const resolvedPhone = user.phone || (typeof UserState !== 'undefined' ? UserState.phone : '') || '';
+    const resolvedStatus = user.status || (typeof UserState !== 'undefined' ? UserState.status : 'pending');
+
+    // 0. KYC Banner Toggle
+    const banner = document.getElementById('kyc-notice-banner');
+    if (banner) {
+      if (resolvedStatus === 'pending') {
+        banner.classList.remove('hidden');
+      } else if (resolvedStatus === 'rejected') {
+        banner.classList.remove('hidden');
+        const bTitle = document.getElementById('kyc-banner-title');
+        const bDesc = document.getElementById('kyc-banner-desc');
+        const bBtn = document.getElementById('kyc-banner-btn');
+        if (bTitle) bTitle.textContent = 'Action Required: Re-submit Application';
+        if (bDesc) bDesc.textContent = user.rejection_reason ? ('Reason: ' + user.rejection_reason) : 'Your previous application was returned for updates.';
+        if (bBtn) bBtn.href = 'account-rejected.php';
+      } else {
+        banner.classList.add('hidden');
+      }
+    }
+
     // 1. Identity Summary Card
     const nameEl = document.getElementById('profile-name');
-    if (nameEl) nameEl.textContent = user.full_name || (typeof UserState !== 'undefined' ? UserState.name : '') || 'Customer Profile';
+    if (nameEl) nameEl.textContent = resolvedName;
     
     const custIdEl = document.getElementById('info-customer-id');
-    if (custIdEl) custIdEl.textContent = 'Customer ID: ' + (user.customer_id || (typeof UserState !== 'undefined' ? UserState.customerId : '') || 'FNZ-USR-PENDING');
+    if (custIdEl) custIdEl.textContent = 'Customer ID: ' + resolvedCustId;
 
     const circle = document.getElementById('avatar-circle');
     if (circle) {
@@ -62,20 +86,18 @@ async function initProfile() {
           const clean = cleanSrc.replace(/^\/+/, '');
           cleanSrc = clean.startsWith('Finzo/public/') ? '/' + clean : '/Finzo/public/uploads/' + clean;
         }
-        circle.innerHTML = `<img src="${cleanSrc}" alt="${escapeHtml(user.full_name || 'Avatar')}" class="w-full h-full object-cover rounded-full">`;
+        circle.innerHTML = `<img src="${cleanSrc}" alt="${escapeHtml(resolvedName)}" class="w-full h-full object-cover rounded-full">`;
       } else {
-        const nameStr = user.full_name || (typeof UserState !== 'undefined' ? UserState.name : '') || 'User';
-        const initials = nameStr.split(' ').filter(Boolean).map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'U';
+        const initials = resolvedName.split(' ').filter(Boolean).map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'U';
         circle.innerHTML = `<span class="text-primary-base font-bold text-2xl">${initials}</span>`;
       }
     }
 
     const sMap = { pending: 'badge-warning', under_review: 'badge-info', active: 'badge-success', rejected: 'badge-danger' };
     const sLabel = { pending: 'Pending KYC', under_review: 'In Review', active: 'Active Account', rejected: 'Action Required' };
-    const statusText = user.status || (typeof UserState !== 'undefined' ? UserState.status : 'pending');
     const statusEl = document.getElementById('info-status');
     if (statusEl) {
-      statusEl.innerHTML = `<span class="badge ${sMap[statusText] || 'badge-warning'} uppercase font-bold text-[10px]">${sLabel[statusText] || statusText}</span>`;
+      statusEl.innerHTML = `<span class="badge ${sMap[resolvedStatus] || 'badge-warning'} uppercase font-bold text-[10px]">${sLabel[resolvedStatus] || resolvedStatus}</span>`;
     }
     
     const sinceEl = document.getElementById('info-member-since');
@@ -106,7 +128,7 @@ async function initProfile() {
 
     // 3. Personal & Demographics
     const viewNameEl = document.getElementById('view-full-name');
-    if (viewNameEl) viewNameEl.textContent = user.full_name || (typeof UserState !== 'undefined' ? UserState.name : '') || 'Not Specified';
+    if (viewNameEl) viewNameEl.textContent = resolvedName;
 
     const dobEl = document.getElementById('view-dob');
     if (dobEl) {
@@ -135,10 +157,10 @@ async function initProfile() {
 
     // 4. Contact & Address
     const emailInput = document.getElementById('edit-email');
-    if (emailInput) emailInput.value = user.email || (typeof UserState !== 'undefined' ? UserState.email : '') || '';
+    if (emailInput) emailInput.value = resolvedEmail;
 
     const phoneInput = document.getElementById('edit-phone');
-    if (phoneInput) phoneInput.value = user.phone || (typeof UserState !== 'undefined' ? UserState.phone : '') || '';
+    if (phoneInput) phoneInput.value = resolvedPhone;
 
     const streetEl = document.getElementById('view-street');
     if (streetEl) streetEl.textContent = user.street || 'Not Provided';
