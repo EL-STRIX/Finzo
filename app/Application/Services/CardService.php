@@ -46,6 +46,11 @@ class CardService implements CardServiceInterface
         return $this->repository->getCardProducts($status);
     }
 
+    public function getCards(int $userId): array
+    {
+        return $this->repository->getCards($userId);
+    }
+
     public function requestCard(int $userId, array $data): array
     {
         $this->validator->validateCardRequest($data);

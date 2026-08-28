@@ -153,6 +153,7 @@ $router->post('/api/v1/user/security/verify-pin', [UserController::class, 'verif
 
 
 $router->get('/api/v1/loan-products', [UserLoanController::class, 'products']);
+$router->get('/api/v1/loans', [UserLoanController::class, 'list'], [UserAuthMiddleware::class]);
 $router->post('/api/v1/loans/apply', [UserLoanController::class, 'apply'], [UserAuthMiddleware::class]);
 $router->get('/api/v1/loans/{id}/schedules', [UserLoanController::class, 'schedules'], [UserAuthMiddleware::class]);
 $router->post('/api/v1/loans/{id}/repay', [UserLoanController::class, 'repay'], [UserAuthMiddleware::class]);
@@ -160,12 +161,30 @@ $router->get('/api/v1/loans/{id}/repayments', [UserLoanController::class, 'repay
 
 
 $router->get('/api/v1/card-products', [UserCardController::class, 'products']);
+$router->get('/api/v1/cards', [UserCardController::class, 'list'], [UserAuthMiddleware::class]);
 $router->post('/api/v1/cards/request', [UserCardController::class, 'requestCard'], [UserAuthMiddleware::class]);
 $router->post('/api/v1/cards/{id}/activate', [UserCardController::class, 'activate'], [UserAuthMiddleware::class]);
 $router->post('/api/v1/cards/{id}/change-pin', [UserCardController::class, 'changePin'], [UserAuthMiddleware::class]);
 $router->post('/api/v1/cards/{id}/status', [UserCardController::class, 'updateStatus'], [UserAuthMiddleware::class]);
 $router->post('/api/v1/cards/{id}/transact', [UserCardController::class, 'transact'], [UserAuthMiddleware::class]);
 $router->get('/api/v1/cards/{id}/statement', [UserCardController::class, 'statement'], [UserAuthMiddleware::class]);
+
+use App\Presentation\Api\V1\User\UserInvestmentController;
+$router->get('/api/v1/user/investments', [UserInvestmentController::class, 'list'], [UserAuthMiddleware::class]);
+$router->post('/api/v1/user/investments/fd/create', [UserInvestmentController::class, 'create'], [UserAuthMiddleware::class]);
+$router->post('/api/v1/user/investments/fd/{id}/close', [UserInvestmentController::class, 'close'], [UserAuthMiddleware::class]);
+use App\Presentation\Api\V1\User\UserBillPaymentController;
+$router->get('/api/v1/user/billers', [UserBillPaymentController::class, 'billers'], [UserAuthMiddleware::class]);
+$router->get('/api/v1/user/billers/history', [UserBillPaymentController::class, 'history'], [UserAuthMiddleware::class]);
+use App\Presentation\Api\V1\User\UserSecurityCenterController;
+$router->get('/api/v1/user/security/overview', [UserSecurityCenterController::class, 'overview'], [UserAuthMiddleware::class]);
+$router->post('/api/v1/user/security/pin/set', [UserSecurityCenterController::class, 'setPin'], [UserAuthMiddleware::class]);
+$router->post('/api/v1/user/security/sessions/revoke', [UserSecurityCenterController::class, 'revokeSession'], [UserAuthMiddleware::class]);
+use App\Presentation\Api\V1\User\UserSupportController;
+$router->get('/api/v1/user/support/tickets', [UserSupportController::class, 'tickets'], [UserAuthMiddleware::class]);
+$router->post('/api/v1/user/support/tickets', [UserSupportController::class, 'createTicket'], [UserAuthMiddleware::class]);
+$router->get('/api/v1/user/support/tickets/{id}', [UserSupportController::class, 'ticketDetail'], [UserAuthMiddleware::class]);
+$router->post('/api/v1/user/support/tickets/{id}/reply', [UserSupportController::class, 'reply'], [UserAuthMiddleware::class]);
 
 $router->get('/api/v1/public/stats', [PublicController::class, 'chartStats']);
 $router->get('/api/v1/public/branches', [PublicController::class, 'branches']);

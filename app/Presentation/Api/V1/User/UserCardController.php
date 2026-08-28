@@ -21,6 +21,19 @@ class UserCardController
         }
     }
 
+    public function list(): array
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+            throw new ApiException('Method Not Allowed', 405);
+        }
+        $userId = $_SESSION['user_id'] ?? 0;
+        if (!$userId) {
+            throw new ApiException('Unauthorized', 401);
+        }
+        $cards = $this->service->getCards($userId);
+        return ['success' => true, 'cards' => $cards];
+    }
+
     public function products(): array
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'GET') {

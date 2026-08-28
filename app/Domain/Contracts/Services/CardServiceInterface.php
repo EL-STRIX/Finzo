@@ -7,6 +7,7 @@ interface CardServiceInterface
     public function createCardProduct(array $data): array;
     public function getCardProducts(string $status = 'all'): array;
     public function requestCard(int $userId, array $data): array;
+    public function getCards(int $userId): array;
     public function getCardRequests(array $filters = []): array;
     public function issueCard(int $requestId, int $adminId, string $notes = ''): array;
     public function rejectCardRequest(int $requestId, int $adminId, string $notes = ''): array;

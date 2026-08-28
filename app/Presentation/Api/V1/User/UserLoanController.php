@@ -21,6 +21,21 @@ class UserLoanController
         }
     }
 
+    public function list(): array
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+            throw new ApiException('Method Not Allowed', 405);
+        }
+        
+        $userId = $_SESSION['user_id'] ?? 0;
+        if (!$userId) {
+            throw new ApiException('Unauthorized', 401);
+        }
+
+        $loans = $this->service->getLoanApplications(['user_id' => $userId]);
+        return ['success' => true, 'loans' => $loans];
+    }
+
     public function products(): array
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'GET') {

@@ -379,14 +379,20 @@ function buildSidebar(activePage) {
     { id: 'dashboard', icon: 'dashboard', label: 'Dashboard', href: 'dashboard.php' },
     { id: 'accounts', icon: 'account_balance', label: 'My Accounts', href: 'accounts.php', lockedWhenInactive: true },
     { id: 'transfer', icon: 'swap_horiz', label: 'Fund Transfer', href: 'transfer.php', lockedWhenInactive: true },
+    { id: 'loans', icon: 'account_balance_wallet', label: 'Loans & Credit', href: 'user-loans.php', lockedWhenInactive: true },
+    { id: 'cards', icon: 'credit_card', label: 'Cards & Controls', href: 'user-cards.php', lockedWhenInactive: true },
+    { id: 'investments', icon: 'savings', label: 'Investments & FDs', href: 'user-investments.php', lockedWhenInactive: true },
+    { id: 'bill-payments', icon: 'payments', label: 'Bill Payments', href: 'user-bill-payments.php', lockedWhenInactive: true },
     { id: 'transactions', icon: 'receipt_long', label: 'Transactions', href: 'transactions.php', lockedWhenInactive: true },
     { id: 'beneficiary', icon: 'group', label: 'Beneficiaries', href: 'beneficiary.php', lockedWhenInactive: true },
     { id: 'statement', icon: 'description', label: 'Statement', href: 'statement.php', lockedWhenInactive: true },
+    { id: 'support', icon: 'help', label: 'Help & Support', href: 'user-support.php' },
     { id: 'notifications', icon: 'notifications', label: 'Notifications', href: 'notifications.php', badge: UserState.notifCount > 0 ? UserState.notifCount : null },
   ];
 
   const settingsLinks = [
     { id: 'profile', icon: 'person', label: 'My Profile', href: 'profile.php' },
+    { id: 'security', icon: 'security', label: 'Security & 2FA', href: 'user-security.php' },
     { id: 'change-password', icon: 'lock', label: 'Change Password', href: 'change-password.php' },
   ];
 
