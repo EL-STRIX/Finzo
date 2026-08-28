@@ -454,7 +454,7 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
     public function getPendingApprovalsStats() {
         return $this->fetchOne("
             SELECT
-                SUM(CASE WHEN status = 'pending'      THEN 1 ELSE 0 END) as pending_review,
+                SUM(CASE WHEN (status = 'pending' AND kyc_submitted_at IS NOT NULL) THEN 1 ELSE 0 END) as pending_review,
                 SUM(CASE WHEN status = 'under_review' THEN 1 ELSE 0 END) as under_review,
                 SUM(CASE WHEN status = 'active' AND DATE(updated_at) = CURDATE() THEN 1 ELSE 0 END) as approved_today,
                 SUM(CASE WHEN status = 'rejected' AND DATE(updated_at) = CURDATE() THEN 1 ELSE 0 END) as rejected_today,
@@ -932,7 +932,7 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
         $under_review_status = \App\Domain\Enums\AccountStatusEnum::UNDER_REVIEW->value;
         $suspended_status = \App\Domain\Enums\AccountStatusEnum::SUSPENDED->value;
 
-        $pending_users = (int)$this->getSingleStat("SELECT COUNT(*) FROM users WHERE status IN ('{$pending_status}', '{$under_review_status}') AND is_deleted = 0");
+        $pending_users = (int)$this->getSingleStat("SELECT COUNT(*) FROM users WHERE (status = '{$under_review_status}' OR (status = '{$pending_status}' AND kyc_submitted_at IS NOT NULL)) AND is_deleted = 0");
 
         return [
             'total_users'        => (int)$this->getSingleStat("SELECT COUNT(*) FROM users WHERE (is_deleted = 0 AND status IN ('{$active_status}', '{$suspended_status}')) OR is_deleted = 1"),

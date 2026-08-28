@@ -517,7 +517,7 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
         $params = [];
 
         if ($filters['status'] === \App\Domain\Enums\AccountStatusEnum::PENDING->value) {
-            $where_clauses[] = "u.status = 'pending'";
+            $where_clauses[] = "u.status = 'pending' AND u.kyc_submitted_at IS NOT NULL";
         } elseif ($filters['status'] === 'under_review') {
             $where_clauses[] = "u.status = 'under_review'";
         } elseif ($filters['status'] === 'approved' || $filters['status'] === 'active') {
@@ -525,9 +525,9 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
         } elseif ($filters['status'] === 'rejected') {
             $where_clauses[] = "u.status = 'rejected'";
         } elseif ($filters['status'] === 'all_records') {
-            // Include all applications across all statuses
+            $where_clauses[] = "(u.status IN ('active', 'rejected', 'under_review') OR (u.status = 'pending' AND u.kyc_submitted_at IS NOT NULL))";
         } else {
-            $where_clauses[] = "u.status IN ('pending', 'under_review')";
+            $where_clauses[] = "(u.status = 'under_review' OR (u.status = 'pending' AND u.kyc_submitted_at IS NOT NULL))";
         }
 
         // Search Filter (Full name, Customer ID, Email, Phone)
