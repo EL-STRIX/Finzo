@@ -99,6 +99,8 @@ class SessionManager
             self::regenerate(true);
         }
 
+        $_SESSION = [];
+
         $_SESSION['user_id']          = (int)$user['id'];
         $_SESSION['user_customer_id'] = $user['customer_id'];
         $_SESSION['user_name']        = $user['full_name'];
@@ -123,6 +125,8 @@ class SessionManager
             self::regenerate(true);
         }
 
+        $_SESSION = [];
+
         $_SESSION['admin_id']      = (int)$admin['id'];
         $_SESSION['admin_name']    = $admin['full_name'];
         $_SESSION['admin_email']   = $admin['email'];
@@ -144,6 +148,8 @@ class SessionManager
             self::start();
             self::regenerate(true);
         }
+
+        $_SESSION = [];
 
         $_SESSION['staff_id']      = (int)$staff['id'];
         $_SESSION['staff_display_id'] = $staff['staff_id'];

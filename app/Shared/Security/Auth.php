@@ -19,6 +19,17 @@ class Auth
             return $tokenUser;
         }
 
+        $role = $_SESSION['role'] ?? null;
+        if ($role === 'admin' && isset($_SESSION['admin_id'])) {
+            return ['id' => $_SESSION['admin_id'], 'type' => 'admin', 'role' => $_SESSION['admin_role'] ?? 'admin'];
+        }
+        if ($role === 'staff' && isset($_SESSION['staff_id'])) {
+            return ['id' => $_SESSION['staff_id'], 'type' => 'staff', 'role' => $_SESSION['staff_role'] ?? 'staff'];
+        }
+        if (($role === 'customer' || $role === 'user') && isset($_SESSION['user_id'])) {
+            return ['id' => $_SESSION['user_id'], 'type' => 'customer', 'role' => 'customer'];
+        }
+
         if (isset($_SESSION['admin_id'])) {
             return ['id' => $_SESSION['admin_id'], 'type' => 'admin', 'role' => $_SESSION['admin_role'] ?? 'admin'];
         }
