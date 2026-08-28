@@ -3,20 +3,21 @@
    ═══════════════════════════════════════════ */
 
 // ── THEME ──
-const THEME_KEY = 'finzo-user-theme';
+const THEME_KEY = 'finzo-theme';
 
 function initTheme() {
-  const saved = localStorage.getItem(THEME_KEY);
-  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  if (saved === 'dark' || (!saved && prefersDark)) {
-    document.documentElement.classList.add('dark');
-  }
+  const saved = localStorage.getItem(THEME_KEY) || 'light';
+  document.documentElement.setAttribute('data-theme', saved);
+  document.documentElement.classList.toggle('dark', saved === 'dark');
   updateThemeIcon();
 }
 
 function toggleTheme() {
-  const isDark = document.documentElement.classList.toggle('dark');
-  localStorage.setItem(THEME_KEY, isDark ? 'dark' : 'light');
+  const current = localStorage.getItem(THEME_KEY) || 'light';
+  const target = current === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', target);
+  document.documentElement.classList.toggle('dark', target === 'dark');
+  localStorage.setItem(THEME_KEY, target);
   updateThemeIcon();
 }
 
@@ -27,6 +28,14 @@ function updateThemeIcon() {
   const labels = document.querySelectorAll('[data-theme-label]');
   labels.forEach(l => l.textContent = isDark ? 'Light Mode' : 'Dark Mode');
 }
+
+document.addEventListener('click', function(e) {
+  const toggleBtn = e.target.closest('[data-toggle-theme]');
+  if (toggleBtn) {
+    e.preventDefault();
+    toggleTheme();
+  }
+});
 
 initTheme();
 
@@ -102,24 +111,24 @@ async function fetchUserSession() {
       const statusBadge = document.getElementById('sidebar-status-badge');
       if (statusBadge) {
         if (_userCache.status === 'active') {
-          statusBadge.innerHTML = `<div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-success-surface/20 border border-success-base/30 text-success-base text-[10px] font-bold uppercase tracking-widest"><div class="w-1.5 h-1.5 rounded-full bg-success-base"></div>Active</div>`;
+          statusBadge.innerHTML = `<div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-[10px] font-black uppercase tracking-wider"><div class="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>Account Active</div>`;
         } else if (_userCache.status === 'under_review') {
-          statusBadge.innerHTML = `<div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-info-surface/20 border border-info-base/30 text-info-base text-[10px] font-bold uppercase tracking-widest"><div class="w-1.5 h-1.5 rounded-full bg-info-base"></div>Under Review</div>`;
+          statusBadge.innerHTML = `<div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-indigo-500/10 border border-indigo-500/30 text-indigo-600 dark:text-indigo-400 text-[10px] font-black uppercase tracking-wider"><div class="w-1.5 h-1.5 rounded-full bg-indigo-500"></div>Under Review</div>`;
         } else if (_userCache.status === 'rejected') {
-          statusBadge.innerHTML = `<div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-danger-surface/20 border border-danger-base/30 text-danger-base text-[10px] font-bold uppercase tracking-widest"><div class="w-1.5 h-1.5 rounded-full bg-danger-base"></div>Action Required</div>`;
+          statusBadge.innerHTML = `<div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-rose-500/10 border border-rose-500/30 text-rose-600 dark:text-rose-400 text-[10px] font-black uppercase tracking-wider"><div class="w-1.5 h-1.5 rounded-full bg-rose-500"></div>Action Required</div>`;
         } else {
-          statusBadge.innerHTML = `<div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-warning-surface/20 border border-warning-base/30 text-warning-base text-[10px] font-bold uppercase tracking-widest"><div class="w-1.5 h-1.5 rounded-full bg-warning-base animate-pulse"></div>Pending KYC</div>`;
+          statusBadge.innerHTML = `<div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-amber-500/10 border border-amber-500/30 text-amber-600 dark:text-amber-400 text-[10px] font-black uppercase tracking-wider"><div class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></div>Pending KYC</div>`;
         }
       }
 
       if (_userCache.avatarUrl) {
-        document.querySelectorAll('header .header-avatar').forEach(el => {
+        document.querySelectorAll('.header-avatar').forEach(el => {
           let photoSrc = _userCache.avatarUrl;
           if (!photoSrc.startsWith('http') && !photoSrc.startsWith('data:')) {
             const clean = photoSrc.replace(/^\/+/, '');
             photoSrc = clean.startsWith('Finzo/public/') ? '/' + clean : '/Finzo/public/uploads/' + clean;
           }
-          el.innerHTML = `<img src="${photoSrc}?v=${Date.now()}" alt="${_userCache.name}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+          el.innerHTML = `<img src="${photoSrc}?v=${Date.now()}" alt="${_userCache.name}" class="w-full h-full object-cover rounded-full">`;
         });
       }
 
@@ -131,6 +140,36 @@ async function fetchUserSession() {
     console.warn('Session fetch failed, using cached state:', err.message);
   }
 }
+
+// Global Event Listeners for Mobile Menu and Logout
+document.addEventListener('click', async function(e) {
+  const mobileBtn = e.target.closest('#mobile-menu-btn, .nav-mobile-toggle');
+  if (mobileBtn) {
+    e.preventDefault();
+    const sb = document.getElementById('sidebar') || document.getElementById('user-sidebar');
+    const overlay = document.getElementById('sidebar-overlay') || document.getElementById('user-sidebar-overlay');
+    if (sb) sb.classList.toggle('-translate-x-full');
+    if (overlay) {
+      overlay.classList.toggle('hidden');
+      overlay.classList.toggle('opacity-0');
+    }
+  }
+
+  const overlay = e.target.closest('#sidebar-overlay, #user-sidebar-overlay');
+  if (overlay) {
+    const sb = document.getElementById('sidebar') || document.getElementById('user-sidebar');
+    if (sb) sb.classList.add('-translate-x-full');
+    overlay.classList.add('hidden', 'opacity-0');
+  }
+
+  const logoutBtn = e.target.closest('#user-logout-btn');
+  if (logoutBtn) {
+    e.preventDefault();
+    if (confirm('Are you sure you want to log out of your Finzo Customer Account?')) {
+      await FinzoSession.logout();
+    }
+  }
+});
 
 const UserState = {
   get status() { return _userCache.status; },

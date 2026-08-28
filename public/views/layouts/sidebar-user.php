@@ -2,161 +2,240 @@
 $currentPath = basename($_SERVER['PHP_SELF']);
 $userStatus = $_SESSION['user_status'] ?? 'pending';
 $isActive = $userStatus === 'active';
-function isActiveUser($path, $current) {
-    return (strpos($current, $path) !== false) ? 'bg-primary-surface/10 text-primary-base border-l-4 border-primary-base active-nav-item' : 'text-text-muted hover:bg-surface-subtle dark:hover:bg-white/5 hover:text-text-main dark:hover:text-white border-l-4 border-transparent';
+
+function isActiveUserNav($path, $current) {
+    return (strpos($current, $path) !== false) 
+        ? 'bg-primary/10 text-primary border-l-4 border-primary font-bold active-nav-item' 
+        : 'text-text-secondary hover:bg-surface hover:text-text-primary border-l-4 border-transparent';
 }
 ?>
 <!-- Customer Sidebar -->
-<aside class="fixed top-16 left-0 h-[calc(100vh-4rem)] w-64 bg-white dark:bg-surface-dark border-r border-border-subtle z-40 transition-transform duration-300 -translate-x-full lg:translate-x-0 flex flex-col" id="sidebar">
+<aside class="fixed top-16 left-0 h-[calc(100vh-4rem)] w-64 bg-surface/90 dark:bg-surface-dark border-r border-border-subtle z-40 transition-transform duration-300 -translate-x-full lg:translate-x-0 flex flex-col backdrop-blur-md" id="sidebar">
     
-    <!-- User Profile Summary -->
-    <div class="px-6 py-5 border-b border-border-subtle bg-surface-subtle/30 dark:bg-black/10">
+    <!-- User Profile Summary Card -->
+    <div class="px-5 py-4 border-b border-border-subtle bg-surface-subtle/30 dark:bg-black/10">
         <div class="flex items-center gap-3 mb-2">
-            <div class="w-10 h-10 rounded-full bg-primary-base flex items-center justify-center font-bold text-white shadow-sm user-initials">
-                <?= htmlspecialchars(strtoupper(substr($_SESSION['user_name'] ?? 'U', 0, 2)), ENT_QUOTES, 'UTF-8') ?>
+            <div class="header-avatar w-10 h-10 rounded-full bg-primary/10 text-primary border border-primary/20 flex items-center justify-center font-bold text-xs shadow-sm shrink-0 overflow-hidden user-initials">
+                <?php if (!empty($_SESSION['user_avatar'])): ?>
+                    <img src="<?= htmlspecialchars($_SESSION['user_avatar']) ?>" alt="Avatar" class="w-full h-full object-cover" onerror="this.outerHTML='<span><?= htmlspecialchars(strtoupper(substr($_SESSION['user_name'] ?? 'U', 0, 2)), ENT_QUOTES, 'UTF-8') ?></span>'">
+                <?php else: ?>
+                    <?= htmlspecialchars(strtoupper(substr($_SESSION['user_name'] ?? 'U', 0, 2)), ENT_QUOTES, 'UTF-8') ?>
+                <?php endif; ?>
             </div>
-            <div>
-                <div class="text-sm font-bold text-text-main dark:text-white user-name truncate max-w-[140px]"><?= htmlspecialchars($_SESSION['user_name'] ?? 'User', ENT_QUOTES, 'UTF-8') ?></div>
-                <div class="text-xs text-text-muted user-id"><?= !empty($_SESSION['user_customer_id']) ? 'ID: ' . htmlspecialchars($_SESSION['user_customer_id'], ENT_QUOTES, 'UTF-8') : '' ?></div>
+            <div class="min-w-0 flex-1">
+                <div class="text-sm font-bold text-text-primary dark:text-white truncate user-name"><?= htmlspecialchars($_SESSION['user_name'] ?? 'User', ENT_QUOTES, 'UTF-8') ?></div>
+                <div class="text-xs text-text-secondary font-mono user-id truncate"><?= !empty($_SESSION['user_customer_id']) ? 'ID: ' . htmlspecialchars($_SESSION['user_customer_id'], ENT_QUOTES, 'UTF-8') : '' ?></div>
             </div>
         </div>
+
         <div id="sidebar-status-badge">
             <?php if ($userStatus === 'active'): ?>
-                <div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-success-surface/20 border border-success-base/30 text-success-base text-[10px] font-bold uppercase tracking-widest">
-                    <div class="w-1.5 h-1.5 rounded-full bg-success-base"></div>
-                    Active
+                <div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-[10px] font-black uppercase tracking-wider">
+                    <div class="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
+                    Account Active
                 </div>
             <?php elseif ($userStatus === 'under_review'): ?>
-                <div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-info-surface/20 border border-info-base/30 text-info-base text-[10px] font-bold uppercase tracking-widest">
-                    <div class="w-1.5 h-1.5 rounded-full bg-info-base"></div>
+                <div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-indigo-500/10 border border-indigo-500/30 text-indigo-600 dark:text-indigo-400 text-[10px] font-black uppercase tracking-wider">
+                    <div class="w-1.5 h-1.5 rounded-full bg-indigo-500"></div>
                     Under Review
                 </div>
             <?php elseif ($userStatus === 'rejected'): ?>
-                <div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-danger-surface/20 border border-danger-base/30 text-danger-base text-[10px] font-bold uppercase tracking-widest">
-                    <div class="w-1.5 h-1.5 rounded-full bg-danger-base"></div>
+                <div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-rose-500/10 border border-rose-500/30 text-rose-600 dark:text-rose-400 text-[10px] font-black uppercase tracking-wider">
+                    <div class="w-1.5 h-1.5 rounded-full bg-rose-500"></div>
                     Action Required
                 </div>
             <?php else: ?>
-                <div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-warning-surface/20 border border-warning-base/30 text-warning-base text-[10px] font-bold uppercase tracking-widest">
-                    <div class="w-1.5 h-1.5 rounded-full bg-warning-base animate-pulse"></div>
+                <div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-amber-500/10 border border-amber-500/30 text-amber-600 dark:text-amber-400 text-[10px] font-black uppercase tracking-wider">
+                    <div class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></div>
                     Pending KYC
                 </div>
             <?php endif; ?>
         </div>
     </div>
 
-    <!-- Navigation -->
-    <nav class="flex-1 overflow-y-auto py-4 custom-scrollbar" aria-label="Sidebar Navigation">
-        <ul class="space-y-1">
-            <li>
-                <a href="dashboard.php" class="flex items-center gap-3 px-6 py-2.5 font-bold transition-all <?= isActiveUser('dashboard', $currentPath) ?>">
-                    <span class="material-symbols-outlined text-[20px]" aria-hidden="true">dashboard</span>
-                    <span class="text-sm">Dashboard</span>
-                </a>
-            </li>
-
-            <?php if (!$isActive): ?>
+    <!-- Navigation List -->
+    <nav class="flex-1 overflow-y-auto py-3 custom-scrollbar space-y-4" aria-label="Sidebar Navigation">
+        
+        <!-- Section 1: Overview & Accounts -->
+        <div>
+            <div class="px-5 mb-1.5 text-[10px] font-black text-text-secondary uppercase tracking-widest">Main Banking</div>
+            <ul class="space-y-0.5">
                 <li>
-                    <a href="<?= $userStatus === 'under_review' ? 'account-pending.php' : ($userStatus === 'rejected' ? 'account-rejected.php' : 'complete-profile.php') ?>" class="flex items-center justify-between px-6 py-2.5 font-bold transition-all <?= isActiveUser('complete-profile', $currentPath) || isActiveUser('account-pending', $currentPath) || isActiveUser('account-rejected', $currentPath) ? 'bg-primary-surface/10 text-primary-base border-l-4 border-primary-base active-nav-item' : 'text-primary-base bg-primary-surface/5 hover:bg-primary-surface/10 border-l-4 border-primary-base' ?>">
-                        <div class="flex items-center gap-3">
-                            <span class="material-symbols-outlined text-[20px]" aria-hidden="true">assignment_ind</span>
-                            <span class="text-sm"><?= $userStatus === 'under_review' ? 'KYC Status' : ($userStatus === 'rejected' ? 'Resubmit KYC' : 'Complete KYC') ?></span>
-                        </div>
-                        <span class="text-[10px] px-1.5 py-0.5 rounded bg-primary-base text-white uppercase font-bold tracking-wider">Required</span>
+                    <a href="dashboard.php" class="flex items-center gap-3 px-5 py-2 text-xs font-semibold transition-all <?= isActiveUserNav('dashboard', $currentPath) ?>">
+                        <span class="material-symbols-outlined text-[18px]" aria-hidden="true">dashboard</span>
+                        <span>Dashboard</span>
                     </a>
                 </li>
-            <?php endif; ?>
 
-            <li>
-                <a href="<?= $isActive ? 'accounts.php' : '#' ?>" class="flex items-center justify-between px-6 py-2.5 font-bold transition-all <?= isActiveUser('account', $currentPath) ?> <?= !$isActive ? 'opacity-60 cursor-not-allowed' : '' ?>" <?= !$isActive ? 'title="Available after account activation"' : '' ?>>
-                    <div class="flex items-center gap-3">
-                        <span class="material-symbols-outlined text-[20px]" aria-hidden="true">account_balance_wallet</span>
-                        <span class="text-sm">Accounts</span>
-                    </div>
-                    <?php if (!$isActive): ?>
-                        <span class="material-symbols-outlined text-[16px] text-text-muted" aria-hidden="true">lock</span>
-                    <?php endif; ?>
-                </a>
-            </li>
-            <li>
-                <a href="<?= $isActive ? 'transfer.php' : '#' ?>" class="flex items-center justify-between px-6 py-2.5 font-bold transition-all <?= isActiveUser('transfer', $currentPath) ?> <?= !$isActive ? 'opacity-60 cursor-not-allowed' : '' ?>" <?= !$isActive ? 'title="Available after account activation"' : '' ?>>
-                    <div class="flex items-center gap-3">
-                        <span class="material-symbols-outlined text-[20px]" aria-hidden="true">swap_horiz</span>
-                        <span class="text-sm">Transfers</span>
-                    </div>
-                    <?php if (!$isActive): ?>
-                        <span class="material-symbols-outlined text-[16px] text-text-muted" aria-hidden="true">lock</span>
-                    <?php endif; ?>
-                </a>
-            </li>
-            <li>
-                <a href="<?= $isActive ? 'beneficiary.php' : '#' ?>" class="flex items-center justify-between px-6 py-2.5 font-bold transition-all <?= isActiveUser('beneficiary', $currentPath) ?> <?= !$isActive ? 'opacity-60 cursor-not-allowed' : '' ?>" <?= !$isActive ? 'title="Available after account activation"' : '' ?>>
-                    <div class="flex items-center gap-3">
-                        <span class="material-symbols-outlined text-[20px]" aria-hidden="true">group</span>
-                        <span class="text-sm">Beneficiaries</span>
-                    </div>
-                    <?php if (!$isActive): ?>
-                        <span class="material-symbols-outlined text-[16px] text-text-muted" aria-hidden="true">lock</span>
-                    <?php endif; ?>
-                </a>
-            </li>
-            <li>
-                <a href="<?= $isActive ? 'transactions.php' : '#' ?>" class="flex items-center justify-between px-6 py-2.5 font-bold transition-all <?= isActiveUser('transaction', $currentPath) ?> <?= !$isActive ? 'opacity-60 cursor-not-allowed' : '' ?>" <?= !$isActive ? 'title="Available after account activation"' : '' ?>>
-                    <div class="flex items-center gap-3">
-                        <span class="material-symbols-outlined text-[20px]" aria-hidden="true">receipt_long</span>
-                        <span class="text-sm">Transactions</span>
-                    </div>
-                    <?php if (!$isActive): ?>
-                        <span class="material-symbols-outlined text-[16px] text-text-muted" aria-hidden="true">lock</span>
-                    <?php endif; ?>
-                </a>
-            </li>
-            <li>
-                <a href="<?= $isActive ? 'statement.php' : '#' ?>" class="flex items-center justify-between px-6 py-2.5 font-bold transition-all <?= isActiveUser('statement', $currentPath) ?> <?= !$isActive ? 'opacity-60 cursor-not-allowed' : '' ?>" <?= !$isActive ? 'title="Available after account activation"' : '' ?>>
-                    <div class="flex items-center gap-3">
-                        <span class="material-symbols-outlined text-[20px]" aria-hidden="true">description</span>
-                        <span class="text-sm">Statements</span>
-                    </div>
-                    <?php if (!$isActive): ?>
-                        <span class="material-symbols-outlined text-[16px] text-text-muted" aria-hidden="true">lock</span>
-                    <?php endif; ?>
-                </a>
-            </li>
-        </ul>
+                <?php if (!$isActive): ?>
+                    <li>
+                        <a href="<?= $userStatus === 'under_review' ? 'account-pending.php' : ($userStatus === 'rejected' ? 'account-rejected.php' : 'complete-profile.php') ?>" class="flex items-center justify-between px-5 py-2 text-xs font-bold transition-all bg-primary/10 text-primary border-l-4 border-primary">
+                            <div class="flex items-center gap-3">
+                                <span class="material-symbols-outlined text-[18px]" aria-hidden="true">assignment_ind</span>
+                                <span><?= $userStatus === 'under_review' ? 'KYC Status' : ($userStatus === 'rejected' ? 'Resubmit KYC' : 'Complete KYC') ?></span>
+                            </div>
+                            <span class="text-[9px] px-1.5 py-0.5 rounded bg-primary text-white uppercase font-black tracking-wider">Action</span>
+                        </a>
+                    </li>
+                <?php endif; ?>
 
-        <div class="px-6 mb-2 mt-6">
-            <div class="text-[10px] font-black text-text-muted uppercase tracking-widest">Account</div>
+                <li>
+                    <a href="<?= $isActive ? 'accounts.php' : '#' ?>" class="flex items-center justify-between px-5 py-2 text-xs font-semibold transition-all <?= isActiveUserNav('account', $currentPath) ?> <?= !$isActive ? 'opacity-50 cursor-not-allowed' : '' ?>" <?= !$isActive ? 'title="Available after account activation"' : '' ?>>
+                        <div class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-[18px]" aria-hidden="true">account_balance</span>
+                            <span>My Accounts</span>
+                        </div>
+                        <?php if (!$isActive): ?><span class="material-symbols-outlined text-[14px] text-text-secondary" aria-hidden="true">lock</span><?php endif; ?>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="<?= $isActive ? 'transfer.php' : '#' ?>" class="flex items-center justify-between px-5 py-2 text-xs font-semibold transition-all <?= isActiveUserNav('transfer', $currentPath) ?> <?= !$isActive ? 'opacity-50 cursor-not-allowed' : '' ?>" <?= !$isActive ? 'title="Available after account activation"' : '' ?>>
+                        <div class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-[18px]" aria-hidden="true">swap_horiz</span>
+                            <span>Fund Transfer</span>
+                        </div>
+                        <?php if (!$isActive): ?><span class="material-symbols-outlined text-[14px] text-text-secondary" aria-hidden="true">lock</span><?php endif; ?>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="<?= $isActive ? 'transactions.php' : '#' ?>" class="flex items-center justify-between px-5 py-2 text-xs font-semibold transition-all <?= isActiveUserNav('transaction', $currentPath) ?> <?= !$isActive ? 'opacity-50 cursor-not-allowed' : '' ?>" <?= !$isActive ? 'title="Available after account activation"' : '' ?>>
+                        <div class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-[18px]" aria-hidden="true">receipt_long</span>
+                            <span>Transactions</span>
+                        </div>
+                        <?php if (!$isActive): ?><span class="material-symbols-outlined text-[14px] text-text-secondary" aria-hidden="true">lock</span><?php endif; ?>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="<?= $isActive ? 'statement.php' : '#' ?>" class="flex items-center justify-between px-5 py-2 text-xs font-semibold transition-all <?= isActiveUserNav('statement', $currentPath) ?> <?= !$isActive ? 'opacity-50 cursor-not-allowed' : '' ?>" <?= !$isActive ? 'title="Available after account activation"' : '' ?>>
+                        <div class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-[18px]" aria-hidden="true">description</span>
+                            <span>Statements</span>
+                        </div>
+                        <?php if (!$isActive): ?><span class="material-symbols-outlined text-[14px] text-text-secondary" aria-hidden="true">lock</span><?php endif; ?>
+                    </a>
+                </li>
+            </ul>
         </div>
-        
-        <ul class="space-y-1">
-            <li>
-                <a href="profile.php" class="flex items-center gap-3 px-6 py-2.5 font-bold transition-all <?= isActiveUser('profile', $currentPath) ?>">
-                    <span class="material-symbols-outlined text-[20px]" aria-hidden="true">person</span>
-                    <span class="text-sm">Profile Settings</span>
-                </a>
-            </li>
-            <li>
-                <a href="notifications.php" class="flex items-center gap-3 px-6 py-2.5 font-bold transition-all <?= isActiveUser('notification', $currentPath) ?>">
-                    <span class="material-symbols-outlined text-[20px]" aria-hidden="true">notifications</span>
-                    <span class="text-sm">Notifications</span>
-                </a>
-            </li>
-            <li>
-                <a href="change-password.php" class="flex items-center gap-3 px-6 py-2.5 font-bold transition-all <?= isActiveUser('password', $currentPath) ?>">
-                    <span class="material-symbols-outlined text-[20px]" aria-hidden="true">lock</span>
-                    <span class="text-sm">Security</span>
-                </a>
-            </li>
-        </ul>
+
+        <!-- Section 2: Financial Products & Services -->
+        <div>
+            <div class="px-5 mb-1.5 text-[10px] font-black text-text-secondary uppercase tracking-widest">Financial Products</div>
+            <ul class="space-y-0.5">
+                <li>
+                    <a href="<?= $isActive ? 'user-loans.php' : '#' ?>" class="flex items-center justify-between px-5 py-2 text-xs font-semibold transition-all <?= isActiveUserNav('loans', $currentPath) ?> <?= !$isActive ? 'opacity-50 cursor-not-allowed' : '' ?>" <?= !$isActive ? 'title="Available after account activation"' : '' ?>>
+                        <div class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-[18px]" aria-hidden="true">account_balance_wallet</span>
+                            <span>Loans &amp; Credit</span>
+                        </div>
+                        <?php if (!$isActive): ?><span class="material-symbols-outlined text-[14px] text-text-secondary" aria-hidden="true">lock</span><?php endif; ?>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="<?= $isActive ? 'user-cards.php' : '#' ?>" class="flex items-center justify-between px-5 py-2 text-xs font-semibold transition-all <?= isActiveUserNav('cards', $currentPath) ?> <?= !$isActive ? 'opacity-50 cursor-not-allowed' : '' ?>" <?= !$isActive ? 'title="Available after account activation"' : '' ?>>
+                        <div class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-[18px]" aria-hidden="true">credit_card</span>
+                            <span>Cards &amp; Controls</span>
+                        </div>
+                        <?php if (!$isActive): ?><span class="material-symbols-outlined text-[14px] text-text-secondary" aria-hidden="true">lock</span><?php endif; ?>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="<?= $isActive ? 'user-investments.php' : '#' ?>" class="flex items-center justify-between px-5 py-2 text-xs font-semibold transition-all <?= isActiveUserNav('investments', $currentPath) ?> <?= !$isActive ? 'opacity-50 cursor-not-allowed' : '' ?>" <?= !$isActive ? 'title="Available after account activation"' : '' ?>>
+                        <div class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-[18px]" aria-hidden="true">savings</span>
+                            <span>Investments &amp; FDs</span>
+                        </div>
+                        <?php if (!$isActive): ?><span class="material-symbols-outlined text-[14px] text-text-secondary" aria-hidden="true">lock</span><?php endif; ?>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="<?= $isActive ? 'user-bill-payments.php' : '#' ?>" class="flex items-center justify-between px-5 py-2 text-xs font-semibold transition-all <?= isActiveUserNav('bill-payments', $currentPath) ?> <?= !$isActive ? 'opacity-50 cursor-not-allowed' : '' ?>" <?= !$isActive ? 'title="Available after account activation"' : '' ?>>
+                        <div class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-[18px]" aria-hidden="true">payments</span>
+                            <span>Bill Payments</span>
+                        </div>
+                        <?php if (!$isActive): ?><span class="material-symbols-outlined text-[14px] text-text-secondary" aria-hidden="true">lock</span><?php endif; ?>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Section 3: Settings & Support -->
+        <div>
+            <div class="px-5 mb-1.5 text-[10px] font-black text-text-secondary uppercase tracking-widest">Account &amp; Help</div>
+            <ul class="space-y-0.5">
+                <li>
+                    <a href="<?= $isActive ? 'beneficiary.php' : '#' ?>" class="flex items-center justify-between px-5 py-2 text-xs font-semibold transition-all <?= isActiveUserNav('beneficiary', $currentPath) ?> <?= !$isActive ? 'opacity-50 cursor-not-allowed' : '' ?>" <?= !$isActive ? 'title="Available after account activation"' : '' ?>>
+                        <div class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-[18px]" aria-hidden="true">group</span>
+                            <span>Beneficiaries</span>
+                        </div>
+                        <?php if (!$isActive): ?><span class="material-symbols-outlined text-[14px] text-text-secondary" aria-hidden="true">lock</span><?php endif; ?>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="user-support.php" class="flex items-center gap-3 px-5 py-2 text-xs font-semibold transition-all <?= isActiveUserNav('support', $currentPath) ?>">
+                        <span class="material-symbols-outlined text-[18px]" aria-hidden="true">help</span>
+                        <span>Help &amp; Support</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="notifications.php" class="flex items-center gap-3 px-5 py-2 text-xs font-semibold transition-all <?= isActiveUserNav('notification', $currentPath) ?>">
+                        <span class="material-symbols-outlined text-[18px]" aria-hidden="true">notifications</span>
+                        <span>Notifications</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="profile.php" class="flex items-center gap-3 px-5 py-2 text-xs font-semibold transition-all <?= isActiveUserNav('profile', $currentPath) ?>">
+                        <span class="material-symbols-outlined text-[18px]" aria-hidden="true">person</span>
+                        <span>My Profile</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="user-security.php" class="flex items-center gap-3 px-5 py-2 text-xs font-semibold transition-all <?= isActiveUserNav('security', $currentPath) ?>">
+                        <span class="material-symbols-outlined text-[18px]" aria-hidden="true">security</span>
+                        <span>Security &amp; 2FA</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="change-password.php" class="flex items-center gap-3 px-5 py-2 text-xs font-semibold transition-all <?= isActiveUserNav('password', $currentPath) ?>">
+                        <span class="material-symbols-outlined text-[18px]" aria-hidden="true">lock</span>
+                        <span>Change Password</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
     </nav>
     
-    <!-- Footer Logout -->
-    <div class="p-4 border-t border-border-subtle bg-surface-subtle/30 dark:bg-black/10">
-        <button id="user-logout-btn" class="w-full flex items-center gap-3 px-4 py-2 rounded-lg text-danger-base hover:bg-danger-surface font-bold transition-all text-left">
-            <span class="material-symbols-outlined text-[20px]" aria-hidden="true">logout</span>
-            <span class="text-sm">Secure Logout</span>
+    <!-- Sidebar Footer Controls -->
+    <div class="p-4 border-t border-border-subtle bg-surface-subtle/30 dark:bg-black/10 space-y-2">
+        <button type="button" data-toggle-theme class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-text-secondary hover:bg-surface hover:text-text-primary text-xs font-bold transition-all border border-border-subtle cursor-pointer">
+            <div class="flex items-center gap-2.5">
+                <span class="material-symbols-outlined text-[18px]" data-theme-icon aria-hidden="true">dark_mode</span>
+                <span data-theme-label>Dark Mode</span>
+            </div>
+            <span class="text-[10px] uppercase tracking-wider text-text-secondary">Theme</span>
+        </button>
+
+        <button id="user-logout-btn" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-rose-500 hover:bg-rose-500/10 font-bold transition-all text-xs text-left cursor-pointer">
+            <span class="material-symbols-outlined text-[18px]" aria-hidden="true">logout</span>
+            <span>Secure Logout</span>
         </button>
     </div>
+
     <script>
         (function() {
             try {
