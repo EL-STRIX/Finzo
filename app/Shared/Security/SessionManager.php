@@ -56,8 +56,8 @@ class SessionManager
      */
     public static function regenerate(bool $deleteOldSession = true): void
     {
-        if (session_status() === PHP_SESSION_ACTIVE) {
-            session_regenerate_id($deleteOldSession);
+        if (session_status() === PHP_SESSION_ACTIVE && !headers_sent()) {
+            @session_regenerate_id($deleteOldSession);
         }
     }
 

@@ -667,6 +667,32 @@
             resetBtn.addEventListener('click', window.resetAuditFilters);
         }
 
+        // Export CSV (respects all currently applied filters)
+        const exportBtn = document.getElementById('export-csv-btn');
+        if (exportBtn) {
+            exportBtn.addEventListener('click', () => {
+                const params = getFilterParams();
+                params.export = 'csv';
+
+                const url = window.api && typeof window.api.buildUrl === 'function'
+                    ? window.api.buildUrl('/admin/audit-logs', params)
+                    : null;
+                if (!url) return;
+
+                // Direct navigation: the endpoint responds with
+                // Content-Disposition: attachment so the browser downloads it
+                const link = document.createElement('a');
+                link.href = url;
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+
+                if (window.utils && window.utils.showToast) {
+                    window.utils.showToast('Audit trail export started', 'info');
+                }
+            });
+        }
+
         // Pagination Clicks
         document.addEventListener('click', (e) => {
             const btn = e.target.closest('button[data-page]');

@@ -164,15 +164,18 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
         }
 
         if (!empty($filters['search'])) {
-            $where_clauses[] = "(al.actor_id LIKE ? OR al.entity_id LIKE ? OR al.details LIKE ? OR al.action_type LIKE ? OR al.ip_address LIKE ? OR al.event_id LIKE ? OR al.uuid LIKE ?)";
+            // Name search uses EXISTS subqueries so that count/export queries
+            // (which do not join users/staff/admin_users) stay valid, and so
+            // LEFT JOIN fan-out can never double-count aggregated rows.
+            $where_clauses[] = "(al.actor_id LIKE ? OR al.entity_id LIKE ? OR al.details LIKE ? OR al.action_type LIKE ? OR al.ip_address LIKE ? OR al.event_id LIKE ? OR al.uuid LIKE ?
+                OR EXISTS (SELECT 1 FROM users uu WHERE uu.full_name LIKE ? AND (uu.id = al.actor_id OR uu.customer_id = al.actor_id OR uu.id = al.entity_id OR uu.customer_id = al.entity_id))
+                OR EXISTS (SELECT 1 FROM staff ss WHERE ss.full_name LIKE ? AND (ss.id = al.actor_id OR ss.staff_id = al.actor_id OR ss.id = al.entity_id OR ss.staff_id = al.entity_id))
+                OR EXISTS (SELECT 1 FROM admin_users aa WHERE aa.full_name LIKE ? AND (aa.id = al.actor_id OR aa.admin_id = al.actor_id OR aa.id = al.entity_id OR aa.admin_id = al.entity_id))
+            )";
             $s = "%{$filters['search']}%";
-            $params[] = $s;
-            $params[] = $s;
-            $params[] = $s;
-            $params[] = $s;
-            $params[] = $s;
-            $params[] = $s;
-            $params[] = $s;
+            for ($i = 0; $i < 10; $i++) {
+                $params[] = $s;
+            }
         }
 
         return [implode(' AND ', $where_clauses), $params];

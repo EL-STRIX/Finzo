@@ -34,7 +34,7 @@ class AuthController
 
         $result = $this->service->loginUser($identity, $password);
 
-        $base = rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? '/index.php', 3), '/\\');
+        $base = $this->getBaseUrl();
 
         if ($result['mfa_required'] ?? false) {
             return [
@@ -91,7 +91,7 @@ class AuthController
 
         $result = $this->service->loginAdmin($email, $password);
 
-        $base = rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? '/index.php', 3), '/\\');
+        $base = $this->getBaseUrl();
 
         if ($result['mfa_required'] ?? false) {
             return [
@@ -126,7 +126,7 @@ class AuthController
 
         $result = $this->service->loginStaff($identity, $password);
 
-        $base = rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? '/index.php', 3), '/\\');
+        $base = $this->getBaseUrl();
 
         if ($result['mfa_required'] ?? false) {
             return [
@@ -165,7 +165,7 @@ class AuthController
 
         $this->service->resetPassword($token, $newPassword);
 
-        $base = rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? '/index.php', 3), '/\\');
+        $base = $this->getBaseUrl();
 
         return [
             'success'  => true,
@@ -184,7 +184,7 @@ class AuthController
 
         $this->service->registerUser($fullName, $email, $phone, $password);
 
-        $base = rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? '/index.php', 3), '/\\');
+        $base = $this->getBaseUrl();
 
         return [
             'success'  => true,
@@ -196,7 +196,7 @@ class AuthController
     public function logout(?string $id = null, ?string $extra = null): array
     {
         $role = $_SESSION['role'] ?? '';
-        $base = rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? '/index.php', 3), '/\\');
+        $base = $this->getBaseUrl();
         \App\Shared\Security\SessionManager::destroy();
 
         switch ($role) {
@@ -242,5 +242,15 @@ class AuthController
             'success' => true,
             'csrf_token' => $token
         ];
+    }
+
+    private function getBaseUrl(): string
+    {
+        $scriptName = $_SERVER['SCRIPT_NAME'] ?? '/index.php';
+        $dir = dirname($scriptName, 2);
+        if ($dir === '/' || $dir === '\\' || $dir === '.') {
+            return '';
+        }
+        return rtrim($dir, '/\\');
     }
 }

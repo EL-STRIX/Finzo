@@ -276,8 +276,11 @@ function write_audit_log($pdo, $actionType, $entityId, $entityType, $actorId, $a
         }
     }
 
-    $event_id = uniqid('EVT-');
-    $request_id = uniqid('REQ-');
+    // more_entropy=true prevents duplicate-key failures when two events are
+    // generated within the same microsecond (e.g. concurrent requests), which
+    // would otherwise silently drop audit events (event_id/request_id are UNIQUE).
+    $event_id = uniqid('EVT-', true);
+    $request_id = uniqid('REQ-', true);
     $correlation_id = $_SERVER['HTTP_X_CORRELATION_ID'] ?? null;
     $session_id_val = session_id() ?: null;
     $user_agent = $_SERVER['HTTP_USER_AGENT'] ?? null;
@@ -296,6 +299,22 @@ function write_audit_log($pdo, $actionType, $entityId, $entityType, $actorId, $a
         $module = 'core_banking';
     }
 
+    // Normalize the resolved role to a value compatible with the
+    // audit_log.actor_role ENUM ('admin','staff','user','system').
+    // Titles such as 'Super Admin' or 'Moderator' must be mapped to the
+    // closest valid role, otherwise MySQL (strict mode) rejects the INSERT
+    // or silently stores an empty string (non-strict mode).
+    $role_map = [
+        'super admin' => 'admin',
+        'admin'       => 'admin',
+        'moderator'   => 'admin',
+        'staff'       => 'staff',
+        'system'      => 'system',
+        'user'        => 'user',
+    ];
+    $normalized_role = strtolower(trim($resolved_actor_role));
+    $actor_role_enum = $role_map[$normalized_role] ?? 'system';
+
     $stmt = $pdo->prepare("
         INSERT INTO audit_log (
             event_id, correlation_id, request_id, module, action_type, 
@@ -312,7 +331,7 @@ function write_audit_log($pdo, $actionType, $entityId, $entityType, $actorId, $a
         $resolved_entity_id,
         $entityType,
         $resolved_actor_id,
-        strtolower($resolved_actor_role), // ensure enum match
+        $actor_role_enum, // must match ENUM('admin','staff','user','system')
         $session_id_val,
         $user_agent,
         $ip,
