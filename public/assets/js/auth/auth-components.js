@@ -530,8 +530,9 @@ function initAuthFormSubmission() {
 
                 if (data.success) {
                     if (data.redirect) {
+                        const targetUrl = data.redirect.replace(/\/public\/public\//g, '/public/');
                         showNotificationToast(data.message || 'Success!', 'success');
-                        setTimeout(() => { window.location.href = data.redirect; }, 600);
+                        setTimeout(() => { window.location.href = targetUrl; }, 600);
                     } else {
                         showNotificationToast(data.message || 'Done!', 'success');
                     }
@@ -545,7 +546,8 @@ function initAuthFormSubmission() {
 
                     // Handle locked account redirect
                     if (data.locked && data.redirect) {
-                        setTimeout(() => { window.location.href = data.redirect; }, 1500);
+                        const targetUrl = data.redirect.replace(/\/public\/public\//g, '/public/');
+                        setTimeout(() => { window.location.href = targetUrl; }, 1500);
                     }
                 }
             } catch (err) {

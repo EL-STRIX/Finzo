@@ -247,7 +247,11 @@ class AuthController
     private function getBaseUrl(): string
     {
         $scriptName = $_SERVER['SCRIPT_NAME'] ?? '/index.php';
-        $dir = dirname($scriptName, 2);
+        $pos = strpos($scriptName, '/public');
+        if ($pos !== false) {
+            return substr($scriptName, 0, $pos);
+        }
+        $dir = dirname($scriptName);
         if ($dir === '/' || $dir === '\\' || $dir === '.') {
             return '';
         }
