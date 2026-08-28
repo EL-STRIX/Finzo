@@ -21,7 +21,7 @@
 
         const fetchOpts = {
             method,
-            credentials: 'same-origin',
+            credentials: 'include',
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',
                 'Accept': 'application/json'

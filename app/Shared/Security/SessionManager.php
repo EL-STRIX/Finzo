@@ -21,7 +21,7 @@ class SessionManager
             ini_set('session.use_strict_mode', '1');
             ini_set('session.use_only_cookies', '1');
             ini_set('session.cookie_httponly', '1');
-            ini_set('session.cookie_samesite', 'Strict');
+            ini_set('session.cookie_samesite', 'Lax');
             ini_set('session.cookie_secure', (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? '1' : '0');
             
             // Set max lifetime for garbage collection
@@ -31,13 +31,19 @@ class SessionManager
                 ini_set('session.save_path', STORAGE_PATH . 'sessions');
             }
 
+            $rawHost = $_SERVER['HTTP_HOST'] ?? '';
+            $domain = preg_replace('/:\d+$/', '', $rawHost);
+            if (empty($domain) || in_array(strtolower($domain), ['localhost', '127.0.0.1', '::1']) || filter_var($domain, FILTER_VALIDATE_IP)) {
+                $domain = '';
+            }
+
             session_set_cookie_params([
                 'lifetime' => self::SESSION_LIFETIME,
                 'path' => '/',
-                'domain' => $_SERVER['HTTP_HOST'] ?? '',
+                'domain' => $domain,
                 'secure' => (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on'),
                 'httponly' => true,
-                'samesite' => 'Strict'
+                'samesite' => 'Lax'
             ]);
 
             session_start();
