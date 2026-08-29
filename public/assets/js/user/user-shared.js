@@ -66,6 +66,28 @@ const _userCache = {
   _loaded: !!_initUser.id,
 };
 
+function syncSidebarUserDOM() {
+  if (_userCache.name && _userCache.name !== 'User') {
+    document.querySelectorAll('.user-name, .sidebar-user-name').forEach(el => el.textContent = _userCache.name);
+  }
+  if (_userCache.customerId) {
+    document.querySelectorAll('.user-id, .sidebar-user-id').forEach(el => el.textContent = 'ID: ' + _userCache.customerId);
+  }
+  document.querySelectorAll('.user-initials, .sidebar-avatar').forEach(el => {
+    if (!_userCache.avatarUrl && typeof UserState !== 'undefined') el.textContent = UserState.initials;
+  });
+  const nameEl = document.getElementById('header-profile-name');
+  const idEl = document.getElementById('header-profile-id');
+  if (nameEl && _userCache.name && _userCache.name !== 'User') nameEl.textContent = _userCache.name;
+  if (idEl && _userCache.customerId) idEl.textContent = 'ID: ' + _userCache.customerId;
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', syncSidebarUserDOM);
+} else {
+  syncSidebarUserDOM();
+}
+
 /**
  * Fetch user session from backend and populate UserState cache.
  * Called once on page load. Rebuilds sidebar/navbar after data arrives.
@@ -79,12 +101,12 @@ async function fetchUserSession() {
     }
     if (res.success) {
       const data = res;
-      _userCache.status = data.user?.status || 'pending';
-      _userCache.id = data.user?.id || 0;
-      _userCache.customerId = data.user?.customer_id || '';
-      _userCache.name = data.user?.name || data.user?.full_name || 'User';
-      _userCache.email = data.user?.email || '';
-      _userCache.phone = data.user?.phone || '';
+      _userCache.status = data.user?.status || _userCache.status || 'pending';
+      _userCache.id = data.user?.id || _userCache.id || 0;
+      _userCache.customerId = data.user?.customer_id || _userCache.customerId || '';
+      _userCache.name = data.user?.name || data.user?.full_name || (_userCache.name !== 'User' ? _userCache.name : 'User');
+      _userCache.email = data.user?.email || _userCache.email || '';
+      _userCache.phone = data.user?.phone || _userCache.phone || '';
       _userCache.accountNo = data.account?.account_no || '';
       _userCache.accountType = data.account?.account_type || 'savings';
       _userCache.balance = data.account?.balance || '0';
@@ -99,16 +121,7 @@ async function fetchUserSession() {
       _userCache._loaded = true;
 
       // Sync header and sidebar profile details dynamically
-      const nameEl = document.getElementById('header-profile-name');
-      const idEl = document.getElementById('header-profile-id');
-      if (nameEl && _userCache.name) nameEl.textContent = _userCache.name;
-      if (idEl && _userCache.customerId) idEl.textContent = 'ID: ' + _userCache.customerId;
-
-      document.querySelectorAll('.user-name, .sidebar-user-name').forEach(el => el.textContent = _userCache.name);
-      document.querySelectorAll('.user-id, .sidebar-user-id').forEach(el => el.textContent = _userCache.customerId ? 'ID: ' + _userCache.customerId : '');
-      document.querySelectorAll('.user-initials, .sidebar-avatar').forEach(el => {
-        if (!_userCache.avatarUrl) el.textContent = UserState.initials;
-      });
+      syncSidebarUserDOM();
 
       // Sync status badge in sidebar
       const statusBadge = document.getElementById('sidebar-status-badge');

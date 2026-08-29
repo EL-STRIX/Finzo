@@ -48,6 +48,23 @@ class SessionManager
 
             session_start();
         }
+
+        // Auto-hydrate user details if session exists but user_name or user_customer_id is empty
+        if (session_status() === PHP_SESSION_ACTIVE && !empty($_SESSION['user_id']) && (empty($_SESSION['user_name']) || empty($_SESSION['user_customer_id']))) {
+            try {
+                $db = \App\Infrastructure\Database\DatabaseConnection::getInstance()->getConnection();
+                $stmt = $db->prepare("SELECT customer_id, full_name, email, phone, status FROM users WHERE id = ? AND is_deleted = 0");
+                $stmt->execute([(int)$_SESSION['user_id']]);
+                $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+                if ($row) {
+                    if (empty($_SESSION['user_customer_id'])) $_SESSION['user_customer_id'] = $row['customer_id'];
+                    if (empty($_SESSION['user_name'])) $_SESSION['user_name'] = $row['full_name'];
+                    if (empty($_SESSION['user_email'])) $_SESSION['user_email'] = $row['email'];
+                    if (empty($_SESSION['user_phone'])) $_SESSION['user_phone'] = $row['phone'];
+                    if (empty($_SESSION['user_status'])) $_SESSION['user_status'] = $row['status'];
+                }
+            } catch (\Throwable $e) {}
+        }
     }
 
     /**
@@ -102,13 +119,13 @@ class SessionManager
         $_SESSION = [];
 
         $_SESSION['user_id']          = (int)$user['id'];
-        $_SESSION['user_customer_id'] = $user['customer_id'];
-        $_SESSION['user_name']        = $user['full_name'];
-        $_SESSION['user_email']       = $user['email'];
+        $_SESSION['user_customer_id'] = $user['customer_id'] ?? '';
+        $_SESSION['user_name']        = !empty($user['full_name']) ? $user['full_name'] : (!empty($user['name']) ? $user['name'] : 'User');
+        $_SESSION['user_email']       = $user['email'] ?? '';
         $_SESSION['user_phone']       = $user['phone'] ?? '';
-        $_SESSION['user_status']      = $user['status'];
-        $_SESSION['user_account_no']  = $account ? $account['account_no'] : null;
-        $_SESSION['user_balance']     = $account ? $account['balance'] : null;
+        $_SESSION['user_status']      = $user['status'] ?? 'pending';
+        $_SESSION['user_account_no']  = $account ? ($account['account_no'] ?? null) : null;
+        $_SESSION['user_balance']     = $account ? ($account['balance'] ?? null) : null;
         $_SESSION['role']             = 'customer';
         $_SESSION['last_activity']    = time();
     }
