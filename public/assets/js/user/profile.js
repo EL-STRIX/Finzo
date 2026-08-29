@@ -59,11 +59,8 @@ async function initProfile() {
       status: typeof UserState !== 'undefined' ? UserState.status : 'pending',
     };
 
-    const account = (res && res.success && res.account) ? res.account : {
-      account_no: typeof UserState !== 'undefined' ? UserState.accountNo : '',
-      account_type: typeof UserState !== 'undefined' ? UserState.accountType : 'savings',
-      balance: typeof UserState !== 'undefined' ? UserState.balance : 0,
-    };
+    const hasAccount = !!(res && res.success && res.account);
+    const account = hasAccount ? res.account : {};
 
     const resolvedName = user.full_name || user.name || (typeof UserState !== 'undefined' ? UserState.name : '') || 'Customer Profile';
     const resolvedCustId = user.customer_id || (typeof UserState !== 'undefined' ? UserState.customerId : '') || 'FNZ-USR-PENDING';
@@ -113,7 +110,8 @@ async function initProfile() {
         circle.innerHTML = `<img src="${cleanSrc}" alt="${escapeHtml(resolvedName)}" class="w-full h-full object-cover rounded-full">`;
       } else {
         const initials = resolvedName.split(' ').filter(Boolean).map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'U';
-        circle.innerHTML = `<span class="text-primary-base font-bold text-2xl">${initials}</span>`;
+        circle.className = circle.className.replace('bg-primary-surface', 'bg-primary-600');
+        circle.innerHTML = `<span style="color:#fff;font-weight:700;font-size:1.25rem;">${initials}</span>`;
       }
     }
 
@@ -134,21 +132,30 @@ async function initProfile() {
       }
     }
 
-    // 2. Account Ledger
-    const accNoEl = document.getElementById('info-acc-no');
-    if (accNoEl) accNoEl.textContent = account.account_no || 'Pending Allocation';
-    
+    // 2. Account details — only show when a real account exists
     const accTypeEl = document.getElementById('info-acc-type');
-    if (accTypeEl) accTypeEl.textContent = (account.account_type || 'Savings') + ' Account';
+    if (accTypeEl) accTypeEl.textContent = hasAccount ? (account.account_type.charAt(0).toUpperCase() + account.account_type.slice(1)) + ' Account' : '—';
 
     const interestEl = document.getElementById('info-interest-rate');
-    if (interestEl) interestEl.textContent = (account.interest_rate ? account.interest_rate : 4.5) + '% p.a.';
+    if (interestEl) interestEl.textContent = hasAccount ? (account.interest_rate + '% p.a.') : '—';
 
     const limitEl = document.getElementById('info-daily-limit');
-    if (limitEl) limitEl.textContent = typeof formatINR === 'function' ? formatINR(account.daily_limit || 50000) : '₹50,000';
+    if (limitEl) limitEl.textContent = hasAccount ? (typeof formatINR === 'function' ? formatINR(account.daily_limit) : '₹' + account.daily_limit) : '—';
 
-    const balEl = document.getElementById('info-balance');
-    if (balEl) balEl.textContent = typeof formatINR === 'function' ? formatINR(account.balance || 0) : '₹0.00';
+    // Account card (dark) — show only when account allocated
+    const accountCard = document.getElementById('account-dark-card');
+    const accountCardNone = document.getElementById('account-card-none');
+    if (hasAccount) {
+      if (accountCard) accountCard.classList.remove('hidden');
+      if (accountCardNone) accountCardNone.classList.add('hidden');
+      const accNoEl = document.getElementById('info-acc-no');
+      if (accNoEl) accNoEl.textContent = account.account_no;
+      const balEl = document.getElementById('info-balance');
+      if (balEl) balEl.textContent = typeof formatINR === 'function' ? formatINR(account.balance || 0) : '₹' + (account.balance || '0.00');
+    } else {
+      if (accountCard) accountCard.classList.add('hidden');
+      if (accountCardNone) accountCardNone.classList.remove('hidden');
+    }
 
     // 3. Personal & Demographics
     const viewNameEl = document.getElementById('view-full-name');

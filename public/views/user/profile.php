@@ -43,8 +43,8 @@ ob_start();
             </div>
             <!-- Profile info -->
             <div class="px-5 pt-0 pb-5 -mt-8">
-                <div class="w-16 h-16 rounded-full border-[3px] border-surface bg-primary-surface flex items-center justify-center font-bold text-xl overflow-hidden shadow mb-3" id="avatar-circle">
-                    <span class="text-primary-base">—</span>
+                <div class="w-16 h-16 rounded-full border-[3px] border-white dark:border-slate-700 bg-white dark:bg-slate-800 flex items-center justify-center font-bold text-xl overflow-hidden shadow-md mb-3" id="avatar-circle">
+                    <span style="color:#2563eb;font-weight:700;font-size:1.25rem;">—</span>
                 </div>
                 <h2 class="text-base font-bold text-text-main leading-snug mb-0.5" id="profile-name">—</h2>
                 <p class="font-mono text-[11px] text-text-muted mb-2" id="info-customer-id">—</p>
@@ -73,8 +73,8 @@ ob_start();
             </div>
         </div>
 
-        <!-- Account Card (dark) -->
-        <div class="rounded-xl p-5 bg-slate-900 dark:bg-slate-950 border border-slate-700">
+        <!-- Account Card: allocated (hidden until JS confirms account exists) -->
+        <div id="account-dark-card" class="hidden rounded-xl p-5 bg-slate-900 dark:bg-slate-950 border border-slate-700">
             <p class="text-[9px] font-black uppercase tracking-widest text-slate-500 mb-3">Bank Account</p>
             <div class="flex items-center justify-between mb-1">
                 <span class="font-mono text-sm font-bold text-white tracking-widest" id="info-acc-no">——————</span>
@@ -84,6 +84,16 @@ ob_start();
             </div>
             <p class="text-[9px] font-bold uppercase tracking-widest text-slate-500 mb-1 mt-4">Available Balance</p>
             <p class="font-display text-xl font-black text-white" id="info-balance">₹0.00</p>
+        </div>
+
+        <!-- Account Card: no account yet (shown by default) -->
+        <div id="account-card-none" class="rounded-xl p-5 bg-surface-subtle border border-border-main border-dashed">
+            <p class="text-[9px] font-black uppercase tracking-widest text-text-muted mb-3">Bank Account</p>
+            <div class="flex items-center gap-2.5 mb-2">
+                <span class="material-symbols-outlined text-text-muted text-xl">account_balance</span>
+                <span class="text-sm font-bold text-text-muted">No Account Allocated</span>
+            </div>
+            <p class="text-[11px] text-text-muted">Complete KYC and await admin approval to receive a bank account.</p>
         </div>
 
     </div>
