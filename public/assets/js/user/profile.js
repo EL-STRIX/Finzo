@@ -6,6 +6,38 @@ function escapeHtml(str) {
   return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
+function copyText(elementId, label) {
+  const el = document.getElementById(elementId);
+  if (!el) return;
+  let text = el.textContent.trim();
+  if (text.startsWith('Customer ID:')) {
+    text = text.replace('Customer ID:', '').trim();
+  }
+  if (!text || text === '—') return;
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(() => {
+      if (typeof showToast === 'function') showToast(label + ' copied to clipboard!', 'success');
+    }).catch(() => {
+      fallbackCopy(text, label);
+    });
+  } else {
+    fallbackCopy(text, label);
+  }
+}
+
+function fallbackCopy(text, label) {
+  try {
+    const input = document.createElement('input');
+    input.value = text;
+    document.body.appendChild(input);
+    input.select();
+    document.execCommand('copy');
+    document.body.removeChild(input);
+    if (typeof showToast === 'function') showToast(label + ' copied to clipboard!', 'success');
+  } catch(e) {}
+}
+
 document.addEventListener('DOMContentLoaded', initProfile);
 
 async function initProfile() {
@@ -229,12 +261,18 @@ async function saveProfile() {
   const name = viewNameEl ? viewNameEl.textContent.trim() : (typeof UserState !== 'undefined' ? UserState.name : '');
   const emailInput = document.getElementById('edit-email');
   const phoneInput = document.getElementById('edit-phone');
+  const saveBtn = document.getElementById('btn-save-profile');
   
   const email = emailInput ? emailInput.value.trim() : '';
   const phone = phoneInput ? phoneInput.value.trim() : '';
   
   if (!email) { if (typeof showToast === 'function') showToast('Email address is required', 'error'); return; }
   if (!phone) { if (typeof showToast === 'function') showToast('Mobile phone number is required', 'error'); return; }
+
+  if (saveBtn) {
+    saveBtn.disabled = true;
+    saveBtn.innerHTML = '<span class="material-symbols-outlined text-sm animate-spin">sync</span><span>Saving...</span>';
+  }
 
   try {
     const formData = new FormData();
@@ -251,5 +289,10 @@ async function saveProfile() {
     }
   } catch (err) {
     if (typeof showToast === 'function') showToast('Connection error while updating profile', 'error');
+  } finally {
+    if (saveBtn) {
+      saveBtn.disabled = false;
+      saveBtn.innerHTML = '<span class="material-symbols-outlined text-sm">save</span><span>Save Contact Details</span>';
+    }
   }
 }
