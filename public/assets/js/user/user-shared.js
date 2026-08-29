@@ -66,28 +66,6 @@ const _userCache = {
   _loaded: !!_initUser.id,
 };
 
-function syncSidebarUserDOM() {
-  if (_userCache.name && _userCache.name !== 'User') {
-    document.querySelectorAll('.user-name, .sidebar-user-name').forEach(el => el.textContent = _userCache.name);
-  }
-  if (_userCache.customerId) {
-    document.querySelectorAll('.user-id, .sidebar-user-id').forEach(el => el.textContent = 'ID: ' + _userCache.customerId);
-  }
-  document.querySelectorAll('.user-initials, .sidebar-avatar').forEach(el => {
-    if (!_userCache.avatarUrl && typeof UserState !== 'undefined') el.textContent = UserState.initials;
-  });
-  const nameEl = document.getElementById('header-profile-name');
-  const idEl = document.getElementById('header-profile-id');
-  if (nameEl && _userCache.name && _userCache.name !== 'User') nameEl.textContent = _userCache.name;
-  if (idEl && _userCache.customerId) idEl.textContent = 'ID: ' + _userCache.customerId;
-}
-
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', syncSidebarUserDOM);
-} else {
-  syncSidebarUserDOM();
-}
-
 /**
  * Fetch user session from backend and populate UserState cache.
  * Called once on page load. Rebuilds sidebar/navbar after data arrives.
@@ -101,12 +79,12 @@ async function fetchUserSession() {
     }
     if (res.success) {
       const data = res;
-      _userCache.status = data.user?.status || _userCache.status || 'pending';
-      _userCache.id = data.user?.id || _userCache.id || 0;
-      _userCache.customerId = data.user?.customer_id || _userCache.customerId || '';
-      _userCache.name = data.user?.name || data.user?.full_name || (_userCache.name !== 'User' ? _userCache.name : 'User');
-      _userCache.email = data.user?.email || _userCache.email || '';
-      _userCache.phone = data.user?.phone || _userCache.phone || '';
+      _userCache.status = data.user?.status || 'pending';
+      _userCache.id = data.user?.id || 0;
+      _userCache.customerId = data.user?.customer_id || '';
+      _userCache.name = data.user?.name || data.user?.full_name || 'User';
+      _userCache.email = data.user?.email || '';
+      _userCache.phone = data.user?.phone || '';
       _userCache.accountNo = data.account?.account_no || '';
       _userCache.accountType = data.account?.account_type || 'savings';
       _userCache.balance = data.account?.balance || '0';
@@ -121,7 +99,16 @@ async function fetchUserSession() {
       _userCache._loaded = true;
 
       // Sync header and sidebar profile details dynamically
-      syncSidebarUserDOM();
+      const nameEl = document.getElementById('header-profile-name');
+      const idEl = document.getElementById('header-profile-id');
+      if (nameEl && _userCache.name) nameEl.textContent = _userCache.name;
+      if (idEl && _userCache.customerId) idEl.textContent = 'ID: ' + _userCache.customerId;
+
+      document.querySelectorAll('.user-name, .sidebar-user-name').forEach(el => el.textContent = _userCache.name);
+      document.querySelectorAll('.user-id, .sidebar-user-id').forEach(el => el.textContent = _userCache.customerId ? 'ID: ' + _userCache.customerId : '');
+      document.querySelectorAll('.user-initials, .sidebar-avatar').forEach(el => {
+        if (!_userCache.avatarUrl) el.textContent = UserState.initials;
+      });
 
       // Sync status badge in sidebar
       const statusBadge = document.getElementById('sidebar-status-badge');
@@ -178,7 +165,7 @@ document.addEventListener('click', async function(e) {
     overlay.classList.add('hidden', 'opacity-0');
   }
 
-  const logoutBtn = e.target.closest('#user-logout-btn, .user-logout-btn, .logout-item, [data-action="logout"]');
+  const logoutBtn = e.target.closest('#user-logout-btn');
   if (logoutBtn) {
     e.preventDefault();
     if (confirm('Are you sure you want to log out of your Finzo Customer Account?')) {
@@ -428,10 +415,10 @@ function buildSidebar(activePage) {
   const isRejected = status === 'rejected';
 
   // Pages locked when not active
-  const lockedWhenInactive = ['accounts', 'transfer', 'transactions', 'statement', 'beneficiary'];
+  const lockedWhenInactive = ['dashboard', 'accounts', 'transfer', 'loans', 'cards', 'investments', 'bill-payments', 'transactions', 'statement', 'beneficiary'];
   
   const mainLinks = [
-    { id: 'dashboard', icon: 'dashboard', label: 'Dashboard', href: 'dashboard.php' },
+    { id: 'dashboard', icon: 'dashboard', label: 'Dashboard', href: 'dashboard.php', lockedWhenInactive: true },
     { id: 'accounts', icon: 'account_balance', label: 'My Accounts', href: 'accounts.php', lockedWhenInactive: true },
     { id: 'transfer', icon: 'swap_horiz', label: 'Fund Transfer', href: 'transfer.php', lockedWhenInactive: true },
     { id: 'loans', icon: 'account_balance_wallet', label: 'Loans & Credit', href: 'user-loans.php', lockedWhenInactive: true },
@@ -449,9 +436,11 @@ function buildSidebar(activePage) {
     { id: 'profile', icon: 'person', label: 'My Profile', href: 'profile.php' },
   ];
 
-  // Add complete-profile for pending/rejected
-  if (isPending || isRejected) {
-    settingsLinks.unshift({ id: 'complete-profile', icon: 'assignment_ind', label: isPending ? 'Complete Profile' : 'Resubmit Profile', href: 'complete-profile.php', highlight: true });
+  // Add complete-profile at top of mainLinks for non-active users
+  if (!isActive) {
+    const kycLabel = isUnderReview ? 'KYC Status' : (isRejected ? 'Resubmit KYC' : 'Complete KYC');
+    const kycHref = isUnderReview ? 'account-pending.php' : (isRejected ? 'account-rejected.php' : 'complete-profile.php');
+    mainLinks.unshift({ id: 'complete-profile', icon: 'assignment_ind', label: kycLabel, href: kycHref, highlight: true });
   }
 
   const html = `
@@ -502,10 +491,6 @@ function buildSidebar(activePage) {
 
         <div class="sidebar-section">Account</div>
         <div class="sidebar-bottom">
-          <button class="nav-item" onclick="toggleTheme()">
-            <span class="material-symbols-outlined nav-icon" data-theme-icon aria-hidden="true">dark_mode</span>
-            <span data-theme-label>Dark Mode</span>
-          </button>
           <button class="nav-item logout-item" onclick="FinzoSession.logout()">
             <span class="material-symbols-outlined nav-icon" aria-hidden="true">logout</span>
             Logout
@@ -740,17 +725,14 @@ function requireActive(redirectTo = 'dashboard.php') {
 
 // ── STATUS REDIRECT LOGIC ──
 function handleStatusRedirect(currentPage) {
-  const status = UserState.status || 'pending';
+  const status = UserState.status;
   
   // Pages only accessible when NOT active
   const pendingOnlyPages = ['complete-profile', 'account-pending', 'account-rejected'];
   // Pages only accessible when active
-  const activeOnlyPages = [
-    'dashboard', 'accounts', 'account-detail', 'transfer', 'transactions', 
-    'statement', 'beneficiary', 'loans', 'cards', 'investments', 'bill-payments'
-  ];
+  const activeOnlyPages = ['dashboard', 'accounts', 'account-detail', 'transfer', 'transactions', 'statement', 'beneficiary'];
 
-  // Inactive users cannot access active-only pages (including dashboard)
+  // Inactive users cannot access active-only pages
   if (activeOnlyPages.includes(currentPage) && status !== 'active') {
     if (status === 'under_review') {
       window.location.href = 'account-pending.php';
@@ -759,34 +741,32 @@ function handleStatusRedirect(currentPage) {
     } else {
       window.location.href = 'complete-profile.php';
     }
-    return true;
+    return;
   }
 
   // Active users cannot access KYC onboarding pages
   if (pendingOnlyPages.includes(currentPage) && status === 'active') {
     window.location.href = 'dashboard.php';
-    return true;
+    return;
   }
 
   // Pending users (KYC not submitted) cannot access review or rejected pages
   if (status === 'pending' && (currentPage === 'account-pending' || currentPage === 'account-rejected')) {
     window.location.href = 'complete-profile.php';
-    return true;
+    return;
   }
 
   // Under review users cannot access KYC form or rejected page
   if (status === 'under_review' && (currentPage === 'complete-profile' || currentPage === 'account-rejected')) {
     window.location.href = 'account-pending.php';
-    return true;
+    return;
   }
 
   // Rejected users cannot access the under review page
   if (status === 'rejected' && currentPage === 'account-pending') {
     window.location.href = 'account-rejected.php';
-    return true;
+    return;
   }
-
-  return false;
 }
 
 // ── DEMO CONTROLS (for testing in browser) ──
@@ -803,18 +783,7 @@ window.FinzoSession = {
   },
   async logout() {
     try {
-      let data = null;
-      if (window.api && typeof window.api.post === 'function') {
-        data = await window.api.post('/auth/logout', {});
-      } else {
-        const csrf = window.csrfToken || '';
-        const raw = await fetch('/Finzo/public/api/v1/auth/logout', {
-          method: 'POST',
-          credentials: 'same-origin',
-          headers: csrf ? { 'X-CSRF-Token': csrf } : {}
-        });
-        data = await raw.json();
-      }
+      const data = await window.api.post('/auth/logout', {});
       localStorage.removeItem(STATE_KEYS.STATUS);
       localStorage.removeItem(STATE_KEYS.NOTIF_COUNT);
       const redirectUrl = (data && data.redirect) ? data.redirect.replace(/\/public\/public\//g, '/public/') : '/Finzo/public/views/auth/login.php';

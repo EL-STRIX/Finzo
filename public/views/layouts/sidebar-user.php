@@ -4,6 +4,9 @@ $userStatus = $_SESSION['user_status'] ?? 'pending';
 $isActive = $userStatus === 'active';
 
 function isActiveUserNav($path, $current) {
+    if ($path === 'profile' && strpos($current, 'complete-profile') !== false) {
+        return 'text-text-secondary hover:bg-surface hover:text-text-primary border-l-4 border-transparent';
+    }
     return (strpos($current, $path) !== false) 
         ? 'bg-primary/10 text-primary border-l-4 border-primary font-bold active-nav-item' 
         : 'text-text-secondary hover:bg-surface hover:text-text-primary border-l-4 border-transparent';
@@ -16,20 +19,15 @@ function isActiveUserNav($path, $current) {
     <div class="px-5 py-4 border-b border-border-subtle bg-surface-subtle/30 dark:bg-black/10">
         <div class="flex items-center gap-3 mb-2">
             <div class="header-avatar w-10 h-10 rounded-full bg-primary/10 text-primary border border-primary/20 flex items-center justify-center font-bold text-xs shadow-sm shrink-0 overflow-hidden user-initials">
-                <?php 
-                $displayName = !empty($_SESSION['user_name']) ? $_SESSION['user_name'] : 'User';
-                $displayId = !empty($_SESSION['user_customer_id']) ? $_SESSION['user_customer_id'] : '';
-                $initials = strtoupper(substr($displayName, 0, 2));
-                ?>
                 <?php if (!empty($_SESSION['user_avatar'])): ?>
-                    <img src="<?= htmlspecialchars($_SESSION['user_avatar']) ?>" alt="Avatar" class="w-full h-full object-cover" onerror="this.outerHTML='<span><?= htmlspecialchars($initials, ENT_QUOTES, 'UTF-8') ?></span>'">
+                    <img src="<?= htmlspecialchars($_SESSION['user_avatar']) ?>" alt="Avatar" class="w-full h-full object-cover" onerror="this.outerHTML='<span><?= htmlspecialchars(strtoupper(substr($_SESSION['user_name'] ?? 'U', 0, 2)), ENT_QUOTES, 'UTF-8') ?></span>'">
                 <?php else: ?>
-                    <?= htmlspecialchars($initials, ENT_QUOTES, 'UTF-8') ?>
+                    <?= htmlspecialchars(strtoupper(substr($_SESSION['user_name'] ?? 'U', 0, 2)), ENT_QUOTES, 'UTF-8') ?>
                 <?php endif; ?>
             </div>
             <div class="min-w-0 flex-1">
-                <div class="text-sm font-bold text-text-primary dark:text-white truncate user-name"><?= htmlspecialchars($displayName, ENT_QUOTES, 'UTF-8') ?></div>
-                <div class="text-xs text-text-secondary font-mono user-id truncate"><?= !empty($displayId) ? 'ID: ' . htmlspecialchars($displayId, ENT_QUOTES, 'UTF-8') : '' ?></div>
+                <div class="text-sm font-bold text-text-primary dark:text-white truncate user-name"><?= htmlspecialchars($_SESSION['user_name'] ?? 'User', ENT_QUOTES, 'UTF-8') ?></div>
+                <div class="text-xs text-text-secondary font-mono user-id truncate"><?= !empty($_SESSION['user_customer_id']) ? 'ID: ' . htmlspecialchars($_SESSION['user_customer_id'], ENT_QUOTES, 'UTF-8') : '' ?></div>
             </div>
         </div>
 
@@ -64,28 +62,27 @@ function isActiveUserNav($path, $current) {
         <!-- Section 1: Overview & Accounts -->
         <div>
             <div class="px-5 mb-1.5 text-[10px] font-black text-text-secondary uppercase tracking-widest">Main Banking</div>
-            <ul class="space-y-0.5">
-                <li>
-                    <a href="dashboard.php" class="flex items-center gap-3 px-5 py-2 text-xs font-semibold transition-all <?= isActiveUserNav('dashboard', $currentPath) ?>">
-                        <span class="material-symbols-outlined text-[18px]" aria-hidden="true">dashboard</span>
-                        <span>Dashboard</span>
-                    </a>
-                </li>
-
                 <?php if (!$isActive): ?>
                     <?php 
-                    $kycPageKey = $userStatus === 'under_review' ? 'account-pending' : ($userStatus === 'rejected' ? 'account-rejected' : 'complete-profile');
+                        $kycPath = $userStatus === 'under_review' ? 'account-pending' : ($userStatus === 'rejected' ? 'account-rejected' : 'complete-profile');
                     ?>
                     <li>
-                        <a href="<?= $kycPageKey ?>.php" class="flex items-center justify-between px-5 py-2 text-xs font-bold transition-all <?= isActiveUserNav($kycPageKey, $currentPath) ?>">
-                            <div class="flex items-center gap-3">
-                                <span class="material-symbols-outlined text-[18px]" aria-hidden="true">assignment_ind</span>
-                                <span><?= $userStatus === 'under_review' ? 'KYC Status' : ($userStatus === 'rejected' ? 'Resubmit KYC' : 'Complete KYC') ?></span>
-                            </div>
-                            <span class="text-[9px] px-1.5 py-0.5 rounded bg-primary text-white uppercase font-black tracking-wider">Action</span>
+                        <a href="<?= $kycPath . '.php' ?>" class="flex items-center gap-3 px-5 py-2 text-xs font-semibold transition-all <?= isActiveUserNav($kycPath, $currentPath) ?>">
+                            <span class="material-symbols-outlined text-[18px]" aria-hidden="true">assignment_ind</span>
+                            <span><?= $userStatus === 'under_review' ? 'KYC Status' : ($userStatus === 'rejected' ? 'Resubmit KYC' : 'Complete KYC') ?></span>
                         </a>
                     </li>
                 <?php endif; ?>
+
+                <li>
+                    <a href="<?= $isActive ? 'dashboard.php' : '#' ?>" class="flex items-center justify-between px-5 py-2 text-xs font-semibold transition-all <?= isActiveUserNav('dashboard', $currentPath) ?> <?= !$isActive ? 'opacity-50 cursor-not-allowed' : '' ?>" <?= !$isActive ? 'title="Available after account activation"' : '' ?>>
+                        <div class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-[18px]" aria-hidden="true">dashboard</span>
+                            <span>Dashboard</span>
+                        </div>
+                        <?php if (!$isActive): ?><span class="material-symbols-outlined text-[14px] text-text-secondary" aria-hidden="true">lock</span><?php endif; ?>
+                    </a>
+                </li>
 
                 <li>
                     <a href="<?= $isActive ? 'accounts.php' : '#' ?>" class="flex items-center justify-between px-5 py-2 text-xs font-semibold transition-all <?= isActiveUserNav('account', $currentPath) ?> <?= !$isActive ? 'opacity-50 cursor-not-allowed' : '' ?>" <?= !$isActive ? 'title="Available after account activation"' : '' ?>>
@@ -216,13 +213,7 @@ function isActiveUserNav($path, $current) {
     
     <!-- Sidebar Footer Controls -->
     <div class="p-4 border-t border-border-subtle bg-surface-subtle/30 dark:bg-black/10 space-y-2">
-        <button type="button" data-toggle-theme class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-text-secondary hover:bg-surface hover:text-text-primary text-xs font-bold transition-all border border-border-subtle cursor-pointer">
-            <div class="flex items-center gap-2.5">
-                <span class="material-symbols-outlined text-[18px]" data-theme-icon aria-hidden="true">dark_mode</span>
-                <span data-theme-label>Dark Mode</span>
-            </div>
-            <span class="text-[10px] uppercase tracking-wider text-text-secondary">Theme</span>
-        </button>
+
 
         <button id="user-logout-btn" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-rose-500 hover:bg-rose-500/10 font-bold transition-all text-xs text-left cursor-pointer">
             <span class="material-symbols-outlined text-[18px]" aria-hidden="true">logout</span>
