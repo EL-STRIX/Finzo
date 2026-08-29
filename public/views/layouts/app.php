@@ -33,6 +33,18 @@ $csrfToken = $_SESSION['csrf_token'];
     <script defer src="/Finzo/public/assets/js/core/utils.js"></script>
     <script defer src="/Finzo/public/assets/js/core/api.js"></script>
     <script defer src="/Finzo/public/assets/js/core/ui-components.js"></script>
+    <?php if ($portal === 'user' || !empty($_SESSION['user_id'])): ?>
+    <script>
+        window.__FINZO_USER__ = <?= json_encode([
+            'id'          => (int)($_SESSION['user_id'] ?? 0),
+            'customer_id' => $_SESSION['user_customer_id'] ?? '',
+            'name'        => $_SESSION['user_name'] ?? '',
+            'email'       => $_SESSION['user_email'] ?? '',
+            'phone'       => $_SESSION['user_phone'] ?? '',
+            'status'      => $_SESSION['user_status'] ?? 'pending',
+        ], JSON_UNESCAPED_UNICODE) ?>;
+    </script>
+    <?php endif; ?>
     <?php if ($portal === 'admin'): ?>
         <script defer src="/Finzo/public/assets/js/admin/admin-shared.js"></script>
     <?php elseif ($portal === 'user'): ?>

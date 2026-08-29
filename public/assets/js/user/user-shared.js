@@ -46,14 +46,15 @@ const STATE_KEYS = {
   STATUS: 'finzo_user_status',
 };
 
-// Internal cache — populated by fetchUserSession()
+// Internal cache — populated from window.__FINZO_USER__ for instant 0ms hydration, then refreshed by fetchUserSession()
+const _initUser = window.__FINZO_USER__ || {};
 const _userCache = {
-  status: 'pending',
-  id: 0,
-  customerId: '',
-  name: 'User',
-  email: '',
-  phone: '',
+  status: _initUser.status || 'pending',
+  id: _initUser.id || 0,
+  customerId: _initUser.customer_id || '',
+  name: _initUser.name || 'User',
+  email: _initUser.email || '',
+  phone: _initUser.phone || '',
   accountNo: '',
   accountType: 'savings',
   balance: '0',
@@ -62,7 +63,7 @@ const _userCache = {
   pastRejections: [],
   notifCount: parseInt(localStorage.getItem(STATE_KEYS.NOTIF_COUNT) || '0'),
   avatarUrl: null,
-  _loaded: false,
+  _loaded: !!_initUser.id,
 };
 
 /**
@@ -103,9 +104,11 @@ async function fetchUserSession() {
       if (nameEl && _userCache.name) nameEl.textContent = _userCache.name;
       if (idEl && _userCache.customerId) idEl.textContent = 'ID: ' + _userCache.customerId;
 
-      document.querySelectorAll('.user-name').forEach(el => el.textContent = _userCache.name);
-      document.querySelectorAll('.user-id').forEach(el => el.textContent = _userCache.customerId ? 'ID: ' + _userCache.customerId : '');
-      document.querySelectorAll('.user-initials').forEach(el => el.textContent = UserState.initials);
+      document.querySelectorAll('.user-name, .sidebar-user-name').forEach(el => el.textContent = _userCache.name);
+      document.querySelectorAll('.user-id, .sidebar-user-id').forEach(el => el.textContent = _userCache.customerId ? 'ID: ' + _userCache.customerId : '');
+      document.querySelectorAll('.user-initials, .sidebar-avatar').forEach(el => {
+        if (!_userCache.avatarUrl) el.textContent = UserState.initials;
+      });
 
       // Sync status badge in sidebar
       const statusBadge = document.getElementById('sidebar-status-badge');
