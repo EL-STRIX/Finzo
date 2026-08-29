@@ -46,8 +46,12 @@ class ResponseBuilder
                     $response['meta'] = $data['meta'];
                 }
             } else {
-                // If it's a flat array or empty array but contains the payload
-                $response['data'] = $data;
+                // If it's a flat array or empty array but contains the payload, merge it to the root
+                if (is_array($data)) {
+                    $response = array_merge($response, $data);
+                } else {
+                    $response['data'] = $data;
+                }
             }
             
             // Ensure meta exists if pagination doesn't

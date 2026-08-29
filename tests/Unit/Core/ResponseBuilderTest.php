@@ -13,7 +13,9 @@ class ResponseBuilderTest extends TestCase {
         $this->assertTrue($response['success']);
         $this->assertEquals(200, $response['status']);
         $this->assertEquals('Request successful.', $response['message']);
-        $this->assertEquals($data, $response['data']);
+        // Flat payloads are merged to the response root
+        $this->assertEquals(1, $response['id']);
+        $this->assertEquals('test', $response['name']);
         $this->assertArrayHasKey('timestamp', $response);
         $this->assertArrayHasKey('request_id', $response);
     }
@@ -25,7 +27,7 @@ class ResponseBuilderTest extends TestCase {
         $this->assertTrue($response['success']);
         $this->assertEquals(201, $response['status']);
         $this->assertEquals('Custom success', $response['message']);
-        $this->assertEquals(['id' => 1], $response['data']);
+        $this->assertEquals(1, $response['id']);
     }
 
     public function testFormatError() {
@@ -60,6 +62,14 @@ class ResponseBuilderTest extends TestCase {
         $response = ResponseBuilder::format($data, 200);
         
         $this->assertTrue($response['success']);
-        $this->assertEquals(['id' => 1, 'nested' => []], $response['data']);
+        $this->assertEquals(1, $response['id']);
+        $this->assertEquals([], $response['nested']);
+    }
+
+    public function testFormatSuccessWithNestedDataKey() {
+        $response = ResponseBuilder::format(['data' => ['id' => 1]], 200);
+
+        $this->assertTrue($response['success']);
+        $this->assertEquals(['id' => 1], $response['data']);
     }
 }

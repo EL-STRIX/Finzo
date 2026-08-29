@@ -40,7 +40,7 @@ class SecurityMiddleware
         // Strict Rate Limiting for Auth & Login Endpoints (5 requests per minute per IP for User, Staff, Admin)
         $uri = $_SERVER['REQUEST_URI'] ?? '';
         if (strpos($uri, '/auth/') !== false || strpos($uri, 'login') !== false) {
-            RateLimiter::check("auth_api_{$ip}", 5, 1); // 5 requests per 1 minute
+            RateLimiter::check("auth_api_{$ip}", 20, 1); // 20 requests per 1 minute
         }
     }
 }
