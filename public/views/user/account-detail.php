@@ -121,8 +121,6 @@ ob_start();
 </div>
 
 
-<script defer src="/Finzo/public/assets/js/core/utils.js"></script>
-  <script defer src="/Finzo/public/assets/js/core/api.js"></script>
 <script defer src="/Finzo/public/assets/js/user/account-detail.js"></script>
 <?php
 $slot = ob_get_clean();

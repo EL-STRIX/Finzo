@@ -1,6 +1,17 @@
 <?php
+if (!defined('FINZO_ROOT')) {
+    require_once dirname(__DIR__, 3) . '/bootstrap/app.php';
+}
+\App\Shared\Security\SessionManager::start();
+
+$userStatus = $_SESSION['user_status'] ?? 'pending';
+if ($userStatus === \App\Domain\Enums\AccountStatusEnum::ACTIVE->value) {
+    header('Location: dashboard.php');
+    exit;
+}
+
 $portal = 'user';
-$pageTitle = 'Application Under Review';
+$pageTitle = 'KYC Application Under Review';
 ob_start();
 ?>
 <div class="mb-8 ds-animate-fade">

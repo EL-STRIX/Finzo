@@ -1,4 +1,21 @@
 <?php
+if (!defined('FINZO_ROOT')) {
+    require_once dirname(__DIR__, 3) . '/bootstrap/app.php';
+}
+\App\Shared\Security\SessionManager::start();
+
+$userStatus = $_SESSION['user_status'] ?? 'pending';
+if ($userStatus !== \App\Domain\Enums\AccountStatusEnum::ACTIVE->value) {
+    if ($userStatus === \App\Domain\Enums\AccountStatusEnum::UNDER_REVIEW->value) {
+        header('Location: account-pending.php');
+    } elseif ($userStatus === \App\Domain\Enums\AccountStatusEnum::REJECTED->value) {
+        header('Location: account-rejected.php');
+    } else {
+        header('Location: complete-profile.php');
+    }
+    exit;
+}
+
 $portal = 'user';
 $pageTitle = 'Transactions';
 ob_start();
@@ -84,8 +101,6 @@ ob_start();
 </div>
 
 
-<script defer src="/Finzo/public/assets/js/core/utils.js"></script>
-  <script defer src="/Finzo/public/assets/js/core/api.js"></script>
 <script defer src="/Finzo/public/assets/js/user/transactions.js"></script>
 <?php
 $slot = ob_get_clean();
