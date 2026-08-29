@@ -40,7 +40,7 @@
                 <td class="font-bold">${p.name}</td>
                 <td class="text-sm uppercase">${p.type}</td>
                 <td class="text-sm font-bold text-primary capitalize">${p.network}</td>
-                <td class="text-sm opacity-80">₹${window.utils.formatCurrency(p.daily_withdrawal_limit)} / ₹${window.utils.formatCurrency(p.daily_purchase_limit)}</td>
+                <td class="text-sm opacity-80">₹${window.FinzoUtils.formatINR(p.daily_withdrawal_limit)} / ₹${window.FinzoUtils.formatINR(p.daily_purchase_limit)}</td>
                 <td><span class="status-badge ${statusClass}">${statusText}</span></td>
             </tr>
             `;

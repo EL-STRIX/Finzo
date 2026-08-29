@@ -702,18 +702,6 @@
             }
         },
 
-        previewNewPhoto: (input) => {
-            if (input.files && input.files[0]) {
-                const file = input.files[0];
-                const r = new FileReader();
-                r.onload = (e) => {
-                    const preview = document.getElementById('new-avatar-preview');
-                    if (preview) { preview.src = e.target.result; preview.classList.remove('hidden'); }
-                };
-                r.readAsDataURL(file);
-            }
-        },
-
         togglePW: (id) => {
             const input = document.getElementById(id);
             if (!input) return;

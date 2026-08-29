@@ -657,6 +657,14 @@
             receiptBtn.onclick = () => window.openReceipt(txn.txn_id);
         }
 
+        // Reverse Action — backend only supports completed deposit/withdrawal/transfer
+        const reverseBtn = document.getElementById('modal-reverse-btn');
+        if (reverseBtn) {
+            const isReversible = status === 'completed' && ['deposit', 'withdrawal', 'transfer'].includes(typeClass);
+            reverseBtn.classList.toggle('hidden', !isReversible);
+            reverseBtn.onclick = () => window.reverseCurrentTransaction(txn.txn_id, amountNum);
+        }
+
         // Show Modal
         modal.classList.remove('hidden');
         setTimeout(() => {
@@ -687,6 +695,47 @@
      */
     window.openReceipt = function(txnId) {
         window.open(`/Finzo/api/v1/documents/receipt?id=${txnId}`, '_blank');
+    };
+
+    /**
+     * Reverse a completed transaction (Admin action, ACID-safe on backend)
+     */
+    window.reverseCurrentTransaction = function(txnId, amount) {
+        const amountStr = Number(amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        const reason = prompt(`Reversing transaction ${txnId} (${`₹${amountStr}`}).\nEnter an audit reason for this reversal:`);
+
+        if (reason === null) return; // User cancelled
+        if (!reason.trim()) {
+            if (window.showToast) window.showToast('A reversal reason is required for the audit log.', 'error');
+            return;
+        }
+
+        const reverseBtn = document.getElementById('modal-reverse-btn');
+        if (reverseBtn) {
+            reverseBtn.disabled = true;
+            reverseBtn.style.opacity = '0.6';
+        }
+
+        window.api.post(`/transactions/${encodeURIComponent(txnId)}/reverse`, { reason: reason.trim() })
+            .then(res => {
+                if (res && res.success) {
+                    if (window.showToast) window.showToast(res.message || 'Transaction reversed successfully.', 'success');
+                    window.closeTransactionDetails();
+                    currentPage = 1;
+                    loadTransactions();
+                } else {
+                    if (window.showToast) window.showToast((res && res.message) || 'Failed to reverse transaction.', 'error');
+                }
+            })
+            .catch(() => {
+                if (window.showToast) window.showToast('Failed to reverse transaction. Please try again.', 'error');
+            })
+            .finally(() => {
+                if (reverseBtn) {
+                    reverseBtn.disabled = false;
+                    reverseBtn.style.opacity = '1';
+                }
+            });
     };
 
     /**

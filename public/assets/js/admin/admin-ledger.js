@@ -4,9 +4,10 @@
     async function loadActivePeriod() {
         try {
             const res = await window.api.get('/admin/ledger/periods/active');
-            if (res.success && res.has_active) {
-                activePeriodId = res.period.id;
-                document.getElementById('active-period-name').textContent = `${res.period.name} (${res.period.start_date} to ${res.period.end_date})`;
+            const payload = res.data || res;
+            if (res.success && payload.has_active) {
+                activePeriodId = payload.period.id;
+                document.getElementById('active-period-name').textContent = `${payload.period.name} (${payload.period.start_date} to ${payload.period.end_date})`;
                 document.getElementById('active-period-name').classList.remove('skeleton');
             } else {
                 document.getElementById('active-period-name').textContent = 'No Active Period';
@@ -23,9 +24,10 @@
     async function loadChartOfAccounts() {
         try {
             const res = await window.api.get('/admin/ledger/accounts');
+            const payload = res.data || res;
             const container = document.getElementById('coa-tree');
-            if (res.success && res.accounts) {
-                renderCOA(res.accounts, container);
+            if (res.success && payload.accounts) {
+                renderCOA(payload.accounts, container);
             } else {
                 container.innerHTML = '<div class="text-center py-8 text-text-muted text-sm">Chart of Accounts not initialized.</div>';
             }

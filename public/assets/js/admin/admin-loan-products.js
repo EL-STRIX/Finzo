@@ -41,7 +41,7 @@
                 <td class="font-mono text-xs opacity-60">#${p.id}</td>
                 <td class="font-bold">${p.name}</td>
                 <td class="text-sm font-bold text-primary">${p.interest_rate}% p.a.</td>
-                <td class="text-sm">₹${window.utils.formatCurrency(p.min_amount)} - ₹${window.utils.formatCurrency(p.max_amount)}</td>
+                <td class="text-sm">₹${window.FinzoUtils.formatINR(p.min_amount)} - ₹${window.FinzoUtils.formatINR(p.max_amount)}</td>
                 <td class="text-sm">${p.min_tenure_months} - ${p.max_tenure_months} mo</td>
                 <td><span class="status-badge ${statusClass}">${statusText}</span></td>
             </tr>
