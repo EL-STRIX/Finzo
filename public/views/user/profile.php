@@ -5,10 +5,11 @@ ob_start();
 ?>
 <script defer src="/Finzo/public/assets/js/user/user-shared.js"></script>
 
+<!-- Profile Header -->
 <div class="mb-8 ds-animate-fade">
-    <div class="text-xs font-bold text-text-muted uppercase tracking-wider mb-1">Customer Account</div>
-    <h1 class="font-display text-3xl font-extrabold text-text-main tracking-tight">Profile &amp; Security</h1>
-    <p class="text-text-muted mt-1">Manage your personal information, contact records, identity verification, and security controls.</p>
+    <div class="text-xs font-bold text-text-muted uppercase tracking-wider mb-1">Banking Identity &amp; Profile</div>
+    <h1 class="font-display text-3xl font-extrabold text-text-main tracking-tight">Customer Account Profile</h1>
+    <p class="text-text-muted mt-1 text-sm">Official customer record, registered personal details, address, identity documentation, and security controls.</p>
 </div>
 
 <!-- KYC Onboarding Banner for Pending/Rejected Users -->
@@ -29,7 +30,7 @@ ob_start();
 </div>
 
 <div class="flex flex-col lg:flex-row gap-6">
-    <!-- LEFT COLUMN: Identity & Account Summary -->
+    <!-- LEFT COLUMN: Identity & Account Overview -->
     <div class="w-full lg:w-1/3 flex flex-col gap-6 ds-animate-slide-up">
         
         <!-- Identity Summary Card -->
@@ -91,7 +92,7 @@ ob_start();
 
     </div>
 
-    <!-- RIGHT COLUMN: Customer Details & Security Cards -->
+    <!-- RIGHT COLUMN: Details & Security Cards -->
     <div class="w-full lg:w-2/3 flex flex-col gap-6 ds-animate-slide-up delay-100">
         
         <!-- 1. Personal & Demographics -->
