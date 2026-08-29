@@ -1,30 +1,61 @@
 (async function initPage() {
     await fetchUserSession();
-    buildSidebar('notifications'); buildNavbar('Activity', 'Notifications');
-  })();
-  let activeFilter = 'all';
-  let notifs = [];
+    buildSidebar('notifications');
+    buildNavbar('Activity', 'Notifications');
+    await loadNotifications();
+})();
+let activeFilter = 'all';
+let notifs = [];
 
-  async function loadNotifications() {
+async function loadNotifications() {
     try {
-      const res = await fetch('/Finzo/api/user/notifications.php', { credentials: 'same-origin' });
-      const data = await res.json();
-      if (data.success && data.notifications) {
-        notifs = data.notifications.map((n, i) => ({
-          id: n.id || i + 1,
-          type: n.type || 'system',
-          icon: n.icon || 'notifications',
-          iconBg: n.icon_bg || 'bg-info-surface',
-          iconColor: n.icon_color || 'text-info-base',
-          title: n.title,
-          body: n.body || n.message,
-          time: n.created_at ? new Date(n.created_at).toLocaleString('en-IN', {day:'numeric',month:'short',year:'numeric', hour:'2-digit', minute:'2-digit', hour12:true}) : 'Recently',
-          unread: !n.is_read
-        }));
-      }
-    } catch (e) { console.warn('Failed to load notifications:', e); }
+        const data = await window.api.get('/user/notifications');
+        if (data.success && data.notifications) {
+            notifs = data.notifications.map((n, i) => {
+                const type = (n.type || 'system').toLowerCase();
+                let icon = 'notifications';
+                let iconBg = 'rgba(8,145,178,0.12)';
+                let iconColor = '#0891b2';
+
+                if (type === 'transaction') {
+                    icon = 'payments';
+                    iconBg = 'rgba(16,185,129,0.15)';
+                    iconColor = '#10b981';
+                } else if (type === 'security') {
+                    icon = 'shield';
+                    iconBg = 'rgba(245,158,11,0.15)';
+                    iconColor = '#f59e0b';
+                } else if (type === 'system') {
+                    icon = 'campaign';
+                    iconBg = 'rgba(8,145,178,0.15)';
+                    iconColor = '#0891b2';
+                }
+
+                return {
+                    id: n.id || i + 1,
+                    type: type,
+                    icon: n.icon || icon,
+                    iconBg: n.icon_bg || iconBg,
+                    iconColor: n.icon_color || iconColor,
+                    title: n.title,
+                    body: n.body || n.message,
+                    time: n.created_at ? new Date(n.created_at).toLocaleString('en-IN', {
+                        day: 'numeric',
+                        month: 'short',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: true
+                    }) : 'Recently',
+                    unread: Boolean(!n.is_read || n.is_read === 0 || n.is_read === '0')
+                };
+            });
+        }
+    } catch (e) { 
+        console.warn('Failed to load notifications:', e); 
+    }
     renderNotifs();
-  }
+}
 
   function renderNotifs() {
     const filtered = notifs.filter(n => activeFilter === 'all' || n.type === activeFilter);
@@ -98,44 +129,61 @@
       
       iconContainer.innerHTML = `<span class="material-symbols-outlined text-3xl ${isHtmlText ? '' : n.iconColor}" ${isHtmlText ? `style="color:${n.iconColor}"` : ''}>${n.icon}</span>`;
 
-      fetch('/Finzo/api/user/notifications.php', { method: 'POST', headers: {'Content-Type':'application/x-www-form-urlencoded'}, credentials: 'same-origin', body: 'action=mark_read&notification_id=' + id }).catch(() => {});
+      window.api.post('/user/notifications', { action: 'mark_read', notification_id: id }).catch(() => {});
       
       renderNotifs();
       
       const modal = document.getElementById('viewNotifModal');
-      modal.classList.remove('hidden');
+      if (modal) {
+        modal.classList.remove('hidden');
+      }
     }
   }
   
   function closeModal(id) {
-    document.getElementById(id).classList.add('hidden');
+    const m = document.getElementById(id || 'viewNotifModal');
+    if (m) m.classList.add('hidden');
   }
 
-  function deleteCurrentNotif() {
+  async function deleteCurrentNotif() {
     if (currentViewNotifId !== null) {
-      fetch('/Finzo/api/user/notifications.php', { method: 'POST', headers: {'Content-Type':'application/x-www-form-urlencoded'}, credentials: 'same-origin', body: 'action=delete&notification_id=' + currentViewNotifId }).catch(() => {});
+      try {
+        await window.api.post('/user/notifications', { action: 'delete', notification_id: currentViewNotifId });
+      } catch (e) {}
       notifs = notifs.filter(n => n.id !== currentViewNotifId);
       currentViewNotifId = null;
       renderNotifs();
       closeModal('viewNotifModal');
-      showToast('Record deleted from ledger', 'success');
+      if (typeof showToast === 'function') showToast('Record deleted from ledger', 'success');
     }
   }
 
-  function markAllRead() {
-    fetch('/Finzo/api/user/notifications.php', { method: 'POST', headers: {'Content-Type':'application/x-www-form-urlencoded'}, credentials: 'same-origin', body: 'action=mark_all_read' }).catch(() => {});
+  async function markAllRead() {
+    try {
+      await window.api.post('/user/notifications', { action: 'mark_all_read' });
+    } catch (e) {}
     notifs.forEach(n => n.unread = false);
     renderNotifs();
-    showToast('All broadcasts read', 'success');
+    if (typeof showToast === 'function') showToast('All broadcasts read', 'success');
   }
 
-  function clearAll() {
-    openConfirm('Delete All Records', 'This action will permanently remove all notifications from your signal ledger. Proceed?', () => {
-      fetch('/Finzo/api/user/notifications.php', { method: 'POST', headers: {'Content-Type':'application/x-www-form-urlencoded'}, credentials: 'same-origin', body: 'action=clear_all' }).catch(() => {});
-      notifs = [];
-      renderNotifs();
-      showToast('Activity feed cleared', 'success');
-    }, false);
+  async function clearAll() {
+    const doClear = async () => {
+      try {
+        await window.api.post('/user/notifications', { action: 'clear_all' });
+        notifs = [];
+        renderNotifs();
+        if (typeof showToast === 'function') showToast('Activity feed cleared', 'success');
+      } catch (e) {
+        console.error('Clear all error:', e);
+      }
+    };
+
+    if (typeof openConfirm === 'function') {
+      openConfirm('Delete All Records', 'This action will permanently remove all notifications from your signal ledger. Proceed?', doClear, false);
+    } else if (confirm('This action will permanently remove all notifications from your signal ledger. Proceed?')) {
+      await doClear();
+    }
   }
 
   function filterNotifs(type, el) {
@@ -147,10 +195,20 @@
       badge.className = 'text-xs py-0.5 px-2 rounded-full bg-[var(--color-border-main)]/50';
     });
     
-    el.className = 'filter-item w-full flex items-center justify-between p-3 rounded-lg font-bold text-sm transition-colors text-primary-base bg-primary-surface';
-    el.querySelector('span:last-child').className = 'text-xs py-0.5 px-2 rounded-full bg-white/50 border border-primary-base/10';
+    if (el) {
+      el.className = 'filter-item w-full flex items-center justify-between p-3 rounded-lg font-bold text-sm transition-colors text-primary-base bg-primary-surface';
+      el.querySelector('span:last-child').className = 'text-xs py-0.5 px-2 rounded-full bg-white/50 border border-primary-base/10';
+    }
     
     renderNotifs();
   }
 
-  loadNotifications();
+  // Expose methods globally for inline and data-action handlers
+  window.viewNotif = viewNotif;
+  window.closeModal = closeModal;
+  window.deleteCurrentNotif = deleteCurrentNotif;
+  window.markAllRead = markAllRead;
+  window.clearAll = clearAll;
+  window.filterNotifs = filterNotifs;
+  window.loadNotifications = loadNotifications;
+

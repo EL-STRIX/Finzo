@@ -9,7 +9,7 @@ ob_start();
       <h1 class="font-display text-3xl font-extrabold text-text-main tracking-tight">Activity Feed</h1>
       <p class="text-text-muted mt-1">Unified broadcast from the Finzo ecosystem.</p>
     </div>
-    <button data-action="markAllRead()" class="btn btn-secondary btn-sm no-print mb-1">Mark all as read</button>
+    <button onclick="markAllRead()" data-action="markAllRead()" class="btn btn-secondary btn-sm no-print mb-1">Mark all as read</button>
   </div>
 
   <div class="flex flex-col lg:flex-row gap-8">
@@ -27,28 +27,28 @@ ob_start();
 
           <!-- FILTERS -->
           <div class="flex flex-col gap-2">
-            <button class="filter-item w-full flex items-center justify-between p-3 rounded-lg font-bold text-sm transition-colors text-primary-base-base bg-primary-surface" data-action="filterNotifs(&#039;all&#039;,this)">
+            <button class="filter-item w-full flex items-center justify-between p-3 rounded-lg font-bold text-sm transition-colors text-primary-base-base bg-primary-surface" onclick="filterNotifs('all',this)" data-action="filterNotifs('all',this)">
               <div class="flex items-center gap-3">
                 <span class="material-symbols-outlined text-lg" aria-hidden="true">grid_view</span> All Broadcasts
               </div>
               <span class="text-xs py-0.5 px-2 rounded-full bg-white/50 border border-primary-base/10" id="count-all">0</span>
             </button>
             
-            <button class="filter-item w-full flex items-center justify-between p-3 rounded-lg font-bold text-sm transition-colors text-text-muted hover:bg-surface-subtle hover:text-text-main" data-action="filterNotifs(&#039;transaction&#039;,this)">
+            <button class="filter-item w-full flex items-center justify-between p-3 rounded-lg font-bold text-sm transition-colors text-text-muted hover:bg-surface-subtle hover:text-text-main" onclick="filterNotifs('transaction',this)" data-action="filterNotifs('transaction',this)">
               <div class="flex items-center gap-3">
                 <span class="material-symbols-outlined text-lg" aria-hidden="true">payments</span> Transactions
               </div>
               <span class="text-xs py-0.5 px-2 rounded-full bg-border-main/50" id="count-transaction">0</span>
             </button>
             
-            <button class="filter-item w-full flex items-center justify-between p-3 rounded-lg font-bold text-sm transition-colors text-text-muted hover:bg-surface-subtle hover:text-text-main" data-action="filterNotifs(&#039;security&#039;,this)">
+            <button class="filter-item w-full flex items-center justify-between p-3 rounded-lg font-bold text-sm transition-colors text-text-muted hover:bg-surface-subtle hover:text-text-main" onclick="filterNotifs('security',this)" data-action="filterNotifs('security',this)">
               <div class="flex items-center gap-3">
                 <span class="material-symbols-outlined text-lg" aria-hidden="true">security</span> Security
               </div>
               <span class="text-xs py-0.5 px-2 rounded-full bg-border-main/50" id="count-security">0</span>
             </button>
             
-            <button class="filter-item w-full flex items-center justify-between p-3 rounded-lg font-bold text-sm transition-colors text-text-muted hover:bg-surface-subtle hover:text-text-main" data-action="filterNotifs(&#039;system&#039;,this)">
+            <button class="filter-item w-full flex items-center justify-between p-3 rounded-lg font-bold text-sm transition-colors text-text-muted hover:bg-surface-subtle hover:text-text-main" onclick="filterNotifs('system',this)" data-action="filterNotifs('system',this)">
               <div class="flex items-center gap-3">
                 <span class="material-symbols-outlined text-lg" aria-hidden="true">settings</span> System
               </div>
@@ -57,7 +57,7 @@ ob_start();
           </div>
 
           <div class="mt-8 pt-6 border-t border-dashed border-border-main">
-            <button data-action="clearAll()" class="w-full flex items-center justify-center gap-2 p-3 text-sm font-bold text-danger-base hover:bg-danger-surface rounded-lg transition-colors">
+            <button onclick="clearAll()" data-action="clearAll()" class="w-full flex items-center justify-center gap-2 p-3 text-sm font-bold text-danger-base hover:bg-danger-surface rounded-lg transition-colors cursor-pointer">
               <span class="material-symbols-outlined" aria-hidden="true">delete_sweep</span> Delete All Records
             </button>
           </div>
@@ -74,11 +74,10 @@ ob_start();
       </div>
     </div>
   </div>
-</div>
 
 <!-- View Notification Modal -->
-<div id="viewNotifModal" class="modal-overlay hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4" role="dialog" aria-modal="true">
-  <div class="ds-card max-w-md w-full p-6 animate-in zoom-in-95 duration-200">
+<div id="viewNotifModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4" role="dialog" aria-modal="true">
+  <div class="ds-card max-w-md w-full p-6 animate-in zoom-in-95 duration-200 bg-surface border border-border-main">
     <div id="viewNotifIcon" class="w-16 h-16 mx-auto rounded-2xl flex items-center justify-center mb-4"></div>
     <div id="viewNotifTitle" class="font-display text-xl font-bold text-center text-text-main mb-1">Broadcast Subject</div>
     <div id="viewNotifDate" class="text-center text-xs font-bold text-text-muted uppercase tracking-wider mb-6">TIMESTAMP</div>
@@ -88,8 +87,8 @@ ob_start();
     </div>
     
     <div class="flex gap-4">
-      <button class="btn btn-secondary flex-1" data-action="closeModal(&#039;viewNotifModal&#039;)">Read</button>
-      <button class="btn btn-danger flex-1" data-action="deleteCurrentNotif()">Delete Record</button>
+      <button class="btn btn-secondary flex-1" onclick="closeModal('viewNotifModal')">Close</button>
+      <button class="btn btn-danger flex-1" onclick="deleteCurrentNotif()">Delete Record</button>
     </div>
   </div>
 </div>
