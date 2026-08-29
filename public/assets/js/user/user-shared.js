@@ -669,12 +669,14 @@ function openConfirm(title, text, onConfirm, danger = false) {
       <div class="modal-title">${title}</div>
       <div class="modal-text">${text}</div>
       <div class="modal-actions">
-        <button class="btn btn-ghost" onclick="document.getElementById('global-confirm-modal').remove()">Cancel</button>
+        <button class="btn btn-ghost" onclick="(function(){var m=document.getElementById('global-confirm-modal');if(m){m.classList.remove('is-active');setTimeout(()=>m.remove(),200);}})()">Cancel</button>
         <button class="btn ${danger ? 'btn-danger' : 'btn-primary'}" id="confirm-action-btn">Confirm</button>
       </div>
     </div>`;
   document.body.appendChild(modal);
-  document.getElementById('confirm-action-btn').onclick = () => { modal.remove(); onConfirm(); };
+  // Allow layout to settle, then activate to trigger transition
+  requestAnimationFrame(() => modal.classList.add('is-active'));
+  document.getElementById('confirm-action-btn').onclick = () => { modal.classList.remove('is-active'); setTimeout(() => modal.remove(), 200); onConfirm(); };
 }
 
 // ── AMOUNT FORMATTER ──
