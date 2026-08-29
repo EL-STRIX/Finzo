@@ -11,6 +11,8 @@ if (typeof buildNavbar === 'function') buildNavbar('Account Overview', 'Dashboar
     console.warn('fetchUserSession error in dashboard.js:', err);
   }
 
+  if (typeof handleStatusRedirect === 'function' && handleStatusRedirect('dashboard')) return;
+
   if (typeof buildSidebar === 'function') buildSidebar('dashboard');
   if (typeof buildNavbar === 'function') buildNavbar('Account Overview', 'Dashboard');
 

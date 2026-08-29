@@ -740,46 +740,53 @@ function requireActive(redirectTo = 'dashboard.php') {
 
 // ── STATUS REDIRECT LOGIC ──
 function handleStatusRedirect(currentPage) {
-  const status = UserState.status;
+  const status = UserState.status || 'pending';
   
   // Pages only accessible when NOT active
   const pendingOnlyPages = ['complete-profile', 'account-pending', 'account-rejected'];
   // Pages only accessible when active
-  const activeOnlyPages = ['accounts', 'account-detail', 'transfer', 'transactions', 'statement', 'beneficiary'];
+  const activeOnlyPages = [
+    'dashboard', 'accounts', 'account-detail', 'transfer', 'transactions', 
+    'statement', 'beneficiary', 'loans', 'cards', 'investments', 'bill-payments'
+  ];
 
-  // Inactive users cannot access active-only pages
+  // Inactive users cannot access active-only pages (including dashboard)
   if (activeOnlyPages.includes(currentPage) && status !== 'active') {
     if (status === 'under_review') {
       window.location.href = 'account-pending.php';
+    } else if (status === 'rejected') {
+      window.location.href = 'account-rejected.php';
     } else {
-      window.location.href = 'dashboard.php';
+      window.location.href = 'complete-profile.php';
     }
-    return;
+    return true;
   }
 
   // Active users cannot access KYC onboarding pages
   if (pendingOnlyPages.includes(currentPage) && status === 'active') {
     window.location.href = 'dashboard.php';
-    return;
+    return true;
   }
 
   // Pending users (KYC not submitted) cannot access review or rejected pages
   if (status === 'pending' && (currentPage === 'account-pending' || currentPage === 'account-rejected')) {
     window.location.href = 'complete-profile.php';
-    return;
+    return true;
   }
 
   // Under review users cannot access KYC form or rejected page
   if (status === 'under_review' && (currentPage === 'complete-profile' || currentPage === 'account-rejected')) {
     window.location.href = 'account-pending.php';
-    return;
+    return true;
   }
 
   // Rejected users cannot access the under review page
   if (status === 'rejected' && currentPage === 'account-pending') {
     window.location.href = 'account-rejected.php';
-    return;
+    return true;
   }
+
+  return false;
 }
 
 // ── DEMO CONTROLS (for testing in browser) ──
