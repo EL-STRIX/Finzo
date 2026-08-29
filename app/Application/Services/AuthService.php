@@ -324,11 +324,11 @@ class AuthService implements \App\Domain\Contracts\Services\AuthServiceInterface
             $_SESSION['role']             = 'customer';
             $_SESSION['last_activity']    = time();
 
-            $welcomeMsg = "Your account has been registered. Complete your profile to start banking.";
-            $this->repository->createNotification($customer_id, 'system', 'Welcome to Finzo!', $welcomeMsg);
+            $welcomeMsg = "Welcome to Finzo Digital Banking, {$fullName}! Your customer profile has been generated with Customer ID {$customer_id}. Complete your identity verification to unlock full banking and payment features.";
+            $this->repository->createNotification($customer_id, 'system', 'Welcome to Finzo Digital Banking', $welcomeMsg);
 
-            $profileMsg = "Please complete your identity verification to unlock full banking services.";
-            $this->repository->createNotification($customer_id, 'security', 'Profile Incomplete', $profileMsg);
+            $profileMsg = "Mandatory Compliance Alert: In accordance with regulatory requirements, please upload your government-issued identification and address documents to activate your account.";
+            $this->repository->createNotification($customer_id, 'security', 'Action Required: Complete KYC Verification', $profileMsg);
 
             $this->repository->commit();
 

@@ -353,17 +353,26 @@ function write_audit_log($pdo, $actionType, $entityId, $entityType, $actorId, $a
  */
 function send_notification($pdo, $userId, $type, $title, $message)
 {
-    $stmt = $pdo->prepare("SELECT customer_id FROM users WHERE id = ?");
-    $stmt->execute([$userId]);
-    $customer_id = $stmt->fetchColumn();
+    $customer_id = null;
+    if (is_numeric($userId)) {
+        $stmt = $pdo->prepare("SELECT customer_id FROM users WHERE id = ?");
+        $stmt->execute([$userId]);
+        $customer_id = $stmt->fetchColumn();
+    } else {
+        $stmt = $pdo->prepare("SELECT customer_id FROM users WHERE customer_id = ?");
+        $stmt->execute([$userId]);
+        $found = $stmt->fetchColumn();
+        $customer_id = $found ?: $userId;
+    }
 
     if ($customer_id) {
         $stmt = $pdo->prepare("
             INSERT INTO notifications (user_id, type, title, message, is_read, created_at)
             VALUES (?, ?, ?, ?, 0, NOW())
         ");
-        $stmt->execute([$customer_id, $type, $title, $message]);
+        return $stmt->execute([$customer_id, $type, $title, $message]);
     }
+    return false;
 }
 
 // =====================================================

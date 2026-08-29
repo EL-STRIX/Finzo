@@ -46,6 +46,12 @@
   border-color: var(--color-border);
 }
 
+[data-theme="dark"] select.form-control option, 
+[data-theme="dark"] select.fin-input option {
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
+}
+
 .fin-input-wrapper {
   position: relative;
   width: 100%;

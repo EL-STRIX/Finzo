@@ -15,40 +15,8 @@ const formValues = {};
   }
   
   await loadBranches();
-  initDropdowns();
   document.body.classList.add('ready');
 })();
-
-function initDropdowns() {
-  document.querySelectorAll('.finzo-dropdown').forEach(d => {
-    const trigger = d.querySelector('.finzo-dropdown-trigger');
-    const menu = d.querySelector('.finzo-dropdown-menu');
-    const label = d.querySelector('.dropdown-label');
-    const input = d.querySelector('input[type="hidden"]');
-    
-    trigger.addEventListener('click', (e) => {
-      e.stopPropagation();
-      document.querySelectorAll('.finzo-dropdown-menu').forEach(m => {
-        if (m !== menu) m.classList.add('hidden');
-      });
-      menu.classList.toggle('hidden');
-    });
-
-    menu.querySelectorAll('.finzo-dropdown-option').forEach(opt => {
-      opt.addEventListener('click', () => {
-        label.textContent = opt.textContent;
-        label.classList.remove('text-[var(--color-text-muted)]');
-        label.classList.add('text-[var(--color-text-main)]');
-        input.value = opt.dataset.value;
-        menu.classList.add('hidden');
-      });
-    });
-  });
-
-  document.addEventListener('click', () => {
-    document.querySelectorAll('.finzo-dropdown-menu').forEach(m => m.classList.add('hidden'));
-  });
-}
 
 async function loadBranches() {
   try {
@@ -59,15 +27,15 @@ async function loadBranches() {
       const res = await fetch('/Finzo/public/api/v1/public/branches');
       data = await res.json();
     }
-    const menu = document.getElementById('branch-dropdown-menu');
-    if (menu && data && data.success && Array.isArray(data.branches) && data.branches.length > 0) {
-      menu.innerHTML = data.branches.map(b => 
-        `<div class="finzo-dropdown-option p-3 text-sm font-medium hover:bg-surface-elevated cursor-pointer" data-value="${b.id}">${b.name} (${b.ifsc || b.branch_code || ''})</div>`
+    const select = document.getElementById('branch');
+    if (select && data && data.success && Array.isArray(data.branches) && data.branches.length > 0) {
+      const defaultOption = '<option value="" disabled selected>Select local branch</option>';
+      const options = data.branches.map(b => 
+        `<option value="${b.id}">${b.name} (${b.ifsc || b.branch_code || ''})</option>`
       ).join('');
-      // re-bind options
-      initDropdowns();
-    } else if (menu) {
-      menu.innerHTML = '<div class="p-3 text-sm text-text-muted">No branches available</div>';
+      select.innerHTML = defaultOption + options;
+    } else if (select) {
+      select.innerHTML = '<option value="" disabled selected>No branches available</option>';
     }
   } catch(e) {
     console.warn('Failed to load branches', e);
