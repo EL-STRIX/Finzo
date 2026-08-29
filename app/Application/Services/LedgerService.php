@@ -31,29 +31,27 @@ class LedgerService implements LedgerServiceInterface
         $offset = (max(1, $page) - 1) * $limit;
 
         $lines = $this->repository->getJournalEntries($limit, $offset);
-        
-        // Group lines by journal entry ID
-        $entries = [];
+
+        // Flatten journal lines into the row shape the admin ledger table renders:
+        // transaction_id, created_at, type ('debit'|'credit'), amount, account_code, account_name, description.
+        $rows = [];
         foreach ($lines as $line) {
-            $jId = $line['id'];
-            if (!isset($entries[$jId])) {
-                $entries[$jId] = [
-                    'id' => $line['id'],
-                    'transaction_id' => $line['transaction_id'],
-                    'entry_date' => $line['entry_date'],
-                    'description' => $line['description'],
-                    'reference_id' => $line['reference_id'],
-                    'created_at' => $line['created_at'],
-                    'lines' => []
-                ];
-            }
-            $entries[$jId]['lines'][] = [
-                'line_id' => $line['line_id'],
-                'account_id' => $line['account_id'],
-                'account_code' => $line['account_code'],
-                'account_name' => $line['account_name'],
-                'debit_amount' => (float)$line['debit_amount'],
-                'credit_amount' => (float)$line['credit_amount']
+            $isDebit = (float)$line['debit_amount'] > 0;
+            $rows[] = [
+                'line_id'       => (int)$line['line_id'],
+                'journal_id'    => (int)$line['id'],
+                'transaction_id' => $line['transaction_id'],
+                'entry_date'    => $line['entry_date'],
+                'created_at'    => $line['created_at'],
+                'description'   => $line['description'],
+                'reference_id'  => $line['reference'],
+                'account_id'    => (int)$line['account_id'],
+                'account_code'  => $line['account_code'],
+                'account_name'  => $line['account_name'],
+                'type'          => $isDebit ? 'debit' : 'credit',
+                'amount'        => $isDebit ? (float)$line['debit_amount'] : (float)$line['credit_amount'],
+                'debit_amount'  => (float)$line['debit_amount'],
+                'credit_amount' => (float)$line['credit_amount'],
             ];
         }
 
@@ -61,7 +59,7 @@ class LedgerService implements LedgerServiceInterface
         $pages = max(1, ceil($total / $limit));
 
         return [
-            'entries' => array_values($entries),
+            'data' => $rows,
             'total' => $total,
             'pages' => $pages,
             'current_page' => $page,

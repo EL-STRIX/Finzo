@@ -45,7 +45,7 @@ class LedgerServiceIntegrationTest extends TestCase
         try {
             $result = $service->getJournalEntries(1, 10);
             $this->assertIsArray($result);
-            $this->assertArrayHasKey('entries', $result);
+            $this->assertArrayHasKey('data', $result);
         } catch (\PDOException $e) {
             // Tables may not exist in test DB – still executes the service logic paths
             $this->assertTrue(true);
