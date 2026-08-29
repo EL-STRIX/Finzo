@@ -126,9 +126,7 @@ async function initProfile() {
     if (sinceEl) {
       if (user.created_at) {
         const d = new Date(user.created_at);
-        sinceEl.textContent = !isNaN(d.getTime())
-          ? d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
-          : 'Recently';
+        sinceEl.textContent = !isNaN(d.getTime()) ? d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : 'Recently';
       } else {
         sinceEl.textContent = 'Recently';
       }
@@ -174,10 +172,10 @@ async function initProfile() {
     }
 
     const genderEl = document.getElementById('view-gender');
-    if (genderEl) genderEl.textContent = user.gender || 'Not Specified';
+    if (genderEl) genderEl.textContent = user.gender || 'Not Provided';
 
     const natEl = document.getElementById('view-nationality');
-    if (natEl) natEl.textContent = user.nationality || 'Indian';
+    if (natEl) natEl.textContent = user.nationality || 'Not Provided';
 
     const fatherEl = document.getElementById('view-father-name');
     if (fatherEl) fatherEl.textContent = user.father_name || 'Not Provided';
@@ -186,7 +184,7 @@ async function initProfile() {
     if (motherEl) motherEl.textContent = user.mother_name || 'Not Provided';
 
     const maritalEl = document.getElementById('view-marital-status');
-    if (maritalEl) maritalEl.textContent = resolvedStatus === 'active' ? (user.marital_status || 'Not Provided') : '—';
+    if (maritalEl) maritalEl.textContent = user.marital_status || 'Not Provided';
 
     // 4. Contact & Address
     const emailInput = document.getElementById('edit-email');
@@ -205,33 +203,27 @@ async function initProfile() {
     if (stateEl) stateEl.textContent = user.state || 'Not Provided';
 
     const pinEl = document.getElementById('view-pincode');
-    if (pinEl) pinEl.textContent = user.pincode || '—';
+    if (pinEl) pinEl.textContent = user.pincode || 'Not Provided';
 
     const countryEl = document.getElementById('view-country');
-    if (countryEl) countryEl.textContent = user.country || 'India';
+    if (countryEl) countryEl.textContent = user.country || 'Not Provided';
 
     // 5. Identity Verification
     const idTypeEl = document.getElementById('view-id-type');
-    if (idTypeEl) idTypeEl.textContent = (user.id_type || 'Government ID').toUpperCase();
+    if (idTypeEl) idTypeEl.textContent = user.id_type ? user.id_type.toUpperCase() : 'Not Provided';
     _rawIdNumber = user.id_number || '';
     updateIdMask();
 
     // 6. Employment & Financial
     const occEl = document.getElementById('view-occupation');
-    if (occEl) occEl.textContent = user.occupation || 'Not Specified';
+    if (occEl) occEl.textContent = user.occupation || 'Not Provided';
 
     const srcIncEl = document.getElementById('view-source-income');
-    if (srcIncEl) srcIncEl.textContent = user.source_of_income || 'Salary';
+    if (srcIncEl) srcIncEl.textContent = user.source_of_income || 'Not Provided';
 
     const annIncEl = document.getElementById('view-annual-income');
     if (annIncEl) {
-      if (resolvedStatus !== 'active') {
-        annIncEl.textContent = '—';
-      } else {
-        annIncEl.textContent = user.annual_income
-          ? (typeof formatINR === 'function' ? formatINR(user.annual_income) + ' / yr' : '₹' + user.annual_income)
-          : 'Not Provided';
-      }
+      annIncEl.textContent = user.annual_income ? (typeof formatINR === 'function' ? formatINR(user.annual_income) + ' / yr' : '₹' + user.annual_income) : 'Not Provided';
     }
 
   } catch (err) {
