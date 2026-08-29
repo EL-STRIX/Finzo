@@ -4,7 +4,6 @@ namespace App\Domain\Contracts\Services;
 
 interface AdminManagementServiceInterface
 {
-    public function requireSuperAdmin(): void;
     public function getNextAdminId(): string;
     public function addAdmin(array $data, ?array $file): array;
     public function handleAdminAction(string $action, int $target_numeric_id): array;

@@ -172,8 +172,9 @@ class AdminManagementRepository extends BaseRepository implements \App\Domain\Co
             SELECT id, admin_id, full_name, email, phone, date_of_birth, gender, profile_photo,
                    admin_role, access_level, status, two_fa_enabled, 
                    last_login_at, last_login_ip, last_password_changed, failed_attempts,
-                   security_question, security_question_set, created_at
-            FROM admin_users 
+                   security_question, security_question_set, created_at, created_by,
+                   (SELECT full_name FROM admin_users WHERE admin_id = a.created_by) AS created_by_name
+            FROM admin_users a
             WHERE id = ?
         ", [$id], \App\Domain\Models\Admin::class);
     }

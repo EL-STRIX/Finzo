@@ -427,18 +427,24 @@ class AdminStaffBranchService implements \App\Domain\Contracts\Services\AdminSta
             throw new \App\Shared\Core\Exceptions\ApiException("Confirmation name must match '{$branchName}'", 400);
         }
 
+        $closureNote = '';
         if ($closure_doc && ($closure_doc['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_OK) {
             $ext = pathinfo($closure_doc['name'], PATHINFO_EXTENSION);
             $filename = 'closure_doc_' . time() . '_' . rand(1000, 9999) . '.' . $ext;
             $dest_dir = FINZO_ROOT . '/uploads/branch-certs/';
+            $public_dir = FINZO_ROOT . '/public/uploads/branch-certs/';
             if (!is_dir($dest_dir)) @mkdir($dest_dir, 0777, true);
-            move_uploaded_file($closure_doc['tmp_name'], $dest_dir . $filename);
+            if (!is_dir($public_dir)) @mkdir($public_dir, 0777, true);
+            if (move_uploaded_file($closure_doc['tmp_name'], $dest_dir . $filename)) {
+                @copy($dest_dir . $filename, $public_dir . $filename);
+                $closureNote = " | Closure document archived: uploads/branch-certs/{$filename}";
+            }
         }
 
         $this->repo->deleteBranchAndUnassignStaff($branchId);
 
         $security = new \App\Shared\Security\SecurityService();
-        $security->writeAuditLog('branch_deleted', $branchName, 'branch', (string)$adminId, 'admin', "Deleted branch: {$branchName}");
+        $security->writeAuditLog('branch_deleted', $branchName, 'branch', (string)$adminId, 'admin', "Deleted branch: {$branchName}{$closureNote}");
 
         return ['success' => true, 'message' => 'Branch deleted successfully'];
     }
@@ -633,7 +639,11 @@ class AdminStaffBranchService implements \App\Domain\Contracts\Services\AdminSta
             $existingEditDocTag = $existingEditMatch[0];
         }
 
-        if (!empty($city) || !empty($address) || !empty($description) || !empty($existingEditDocTag)) {
+        // Explicitly submitted (and possibly emptied) city/address allow clearing stored [Location: ...] meta
+        $locationProvided = array_key_exists('city', $data) || array_key_exists('address', $data);
+        $hasStoredLocation = strpos($currentDesc, '[Location:') !== false;
+
+        if (!empty($city) || !empty($address) || !empty($description) || !empty($existingEditDocTag) || ($locationProvided && $hasStoredLocation)) {
             $locationMeta = [];
             if (!empty($city)) $locationMeta[] = "City: {$city}";
             if (!empty($address)) $locationMeta[] = "Address: {$address}";
