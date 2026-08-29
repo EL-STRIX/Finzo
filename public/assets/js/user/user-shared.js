@@ -434,7 +434,6 @@ function buildSidebar(activePage) {
 
   const settingsLinks = [
     { id: 'profile', icon: 'person', label: 'My Profile', href: 'profile.php' },
-    { id: 'security', icon: 'security', label: 'Security & 2FA', href: 'user-security.php' },
     { id: 'change-password', icon: 'lock', label: 'Change Password', href: 'change-password.php' },
   ];
 

@@ -7,8 +7,8 @@ ob_start();
 
 <div class="mb-8 ds-animate-fade">
     <div class="text-xs font-bold text-text-muted uppercase tracking-wider mb-1">Customer Account</div>
-    <h1 class="font-display text-3xl font-extrabold text-text-main tracking-tight">Profile &amp; Identity</h1>
-    <p class="text-text-muted mt-1">Manage your personal information, address records, identity verification, and contact preferences.</p>
+    <h1 class="font-display text-3xl font-extrabold text-text-main tracking-tight">Profile &amp; Security</h1>
+    <p class="text-text-muted mt-1">Manage your personal information, contact records, identity verification, and security controls.</p>
 </div>
 
 <!-- KYC Onboarding Banner for Pending/Rejected Users -->
@@ -91,7 +91,7 @@ ob_start();
 
     </div>
 
-    <!-- RIGHT COLUMN: Customer Details Cards -->
+    <!-- RIGHT COLUMN: Customer Details & Security Cards -->
     <div class="w-full lg:w-2/3 flex flex-col gap-6 ds-animate-slide-up delay-100">
         
         <!-- 1. Personal & Demographics -->
@@ -232,6 +232,36 @@ ob_start();
                     <span class="text-text-muted font-semibold uppercase tracking-wider block mb-1">Annual Income</span>
                     <div class="p-2.5 rounded-lg bg-surface-subtle border border-border-main font-mono font-bold text-text-main" id="view-annual-income">—</div>
                 </div>
+            </div>
+        </div>
+
+        <!-- 5. Two-Factor Authentication (2FA) Security Card (Coming Soon) -->
+        <div class="ds-card p-6 border border-border-main bg-surface">
+            <div class="flex items-center justify-between border-b border-border-main pb-3 mb-4">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-lg bg-primary-surface text-primary-base flex items-center justify-center font-bold">
+                        <span class="material-symbols-outlined text-lg">shield_lock</span>
+                    </div>
+                    <div>
+                        <h3 class="font-display text-base font-bold text-text-main">Two-Factor Authentication (2FA)</h3>
+                        <p class="text-[11px] text-text-muted">Hardware key &amp; TOTP authenticator protection</p>
+                    </div>
+                </div>
+                <span class="badge badge-warning text-[10px] uppercase font-bold tracking-wider">Coming Soon</span>
+            </div>
+
+            <div class="p-4 rounded-xl bg-surface-subtle border border-border-main flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
+                <div class="space-y-1">
+                    <div class="font-bold text-text-main flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+                        <span>Multi-Factor Authentication Setup</span>
+                    </div>
+                    <p class="text-text-muted text-[11px]">TOTP authenticator app and SMS verification modules are under security review.</p>
+                </div>
+                <button type="button" class="btn btn-secondary text-xs opacity-60 cursor-not-allowed shrink-0" disabled>
+                    <span>Configure 2FA</span>
+                    <span class="material-symbols-outlined text-sm">lock</span>
+                </button>
             </div>
         </div>
 
