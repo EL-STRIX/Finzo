@@ -178,7 +178,7 @@ document.addEventListener('click', async function(e) {
     overlay.classList.add('hidden', 'opacity-0');
   }
 
-  const logoutBtn = e.target.closest('#user-logout-btn');
+  const logoutBtn = e.target.closest('#user-logout-btn, .user-logout-btn, .logout-item, [data-action="logout"]');
   if (logoutBtn) {
     e.preventDefault();
     if (confirm('Are you sure you want to log out of your Finzo Customer Account?')) {
@@ -803,7 +803,18 @@ window.FinzoSession = {
   },
   async logout() {
     try {
-      const data = await window.api.post('/auth/logout', {});
+      let data = null;
+      if (window.api && typeof window.api.post === 'function') {
+        data = await window.api.post('/auth/logout', {});
+      } else {
+        const csrf = window.csrfToken || '';
+        const raw = await fetch('/Finzo/public/api/v1/auth/logout', {
+          method: 'POST',
+          credentials: 'same-origin',
+          headers: csrf ? { 'X-CSRF-Token': csrf } : {}
+        });
+        data = await raw.json();
+      }
       localStorage.removeItem(STATE_KEYS.STATUS);
       localStorage.removeItem(STATE_KEYS.NOTIF_COUNT);
       const redirectUrl = (data && data.redirect) ? data.redirect.replace(/\/public\/public\//g, '/public/') : '/Finzo/public/views/auth/login.php';

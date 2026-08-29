@@ -31,6 +31,7 @@ $router->post('/api/v1/auth/login', [AuthController::class, 'login']);
 $router->post('/api/v1/auth/admin-login', [AuthController::class, 'adminLogin']);
 $router->post('/api/v1/auth/staff-login', [AuthController::class, 'staffLogin']);
 $router->post('/api/v1/auth/logout', [AuthController::class, 'logout']);
+$router->get('/api/v1/auth/logout', [AuthController::class, 'logout']);
 $router->post('/api/v1/auth/register', [AuthController::class, 'register']);
 $router->post('/api/v1/auth/forgot-password', [AuthController::class, 'forgotPassword']);
 $router->post('/api/v1/auth/reset-password', [AuthController::class, 'resetPassword']);

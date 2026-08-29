@@ -96,10 +96,10 @@ ob_start();
     </div>
     
     <div class="text-center">
-        <a href="/Finzo/public/views/auth/login.php" class="btn btn-secondary w-full sm:w-auto">
+        <button type="button" id="user-logout-btn" class="btn btn-secondary w-full sm:w-auto">
             <span class="material-symbols-outlined text-lg" aria-hidden="true">logout</span>
             <span>Sign Out Temporarily</span>
-        </a>
+        </button>
     </div>
 </div>
 

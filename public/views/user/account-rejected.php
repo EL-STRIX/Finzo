@@ -91,10 +91,10 @@ ob_start();
             <span class="material-symbols-outlined text-lg" aria-hidden="true">edit</span>
             <span>Update Information</span>
         </a>
-        <a href="/Finzo/public/views/auth/login.php" class="btn btn-secondary w-full sm:w-auto flex justify-center">
+        <button type="button" id="user-logout-btn" class="btn btn-secondary w-full sm:w-auto flex justify-center">
             <span class="material-symbols-outlined text-lg" aria-hidden="true">logout</span>
             <span>Sign Out</span>
-        </a>
+        </button>
     </div>
 </div>
 
