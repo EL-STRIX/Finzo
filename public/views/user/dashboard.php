@@ -37,7 +37,7 @@ ob_start();
         </div>
         <div class="flex-1">
           <div class="font-display font-bold text-danger-base">Application Rejected — Action Required</div>
-          <div class="text-sm text-danger-base/80">Your application was not approved. Please update your profile and resubmit.</div>
+          <div class="text-sm text-danger-base/80" id="rejected-banner-desc">Your application was not approved. Please update your profile and resubmit.</div>
         </div>
         <a href="account-rejected.php" class="btn btn-danger btn-sm shrink-0">View Status</a>
       </div>
@@ -183,8 +183,8 @@ ob_start();
           <div class="w-16 h-16 mx-auto rounded-full bg-surface-subtle text-text-disabled flex items-center justify-center mb-4">
             <span class="material-symbols-outlined text-2xl" aria-hidden="true">receipt_long</span>
           </div>
-          <h3 class="font-display text-lg font-bold text-text-main mb-2">No Transactions Yet</h3>
-          <p class="text-sm text-text-muted max-w-sm mx-auto mb-6">Your transaction history will appear here once your account is activated and you start banking.</p>
+          <h3 class="font-display text-lg font-bold text-text-main mb-2" id="tx-empty-title">No Transactions Yet</h3>
+          <p class="text-sm text-text-muted max-w-sm mx-auto mb-6" id="tx-empty-desc">Your transaction history will appear here once your account is activated and you start banking.</p>
           <a href="complete-profile.php" class="btn btn-primary" id="empty-cta">Complete Profile</a>
         </div>
         
@@ -212,8 +212,6 @@ ob_start();
 </div>
 
 
-<script defer src="/Finzo/public/assets/js/core/utils.js"></script>
-  <script defer src="/Finzo/public/assets/js/core/api.js"></script>
 <script defer src="/Finzo/public/assets/js/user/dashboard.js"></script>
 <?php
 $slot = ob_get_clean();
