@@ -3,8 +3,6 @@ $portal = 'user';
 $pageTitle = 'My Profile';
 ob_start();
 ?>
-<script defer src="/Finzo/public/assets/js/user/user-shared.js"></script>
-
 <!-- KYC Action Banner -->
 <div id="kyc-notice-banner" class="hidden mb-5 p-4 rounded-lg bg-amber-50 dark:bg-amber-500/10 border border-amber-300 dark:border-amber-500/30 flex flex-col sm:flex-row items-center justify-between gap-3">
     <div class="flex items-center gap-3">

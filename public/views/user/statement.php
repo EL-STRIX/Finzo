@@ -3,8 +3,6 @@ $portal = 'user';
 $pageTitle = 'Account Statement';
 ob_start();
 ?>
-<script defer src="/Finzo/public/assets/js/user/user-shared.js"></script>
-
 <div class="mb-8 ds-animate-fade print:hidden">
     <div class="text-sm font-bold text-text-muted uppercase tracking-wider mb-1">Banking</div>
     <h1 class="font-display text-3xl font-extrabold text-text-main tracking-tight">Account Statement</h1>

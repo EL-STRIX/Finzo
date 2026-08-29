@@ -3,8 +3,6 @@ $portal = 'user';
 $pageTitle = 'My Accounts';
 ob_start();
 ?>
-<script defer src="/Finzo/public/assets/js/user/user-shared.js?v=3"></script>
-
 <!-- Standard Page Header -->
   <div class="mb-8 ds-animate-fade">
     <div class="text-sm font-bold text-text-muted uppercase tracking-wider mb-1">Banking</div>

@@ -3,8 +3,6 @@ $portal = 'user';
 $pageTitle = 'Notifications';
 ob_start();
 ?>
-<script defer src="/Finzo/public/assets/js/user/user-shared.js"></script>
-
 <div class="flex justify-between items-end mb-8 ds-animate-fade">
     <div>
       <div class="text-sm font-bold text-text-muted uppercase tracking-wider mb-1">Communication Center</div>

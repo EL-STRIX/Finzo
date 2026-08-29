@@ -3,8 +3,6 @@ $portal = 'user';
 $pageTitle = 'Transaction Receipt';
 ob_start();
 ?>
-<script defer src="/Finzo/public/assets/js/user/user-shared.js"></script>
-
 <div class="page-content py-8 print:py-0 max-w-[600px] mx-auto">
   
   <div class="mb-8 ds-animate-fade text-center print:hidden">

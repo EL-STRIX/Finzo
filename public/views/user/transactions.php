@@ -3,8 +3,6 @@ $portal = 'user';
 $pageTitle = 'Transactions';
 ob_start();
 ?>
-<script defer src="/Finzo/public/assets/js/user/user-shared.js?v=3"></script>
-
 <div class="mb-8 ds-animate-fade">
     <div class="text-sm font-bold text-text-muted uppercase tracking-wider mb-1">Banking</div>
     <h1 class="font-display text-3xl font-extrabold text-text-main tracking-tight">All Transactions</h1>

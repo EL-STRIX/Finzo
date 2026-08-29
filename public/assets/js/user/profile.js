@@ -41,15 +41,7 @@ function fallbackCopy(text, label) {
 document.addEventListener('DOMContentLoaded', initProfile);
 
 async function initProfile() {
-  try {
-    if (typeof fetchUserSession === 'function') {
-      await fetchUserSession();
-    }
-  } catch (err) {
-    console.warn('fetchUserSession error in profile.js:', err);
-  }
-  
-  if (typeof buildSidebar === 'function') buildSidebar('profile'); 
+  if (typeof buildSidebar === 'function') buildSidebar('profile');
   if (typeof buildNavbar === 'function') buildNavbar('Settings', 'My Profile');
 
   try {
