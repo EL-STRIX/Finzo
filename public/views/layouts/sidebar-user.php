@@ -73,8 +73,11 @@ function isActiveUserNav($path, $current) {
                 </li>
 
                 <?php if (!$isActive): ?>
+                    <?php 
+                    $kycPageKey = $userStatus === 'under_review' ? 'account-pending' : ($userStatus === 'rejected' ? 'account-rejected' : 'complete-profile');
+                    ?>
                     <li>
-                        <a href="<?= $userStatus === 'under_review' ? 'account-pending.php' : ($userStatus === 'rejected' ? 'account-rejected.php' : 'complete-profile.php') ?>" class="flex items-center justify-between px-5 py-2 text-xs font-bold transition-all bg-primary/10 text-primary border-l-4 border-primary">
+                        <a href="<?= $kycPageKey ?>.php" class="flex items-center justify-between px-5 py-2 text-xs font-bold transition-all <?= isActiveUserNav($kycPageKey, $currentPath) ?>">
                             <div class="flex items-center gap-3">
                                 <span class="material-symbols-outlined text-[18px]" aria-hidden="true">assignment_ind</span>
                                 <span><?= $userStatus === 'under_review' ? 'KYC Status' : ($userStatus === 'rejected' ? 'Resubmit KYC' : 'Complete KYC') ?></span>
