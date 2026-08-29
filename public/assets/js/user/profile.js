@@ -126,7 +126,9 @@ async function initProfile() {
     if (sinceEl) {
       if (user.created_at) {
         const d = new Date(user.created_at);
-        sinceEl.textContent = !isNaN(d.getTime()) ? d.toLocaleDateString('en-IN', { month: 'short', year: 'numeric' }) : 'Recently';
+        sinceEl.textContent = !isNaN(d.getTime())
+          ? d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
+          : 'Recently';
       } else {
         sinceEl.textContent = 'Recently';
       }
@@ -184,7 +186,7 @@ async function initProfile() {
     if (motherEl) motherEl.textContent = user.mother_name || 'Not Provided';
 
     const maritalEl = document.getElementById('view-marital-status');
-    if (maritalEl) maritalEl.textContent = user.marital_status || 'Single';
+    if (maritalEl) maritalEl.textContent = resolvedStatus === 'active' ? (user.marital_status || 'Not Provided') : '—';
 
     // 4. Contact & Address
     const emailInput = document.getElementById('edit-email');
@@ -223,7 +225,13 @@ async function initProfile() {
 
     const annIncEl = document.getElementById('view-annual-income');
     if (annIncEl) {
-      annIncEl.textContent = user.annual_income ? (typeof formatINR === 'function' ? formatINR(user.annual_income) + ' / yr' : '₹' + user.annual_income) : 'Not Specified';
+      if (resolvedStatus !== 'active') {
+        annIncEl.textContent = '—';
+      } else {
+        annIncEl.textContent = user.annual_income
+          ? (typeof formatINR === 'function' ? formatINR(user.annual_income) + ' / yr' : '₹' + user.annual_income)
+          : 'Not Provided';
+      }
     }
 
   } catch (err) {
