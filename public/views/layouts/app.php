@@ -4,6 +4,34 @@ if (!defined('FINZO_ROOT')) {
     require_once dirname(__DIR__, 3) . '/bootstrap/app.php';
 }
 \App\Shared\Security\SessionManager::start();
+
+// Centralized Access Control for User Portal
+if ($portal === 'user' && !empty($_SESSION['user_id'])) {
+    $currentFile = basename($_SERVER['PHP_SELF'], '.php');
+    $status = $_SESSION['user_status'] ?? 'pending';
+    
+    $activeOnly = ['dashboard', 'accounts', 'account-detail', 'transfer', 'transactions', 'statement', 'beneficiary'];
+    $pendingOnly = ['complete-profile', 'account-pending', 'account-rejected'];
+    
+    if ($status !== 'active' && in_array($currentFile, $activeOnly)) {
+        ob_end_clean();
+        if ($status === 'under_review') {
+            header('Location: account-pending.php');
+        } elseif ($status === 'rejected') {
+            header('Location: account-rejected.php');
+        } else {
+            header('Location: complete-profile.php');
+        }
+        exit;
+    }
+    
+    if ($status === 'active' && in_array($currentFile, $pendingOnly)) {
+        ob_end_clean();
+        header('Location: dashboard.php');
+        exit;
+    }
+}
+
 if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }

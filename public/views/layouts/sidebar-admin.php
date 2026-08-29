@@ -259,12 +259,7 @@ function isActive($key, $current) {
                     <span class="text-sm">My Profile</span>
                 </a>
             </li>
-            <li>
-                <button data-toggle-theme class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-text-secondary hover:bg-background hover:text-text-primary font-bold transition-all text-left">
-                    <span class="material-symbols-outlined text-[20px]" data-theme-icon aria-hidden="true">light_mode</span>
-                    <span class="text-sm" data-theme-label>Toggle Theme</span>
-                </button>
-            </li>
+
             <li>
                 <a href="../auth/admin-login.php" class="flex items-center gap-3 px-3 py-2 rounded-lg text-error hover:bg-error-bg font-bold transition-all mt-2">
                     <span class="material-symbols-outlined text-[20px]" aria-hidden="true">logout</span>
