@@ -5,81 +5,40 @@ ob_start();
 ?>
 
 <!-- Header -->
-<div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8 ds-animate-fade">
-    <div>
-        <div class="text-xs font-bold text-text-secondary uppercase tracking-widest mb-1">Account &amp; Privacy</div>
-        <h1 class="font-display text-3xl font-extrabold text-text-primary tracking-tight">Security &amp; 2FA Control Center</h1>
-        <p class="text-text-secondary text-sm mt-1">Configure multi-factor authentication, manage 4-digit transaction PIN, and track active device sessions.</p>
-    </div>
+<div class="mb-8 ds-animate-fade">
+    <div class="text-xs font-bold text-text-muted uppercase tracking-wider mb-1">Account &amp; Security</div>
+    <h1 class="font-display text-3xl font-extrabold text-text-main tracking-tight">Security &amp; 2FA Control Center</h1>
+    <p class="text-text-muted mt-1">Manage multi-factor authentication, security controls, and active sessions for your Finzo account.</p>
 </div>
 
-<!-- Security Grid -->
-<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-8 ds-animate-slide-up">
+<!-- Two-Factor Authentication (2FA) Coming Soon Card -->
+<div class="ds-card p-8 lg:p-12 text-center max-w-3xl mx-auto border border-border-main bg-surface ds-animate-slide-up">
+    <div class="w-20 h-20 rounded-2xl bg-primary-surface text-primary-base flex items-center justify-center mx-auto mb-6 shadow-sm border border-border-main">
+        <span class="material-symbols-outlined text-4xl">shield_lock</span>
+    </div>
     
-    <!-- 2FA & Transaction PIN Settings -->
-    <div class="lg:col-span-6 space-y-6">
-        <!-- 2FA Card -->
-        <div class="ds-card p-6 border border-border-subtle bg-surface/80">
-            <div class="flex items-center gap-3 mb-4">
-                <div class="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
-                    <span class="material-symbols-outlined text-2xl">verified_user</span>
-                </div>
-                <div>
-                    <h3 class="font-headline font-bold text-lg text-text-primary">Two-Factor Authentication (2FA)</h3>
-                    <p class="text-xs text-text-secondary">Protect your login with an extra security layer.</p>
-                </div>
-            </div>
-
-            <div class="flex items-center justify-between p-4 rounded-xl bg-surface-elevated border border-border-subtle mb-4">
-                <div>
-                    <div class="font-bold text-sm text-text-primary">Authenticator App (TOTP)</div>
-                    <div class="text-xs text-text-secondary">Require a 6-digit verification code during sign-in.</div>
-                </div>
-                <label class="relative inline-flex items-center cursor-pointer">
-                    <input type="checkbox" id="2fa-toggle" onchange="toggle2FA(this)" class="sr-only peer" />
-                    <div class="w-11 h-6 bg-border-subtle peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
-                </label>
-            </div>
-        </div>
-
-        <!-- Transaction PIN Card -->
-        <div class="ds-card p-6 border border-border-subtle bg-surface/80">
-            <div class="flex items-center gap-3 mb-4">
-                <div class="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
-                    <span class="material-symbols-outlined text-2xl">pin</span>
-                </div>
-                <div>
-                    <h3 class="font-headline font-bold text-lg text-text-primary">4-Digit Transaction PIN</h3>
-                    <p class="text-xs text-text-secondary">Authorise high-value transfers, balance reveals, and card requests.</p>
-                </div>
-            </div>
-
-            <form id="set-pin-form" onsubmit="submitSetPin(event)" class="space-y-4">
-                <div>
-                    <label class="fin-label fin-label-required">Enter New 4-Digit PIN</label>
-                    <input type="password" id="sec-pin" maxlength="4" pattern="\d{4}" class="fin-input w-full font-mono text-center tracking-widest text-lg" required placeholder="••••" />
-                </div>
-                <button type="submit" class="btn btn-primary btn-full">
-                    <span>Set / Update Transaction PIN</span>
-                </button>
-            </form>
-        </div>
+    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-600 dark:text-amber-400 text-xs font-bold uppercase tracking-wider mb-4">
+        <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+        <span>Coming Soon</span>
     </div>
 
-    <!-- Active Device Sessions -->
-    <div class="lg:col-span-6 ds-card p-6 border border-border-subtle bg-surface/80">
-        <div class="flex items-center justify-between border-b border-border-subtle pb-4 mb-6">
-            <div>
-                <h3 class="font-headline font-bold text-lg text-text-primary">Active Device Sessions</h3>
-                <p class="text-xs text-text-secondary">Devices currently logged into your Finzo account.</p>
-            </div>
-            <span class="px-2.5 py-1 rounded-full bg-primary/10 text-primary border border-primary/20 text-[10px] font-black uppercase tracking-wider">ACTIVE SESSIONS</span>
-        </div>
+    <h2 class="font-display text-2xl font-bold text-text-main mb-3">Two-Factor Authentication (2FA)</h2>
+    <p class="text-text-muted text-sm max-w-lg mx-auto leading-relaxed mb-6">
+        Hardware security key and Time-based One-Time Password (TOTP) authenticator app integration are currently undergoing security audits and will be enabled in an upcoming release.
+    </p>
 
-        <div id="sessions-container" class="space-y-3">
-            <div class="py-8 text-center text-text-secondary text-xs font-bold uppercase tracking-wider">
-                Loading active sessions...
-            </div>
+    <div class="p-4 rounded-xl bg-surface-subtle border border-border-main text-left max-w-md mx-auto space-y-3">
+        <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-primary-base text-lg">check_circle</span>
+            <span class="text-xs font-semibold text-text-main">Automated IP & Rate Limit Protection Active</span>
+        </div>
+        <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-primary-base text-lg">check_circle</span>
+            <span class="text-xs font-semibold text-text-main">Encrypted Session Tokens Enabled</span>
+        </div>
+        <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-amber-500 text-lg">hourglass_top</span>
+            <span class="text-xs font-semibold text-text-muted">TOTP Authenticator & SMS 2FA (In Development)</span>
         </div>
     </div>
 </div>
