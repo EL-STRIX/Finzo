@@ -938,7 +938,7 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
         $pending_users = (int)$this->getSingleStat("SELECT COUNT(*) FROM users WHERE (status = '{$under_review_status}' OR (status = '{$pending_status}' AND kyc_submitted_at IS NOT NULL)) AND is_deleted = 0");
 
         return [
-            'total_users'        => (int)$this->getSingleStat("SELECT COUNT(*) FROM users WHERE (is_deleted = 0 AND status IN ('{$active_status}', '{$suspended_status}')) OR is_deleted = 1"),
+            'total_users'        => (int)$this->getSingleStat("SELECT COUNT(*) FROM users WHERE is_deleted = 0"),
             'active_users'       => (int)$this->getSingleStat("SELECT COUNT(*) FROM users WHERE status = '{$active_status}' AND is_deleted = 0"),
             'pending_users'      => $pending_users,
             'pending_approvals'  => $pending_users, // Alias for backward compatibility with frontend
