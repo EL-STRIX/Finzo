@@ -136,9 +136,9 @@ async function initProfile() {
     if (sinceEl) {
       if (user.created_at) {
         const d = new Date(user.created_at);
-        sinceEl.textContent = 'Member since: ' + (!isNaN(d.getTime()) ? d.toLocaleDateString('en-IN', { month: 'short', year: 'numeric' }) : 'Recently');
+        sinceEl.textContent = !isNaN(d.getTime()) ? d.toLocaleDateString('en-IN', { month: 'short', year: 'numeric' }) : 'Recently';
       } else {
-        sinceEl.textContent = 'Member since: Recently';
+        sinceEl.textContent = 'Recently';
       }
     }
 
