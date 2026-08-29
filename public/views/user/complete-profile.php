@@ -1,15 +1,4 @@
 <?php
-if (!defined('FINZO_ROOT')) {
-    require_once dirname(__DIR__, 3) . '/bootstrap/app.php';
-}
-\App\Shared\Security\SessionManager::start();
-
-$userStatus = $_SESSION['user_status'] ?? 'pending';
-if ($userStatus === \App\Domain\Enums\AccountStatusEnum::ACTIVE->value) {
-    header('Location: dashboard.php');
-    exit;
-}
-
 $portal = 'user';
 $pageTitle = 'Complete Your Profile | Finzo Banking';
 ob_start();
@@ -110,20 +99,14 @@ ob_start();
 
             <!-- Gender Dropdown -->
             <div class="fin-input-container">
-                <label class="fin-label fin-label-required">Gender</label>
-                <div class="finzo-dropdown relative">
-                    <div class="finzo-dropdown-trigger fin-input flex items-center justify-between cursor-pointer">
-                        <span class="dropdown-label text-text-muted">Select gender</span>
-                        <span class="material-symbols-outlined dropdown-icon text-lg">expand_more</span>
-                    </div>
-                    <div class="finzo-dropdown-menu absolute z-50 w-full mt-1 bg-surface border border-border-strong rounded-md shadow-lg hidden">
-                        <div class="finzo-dropdown-option p-3 text-sm font-medium hover:bg-surface-elevated cursor-pointer" data-value="Male">Male</div>
-                        <div class="finzo-dropdown-option p-3 text-sm font-medium hover:bg-surface-elevated cursor-pointer" data-value="Female">Female</div>
-                        <div class="finzo-dropdown-option p-3 text-sm font-medium hover:bg-surface-elevated cursor-pointer" data-value="Other">Other</div>
-                        <div class="finzo-dropdown-option p-3 text-sm font-medium hover:bg-surface-elevated cursor-pointer" data-value="Prefer not to say">Prefer not to say</div>
-                    </div>
-                    <input type="hidden" id="gender" value="" />
-                </div>
+                <label for="gender" class="fin-label fin-label-required">Gender</label>
+                <select id="gender" class="fin-input cursor-pointer" required>
+                    <option value="" disabled selected>Select gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                    <option value="Prefer not to say">Prefer not to say</option>
+                </select>
             </div>
 
             <!-- Father's Name -->
@@ -146,21 +129,15 @@ ob_start();
 
             <!-- Marital Status -->
             <div class="fin-input-container">
-                <label class="fin-label fin-label-required">Marital Status</label>
-                <div class="finzo-dropdown relative">
-                    <div class="finzo-dropdown-trigger fin-input flex items-center justify-between cursor-pointer">
-                        <span class="dropdown-label text-text-muted">Select status</span>
-                        <span class="material-symbols-outlined dropdown-icon text-lg">expand_more</span>
-                    </div>
-                    <div class="finzo-dropdown-menu absolute z-50 w-full mt-1 bg-surface border border-border-strong rounded-md shadow-lg hidden">
-                        <div class="finzo-dropdown-option p-3 text-sm font-medium hover:bg-surface-elevated cursor-pointer" data-value="Single">Single</div>
-                        <div class="finzo-dropdown-option p-3 text-sm font-medium hover:bg-surface-elevated cursor-pointer" data-value="Married">Married</div>
-                        <div class="finzo-dropdown-option p-3 text-sm font-medium hover:bg-surface-elevated cursor-pointer" data-value="Divorced">Divorced</div>
-                        <div class="finzo-dropdown-option p-3 text-sm font-medium hover:bg-surface-elevated cursor-pointer" data-value="Widowed">Widowed</div>
-                        <div class="finzo-dropdown-option p-3 text-sm font-medium hover:bg-surface-elevated cursor-pointer" data-value="Prefer not to say">Prefer not to say</div>
-                    </div>
-                    <input type="hidden" id="marital-status" value="" />
-                </div>
+                <label for="marital-status" class="fin-label fin-label-required">Marital Status</label>
+                <select id="marital-status" class="fin-input cursor-pointer" required>
+                    <option value="" disabled selected>Select status</option>
+                    <option value="Single">Single</option>
+                    <option value="Married">Married</option>
+                    <option value="Divorced">Divorced</option>
+                    <option value="Widowed">Widowed</option>
+                    <option value="Prefer not to say">Prefer not to say</option>
+                </select>
             </div>
 
             <!-- Nationality -->
@@ -183,40 +160,28 @@ ob_start();
 
             <!-- Annual Income -->
             <div class="fin-input-container">
-                <label class="fin-label fin-label-required">Annual Income Range</label>
-                <div class="finzo-dropdown relative">
-                    <div class="finzo-dropdown-trigger fin-input flex items-center justify-between cursor-pointer">
-                        <span class="dropdown-label text-text-muted">Select income bracket</span>
-                        <span class="material-symbols-outlined dropdown-icon text-lg">expand_more</span>
-                    </div>
-                    <div class="finzo-dropdown-menu absolute z-50 w-full mt-1 bg-surface border border-border-strong rounded-md shadow-lg hidden">
-                        <div class="finzo-dropdown-option p-3 text-sm font-medium hover:bg-surface-elevated cursor-pointer" data-value="Below ₹2,50,000">Below ₹2,50,000</div>
-                        <div class="finzo-dropdown-option p-3 text-sm font-medium hover:bg-surface-elevated cursor-pointer" data-value="₹2,50,000 - ₹5,00,000">₹2,50,000 - ₹5,00,000</div>
-                        <div class="finzo-dropdown-option p-3 text-sm font-medium hover:bg-surface-elevated cursor-pointer" data-value="₹5,00,000 - ₹10,00,000">₹5,00,000 - ₹10,00,000</div>
-                        <div class="finzo-dropdown-option p-3 text-sm font-medium hover:bg-surface-elevated cursor-pointer" data-value="₹10,00,000 - ₹25,00,000">₹10,00,000 - ₹25,00,000</div>
-                        <div class="finzo-dropdown-option p-3 text-sm font-medium hover:bg-surface-elevated cursor-pointer" data-value="Above ₹25,00,000">Above ₹25,00,000</div>
-                    </div>
-                    <input type="hidden" id="income" value="" />
-                </div>
+                <label for="income" class="fin-label fin-label-required">Annual Income Range</label>
+                <select id="income" class="fin-input cursor-pointer" required>
+                    <option value="" disabled selected>Select income bracket</option>
+                    <option value="Below ₹2,50,000">Below ₹2,50,000</option>
+                    <option value="₹2,50,000 - ₹5,00,000">₹2,50,000 - ₹5,00,000</option>
+                    <option value="₹5,00,000 - ₹10,00,000">₹5,00,000 - ₹10,00,000</option>
+                    <option value="₹10,00,000 - ₹25,00,000">₹10,00,000 - ₹25,00,000</option>
+                    <option value="Above ₹25,00,000">Above ₹25,00,000</option>
+                </select>
             </div>
 
             <!-- Source of Income -->
             <div class="fin-input-container md:col-span-2">
-                <label class="fin-label fin-label-required">Source of Income</label>
-                <div class="finzo-dropdown relative">
-                    <div class="finzo-dropdown-trigger fin-input flex items-center justify-between cursor-pointer">
-                        <span class="dropdown-label text-text-muted">Select source</span>
-                        <span class="material-symbols-outlined dropdown-icon text-lg">expand_more</span>
-                    </div>
-                    <div class="finzo-dropdown-menu absolute z-50 w-full mt-1 bg-surface border border-border-strong rounded-md shadow-lg hidden">
-                        <div class="finzo-dropdown-option p-3 text-sm font-medium hover:bg-surface-elevated cursor-pointer" data-value="Salary / Employment">Salary / Employment</div>
-                        <div class="finzo-dropdown-option p-3 text-sm font-medium hover:bg-surface-elevated cursor-pointer" data-value="Business / Self-employed">Business / Self-employed</div>
-                        <div class="finzo-dropdown-option p-3 text-sm font-medium hover:bg-surface-elevated cursor-pointer" data-value="Investments / Dividends">Investments / Dividends</div>
-                        <div class="finzo-dropdown-option p-3 text-sm font-medium hover:bg-surface-elevated cursor-pointer" data-value="Inheritance / Family Support">Inheritance / Family Support</div>
-                        <div class="finzo-dropdown-option p-3 text-sm font-medium hover:bg-surface-elevated cursor-pointer" data-value="Other">Other</div>
-                    </div>
-                    <input type="hidden" id="source-of-income" value="" />
-                </div>
+                <label for="source-of-income" class="fin-label fin-label-required">Source of Income</label>
+                <select id="source-of-income" class="fin-input cursor-pointer" required>
+                    <option value="" disabled selected>Select source</option>
+                    <option value="Salary / Employment">Salary / Employment</option>
+                    <option value="Business / Self-employed">Business / Self-employed</option>
+                    <option value="Investments / Dividends">Investments / Dividends</option>
+                    <option value="Inheritance / Family Support">Inheritance / Family Support</option>
+                    <option value="Other">Other</option>
+                </select>
             </div>
         </div>
 
@@ -304,21 +269,15 @@ ob_start();
         <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
             <!-- ID Type Dropdown -->
             <div class="fin-input-container">
-                <label class="fin-label fin-label-required">Document Type</label>
-                <div class="finzo-dropdown relative">
-                    <div class="finzo-dropdown-trigger fin-input flex items-center justify-between cursor-pointer">
-                        <span class="dropdown-label text-text-muted">Select ID type</span>
-                        <span class="material-symbols-outlined dropdown-icon text-lg">expand_more</span>
-                    </div>
-                    <div class="finzo-dropdown-menu absolute z-50 w-full mt-1 bg-surface border border-border-strong rounded-md shadow-lg hidden">
-                        <div class="finzo-dropdown-option p-3 text-sm font-medium hover:bg-surface-elevated cursor-pointer" data-value="Aadhaar">Aadhaar Card</div>
-                        <div class="finzo-dropdown-option p-3 text-sm font-medium hover:bg-surface-elevated cursor-pointer" data-value="PAN">PAN Card</div>
-                        <div class="finzo-dropdown-option p-3 text-sm font-medium hover:bg-surface-elevated cursor-pointer" data-value="Passport">Passport</div>
-                        <div class="finzo-dropdown-option p-3 text-sm font-medium hover:bg-surface-elevated cursor-pointer" data-value="Voter ID">Voter ID</div>
-                        <div class="finzo-dropdown-option p-3 text-sm font-medium hover:bg-surface-elevated cursor-pointer" data-value="Driving License">Driving License</div>
-                    </div>
-                    <input type="hidden" id="id-type" value="" />
-                </div>
+                <label for="id-type" class="fin-label fin-label-required">Document Type</label>
+                <select id="id-type" class="fin-input cursor-pointer" required>
+                    <option value="" disabled selected>Select ID type</option>
+                    <option value="Aadhaar">Aadhaar Card</option>
+                    <option value="PAN">PAN Card</option>
+                    <option value="Passport">Passport</option>
+                    <option value="Voter ID">Voter ID</option>
+                    <option value="Driving License">Driving License</option>
+                </select>
             </div>
 
             <!-- ID Number -->
@@ -420,17 +379,11 @@ ob_start();
 
         <!-- Preferred Branch -->
         <div class="fin-input-container mb-6">
-            <label class="fin-label fin-label-required">Servicing Branch</label>
-            <div class="finzo-dropdown relative mt-1">
-                <div class="finzo-dropdown-trigger fin-input flex items-center justify-between cursor-pointer">
-                    <span class="dropdown-label text-text-muted">Select local branch</span>
-                    <span class="material-symbols-outlined dropdown-icon text-lg">expand_more</span>
-                </div>
-                <div id="branch-dropdown-menu" class="finzo-dropdown-menu absolute z-50 w-full mt-1 bg-surface border border-border-strong rounded-md shadow-lg hidden max-h-48 overflow-y-auto">
-                    <!-- Populated dynamically via loadBranches() -->
-                </div>
-                <input type="hidden" id="branch" value="" />
-            </div>
+            <label for="branch" class="fin-label fin-label-required">Servicing Branch</label>
+            <select id="branch" class="fin-input cursor-pointer" required>
+                <option value="" disabled selected>Select local branch</option>
+                <!-- Populated dynamically via loadBranches() -->
+            </select>
         </div>
 
         <!-- Terms Agreement -->

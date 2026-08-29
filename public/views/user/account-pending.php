@@ -1,17 +1,6 @@
 <?php
-if (!defined('FINZO_ROOT')) {
-    require_once dirname(__DIR__, 3) . '/bootstrap/app.php';
-}
-\App\Shared\Security\SessionManager::start();
-
-$userStatus = $_SESSION['user_status'] ?? 'pending';
-if ($userStatus === \App\Domain\Enums\AccountStatusEnum::ACTIVE->value) {
-    header('Location: dashboard.php');
-    exit;
-}
-
 $portal = 'user';
-$pageTitle = 'KYC Application Under Review';
+$pageTitle = 'Application Under Review';
 ob_start();
 ?>
 <div class="mb-8 ds-animate-fade">
@@ -107,10 +96,10 @@ ob_start();
     </div>
     
     <div class="text-center">
-        <button type="button" id="user-logout-btn" class="btn btn-secondary w-full sm:w-auto">
+        <a href="/Finzo/public/views/auth/login.php" class="btn btn-secondary w-full sm:w-auto">
             <span class="material-symbols-outlined text-lg" aria-hidden="true">logout</span>
             <span>Sign Out Temporarily</span>
-        </button>
+        </a>
     </div>
 </div>
 
