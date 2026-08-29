@@ -21,6 +21,23 @@ class AdminCardController
         }
     }
 
+    public function products(): array
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+            throw new ApiException('Method Not Allowed', 405);
+        }
+        $status = $this->security->cleanInput($_GET['status'] ?? 'all');
+        $products = $this->service->getCardProducts($status !== '' ? $status : 'all');
+
+        // Normalize for the admin UI: status enum -> is_active boolean
+        $products = array_map(function ($p) {
+            $p['is_active'] = (($p['status'] ?? '') === 'active');
+            return $p;
+        }, $products);
+
+        return ['success' => true, 'data' => $products, 'products' => $products];
+    }
+
     public function createProduct(): array
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
