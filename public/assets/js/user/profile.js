@@ -256,6 +256,19 @@ function toggleIdMask() {
   updateIdMask();
 }
 
+function togglePassVisibility(inputId, btnIconId) {
+  const input = document.getElementById(inputId);
+  const icon = document.getElementById(btnIconId);
+  if (!input || !icon) return;
+  if (input.type === 'password') {
+    input.type = 'text';
+    icon.textContent = 'visibility_off';
+  } else {
+    input.type = 'password';
+    icon.textContent = 'visibility';
+  }
+}
+
 async function saveProfile() {
   const viewNameEl = document.getElementById('view-full-name');
   const name = viewNameEl ? viewNameEl.textContent.trim() : (typeof UserState !== 'undefined' ? UserState.name : '');
@@ -293,6 +306,61 @@ async function saveProfile() {
     if (saveBtn) {
       saveBtn.disabled = false;
       saveBtn.innerHTML = '<span class="material-symbols-outlined text-sm">save</span><span>Save Contact Details</span>';
+    }
+  }
+}
+
+async function updatePassword() {
+  const currentPass = document.getElementById('current-pass')?.value || '';
+  const newPass = document.getElementById('new-pass')?.value || '';
+  const confirmPass = document.getElementById('confirm-pass')?.value || '';
+  const btn = document.getElementById('btn-update-password');
+
+  if (!currentPass) { if (typeof showToast === 'function') showToast('Please enter your current password', 'error'); return; }
+  if (!newPass) { if (typeof showToast === 'function') showToast('Please enter a new password', 'error'); return; }
+  if (newPass.length < 8) { if (typeof showToast === 'function') showToast('New password must be at least 8 characters', 'error'); return; }
+  if (newPass !== confirmPass) { if (typeof showToast === 'function') showToast('New passwords do not match', 'error'); return; }
+
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<span class="material-symbols-outlined text-sm animate-spin">sync</span><span>Updating...</span>';
+  }
+
+  try {
+    const formData = new FormData();
+    formData.append('current_password', currentPass);
+    formData.append('new_password', newPass);
+    formData.append('confirm_password', confirmPass);
+
+    let res;
+    if (window.api && typeof window.api.post === 'function') {
+      res = await window.api.post('/user/security/change-password', formData, true);
+    } else {
+      const csrf = window.csrfToken || '';
+      if (csrf) formData.append('csrf_token', csrf);
+      const rawRes = await fetch('/Finzo/public/api/v1/user/security/change-password', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: csrf ? { 'X-CSRF-Token': csrf } : {},
+        body: formData
+      });
+      res = await rawRes.json();
+    }
+
+    if (res && res.success) {
+      if (typeof showToast === 'function') showToast('Password updated successfully!', 'success');
+      document.getElementById('current-pass').value = '';
+      document.getElementById('new-pass').value = '';
+      document.getElementById('confirm-pass').value = '';
+    } else {
+      if (typeof showToast === 'function') showToast((res && res.message) ? res.message : 'Failed to update password', 'error');
+    }
+  } catch (err) {
+    if (typeof showToast === 'function') showToast('Connection error while updating password', 'error');
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = '<span class="material-symbols-outlined text-sm">lock_reset</span><span>Update Password</span>';
     }
   }
 }

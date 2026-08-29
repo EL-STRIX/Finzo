@@ -10,7 +10,7 @@ ob_start();
     <div>
         <div class="text-xs font-bold text-text-muted uppercase tracking-widest mb-1 flex items-center gap-1.5">
             <span class="material-symbols-outlined text-sm text-primary-base">verified_user</span>
-            <span>Customer Record &amp; Account Identity</span>
+            <span>Customer Record &amp; Security Credentials</span>
         </div>
         <h1 class="font-display text-3xl font-black text-text-main tracking-tight">Customer Profile</h1>
         <p class="text-text-muted mt-1 text-sm">Official account records, personal details, address registry, identity verification, and security controls.</p>
@@ -259,7 +259,59 @@ ob_start();
             </div>
         </div>
 
-        <!-- 5. Two-Factor Authentication (2FA) Security Card (Coming Soon) -->
+        <!-- 5. Security & Password Management Card -->
+        <div class="ds-card p-6">
+            <div class="flex items-center gap-2 mb-4 border-b border-border-main pb-3">
+                <span class="material-symbols-outlined text-primary-base">lock</span>
+                <h3 class="font-display text-base font-bold text-text-main">Security &amp; Password Management</h3>
+            </div>
+
+            <form id="change-password-form" onsubmit="event.preventDefault(); updatePassword();" class="space-y-4 text-xs">
+                <div>
+                    <label for="current-pass" class="text-text-muted font-semibold uppercase tracking-wider block mb-1 text-[10px]">Current Password</label>
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-3 top-2.5 text-text-muted text-lg">key</span>
+                        <input type="password" id="current-pass" class="fin-input w-full pl-10 pr-10" placeholder="••••••••" required />
+                        <button type="button" onclick="togglePassVisibility('current-pass', 'icon-toggle-current')" class="absolute right-3 top-2.5 text-text-muted hover:text-text-main">
+                            <span class="material-symbols-outlined text-lg" id="icon-toggle-current">visibility</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="new-pass" class="text-text-muted font-semibold uppercase tracking-wider block mb-1 text-[10px]">New Password</label>
+                        <div class="relative">
+                            <span class="material-symbols-outlined absolute left-3 top-2.5 text-text-muted text-lg">lock</span>
+                            <input type="password" id="new-pass" class="fin-input w-full pl-10 pr-10" placeholder="••••••••" required minlength="8" />
+                            <button type="button" onclick="togglePassVisibility('new-pass', 'icon-toggle-new')" class="absolute right-3 top-2.5 text-text-muted hover:text-text-main">
+                                <span class="material-symbols-outlined text-lg" id="icon-toggle-new">visibility</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="confirm-pass" class="text-text-muted font-semibold uppercase tracking-wider block mb-1 text-[10px]">Confirm New Password</label>
+                        <div class="relative">
+                            <span class="material-symbols-outlined absolute left-3 top-2.5 text-text-muted text-lg">lock_reset</span>
+                            <input type="password" id="confirm-pass" class="fin-input w-full pl-10 pr-10" placeholder="••••••••" required minlength="8" />
+                            <button type="button" onclick="togglePassVisibility('confirm-pass', 'icon-toggle-confirm')" class="absolute right-3 top-2.5 text-text-muted hover:text-text-main">
+                                <span class="material-symbols-outlined text-lg" id="icon-toggle-confirm">visibility</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-end pt-2">
+                    <button type="submit" id="btn-update-password" class="btn btn-primary text-xs font-bold px-4 py-2">
+                        <span class="material-symbols-outlined text-sm">lock_reset</span>
+                        <span>Update Password</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- 6. Two-Factor Authentication (2FA) Security Card (Coming Soon) -->
         <div class="ds-card p-6 border border-border-main bg-surface">
             <div class="flex items-center justify-between border-b border-border-main pb-3 mb-4">
                 <div class="flex items-center gap-2.5">

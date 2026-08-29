@@ -201,13 +201,6 @@ function isActiveUserNav($path, $current) {
                         <span>My Profile</span>
                     </a>
                 </li>
-
-                <li>
-                    <a href="change-password.php" class="flex items-center gap-3 px-5 py-2 text-xs font-semibold transition-all <?= isActiveUserNav('password', $currentPath) ?>">
-                        <span class="material-symbols-outlined text-[18px]" aria-hidden="true">lock</span>
-                        <span>Change Password</span>
-                    </a>
-                </li>
             </ul>
         </div>
 
