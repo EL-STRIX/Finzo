@@ -42,7 +42,7 @@ ob_start();
                 <div class="absolute inset-0" style="background:repeating-linear-gradient(-45deg,rgba(255,255,255,.04),rgba(255,255,255,.04) 1px,transparent 1px,transparent 8px)"></div>
             </div>
             <!-- Profile info -->
-            <div class="px-5 pt-0 pb-5 -mt-8">
+            <div class="px-5 pt-0 pb-5 -mt-8 relative z-10">
                 <div class="w-16 h-16 rounded-full border-[3px] border-white dark:border-slate-700 bg-white dark:bg-slate-800 flex items-center justify-center font-bold text-xl overflow-hidden shadow-md mb-3" id="avatar-circle">
                     <span style="color:#2563eb;font-weight:700;font-size:1.25rem;">—</span>
                 </div>
