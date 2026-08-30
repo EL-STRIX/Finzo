@@ -1,6 +1,16 @@
 <?php
 $portal = 'user';
 $pageTitle = 'Complete Your Profile | Finzo Banking';
+
+$initialBranches = [];
+try {
+    $pdo = \App\Shared\Core\Database::getInstance();
+    $stmt = $pdo->query("SELECT id, name, branch_code, state FROM branches WHERE status = 'active' ORDER BY name ASC");
+    $initialBranches = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (\Throwable $e) {
+    // Fallback will be handled by client-side loadBranches()
+}
+
 ob_start();
 ?>
 <style>
@@ -416,7 +426,17 @@ ob_start();
                     <span class="material-symbols-outlined transition-transform duration-200 chevron">expand_more</span>
                 </button>
                 <div class="finzo-dropdown-menu" id="branch-options">
-                    <div class="finzo-dropdown-option" data-value="">Loading branches...</div>
+                    <?php if (!empty($initialBranches)): ?>
+                        <?php foreach ($initialBranches as $ib): ?>
+                            <?php 
+                                $codeOnly = preg_replace('/[^A-Za-z0-9]/', '', $ib['branch_code'] ?? '');
+                                $ifsc = 'FINZ0' . strtoupper(substr(str_pad($codeOnly, 6, '0'), -6));
+                            ?>
+                            <div class="finzo-dropdown-option" data-value="<?= htmlspecialchars((string)$ib['id']) ?>"><?= htmlspecialchars($ib['name']) ?> (<?= htmlspecialchars($ifsc) ?>)</div>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <div class="finzo-dropdown-option" data-value="">Loading branches...</div>
+                    <?php endif; ?>
                 </div>
                 <input type="hidden" id="branch" name="branch" />
             </div>

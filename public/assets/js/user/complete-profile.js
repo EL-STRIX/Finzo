@@ -36,8 +36,10 @@ async function loadBranches() {
         `<div class="finzo-dropdown-option" data-value="${b.id}">${b.name} (${b.ifsc || b.branch_code || ''})</div>`
       ).join('');
       branchMenu.innerHTML = options;
-      if (branchLabel) branchLabel.textContent = 'Select local branch';
-    } else if (branchMenu) {
+      if (branchLabel && (!branchLabel.textContent || branchLabel.textContent.includes('No branches') || branchLabel.textContent.includes('Loading'))) {
+        branchLabel.textContent = 'Select local branch';
+      }
+    } else if (branchMenu && (!branchMenu.children.length || branchMenu.querySelector('[data-value=""]'))) {
       branchMenu.innerHTML = '<div class="finzo-dropdown-option" data-value="">No branches available</div>';
       if (branchLabel) branchLabel.textContent = 'No branches available';
     }
