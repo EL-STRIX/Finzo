@@ -94,12 +94,6 @@ class PublicController
             $stmt = $pdo->query("SELECT id, name, branch_code, state FROM branches WHERE status = 'active' ORDER BY name ASC");
             $branches = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
-            foreach ($branches as &$b) {
-                $codeOnly = preg_replace('/[^A-Za-z0-9]/', '', $b['branch_code'] ?? '');
-                $b['ifsc'] = 'FINZ0' . strtoupper(substr(str_pad($codeOnly, 6, '0'), -6));
-            }
-            unset($b);
-
             return [
                 'success' => true,
                 'branches' => $branches
