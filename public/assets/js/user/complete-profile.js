@@ -32,9 +32,11 @@ async function loadBranches() {
     const branchLabel = document.querySelector('#branch-dropdown-container .dropdown-label');
     
     if (branchMenu && data && data.success && Array.isArray(data.branches) && data.branches.length > 0) {
-      const options = data.branches.map(b => 
-        `<div class="finzo-dropdown-option" data-value="${b.id}">${b.name} (${b.ifsc || b.branch_code || ''})</div>`
-      ).join('');
+      const options = data.branches.map(b => {
+        const code = b.branch_code ? ` (${b.branch_code})` : '';
+        const state = b.state ? ` — ${b.state}` : '';
+        return `<div class="finzo-dropdown-option" data-value="${b.id}">${b.name}${code}${state}</div>`;
+      }).join('');
       branchMenu.innerHTML = options;
       if (branchLabel && (!branchLabel.textContent || branchLabel.textContent.includes('No branches') || branchLabel.textContent.includes('Loading'))) {
         branchLabel.textContent = 'Select local branch';

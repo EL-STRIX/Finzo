@@ -429,10 +429,11 @@ ob_start();
                     <?php if (!empty($initialBranches)): ?>
                         <?php foreach ($initialBranches as $ib): ?>
                             <?php 
-                                $codeOnly = preg_replace('/[^A-Za-z0-9]/', '', $ib['branch_code'] ?? '');
-                                $ifsc = 'FINZ0' . strtoupper(substr(str_pad($codeOnly, 6, '0'), -6));
+                                $code = !empty($ib['branch_code']) ? ' (' . $ib['branch_code'] . ')' : '';
+                                $state = !empty($ib['state']) ? ' — ' . $ib['state'] : '';
+                                $displayName = $ib['name'] . $code . $state;
                             ?>
-                            <div class="finzo-dropdown-option" data-value="<?= htmlspecialchars((string)$ib['id']) ?>"><?= htmlspecialchars($ib['name']) ?> (<?= htmlspecialchars($ifsc) ?>)</div>
+                            <div class="finzo-dropdown-option" data-value="<?= htmlspecialchars((string)$ib['id']) ?>"><?= htmlspecialchars($displayName) ?></div>
                         <?php endforeach; ?>
                     <?php else: ?>
                         <div class="finzo-dropdown-option" data-value="">Loading branches...</div>
