@@ -742,9 +742,14 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
                 'type' => \App\Domain\Enums\AccountStatusEnum::PENDING->value
             ];
         } elseif ($user['status'] === \App\Domain\Enums\AccountStatusEnum::ACTIVE->value) {
+            // Prefer the real approval timestamp recorded on the KYC application;
+            // fall back to the legacy heuristic for rows approved before this column was used.
+            $approval_time = !empty($user['approval_reviewed_at'])
+                ? date('d M Y, h:i A', strtotime($user['approval_reviewed_at']))
+                : ($user['kyc_submitted_at'] ? date('d M Y, h:i A', strtotime($user['kyc_submitted_at'] . ' + 1 hour')) : 'Completed');
             $timeline[] = [
                 'status' => 'Approved & Activated',
-                'time' => $user['kyc_submitted_at'] ? date('d M Y, h:i A', strtotime($user['kyc_submitted_at'] . ' + 1 hour')) : 'Completed',
+                'time' => $approval_time,
                 'type' => \App\Domain\Enums\AccountStatusEnum::COMPLETED->value
             ];
         } elseif ($user['status'] === \App\Domain\Enums\AccountStatusEnum::REJECTED->value) {
@@ -763,6 +768,7 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
             'success' => true,
             'user'         => $user,
             'account'      => $account,
+            'admin_notes'  => $user['admin_notes'] ?? null,
             'id_documents' => [
                 'front_url' => $id_front_url,
                 'back_url'  => $id_back_url
@@ -792,6 +798,20 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
         $adminData = $this->repository->getAdminById($adminId);
         $admin_display_id = $adminData['admin_id'] ?? $adminId;
         $customer_id = $user['customer_id'];
+
+        // Server-side state guard: KYC decisions are only valid for applications
+        // that are still awaiting review. Prevents re-approving an already approved
+        // account (which would regenerate its account number and duplicate the
+        // initial-deposit ledger entry) and prevents rejecting an already active
+        // customer via direct API calls.
+        if (in_array($action, ['approve', 'reject'], true)
+            && !in_array($user['status'], ['pending', 'under_review'], true)) {
+            return [
+                'success' => false,
+                'message' => "This application has already been processed (current status: {$user['status']}).",
+                'code'    => 409
+            ];
+        }
 
         require_once FINZO_ROOT . '/config/functions.php';
         require_once FINZO_ROOT . '/config/mailer.php';

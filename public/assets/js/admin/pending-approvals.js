@@ -67,6 +67,18 @@
     }
 
     /**
+     * Escape HTML entities to prevent XSS when re-rendering server data
+     */
+    function escapeHtml(value) {
+        return String(value ?? '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    /**
      * Load applications from API applying all active filters
      */
     async function loadApplications() {
@@ -160,14 +172,16 @@
                    </span>`;
             }
 
-            // Avatar Handling
-            let avatarHtml = `<div class="w-9 h-9 rounded-xl bg-surface-subtle border border-border-subtle flex items-center justify-center font-bold text-xs text-text-primary uppercase shrink-0 font-mono shadow-2xs">${initials}</div>`;
+            // Avatar Handling (values escaped before interpolation)
+            const safeName = escapeHtml(app.full_name || '—');
+            const safeInitials = escapeHtml(initials);
+            let avatarHtml = `<div class="w-9 h-9 rounded-xl bg-surface-subtle border border-border-subtle flex items-center justify-center font-bold text-xs text-text-primary uppercase shrink-0 font-mono shadow-2xs">${safeInitials}</div>`;
             if (app.profile_picture_url) {
                 let url = app.profile_picture_url;
                 if (!url.startsWith('http://') && !url.startsWith('https://')) {
                     url = url.startsWith('/') ? url : '/Finzo/' + url.replace(/^\//, '');
                 }
-                avatarHtml = `<img src="${url}" class="w-9 h-9 rounded-xl object-cover border border-border-subtle shrink-0 shadow-2xs" alt="${app.full_name}" onerror="this.outerHTML='<div class=\\'w-9 h-9 rounded-xl bg-surface-subtle border border-border-subtle flex items-center justify-center font-bold text-xs text-text-primary uppercase shrink-0 font-mono shadow-2xs\\'>${initials}</div>'">`;
+                avatarHtml = `<img src="${escapeHtml(url)}" class="w-9 h-9 rounded-xl object-cover border border-border-subtle shrink-0 shadow-2xs" alt="${safeName}" onerror="this.outerHTML='<div class=\\'w-9 h-9 rounded-xl bg-surface-subtle border border-border-subtle flex items-center justify-center font-bold text-xs text-text-primary uppercase shrink-0 font-mono shadow-2xs\\'>${safeInitials}</div>'">`;
             }
 
             return `
@@ -178,15 +192,15 @@
                         ${avatarHtml}
                         <div class="min-w-0">
                             <div class="flex items-center gap-2">
-                                <span class="font-headline font-bold text-xs text-text-primary truncate">${app.full_name || '—'}</span>
-                                <span class="font-mono text-[10px] px-1.5 py-0.5 rounded bg-surface-subtle border border-border-subtle text-text-secondary font-semibold">${app.customer_id || 'FNZ-USR-PENDING'}</span>
+                                <span class="font-headline font-bold text-xs text-text-primary truncate">${safeName}</span>
+                                <span class="font-mono text-[10px] px-1.5 py-0.5 rounded bg-surface-subtle border border-border-subtle text-text-secondary font-semibold">${escapeHtml(app.customer_id || 'FNZ-USR-PENDING')}</span>
                             </div>
-                            <div class="text-[11px] text-text-secondary truncate mt-0.5">${app.email || '—'}</div>
+                            <div class="text-[11px] text-text-secondary truncate mt-0.5">${escapeHtml(app.email || '—')}</div>
                         </div>
                     </div>
                 </td>
                 <td class="py-3 px-4 text-xs font-mono font-medium text-text-primary whitespace-nowrap">
-                    ${app.phone ? `<span class="inline-flex items-center gap-1"><span class="material-symbols-outlined text-[13px] text-text-secondary">call</span>${app.phone}</span>` : '—'}
+                    ${app.phone ? `<span class="inline-flex items-center gap-1"><span class="material-symbols-outlined text-[13px] text-text-secondary">call</span>${escapeHtml(app.phone)}</span>` : '—'}
                 </td>
                 <td class="py-3 px-4 whitespace-nowrap">
                     <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${isSavings ? 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20' : 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'}">
@@ -194,7 +208,7 @@
                     </span>
                 </td>
                 <td class="py-3 px-4 whitespace-nowrap">
-                    <span class="text-xs font-semibold text-text-primary">${idType}</span>
+                    <span class="text-xs font-semibold text-text-primary">${escapeHtml(idType)}</span>
                 </td>
                 <td class="py-3 px-4 text-xs text-text-secondary whitespace-nowrap font-medium">
                     ${dateDisplay}
