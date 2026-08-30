@@ -460,7 +460,7 @@ ob_start();
             </button>
             <button type="button" class="btn btn-primary" id="submit-btn" onclick="submitProfile()">
                 <span class="material-symbols-outlined text-lg">done_all</span>
-                <span>Submit Profile</span>
+                <span>Submit Application</span>
             </button>
         </div>
     </div>
