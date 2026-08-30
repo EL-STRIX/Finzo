@@ -77,7 +77,7 @@ class CompleteUserProfileAction
             $pdo = $this->userService->getDb();
             $pdo->beginTransaction();
             $stmt = $pdo->prepare(\App\Infrastructure\Repositories\QueryStore::get('q_ef776789'));
-            $stmt->execute([$paths['profile_pic_path'], $data['dob'], $data['gender'], $data['father_name'], $data['mother_name'], $data['marital_status'], $data['nationality'], $data['occupation'], $data['annual_income'], $data['source_of_income'], $data['street'], $data['city'], $data['state'], $data['pincode'], $data['id_type'], $data['id_number'], $paths['id_front_path'], $paths['id_back_path'], $userId]);
+            $stmt->execute([$userId]);
 
             $txn_pin_hash = password_hash($data['txn_pin'], PASSWORD_BCRYPT);
             $existing_account = $this->userService->getExistingAccountByCustomerId($customer_id_str);
@@ -96,10 +96,56 @@ class CompleteUserProfileAction
             if ($existing_app) {
                 $new_count = $existing_app['submission_count'] + 1;
                 $stmt = $pdo->prepare(\App\Infrastructure\Repositories\QueryStore::get('q_371058c0'));
-                $stmt->execute([$new_count, $data['dob'], $data['gender'], $data['father_name'], $data['occupation'], $data['annual_income'], $data['street'], $data['city'], $data['state'], $data['pincode'], $data['id_type'], $data['id_number'], $paths['id_front_path'], $paths['id_back_path'], $data['account_type'], $data['initial_deposit'], $customer_id_str]);
+                $stmt->execute([
+                    $new_count,
+                    $paths['profile_pic_path'],
+                    $data['dob'],
+                    $data['gender'],
+                    $data['father_name'],
+                    $data['mother_name'],
+                    $data['marital_status'],
+                    $data['nationality'],
+                    $data['occupation'],
+                    $data['annual_income'],
+                    $data['source_of_income'],
+                    $data['street'],
+                    $data['city'],
+                    $data['state'],
+                    $data['pincode'],
+                    $data['id_type'],
+                    $data['id_number'],
+                    $paths['id_front_path'],
+                    $paths['id_back_path'],
+                    $data['account_type'],
+                    $data['initial_deposit'],
+                    $customer_id_str
+                ]);
             } else {
                 $stmt = $pdo->prepare(\App\Infrastructure\Repositories\QueryStore::get('q_e07f7e3c'));
-                $stmt->execute([$customer_id_str, $application_no, $data['dob'], $data['gender'], $data['father_name'], $data['occupation'], $data['annual_income'], $data['street'], $data['city'], $data['state'], $data['pincode'], $data['id_type'], $data['id_number'], $paths['id_front_path'], $paths['id_back_path'], $data['account_type'], $data['initial_deposit']]);
+                $stmt->execute([
+                    $customer_id_str,
+                    $paths['profile_pic_path'],
+                    $application_no,
+                    $data['dob'],
+                    $data['gender'],
+                    $data['father_name'],
+                    $data['mother_name'],
+                    $data['marital_status'],
+                    $data['nationality'],
+                    $data['occupation'],
+                    $data['annual_income'],
+                    $data['source_of_income'],
+                    $data['street'],
+                    $data['city'],
+                    $data['state'],
+                    $data['pincode'],
+                    $data['id_type'],
+                    $data['id_number'],
+                    $paths['id_front_path'],
+                    $paths['id_back_path'],
+                    $data['account_type'],
+                    $data['initial_deposit']
+                ]);
             }
             $pdo->commit();
             

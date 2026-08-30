@@ -457,12 +457,18 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
     public function getPendingApprovalsStats() {
         return $this->fetchOne("
             SELECT
-                SUM(CASE WHEN (status = 'pending' AND kyc_submitted_at IS NOT NULL) THEN 1 ELSE 0 END) as pending_review,
-                SUM(CASE WHEN status = 'under_review' THEN 1 ELSE 0 END) as under_review,
-                SUM(CASE WHEN status = 'active' AND DATE(updated_at) = CURDATE() THEN 1 ELSE 0 END) as approved_today,
-                SUM(CASE WHEN status = 'rejected' AND DATE(updated_at) = CURDATE() THEN 1 ELSE 0 END) as rejected_today,
-                SUM(CASE WHEN status = 'active' THEN 1 ELSE 0 END) as total_approved
-            FROM users WHERE is_deleted = 0
+                SUM(CASE WHEN (u.status = 'pending' AND u.kyc_submitted_at IS NOT NULL) THEN 1 ELSE 0 END) as pending_review,
+                SUM(CASE WHEN u.status = 'under_review' THEN 1 ELSE 0 END) as under_review,
+                SUM(CASE WHEN u.status = 'active' AND EXISTS (
+                        SELECT 1 FROM kyc_applications k
+                        WHERE k.user_id = u.customer_id AND DATE(k.reviewed_at) = CURDATE()
+                    ) THEN 1 ELSE 0 END) as approved_today,
+                SUM(CASE WHEN u.status = 'rejected' AND EXISTS (
+                        SELECT 1 FROM kyc_applications k
+                        WHERE k.user_id = u.customer_id AND DATE(k.reviewed_at) = CURDATE()
+                    ) THEN 1 ELSE 0 END) as rejected_today,
+                SUM(CASE WHEN u.status = 'active' THEN 1 ELSE 0 END) as total_approved
+            FROM users u WHERE u.is_deleted = 0
         ", []);
     }
 
@@ -484,11 +490,32 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
     // ---------------------------------------------------------
     public function getApplicationUser(int $userId) {
         return $this->fetchOne("
-            SELECT id, customer_id, full_name, email, phone, status, profile_picture, dob, gender, father_name, mother_name, marital_status, nationality,
-                   occupation, annual_income, source_of_income, street, city, state, pincode, country,
-                   id_type, id_number, id_front_path, id_back_path,
-                   kyc_submitted_at, rejection_reason, created_at
-            FROM users WHERE id = ? AND is_deleted = 0
+            SELECT u.id, u.customer_id, u.full_name, u.email, u.phone, u.status,
+                   COALESCE(k.profile_picture, u.profile_picture) AS profile_picture,
+                   COALESCE(k.dob, u.dob) AS dob,
+                   COALESCE(k.gender, u.gender) AS gender,
+                   COALESCE(k.father_name, u.father_name) AS father_name,
+                   COALESCE(k.mother_name, u.mother_name) AS mother_name,
+                   COALESCE(k.marital_status, u.marital_status) AS marital_status,
+                   COALESCE(k.nationality, u.nationality) AS nationality,
+                   COALESCE(k.occupation, u.occupation) AS occupation,
+                   COALESCE(k.annual_income, u.annual_income) AS annual_income,
+                   COALESCE(k.source_of_income, u.source_of_income) AS source_of_income,
+                   COALESCE(k.street, u.street) AS street,
+                   COALESCE(k.city, u.city) AS city,
+                   COALESCE(k.state, u.state) AS state,
+                   COALESCE(k.pincode, u.pincode) AS pincode,
+                   u.country,
+                   COALESCE(k.id_type, u.id_type) AS id_type,
+                   COALESCE(k.id_number, u.id_number) AS id_number,
+                   COALESCE(k.id_front_path, u.id_front_path) AS id_front_path,
+                   COALESCE(k.id_back_path, u.id_back_path) AS id_back_path,
+                   u.kyc_submitted_at, u.rejection_reason, u.created_at,
+                   (SELECT k2.reviewed_at FROM kyc_applications k2 WHERE k2.user_id = u.customer_id ORDER BY k2.id DESC LIMIT 1) AS approval_reviewed_at,
+                   (SELECT k2.admin_notes FROM kyc_applications k2 WHERE k2.user_id = u.customer_id ORDER BY k2.id DESC LIMIT 1) AS admin_notes
+            FROM users u
+            LEFT JOIN kyc_applications k ON u.customer_id = k.user_id
+            WHERE u.id = ? AND u.is_deleted = 0
         ", [$userId], \App\Domain\Models\Admin::class) ?: null;
     }
 
@@ -512,7 +539,57 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
 
     public function approveApplication(int $userId, string $customerId, string $accountNo, string $adminDisplayId): void
     {
-        $this->execute("UPDATE users SET status = 'active', updated_at = NOW() WHERE id = ?", [$userId]);
+        $app = $this->fetchOne("SELECT * FROM kyc_applications WHERE user_id = ?", [$customerId]);
+        if ($app) {
+            $this->execute("
+                UPDATE users SET 
+                    status = 'active',
+                    profile_picture = ?,
+                    dob = ?,
+                    gender = ?,
+                    father_name = ?,
+                    mother_name = ?,
+                    marital_status = ?,
+                    nationality = ?,
+                    occupation = ?,
+                    annual_income = ?,
+                    source_of_income = ?,
+                    street = ?,
+                    city = ?,
+                    state = ?,
+                    pincode = ?,
+                    id_type = ?,
+                    id_number = ?,
+                    id_front_path = ?,
+                    id_back_path = ?,
+                    kyc_submitted_at = ?,
+                    updated_at = NOW() 
+                WHERE id = ?
+            ", [
+                $app['profile_picture'],
+                $app['dob'],
+                $app['gender'],
+                $app['father_name'],
+                $app['mother_name'],
+                $app['marital_status'],
+                $app['nationality'],
+                $app['occupation'],
+                $app['annual_income'],
+                $app['source_of_income'],
+                $app['street'],
+                $app['city'],
+                $app['state'],
+                $app['pincode'],
+                $app['id_type'],
+                $app['id_number'],
+                $app['id_front_path'],
+                $app['id_back_path'],
+                $app['submitted_at'],
+                $userId
+            ]);
+        } else {
+            $this->execute("UPDATE users SET status = 'active', updated_at = NOW() WHERE id = ?", [$userId]);
+        }
         $this->execute("
             UPDATE accounts SET
                 account_no = ?, status = 'active', opened_date = CURDATE(), updated_at = NOW()
