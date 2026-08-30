@@ -520,14 +520,11 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
             $where_clauses[] = "u.status = 'pending' AND u.kyc_submitted_at IS NOT NULL";
         } elseif ($filters['status'] === 'under_review') {
             $where_clauses[] = "u.status = 'under_review'";
-        } elseif ($filters['status'] === 'approved' || $filters['status'] === 'active') {
-            $where_clauses[] = "u.status = 'active'";
         } elseif ($filters['status'] === 'rejected') {
             $where_clauses[] = "u.status = 'rejected'";
-        } elseif ($filters['status'] === 'all_records') {
-            $where_clauses[] = "(u.status IN ('active', 'rejected', 'under_review') OR (u.status = 'pending' AND u.kyc_submitted_at IS NOT NULL))";
         } else {
-            $where_clauses[] = "(u.status = 'under_review' OR (u.status = 'pending' AND u.kyc_submitted_at IS NOT NULL))";
+            // Default / All Pending: show only under_review, rejected, and pending with submitted KYC
+            $where_clauses[] = "(u.status = 'under_review' OR u.status = 'rejected' OR (u.status = 'pending' AND u.kyc_submitted_at IS NOT NULL))";
         }
 
         // Search Filter (Full name, Customer ID, Email, Phone)

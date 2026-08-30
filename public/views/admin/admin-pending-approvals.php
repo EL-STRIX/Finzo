@@ -139,16 +139,9 @@ ob_start();
                     <span class="material-symbols-outlined text-[14px] align-[-2px] mr-1" aria-hidden="true">rate_review</span>
                     Under Review
                 </button>
-                <button type="button" class="tab-btn px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all cursor-pointer bg-surface text-text-secondary hover:text-text-primary hover:bg-surface-hover border border-border-subtle" data-status="approved">
-                    <span class="material-symbols-outlined text-[14px] align-[-2px] mr-1" aria-hidden="true">check_circle</span>
-                    Approved
-                </button>
                 <button type="button" class="tab-btn px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all cursor-pointer bg-surface text-text-secondary hover:text-text-primary hover:bg-surface-hover border border-border-subtle" data-status="rejected">
                     <span class="material-symbols-outlined text-[14px] align-[-2px] mr-1" aria-hidden="true">cancel</span>
                     Rejected
-                </button>
-                <button type="button" class="tab-btn px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all cursor-pointer bg-surface text-text-secondary hover:text-text-primary hover:bg-surface-hover border border-border-subtle" data-status="all_records">
-                    All Records
                 </button>
             </div>
         </div>
