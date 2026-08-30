@@ -162,4 +162,40 @@ class AdminOperationsServiceTest extends TestCase {
         $this->assertTrue($result['success']);
         $this->assertArrayHasKey('account_no', $result);
     }
+
+    public function testProcessApplicationApproveFailsForActiveUser() {
+        $user = ['id' => 1, 'customer_id' => 'CUST123', 'status' => 'active', 'email' => 'test@test.com', 'full_name' => 'John Doe'];
+
+        $this->repoMock->expects($this->once())
+            ->method('getApplicationUser')
+            ->with(1)
+            ->willReturn($user);
+
+        // Approving an already-active customer must never touch the account again
+        $this->repoMock->expects($this->never())
+            ->method('approveApplication');
+
+        $result = $this->service->processApplication(1, 'approve', '', '', 1);
+
+        $this->assertFalse($result['success']);
+        $this->assertEquals(409, $result['code']);
+    }
+
+    public function testProcessApplicationRejectFailsForProcessedUser() {
+        $user = ['id' => 1, 'customer_id' => 'CUST123', 'status' => 'rejected', 'email' => 'test@test.com', 'full_name' => 'John Doe'];
+
+        $this->repoMock->expects($this->once())
+            ->method('getApplicationUser')
+            ->with(1)
+            ->willReturn($user);
+
+        // Re-judging a finally rejected application must not be possible
+        $this->repoMock->expects($this->never())
+            ->method('rejectApplication');
+
+        $result = $this->service->processApplication(1, 'reject', 'Documents invalid', '', 1);
+
+        $this->assertFalse($result['success']);
+        $this->assertEquals(409, $result['code']);
+    }
 }

@@ -646,6 +646,15 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
             return ['success' => false, 'message' => 'Application not found', 'code' => 404];
         }
 
+        if (!empty($user['id_number'])) {
+            try {
+                $crypto = new \App\Shared\Security\EncryptionService();
+                $user['id_number'] = $crypto->decrypt($user['id_number']);
+            } catch (\Throwable $e) {
+                // Ignore decryption errors (e.g. if plain text)
+            }
+        }
+
         $account = $this->repository->getAccountPreferences($user['customer_id']);
 
         $id_front_url = null;
@@ -1180,6 +1189,15 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
             return ['success' => false, 'message' => 'Suspended user not found'];
         }
 
+        if (!empty($user['id_number'])) {
+            try {
+                $crypto = new \App\Shared\Security\EncryptionService();
+                $user['id_number'] = $crypto->decrypt($user['id_number']);
+            } catch (\Throwable $e) {
+                // Ignore if decryption fails
+            }
+        }
+
         $account = $this->repository->getSuspendedUserAccount($user['customer_id']);
         $audit = $this->repository->getUserSuspensionAudit($user['customer_id']);
 
@@ -1496,6 +1514,15 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
         $user = $this->repository->getUserProfile($userId);
         if (!$user) {
             return ['success' => false, 'message' => 'User not found'];
+        }
+
+        if (!empty($user['id_number'])) {
+            try {
+                $crypto = new \App\Shared\Security\EncryptionService();
+                $user['id_number'] = $crypto->decrypt($user['id_number']);
+            } catch (\Throwable $e) {
+                // Ignore if decryption fails
+            }
         }
 
         $accounts = $this->repository->getUserAccounts($user['customer_id']);
