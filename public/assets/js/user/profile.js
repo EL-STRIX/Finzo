@@ -105,7 +105,9 @@ async function initProfile() {
         let cleanSrc = avatarSrc;
         if (!cleanSrc.startsWith('http') && !cleanSrc.startsWith('data:')) {
           const clean = cleanSrc.replace(/^\/+/, '');
-          cleanSrc = clean.startsWith('Finzo/public/') ? '/' + clean : '/Finzo/public/uploads/' + clean;
+          cleanSrc = clean.startsWith('Finzo/public/') ? '/' + clean :
+                     (clean.startsWith('uploads/') || clean.startsWith('assets/')) ? '/Finzo/public/' + clean :
+                     '/Finzo/public/uploads/' + clean;
         }
         circle.innerHTML = `<img src="${cleanSrc}" alt="${escapeHtml(resolvedName)}" class="w-full h-full object-cover rounded-full">`;
       } else {
@@ -223,7 +225,16 @@ async function initProfile() {
 
     const annIncEl = document.getElementById('view-annual-income');
     if (annIncEl) {
-      annIncEl.textContent = user.annual_income ? (typeof formatINR === 'function' ? formatINR(user.annual_income) + ' / yr' : '₹' + user.annual_income) : 'Not Provided';
+      let displayInc = 'Not Provided';
+      if (user.annual_income) {
+        const isNumeric = !isNaN(user.annual_income) && !isNaN(parseFloat(user.annual_income));
+        if (isNumeric) {
+          displayInc = typeof formatINR === 'function' ? formatINR(user.annual_income) + ' / yr' : '₹' + user.annual_income;
+        } else {
+          displayInc = user.annual_income;
+        }
+      }
+      annIncEl.textContent = displayInc;
     }
 
   } catch (err) {

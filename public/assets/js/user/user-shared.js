@@ -129,7 +129,9 @@ async function fetchUserSession() {
           let photoSrc = _userCache.avatarUrl;
           if (!photoSrc.startsWith('http') && !photoSrc.startsWith('data:')) {
             const clean = photoSrc.replace(/^\/+/, '');
-            photoSrc = clean.startsWith('Finzo/public/') ? '/' + clean : '/Finzo/public/uploads/' + clean;
+            photoSrc = clean.startsWith('Finzo/public/') ? '/' + clean :
+                       (clean.startsWith('uploads/') || clean.startsWith('assets/')) ? '/Finzo/public/' + clean :
+                       '/Finzo/public/uploads/' + clean;
           }
           el.innerHTML = `<img src="${photoSrc}?v=${Date.now()}" alt="${_userCache.name}" class="w-full h-full object-cover rounded-full">`;
         });
