@@ -90,15 +90,21 @@ class PublicController
     public function branches()
     {
         try {
-            $pdo = \App\Shared\Core\Database::getInstance()->getConnection();
-            $stmt = $pdo->query("SELECT id, name, branch_code, ifsc, city, state FROM branches WHERE status = 'active' ORDER BY name ASC");
+            $pdo = \App\Shared\Core\Database::getInstance();
+            $stmt = $pdo->query("SELECT id, name, branch_code, state FROM branches WHERE status = 'active' ORDER BY name ASC");
             $branches = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+            foreach ($branches as &$b) {
+                $codeOnly = preg_replace('/[^A-Za-z0-9]/', '', $b['branch_code'] ?? '');
+                $b['ifsc'] = 'FINZ0' . strtoupper(substr(str_pad($codeOnly, 6, '0'), -6));
+            }
+            unset($b);
 
             return [
                 'success' => true,
                 'branches' => $branches
             ];
-        } catch (\PDOException $e) {
+        } catch (\Throwable $e) {
             throw new \App\Shared\Core\Exceptions\ApiException('Failed to retrieve branches', 500);
         }
     }
