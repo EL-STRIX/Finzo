@@ -7,6 +7,9 @@ function isActiveUserNav($path, $current) {
     if ($path === 'profile' && strpos($current, 'complete-profile') !== false) {
         return 'text-text-secondary hover:bg-surface hover:text-text-primary border-l-4 border-transparent';
     }
+    if ($path === 'account' && (strpos($current, 'account-pending') !== false || strpos($current, 'account-rejected') !== false)) {
+        return 'text-text-secondary hover:bg-surface hover:text-text-primary border-l-4 border-transparent';
+    }
     return (strpos($current, $path) !== false) 
         ? 'bg-primary/10 text-primary border-l-4 border-primary font-bold active-nav-item' 
         : 'text-text-secondary hover:bg-surface hover:text-text-primary border-l-4 border-transparent';
