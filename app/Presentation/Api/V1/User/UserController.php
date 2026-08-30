@@ -88,6 +88,10 @@ class UserController
         }
         $userId = $_SESSION['user_id'];
         try {
+            $userStatus = $_SESSION['user_status'] ?? 'pending';
+            if ($userStatus !== 'active') {
+                json_response(['success' => true, 'account' => null, 'message' => 'No active account found']);
+            }
             $account = $this->service->fetchAccountDetails($userId);
             if (!$account) {
                 json_response(['success' => true, 'account' => null, 'message' => 'No account found']);
@@ -274,27 +278,30 @@ class UserController
                 json_response(['success' => false, 'message' => 'User not found', 'redirect' => '/public/views/auth/login.html'], 404);
             }
             $_SESSION['user_status'] = $user['status'];
-            $account = $this->service->getActiveAccountByCustomerId($user['customer_id']);
+            $account = null;
             $recent_transactions = [];
-            if ($account && $account['status'] === \App\Domain\Enums\AccountStatusEnum::ACTIVE->value) {
-                $recent_transactions = $this->service->getRecentTransactions($account['id']);
-                foreach ($recent_transactions as &$txn) {
-                    if ($txn['type'] === \App\Domain\Enums\TransactionTypeEnum::TRANSFER->value) {
-                        $txn['direction'] = 'debit';
-                        $txn_data = $this->service->getTransactionToAccountId($txn['txn_id']);
-                        $txn['direction'] = ($txn_data && $txn_data['to_account_id'] == $account['id']) ? 'credit' : 'debit';
-                    } elseif (in_array($txn['type'], ['deposit', 'interest_credit'])) {
-                        $txn['direction'] = 'credit';
-                    } else {
-                        $txn['direction'] = 'debit';
-                    }
-                }
-                unset($txn);
-            }
             $monthly_stats = ['income_total' => 0, 'expense_total' => 0, 'month_label' => date('F Y')];
-            if ($account && $account['status'] === \App\Domain\Enums\AccountStatusEnum::ACTIVE->value) {
-                $monthly_stats['income_total'] = (float)$this->service->getMonthlyIncome($account['id']);
-                $monthly_stats['expense_total'] = (float)$this->service->getMonthlyExpenses($account['id']);
+
+            if ($user['status'] === 'active') {
+                $account = $this->service->getActiveAccountByCustomerId($user['customer_id']);
+                if ($account && $account['status'] === \App\Domain\Enums\AccountStatusEnum::ACTIVE->value) {
+                    $recent_transactions = $this->service->getRecentTransactions($account['id']);
+                    foreach ($recent_transactions as &$txn) {
+                        if ($txn['type'] === \App\Domain\Enums\TransactionTypeEnum::TRANSFER->value) {
+                            $txn['direction'] = 'debit';
+                            $txn_data = $this->service->getTransactionToAccountId($txn['txn_id']);
+                            $txn['direction'] = ($txn_data && $txn_data['to_account_id'] == $account['id']) ? 'credit' : 'debit';
+                        } elseif (in_array($txn['type'], ['deposit', 'interest_credit'])) {
+                            $txn['direction'] = 'credit';
+                        } else {
+                            $txn['direction'] = 'debit';
+                        }
+                    }
+                    unset($txn);
+
+                    $monthly_stats['income_total'] = (float)$this->service->getMonthlyIncome($account['id']);
+                    $monthly_stats['expense_total'] = (float)$this->service->getMonthlyExpenses($account['id']);
+                }
             }
             if (!\App\Shared\Core\Validation\Validator::isSet($_SESSION['user_customer_id'])) {
                 $_SESSION['user_customer_id'] = $this->service->getCustomerId($userId);
@@ -390,7 +397,10 @@ class UserController
                 if (!$user) {
                     json_response(['success' => false, 'message' => 'User not found'], 404);
                 }
-                $account = $this->service->getActiveAccountByCustomerId($user['customer_id']);
+                $account = null;
+                if ($user['status'] === 'active') {
+                    $account = $this->service->getActiveAccountByCustomerId($user['customer_id']);
+                }
                 json_response(['success' => true, 'user' => $user, 'account' => $account]);
             } catch (PDOException $e) {
                 \App\Shared\Core\Logging\Logger::getInstance()->error('Profile API error (GET)', ['context' => $e->getMessage()]);

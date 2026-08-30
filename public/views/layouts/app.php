@@ -10,7 +10,11 @@ if ($portal === 'user' && !empty($_SESSION['user_id'])) {
     $currentFile = basename($_SERVER['PHP_SELF'], '.php');
     $status = $_SESSION['user_status'] ?? 'pending';
     
-    $activeOnly = ['dashboard', 'accounts', 'account-detail', 'transfer', 'transactions', 'statement', 'beneficiary'];
+    $activeOnly = [
+        'dashboard', 'accounts', 'account-detail', 'transfer', 'transactions', 
+        'statement', 'beneficiary', 'user-bill-payments', 'user-cards', 
+        'user-investments', 'user-loans', 'receipt'
+    ];
     $pendingOnly = ['complete-profile', 'account-pending', 'account-rejected'];
     
     if ($status !== 'active' && in_array($currentFile, $activeOnly)) {
