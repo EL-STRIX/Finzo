@@ -381,7 +381,10 @@ class UserService implements \App\Domain\Contracts\Services\UserServiceInterface
      */
     public function getDb(...$args)
     {
-        return $this->repository->getDb(...$args);
+        if (method_exists($this->repository, 'getDb')) {
+            return $this->repository->getDb(...$args);
+        }
+        return $this->repository->getPDO();
     }
     /**
      * Count Beneficiaries.

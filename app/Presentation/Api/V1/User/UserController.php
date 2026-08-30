@@ -239,7 +239,11 @@ class UserController
             json_response(['success' => false, 'message' => 'Method not allowed'], 405);
         }
 
-        $userId = $_SESSION['user_id'];
+        if (empty($_SESSION['user_id'])) {
+            json_response(['success' => false, 'message' => 'Your session has expired. Please log in again.', 'redirect' => '/Finzo/public/views/auth/login.php'], 401);
+        }
+
+        $userId = (int)$_SESSION['user_id'];
         try {
             $dto = new \App\Application\DTOs\KycRequestDTO($userId, $_POST, $_FILES);
             $action = new \App\Application\Actions\CompleteUserProfileAction($this->service, $this->security);

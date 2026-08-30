@@ -3,7 +3,7 @@
 namespace App\Application\Actions;
 
 use App\Domain\Contracts\Services\UserServiceInterface;
-use App\Shared\Security\SecurityServiceInterface;
+use App\Domain\Contracts\Security\SecurityServiceInterface;
 use Exception;
 use PDOException;
 
@@ -43,8 +43,8 @@ class CompleteUserProfileAction
             'id_type' => $this->security->cleanInput($postData['id_type'] ?? $postData['id-type'] ?? ''),
             'id_number' => $this->security->cleanInput($postData['id_number'] ?? $postData['id-number'] ?? ''),
             'account_type' => $this->security->cleanInput($postData['account_type'] ?? $postData['account-type'] ?? 'savings'),
-            'initial_deposit' => floatval($postData['initial_deposit'] ?? 0),
-            'txn_pin' => $postData['txn_pin'] ?? '1234',
+            'initial_deposit' => !empty($postData['initial_deposit']) ? floatval($postData['initial_deposit']) : 500.0,
+            'txn_pin' => !empty($postData['txn_pin']) ? (string)$postData['txn_pin'] : '1234',
         ];
 
         if (isset($files['profile_photo']) && !isset($files['profile_picture'])) {
@@ -104,9 +104,20 @@ class CompleteUserProfileAction
             $pdo->commit();
             
             $_SESSION['user_status'] = 'under_review';
-            require_once FINZO_ROOT . '/config/mailer.php';
-            send_under_review_email($_SESSION['user_email'], $_SESSION['user_name']);
-            send_notification($pdo, $customer_id_str, \App\Domain\Enums\NotificationTypeEnum::SYSTEM->value, 'Application Submitted for Review', 'Your KYC profile has been successfully submitted. Our team will review your documents and notify you within 24 hours.');
+            try {
+                require_once FINZO_ROOT . '/config/mailer.php';
+                if (!empty($_SESSION['user_email'])) {
+                    send_under_review_email($_SESSION['user_email'], $_SESSION['user_name'] ?? 'Customer');
+                }
+            } catch (\Throwable $e) {
+                \App\Shared\Core\Logging\Logger::getInstance()->warning('Under review email dispatch failed', ['context' => $e->getMessage()]);
+            }
+
+            try {
+                send_notification($pdo, $customer_id_str, \App\Domain\Enums\NotificationTypeEnum::SYSTEM->value, 'Application Submitted for Review', 'Your KYC profile has been successfully submitted. Our team will review your documents and notify you within 24 hours.');
+            } catch (\Throwable $e) {
+                \App\Shared\Core\Logging\Logger::getInstance()->warning('Notification dispatch failed', ['context' => $e->getMessage()]);
+            }
             
         } catch (PDOException $e) {
             if (\App\Shared\Core\Validation\Validator::isSet($pdo)) {
