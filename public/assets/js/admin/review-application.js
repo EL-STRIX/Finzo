@@ -12,6 +12,18 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
+    /**
+     * Escape HTML entities to prevent XSS when rendering server data
+     */
+    function escapeHtml(value) {
+        return String(value ?? '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
     async function loadDetails() {
         try {
             const response = await window.api.get(`/admin/applications/${userId}`);
@@ -157,8 +169,14 @@ document.addEventListener('DOMContentLoaded', () => {
            const modalApproveAcc = document.getElementById('modal-approve-acc');
            if(modalApproveAcc) modalApproveAcc.textContent = data.expected_acc;
            
-           const accPreview = document.querySelector('.font-code.text-green-700');
+           const accPreview = document.querySelector('.font-code.text-success');
            if(accPreview) accPreview.innerHTML = data.expected_acc.replace(/(.{7})(.*)/, '$1<span class="opacity-30">$2</span>');
+        }
+
+        // Pre-fill previously saved internal review notes
+        const notesArea = document.getElementById('admin-notes-input');
+        if (notesArea && data.admin_notes) {
+            notesArea.value = data.admin_notes;
         }
 
         // Disable buttons if already processed
@@ -198,9 +216,9 @@ document.addEventListener('DOMContentLoaded', () => {
                   ${icon ? `<span class="material-symbols-outlined text-[14px] leading-none" aria-hidden="true">${icon}</span>` : ''}
                 </div>
                 <div class="flex-1 pb-4">
-                  <div class="font-bold text-[13px] ${titleClass}">${ev.status}</div>
-                  ${ev.desc ? `<div class="text-[12px] mt-2 p-3 bg-red-50/50 dark:bg-red-900/10 border border-red-100 dark:border-red-900/30 rounded-lg text-slate-700 dark:text-slate-300 leading-relaxed">${ev.desc}</div>` : ''}
-                  ${ev.time ? `<div class="text-[11px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider mt-2">${ev.time}</div>` : ''}
+                  <div class="font-bold text-[13px] ${titleClass}">${escapeHtml(ev.status)}</div>
+                  ${ev.desc ? `<div class="text-[12px] mt-2 p-3 bg-red-50/50 dark:bg-red-900/10 border border-red-100 dark:border-red-900/30 rounded-lg text-slate-700 dark:text-slate-300 leading-relaxed">${escapeHtml(ev.desc)}</div>` : ''}
+                  ${ev.time ? `<div class="text-[11px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider mt-2">${escapeHtml(ev.time)}</div>` : ''}
                 </div>
               </div>
             `;
@@ -314,6 +332,35 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
+
+    // Save Internal Review Notes
+    const btnNotes = document.getElementById('saveAdminNotes');
+    if (btnNotes) {
+        btnNotes.addEventListener('click', async function () {
+            const notesArea = document.getElementById('admin-notes-input');
+            const notes = notesArea ? notesArea.value.trim() : '';
+
+            window.api.setButtonLoading(this, true, 'Saving...');
+            try {
+                const response = await window.api.post(`/admin/applications/${userId}/review`, {
+                    user_id: userId,
+                    action: 'save_notes',
+                    notes: notes
+                });
+
+                if (response.status === 'success' || response.success) {
+                    window.showToast('Admin notes saved successfully.', 'success');
+                } else {
+                    window.showToast(response.message || 'Failed to save notes', 'error');
+                }
+            } catch (error) {
+                console.error(error);
+                window.showToast('Connection failed', 'error');
+            } finally {
+                window.api.setButtonLoading(this, false);
+            }
+        });
+    }
 
     loadDetails();
 });

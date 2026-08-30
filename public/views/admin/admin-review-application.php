@@ -209,6 +209,21 @@ ob_start();
             </div>
           </div>
 
+          <!-- Internal Review Notes -->
+          <div class="ds-card">
+            <div class="p-5 sm:p-6 border-b border-border-subtle flex items-center gap-3">
+              <span class="material-symbols-outlined text-primary" aria-hidden="true">sticky_note_2</span>
+              <h3 class="text-sm font-black uppercase tracking-widest text-text-primary">Internal Review Notes</h3>
+            </div>
+            <div class="p-5 sm:p-8">
+              <textarea id="admin-notes-input" placeholder="Private notes for the approval audit trail (not visible to the applicant)..." class="fin-input w-full min-h-[110px] mb-5"></textarea>
+              <button id="saveAdminNotes" class="w-full btn btn-secondary !py-3.5 rounded-2xl text-xs justify-center">
+                <span class="material-symbols-outlined text-base" aria-hidden="true">save</span>
+                <span>Save Notes</span>
+              </button>
+            </div>
+          </div>
+
           <!-- Decision Card -->
           <div class="ds-card overflow-visible">
             <div class="p-5 sm:p-6 border-b border-border-subtle flex items-center gap-3">
