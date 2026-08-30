@@ -27,15 +27,19 @@ async function loadBranches() {
       const res = await fetch('/Finzo/public/api/v1/public/branches');
       data = await res.json();
     }
-    const select = document.getElementById('branch');
-    if (select && data && data.success && Array.isArray(data.branches) && data.branches.length > 0) {
-      const defaultOption = '<option value="" disabled selected>Select local branch</option>';
+    
+    const branchMenu = document.getElementById('branch-options');
+    const branchLabel = document.querySelector('#branch-dropdown-container .dropdown-label');
+    
+    if (branchMenu && data && data.success && Array.isArray(data.branches) && data.branches.length > 0) {
       const options = data.branches.map(b => 
-        `<option value="${b.id}">${b.name} (${b.ifsc || b.branch_code || ''})</option>`
+        `<div class="finzo-dropdown-option" data-value="${b.id}">${b.name} (${b.ifsc || b.branch_code || ''})</div>`
       ).join('');
-      select.innerHTML = defaultOption + options;
-    } else if (select) {
-      select.innerHTML = '<option value="" disabled selected>No branches available</option>';
+      branchMenu.innerHTML = options;
+      if (branchLabel) branchLabel.textContent = 'Select local branch';
+    } else if (branchMenu) {
+      branchMenu.innerHTML = '<div class="finzo-dropdown-option" data-value="">No branches available</div>';
+      if (branchLabel) branchLabel.textContent = 'No branches available';
     }
   } catch(e) {
     console.warn('Failed to load branches', e);
