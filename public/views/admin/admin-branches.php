@@ -447,14 +447,18 @@ ob_start();
 
                 <div class="space-y-6">
                     <!-- METRIC CARDS -->
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="bg-amber-50 dark:bg-amber-950/40 p-5 rounded-2xl text-center border-2 border-amber-300 dark:border-amber-700/50 shadow-sm">
-                            <div id="view-staff-count" class="text-3xl font-black text-amber-900 dark:text-amber-300 tracking-tight font-display">0</div>
-                            <div class="text-[11px] text-amber-900 dark:text-amber-300 font-black uppercase tracking-wider mt-1.5">Assigned Staff</div>
+                    <div class="grid grid-cols-3 gap-3">
+                        <div class="bg-amber-50 dark:bg-amber-950/40 p-4 rounded-2xl text-center border-2 border-amber-300 dark:border-amber-700/50 shadow-sm">
+                            <div id="view-staff-count" class="text-2xl font-black text-amber-900 dark:text-amber-300 tracking-tight font-display">0</div>
+                            <div class="text-[10px] text-amber-900 dark:text-amber-300 font-black uppercase tracking-wider mt-1">Assigned Staff</div>
                         </div>
-                        <div class="bg-emerald-50 dark:bg-emerald-950/40 p-5 rounded-2xl text-center border-2 border-emerald-300 dark:border-emerald-700/50 shadow-sm">
-                            <div id="view-txn-count" class="text-3xl font-black text-emerald-900 dark:text-emerald-300 tracking-tight font-display">0</div>
-                            <div class="text-[11px] text-emerald-900 dark:text-emerald-300 font-black uppercase tracking-wider mt-1.5">Total Transactions</div>
+                        <div class="bg-blue-50 dark:bg-blue-950/40 p-4 rounded-2xl text-center border-2 border-blue-300 dark:border-blue-700/50 shadow-sm">
+                            <div id="view-users-count" class="text-2xl font-black text-blue-900 dark:text-blue-300 tracking-tight font-display">0</div>
+                            <div class="text-[10px] text-blue-900 dark:text-blue-300 font-black uppercase tracking-wider mt-1">Registered Users</div>
+                        </div>
+                        <div class="bg-emerald-50 dark:bg-emerald-950/40 p-4 rounded-2xl text-center border-2 border-emerald-300 dark:border-emerald-700/50 shadow-sm">
+                            <div id="view-txn-count" class="text-2xl font-black text-emerald-900 dark:text-emerald-300 tracking-tight font-display">0</div>
+                            <div class="text-[10px] text-emerald-900 dark:text-emerald-300 font-black uppercase tracking-wider mt-1">Transactions</div>
                         </div>
                     </div>
 
@@ -512,6 +516,7 @@ ob_start();
                 <button type="button" id="view-btn-toggle-status" class="btn px-5 py-2.5 text-xs font-bold flex items-center gap-1.5 border border-amber-300 text-amber-900 bg-amber-50 hover:bg-amber-100 dark:border-amber-700/50 dark:text-amber-300 dark:bg-amber-950/40 shadow-sm"></button>
                 <button type="button" id="view-btn-edit" class="btn px-6 py-2.5 text-xs font-bold text-slate-900 dark:text-stone-100 bg-slate-100 hover:bg-slate-200 dark:bg-[#292524] dark:hover:bg-[#383330] border border-slate-300 dark:border-white/10 shadow-sm">Edit Branch Info</button>
                 <button type="button" id="view-btn-staff" class="btn !bg-amber-600 hover:!bg-amber-500 active:!bg-amber-700 !text-white font-black px-6 py-2.5 text-xs shadow-md shadow-amber-900/20 border-0">View Staff List</button>
+                <button type="button" id="view-btn-users" class="btn !bg-blue-600 hover:!bg-blue-500 active:!bg-blue-700 !text-white font-black px-6 py-2.5 text-xs shadow-md shadow-blue-900/20 border-0">View User List</button>
             </div>
         </div>
     </div>
@@ -603,6 +608,49 @@ ob_start();
             
             <div class="p-6 border-t border-slate-200 dark:border-white/10 flex justify-end bg-white dark:bg-[#1C1917] shrink-0">
                 <button type="button" class="btn btn-secondary px-8 font-bold modal-close-btn text-slate-900 dark:text-stone-100 bg-slate-100 hover:bg-slate-200 dark:bg-[#292524] dark:hover:bg-[#383330] border border-slate-300 dark:border-white/10" data-close-modal="branchStaffModal">Close List</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- BRANCH USERS MODAL -->
+    <div id="branchUsersModal" class="fixed inset-0 z-[2500] hidden items-center justify-center p-4" role="dialog" aria-modal="true">
+        <div class="absolute inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-sm transition-all modal-backdrop" data-close-modal="branchUsersModal"></div>
+        <div class="relative w-full max-w-4xl bg-white dark:bg-[#1C1917] text-slate-900 dark:text-stone-100 rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh] border border-slate-200 dark:border-white/10 animate-modal-enter">
+            <div class="p-6 border-b border-slate-200 dark:border-white/10 flex justify-between items-center sticky top-0 bg-white dark:bg-[#1C1917] z-10 shrink-0">
+                <div>
+                    <h3 id="users-modal-title" class="font-black text-2xl text-slate-950 dark:text-white tracking-tight">Branch User List</h3>
+                    <p id="users-modal-subtitle" class="text-xs text-slate-600 dark:text-stone-400 uppercase font-black tracking-widest mt-1">Loading customer accounts...</p>
+                </div>
+                <button type="button" class="p-2 hover:bg-slate-100 dark:hover:bg-white/10 rounded-full transition-colors text-slate-500 hover:text-slate-950 dark:hover:text-white modal-close-btn" data-close-modal="branchUsersModal">
+                    <span class="material-symbols-outlined" aria-hidden="true">close</span>
+                </button>
+            </div>
+            
+            <div class="p-0 overflow-y-auto flex-1 bg-white dark:bg-[#1C1917]">
+                <div class="ds-table-wrapper border-0 rounded-none shadow-none bg-transparent">
+                    <table class="ds-table w-full text-left">
+                        <thead scope="col" class="bg-slate-50 dark:bg-[#201D1B] border-b border-slate-200 dark:border-white/10">
+                            <tr>
+                                <th class="px-6 py-4 text-xs font-black tracking-widest text-slate-700 dark:text-stone-300 uppercase" scope="col">Customer ID</th>
+                                <th class="px-6 py-4 text-xs font-black tracking-widest text-slate-700 dark:text-stone-300 uppercase" scope="col">Customer Name</th>
+                                <th class="px-6 py-4 text-xs font-black tracking-widest text-slate-700 dark:text-stone-300 uppercase" scope="col">Contact</th>
+                                <th class="px-6 py-4 text-xs font-black tracking-widest text-slate-700 dark:text-stone-300 uppercase" scope="col">Status</th>
+                                <th class="px-6 py-4 text-xs font-black tracking-widest text-slate-700 dark:text-stone-300 uppercase text-right" scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="branch-users-table-body">
+                            <!-- User rows injected here -->
+                        </tbody>
+                    </table>
+                </div>
+                <div id="no-branch-users-error" class="hidden p-12 text-center" aria-live="polite">
+                    <span class="material-symbols-outlined text-5xl text-slate-400 dark:text-stone-400 mb-2" aria-hidden="true">person_off</span>
+                    <div class="text-xs font-black uppercase tracking-widest text-slate-600 dark:text-stone-400">No users registered at this branch yet.</div>
+                </div>
+            </div>
+            
+            <div class="p-6 border-t border-slate-200 dark:border-white/10 flex justify-end bg-white dark:bg-[#1C1917] shrink-0">
+                <button type="button" class="btn btn-secondary px-8 font-bold modal-close-btn text-slate-900 dark:text-stone-100 bg-slate-100 hover:bg-slate-200 dark:bg-[#292524] dark:hover:bg-[#383330] border border-slate-300 dark:border-white/10" data-close-modal="branchUsersModal">Close List</button>
             </div>
         </div>
     </div>
