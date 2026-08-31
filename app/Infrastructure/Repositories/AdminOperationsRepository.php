@@ -812,10 +812,18 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
     // ---------------------------------------------------------
     public function getSuspendedUser(int $userId) {
         return $this->fetchOne("
-            SELECT id, customer_id, full_name, email, phone, status, dob, gender, father_name,
-                   occupation, annual_income, street, city, state, pincode, country,
-                   id_type, id_number, kyc_submitted_at, created_at, updated_at, profile_picture
-            FROM users WHERE id = ? AND status = 'suspended' AND is_deleted = 0
+            SELECT u.id, u.customer_id, u.full_name, u.email, u.phone, u.status, u.dob, u.gender, u.father_name,
+                   u.occupation, u.annual_income, u.street, u.city, u.state, u.pincode, u.country,
+                   u.id_type, u.id_number, u.kyc_submitted_at, u.created_at, u.updated_at, u.profile_picture,
+                   COALESCE(u.branch_id, ka.branch_id) as branch_id,
+                   COALESCE(b.name, kb.name, 'Unassigned') as branch_name,
+                   COALESCE(b.branch_code, kb.branch_code, '') as branch_code,
+                   COALESCE(b.state, kb.state, '') as branch_state
+            FROM users u
+            LEFT JOIN branches b ON u.branch_id = b.id
+            LEFT JOIN kyc_applications ka ON ka.user_id = u.customer_id
+            LEFT JOIN branches kb ON ka.branch_id = kb.id
+            WHERE u.id = ? AND u.status = 'suspended' AND u.is_deleted = 0
         ", [$userId]);
     }
 
@@ -968,15 +976,17 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
                    u.mother_name, u.marital_status, u.nationality, u.profile_picture,
                    u.occupation, u.annual_income, u.source_of_income, u.street, u.city, u.state, u.pincode, u.country,
                    u.id_type, u.id_number, u.id_front_path, u.id_back_path,
-                   u.branch_id,
-                   COALESCE(b.name, 'Unassigned') as branch_name,
-                   COALESCE(b.branch_code, '') as branch_code,
-                   COALESCE(b.state, '') as branch_state,
+                   COALESCE(u.branch_id, ka.branch_id) as branch_id,
+                   COALESCE(b.name, kb.name, 'Unassigned') as branch_name,
+                   COALESCE(b.branch_code, kb.branch_code, '') as branch_code,
+                   COALESCE(b.state, kb.state, '') as branch_state,
                    u.kyc_submitted_at, u.rejection_reason, u.is_deleted, u.deleted_at,
                    u.failed_attempts, u.locked_until, u.last_login_at, u.last_login_ip,
                    u.created_at, u.updated_at
             FROM users u
             LEFT JOIN branches b ON u.branch_id = b.id
+            LEFT JOIN kyc_applications ka ON ka.user_id = u.customer_id
+            LEFT JOIN branches kb ON ka.branch_id = kb.id
             WHERE u.id = ?
         ");
         $stmt->execute([$userId]);

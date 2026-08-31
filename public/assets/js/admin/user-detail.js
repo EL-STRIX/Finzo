@@ -183,14 +183,17 @@
         setText('info-phone', user.phone || 'N/A');
         setText('info-email', user.email || 'N/A');
 
+        const branchName = (user.branch_name && user.branch_name !== 'Unassigned') ? user.branch_name : 'Unassigned / Central';
+        const branchCodeStr = user.branch_code ? `<span class="font-mono text-xs opacity-60 font-semibold ml-1">(${user.branch_code})</span>` : '';
+
+        const branchBadge = document.getElementById('user-branch-text');
+        if (branchBadge) {
+            branchBadge.textContent = branchName + (user.branch_code ? ` (${user.branch_code})` : '');
+        }
+
         const branchEl = document.getElementById('info-branch');
         if (branchEl) {
-            if (user.branch_name && user.branch_name !== 'Unassigned') {
-                const branchCodeStr = user.branch_code ? `<span class="font-mono text-xs opacity-60 font-semibold ml-1">(${user.branch_code})</span>` : '';
-                branchEl.innerHTML = `<span class="inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-sm text-primary">store</span><span>${user.branch_name}</span>${branchCodeStr}</span>`;
-            } else {
-                branchEl.textContent = 'Unassigned / Central';
-            }
+            branchEl.innerHTML = `<span class="inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-sm text-primary">store</span><span>${branchName}</span>${branchCodeStr}</span>`;
             branchEl.querySelectorAll('.skeleton').forEach(s => s.remove());
         }
 

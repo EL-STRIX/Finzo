@@ -66,9 +66,13 @@ ob_start();
                 <h3 id="user-name-title" class="font-headline text-2xl sm:text-3xl font-black tracking-tight text-text-primary">
                   <div class="skeleton w-48 h-8"></div>
                 </h3>
-                <div class="flex items-center justify-center sm:justify-start gap-3 mt-2">
+                <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2.5 mt-2">
                   <span id="user-status-badge" class="text-[10px] font-black px-2.5 py-1 rounded-md uppercase tracking-widest bg-surface border border-border-subtle text-text-secondary">
                     <div class="skeleton w-24 h-4"></div>
+                  </span>
+                  <span id="user-branch-badge" class="text-[10px] font-black px-2.5 py-1 rounded-md uppercase tracking-widest bg-primary/10 text-primary border border-primary/20 inline-flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-xs" aria-hidden="true">store</span>
+                    <span id="user-branch-text">Loading branch...</span>
                   </span>
                 </div>
               </div>
@@ -544,7 +548,7 @@ ob_start();
     </div>
   </div>
 <?php
-$extraScripts = '<script defer src="/Finzo/public/assets/js/admin/user-detail.js"></script>';
+$extraScripts = '<script defer src="/Finzo/public/assets/js/admin/user-detail.js?v=' . time() . '"></script>';
 $slot = ob_get_clean();
 include __DIR__ . '/../layouts/app.php';
 ?>

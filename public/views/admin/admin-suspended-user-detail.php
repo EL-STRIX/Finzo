@@ -38,6 +38,10 @@ ob_start();
               <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2">
                 <span id="detail-acc-type-badge" class="px-3 py-1 bg-background text-[10px] font-black rounded-lg uppercase tracking-widest text-text-secondary border border-border-subtle">-</span>
                 <span class="px-3 py-1 bg-error-bg text-error text-[10px] font-black rounded-lg uppercase tracking-widest border border-error-bg">Inactive</span>
+                <span id="detail-branch-badge" class="px-3 py-1 bg-surface text-[10px] font-black rounded-lg uppercase tracking-widest text-text-secondary border border-border-subtle inline-flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-xs text-primary" aria-hidden="true">store</span>
+                  <span id="detail-branch">-</span>
+                </span>
               </div>
             </div>
           </div>
@@ -58,6 +62,10 @@ ob_start();
             <div>
               <p class="text-[10px] font-black text-text-secondary uppercase tracking-widest mb-1">Date Joined</p>
               <p id="detail-opened" class="font-bold text-sm text-text-primary">-</p>
+            </div>
+            <div class="col-span-2">
+              <p class="text-[10px] font-black text-text-secondary uppercase tracking-widest mb-1">Servicing Branch</p>
+              <p id="detail-branch-name" class="font-bold text-sm text-text-primary">-</p>
             </div>
             <div class="col-span-2 pt-4 border-t border-border-subtle">
               <p class="text-[10px] font-black text-error uppercase tracking-widest mb-1">Frozen Balance</p>
