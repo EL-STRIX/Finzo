@@ -67,8 +67,15 @@
   transform: translateY(6px) scale(0.98);
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   padding: 8px;
-  max-height: 320px;
+  max-height: min(400px, 75vh);
   overflow-y: auto;
+}
+
+.finzo-dropdown.is-dropup .finzo-dropdown-menu,
+.finzo-dropdown-menu.is-dropup {
+  top: auto !important;
+  bottom: calc(100% + 6px) !important;
+  transform-origin: bottom center !important;
 }
 
 .finzo-dropdown-menu::-webkit-scrollbar {
@@ -88,6 +95,13 @@
   background-color: rgba(255, 255, 255, 0.98);
   border-color: rgba(0, 0, 0, 0.12);
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 10px 10px -5px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="light"] .finzo-dropdown.is-dropup .finzo-dropdown-menu,
+.light .finzo-dropdown.is-dropup .finzo-dropdown-menu,
+[data-theme="light"] .finzo-dropdown-menu.is-dropup,
+.light .finzo-dropdown-menu.is-dropup {
+  box-shadow: 0 -20px 25px -5px rgba(0, 0, 0, 0.15), 0 -10px 10px -5px rgba(0, 0, 0, 0.05);
 }
 
 .finzo-dropdown-menu.is-open,

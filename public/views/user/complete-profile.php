@@ -15,7 +15,10 @@ ob_start();
 ?>
 <style>
 .step-content { display: none; }
-.step-content.active { display: block; }
+.step-content.active { display: block; overflow: visible; }
+.kyc-stepper-card { overflow: visible !important; }
+.fin-input-container { position: relative; overflow: visible; }
+.finzo-dropdown { position: relative; }
 </style>
 
 <div class="mb-8 ds-animate-fade">
@@ -25,7 +28,7 @@ ob_start();
 </div>
 
 <!-- Stepper Container -->
-<div class="ds-card p-6 lg:p-8 max-w-4xl mx-auto mb-8 ds-animate-slide-up">
+<div class="ds-card kyc-stepper-card !overflow-visible p-6 lg:p-8 max-w-4xl mx-auto mb-8 ds-animate-slide-up" style="overflow: visible !important;">
     <!-- Stepper Header -->
     <div class="mb-8">
         <div class="flex items-center justify-between relative mb-4">
@@ -466,7 +469,7 @@ ob_start();
     </div>
 </div>
 
-<script defer src="/Finzo/public/assets/js/user/complete-profile.js"></script>
+<script defer src="/Finzo/public/assets/js/user/complete-profile.js?v=<?= time() ?>"></script>
 
 <?php
 $slot = ob_get_clean();

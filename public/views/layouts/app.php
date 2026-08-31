@@ -62,9 +62,9 @@ $csrfToken = $_SESSION['csrf_token'];
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="/Finzo/public/assets/js/core/tailwind-config.js?v=<?= time() ?>"></script>
     <!-- Core JS: order matters — utils must load before api and ui-components -->
-    <script defer src="/Finzo/public/assets/js/core/utils.js"></script>
-    <script defer src="/Finzo/public/assets/js/core/api.js"></script>
-    <script defer src="/Finzo/public/assets/js/core/ui-components.js"></script>
+    <script defer src="/Finzo/public/assets/js/core/utils.js?v=<?= time() ?>"></script>
+    <script defer src="/Finzo/public/assets/js/core/api.js?v=<?= time() ?>"></script>
+    <script defer src="/Finzo/public/assets/js/core/ui-components.js?v=<?= time() ?>"></script>
     <?php if ($portal === 'user' || !empty($_SESSION['user_id'])): ?>
     <script>
         window.__FINZO_USER__ = <?= json_encode([

@@ -550,9 +550,17 @@ select option {
     -webkit-backdrop-filter: blur(16px);
     border: 1px solid var(--color-border-subtle, rgba(255, 255, 255, 0.15));
     border-radius: var(--radius-lg, 14px);
-    overflow: visible;
+    max-height: min(400px, 75vh);
+    overflow-y: auto;
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.6), 0 10px 10px -5px rgba(0, 0, 0, 0.4);
     padding: 6px;
+}
+
+.finzo-dropdown.is-dropup .finzo-dropdown-menu,
+.finzo-dropdown-menu.is-dropup {
+    top: auto !important;
+    bottom: calc(100% + 6px) !important;
+    transform-origin: bottom center !important;
 }
 
 [data-theme="light"] .finzo-dropdown-menu,
@@ -561,6 +569,13 @@ select option {
     background-color: rgba(255, 255, 255, 0.98);
     border-color: rgba(0, 0, 0, 0.12);
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 10px 10px -5px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="light"] .finzo-dropdown.is-dropup .finzo-dropdown-menu,
+.light .finzo-dropdown.is-dropup .finzo-dropdown-menu,
+[data-theme="light"] .finzo-dropdown-menu.is-dropup,
+.light .finzo-dropdown-menu.is-dropup {
+    box-shadow: 0 -20px 25px -5px rgba(0, 0, 0, 0.15), 0 -10px 10px -5px rgba(0, 0, 0, 0.05);
 }
 
 .finzo-dropdown-menu.is-open,
@@ -621,3 +636,80 @@ select option {
     font-weight: 700;
     color: #D97706;
 }
+
+/* =========================================================================
+   Admin & Customer Avatar Component
+   ========================================================================= */
+.admin-avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    min-height: 36px;
+    max-width: 36px;
+    max-height: 36px;
+    border-radius: 9999px;
+    overflow: hidden;
+    background-color: var(--color-surface-subtle, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--color-border-subtle, rgba(255, 255, 255, 0.1));
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--color-text-primary, #ffffff);
+    flex-shrink: 0;
+    text-transform: uppercase;
+    user-select: none;
+    position: relative;
+}
+
+.admin-avatar.sm {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    min-height: 32px;
+    max-width: 32px;
+    max-height: 32px;
+    font-size: 11px;
+}
+
+.admin-avatar.xs {
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    min-height: 24px;
+    max-width: 24px;
+    max-height: 24px;
+    font-size: 9px;
+}
+
+.admin-avatar.md {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    min-height: 40px;
+    max-width: 40px;
+    max-height: 40px;
+    font-size: 13px;
+}
+
+.admin-avatar.lg {
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    min-height: 48px;
+    max-width: 48px;
+    max-height: 48px;
+    font-size: 16px;
+}
+
+.admin-avatar img {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    object-fit: cover !important;
+    border-radius: 9999px !important;
+    display: block !important;
+    flex-shrink: 0;
+}

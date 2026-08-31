@@ -38,7 +38,7 @@
 
         closeAllDropdowns: function() {
             document.querySelectorAll('.finzo-dropdown.is-open, .finzo-dropdown-menu.is-open, .finzo-dropdown-trigger.is-open').forEach(el => {
-                el.classList.remove('is-open');
+                el.classList.remove('is-open', 'is-dropup');
                 if (el.classList.contains('finzo-dropdown-trigger')) {
                     el.setAttribute('aria-expanded', 'false');
                 }
@@ -57,7 +57,7 @@
                 // Close all others
                 document.querySelectorAll('.finzo-dropdown.is-open, .finzo-dropdown-menu.is-open, .finzo-dropdown-trigger.is-open').forEach(el => {
                     if (el !== menu && el !== trigger && el !== dropdown) {
-                        el.classList.remove('is-open');
+                        el.classList.remove('is-open', 'is-dropup');
                         if (el.classList.contains('finzo-dropdown-trigger')) {
                             el.setAttribute('aria-expanded', 'false');
                         }
@@ -66,12 +66,26 @@
 
                 // Toggle current
                 if (isOpen) {
-                    dropdown.classList.remove('is-open');
-                    menu.classList.remove('is-open');
+                    dropdown.classList.remove('is-open', 'is-dropup');
+                    menu.classList.remove('is-open', 'is-dropup');
                     trigger.classList.remove('is-open');
                     trigger.setAttribute('aria-expanded', 'false');
                     trigger.focus();
                 } else {
+                    // Check if dropdown should flip upwards (dropup)
+                    const rect = trigger.getBoundingClientRect();
+                    const spaceBelow = window.innerHeight - rect.bottom;
+                    const spaceAbove = rect.top;
+                    const estimatedMenuHeight = Math.min(menu.scrollHeight || 260, 280);
+
+                    if (spaceBelow < estimatedMenuHeight && spaceAbove > spaceBelow) {
+                        dropdown.classList.add('is-dropup');
+                        menu.classList.add('is-dropup');
+                    } else {
+                        dropdown.classList.remove('is-dropup');
+                        menu.classList.remove('is-dropup');
+                    }
+
                     dropdown.classList.add('is-open');
                     menu.classList.add('is-open');
                     trigger.classList.add('is-open');
@@ -108,8 +122,8 @@
                 
                 // Close
                 const menu = dropdown.querySelector('.finzo-dropdown-menu');
-                if (menu) menu.classList.remove('is-open');
-                dropdown.classList.remove('is-open');
+                if (menu) menu.classList.remove('is-open', 'is-dropup');
+                dropdown.classList.remove('is-open', 'is-dropup');
                 if (trigger) {
                     trigger.classList.remove('is-open');
                     trigger.setAttribute('aria-expanded', 'false');
@@ -133,7 +147,7 @@
                 // Click outside
                 if (!e.target.closest('.finzo-dropdown')) {
                     document.querySelectorAll('.finzo-dropdown.is-open, .finzo-dropdown-menu.is-open, .finzo-dropdown-trigger.is-open').forEach(el => {
-                        el.classList.remove('is-open');
+                        el.classList.remove('is-open', 'is-dropup');
                         if (el.classList.contains('finzo-dropdown-trigger')) {
                             el.setAttribute('aria-expanded', 'false');
                         }
