@@ -1,8 +1,16 @@
 <?php
 $portal = 'admin';
 $pageTitle = 'Finzo Admin — User Management';
-// Admin portal guard — server-side authentication & role check
 include __DIR__ . '/_guard.php';
+
+$branchesList = [];
+try {
+    $branchStmt = \App\Shared\Core\Database::getInstance()->query("SELECT id, name, branch_code FROM branches WHERE status = 'active' ORDER BY name ASC");
+    $branchesList = $branchStmt ? $branchStmt->fetchAll(PDO::FETCH_ASSOC) : [];
+} catch (\Throwable $e) {
+    $branchesList = [];
+}
+
 ob_start();
 ?>
             <!-- TOP PAGE HEADER & ACTION BAR -->
@@ -95,6 +103,9 @@ ob_start();
                                 </div>
                                 <div class="finzo-dropdown-menu z-50 !max-h-60 overflow-y-auto" id="branch-dropdown-menu">
                                     <div class="finzo-dropdown-option is-selected" data-value="all">All Branches</div>
+                                    <?php foreach ($branchesList as $b): ?>
+                                        <div class="finzo-dropdown-option" data-value="<?= htmlspecialchars((string)$b['id']) ?>"><?= htmlspecialchars($b['name']) ?> (<?= htmlspecialchars($b['branch_code'] ?? 'BR') ?>)</div>
+                                    <?php endforeach; ?>
                                 </div>
                             </div>
                         </div>
@@ -232,6 +243,9 @@ ob_start();
                                     </div>
                                     <div class="finzo-dropdown-menu z-50 !max-h-52 overflow-y-auto" id="export-branch-menu">
                                         <div class="finzo-dropdown-option is-selected" data-value="all">All Branches</div>
+                                        <?php foreach ($branchesList as $b): ?>
+                                            <div class="finzo-dropdown-option" data-value="<?= htmlspecialchars((string)$b['id']) ?>"><?= htmlspecialchars($b['name']) ?> (<?= htmlspecialchars($b['branch_code'] ?? 'BR') ?>)</div>
+                                        <?php endforeach; ?>
                                     </div>
                                 </div>
                             </div>
@@ -249,7 +263,7 @@ ob_start();
             </div>
 
 <?php
-$extraScripts = '<script defer src="/Finzo/public/assets/js/admin/users.js"></script>';
+$extraScripts = '<script defer src="/Finzo/public/assets/js/admin/users.js?v=' . time() . '"></script>';
 $slot = ob_get_clean();
 include __DIR__ . '/../layouts/app.php';
 ?>

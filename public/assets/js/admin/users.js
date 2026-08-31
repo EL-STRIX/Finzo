@@ -10,35 +10,30 @@
      */
     async function loadBranches() {
         try {
-            const response = await window.api.get('/branches', { per_page: 100 });
-            const payload = response?.data || response;
-            const branches = payload?.branches || response?.branches || [];
+            const response = await window.api.get('/public/branches');
+            const branches = response?.branches || response?.data?.branches || [];
 
             if (Array.isArray(branches) && branches.length > 0) {
-                // Populate Filter Dropdown
-                const filterMenu = document.getElementById('branch-dropdown-menu');
-                if (filterMenu) {
-                    filterMenu.innerHTML = '<div class="finzo-dropdown-option is-selected" data-value="all">All Branches</div>';
+                const populate = (menuId, defaultText) => {
+                    const menu = document.getElementById(menuId);
+                    if (!menu) return;
+                    const currentValue = menu.closest('.finzo-dropdown')?.querySelector('input[type="hidden"]')?.value || 'all';
+                    menu.innerHTML = `<div class="finzo-dropdown-option ${currentValue === 'all' ? 'is-selected' : ''}" data-value="all">${defaultText}</div>`;
                     branches.forEach(b => {
+                        const isSel = String(currentValue) === String(b.id);
                         const opt = document.createElement('div');
-                        opt.className = 'finzo-dropdown-option';
+                        opt.className = `finzo-dropdown-option ${isSel ? 'is-selected' : ''}`;
                         opt.setAttribute('data-value', b.id);
                         opt.textContent = `${b.name} (${b.branch_code || 'BR'})`;
-                        filterMenu.appendChild(opt);
+                        menu.appendChild(opt);
                     });
-                }
+                };
 
-                // Populate Export Modal Dropdown
-                const exportMenu = document.getElementById('export-branch-menu');
-                if (exportMenu) {
-                    exportMenu.innerHTML = '<div class="finzo-dropdown-option is-selected" data-value="all">All Branches</div>';
-                    branches.forEach(b => {
-                        const opt = document.createElement('div');
-                        opt.className = 'finzo-dropdown-option';
-                        opt.setAttribute('data-value', b.id);
-                        opt.textContent = `${b.name} (${b.branch_code || 'BR'})`;
-                        exportMenu.appendChild(opt);
-                    });
+                populate('branch-dropdown-menu', 'All Branches');
+                populate('export-branch-menu', 'All Branches');
+
+                if (window.FinzoUI && typeof window.FinzoUI.initARIA === 'function') {
+                    window.FinzoUI.initARIA();
                 }
             }
         } catch (error) {
