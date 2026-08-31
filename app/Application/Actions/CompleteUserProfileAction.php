@@ -45,6 +45,7 @@ class CompleteUserProfileAction
             'account_type' => $this->security->cleanInput($postData['account_type'] ?? $postData['account-type'] ?? 'savings'),
             'initial_deposit' => !empty($postData['initial_deposit']) ? floatval($postData['initial_deposit']) : 500.0,
             'txn_pin' => !empty($postData['txn_pin']) ? (string)$postData['txn_pin'] : '1234',
+            'branch_id' => !empty($postData['branch']) ? intval($postData['branch']) : (!empty($postData['branch_id']) ? intval($postData['branch_id']) : null),
         ];
 
         if (isset($files['profile_photo']) && !isset($files['profile_picture'])) {
@@ -77,7 +78,7 @@ class CompleteUserProfileAction
             $pdo = $this->userService->getDb();
             $pdo->beginTransaction();
             $stmt = $pdo->prepare(\App\Infrastructure\Repositories\QueryStore::get('q_ef776789'));
-            $stmt->execute([$userId]);
+            $stmt->execute([$data['branch_id'], $userId]);
 
             $txn_pin_hash = password_hash($data['txn_pin'], PASSWORD_BCRYPT);
             $existing_account = $this->userService->getExistingAccountByCustomerId($customer_id_str);
@@ -118,6 +119,7 @@ class CompleteUserProfileAction
                     $paths['id_back_path'],
                     $data['account_type'],
                     $data['initial_deposit'],
+                    $data['branch_id'],
                     $customer_id_str
                 ]);
             } else {
@@ -144,7 +146,8 @@ class CompleteUserProfileAction
                     $paths['id_front_path'],
                     $paths['id_back_path'],
                     $data['account_type'],
-                    $data['initial_deposit']
+                    $data['initial_deposit'],
+                    $data['branch_id']
                 ]);
             }
             $pdo->commit();

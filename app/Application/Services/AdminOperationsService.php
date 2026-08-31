@@ -345,7 +345,7 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
      * Export Users.
      *
      * @param array $filters
-     * @return array
+     * @return array|\Generator
      */
     public function exportUsers(array $filters): array|\Generator
     {
@@ -370,7 +370,22 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
 
         $where_sql = implode(' AND ', $where_clauses);
 
-        return $this->repository->exportUsersGenerator($where_sql, $params, $orderSql);
+        // Decrypt the PII ID Number for cleartext export (consistent with the
+        // administrative user detail services). Legacy plaintext rows are
+        // returned unchanged by EncryptionService::decrypt().
+        $crypto = new \App\Shared\Security\EncryptionService();
+        $rows = $this->repository->exportUsersGenerator($where_sql, $params, $orderSql);
+
+        foreach ($rows as $row) {
+            if (isset($row['ID Number']) && $row['ID Number'] !== '') {
+                try {
+                    $row['ID Number'] = $crypto->decrypt($row['ID Number']);
+                } catch (\Throwable $e) {
+                    // Ignore decryption failures and export the stored value.
+                }
+            }
+            yield $row;
+        }
     }
     /**
      * Get Locked Accounts.
@@ -1097,6 +1112,11 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
             } elseif ($filters['activity'] === 'dormant') {
                 $where_clauses[] = "(u.last_login_at < DATE_SUB(NOW(), INTERVAL 90 DAY) OR u.last_login_at IS NULL)";
             }
+        }
+
+        // Branch Filter
+        if (!empty($filters['branch_id']) && $filters['branch_id'] !== 'all' && $filters['branch_id'] !== '0') {
+            $where_clauses[] = "u.branch_id = " . intval($filters['branch_id']);
         }
 
         // Sorting

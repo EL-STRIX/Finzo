@@ -357,10 +357,12 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
                 COALESCE(u.state, '') as 'State',
                 COALESCE(u.pincode, '') as 'PIN Code',
                 COALESCE(u.country, 'India') as 'Country',
+                COALESCE(b.name, 'Unassigned') as 'Servicing Branch',
                 u.created_at as 'Registration Date',
                 COALESCE(u.last_login_at, 'Never') as 'Last Active',
                 COALESCE(u.last_login_ip, 'N/A') as 'Last Login IP'
             FROM users u
+            LEFT JOIN branches b ON u.branch_id = b.id
             WHERE {$whereSql}
             ORDER BY {$orderSql}
         ";
@@ -562,6 +564,7 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
                     id_number = ?,
                     id_front_path = ?,
                     id_back_path = ?,
+                    branch_id = COALESCE(?, branch_id),
                     kyc_submitted_at = ?,
                     updated_at = NOW() 
                 WHERE id = ?
@@ -584,6 +587,7 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
                 $app['id_number'],
                 $app['id_front_path'],
                 $app['id_back_path'],
+                $app['branch_id'] ?? null,
                 $app['submitted_at'],
                 $userId
             ]);
@@ -772,14 +776,18 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
     // ---------------------------------------------------------
     public function countUsers(string $whereSql, array $params): int
     {
-        return (int)($this->fetchOne("SELECT COUNT(*) as count FROM users u WHERE {$whereSql}", $params)['count'] ?? 0);
+        return (int)($this->fetchOne("SELECT COUNT(*) as count FROM users u LEFT JOIN branches b ON u.branch_id = b.id WHERE {$whereSql}", $params)['count'] ?? 0);
     }
 
     public function getUsers(string $whereSql, array $params, int $perPage, int $offset, string $orderSql = 'u.created_at DESC') {
         $sql = "
             SELECT
-                u.id, u.customer_id, u.full_name, u.email, u.phone, u.status, u.created_at, u.last_login_at, u.profile_picture
+                u.id, u.customer_id, u.full_name, u.email, u.phone, u.status, u.created_at, u.last_login_at, u.profile_picture,
+                u.branch_id,
+                COALESCE(b.name, 'Unassigned') as branch_name,
+                COALESCE(b.branch_code, '') as branch_code
             FROM users u
+            LEFT JOIN branches b ON u.branch_id = b.id
             WHERE {$whereSql}
             ORDER BY {$orderSql}
             LIMIT {$perPage} OFFSET {$offset}
@@ -956,14 +964,20 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
     public function getUserProfile(int $userId)
     {
         $stmt = $this->db->prepare("
-            SELECT id, customer_id, full_name, email, phone, status, dob, gender, father_name,
-                   mother_name, marital_status, nationality, profile_picture,
-                   occupation, annual_income, source_of_income, street, city, state, pincode, country,
-                   id_type, id_number, id_front_path, id_back_path,
-                   kyc_submitted_at, rejection_reason, is_deleted, deleted_at,
-                   failed_attempts, locked_until, last_login_at, last_login_ip,
-                   created_at, updated_at
-            FROM users WHERE id = ?
+            SELECT u.id, u.customer_id, u.full_name, u.email, u.phone, u.status, u.dob, u.gender, u.father_name,
+                   u.mother_name, u.marital_status, u.nationality, u.profile_picture,
+                   u.occupation, u.annual_income, u.source_of_income, u.street, u.city, u.state, u.pincode, u.country,
+                   u.id_type, u.id_number, u.id_front_path, u.id_back_path,
+                   u.branch_id,
+                   COALESCE(b.name, 'Unassigned') as branch_name,
+                   COALESCE(b.branch_code, '') as branch_code,
+                   COALESCE(b.state, '') as branch_state,
+                   u.kyc_submitted_at, u.rejection_reason, u.is_deleted, u.deleted_at,
+                   u.failed_attempts, u.locked_until, u.last_login_at, u.last_login_ip,
+                   u.created_at, u.updated_at
+            FROM users u
+            LEFT JOIN branches b ON u.branch_id = b.id
+            WHERE u.id = ?
         ");
         $stmt->execute([$userId]);
         return $stmt->fetch(PDO::FETCH_ASSOC);

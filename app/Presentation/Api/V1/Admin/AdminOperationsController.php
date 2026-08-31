@@ -387,10 +387,11 @@ class AdminOperationsController
     public function users(?string $id = null, ?string $extra = null): array
     {
         $filters = [
-            'search'   => $this->security->cleanInput($_GET['search'] ?? ''),
-            'status'   => $this->security->cleanInput($_GET['status'] ?? 'all'),
-            'sort'     => $this->security->cleanInput($_GET['sort'] ?? 'newest'),
-            'activity' => $this->security->cleanInput($_GET['activity'] ?? 'all')
+            'search'    => $this->security->cleanInput($_GET['search'] ?? ''),
+            'status'    => $this->security->cleanInput($_GET['status'] ?? 'all'),
+            'sort'      => $this->security->cleanInput($_GET['sort'] ?? 'newest'),
+            'activity'  => $this->security->cleanInput($_GET['activity'] ?? 'all'),
+            'branch_id' => $this->security->cleanInput($_GET['branch_id'] ?? $_GET['branch'] ?? 'all')
         ];
         $page     = max(1, intval($_GET['page'] ?? 1));
         $per_page = min(50, max(10, intval($_GET['per_page'] ?? 20)));
@@ -403,10 +404,11 @@ class AdminOperationsController
     public function exportUsers(): void
     {
         $filters = [
-            'search'   => $this->security->cleanInput($_GET['search'] ?? ''),
-            'status'   => $this->security->cleanInput($_GET['status'] ?? 'all'),
-            'sort'     => $this->security->cleanInput($_GET['sort'] ?? 'newest'),
-            'activity' => $this->security->cleanInput($_GET['activity'] ?? 'all')
+            'search'    => $this->security->cleanInput($_GET['search'] ?? ''),
+            'status'    => $this->security->cleanInput($_GET['status'] ?? 'all'),
+            'sort'      => $this->security->cleanInput($_GET['sort'] ?? 'newest'),
+            'activity'  => $this->security->cleanInput($_GET['activity'] ?? 'all'),
+            'branch_id' => $this->security->cleanInput($_GET['branch_id'] ?? $_GET['branch'] ?? 'all')
         ];
 
         $isAsync = filter_var($_GET['async'] ?? false, FILTER_VALIDATE_BOOLEAN);
