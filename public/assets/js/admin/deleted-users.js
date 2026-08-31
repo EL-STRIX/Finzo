@@ -233,6 +233,8 @@
             const emailEls = document.querySelectorAll('.details-email');
             const phoneEls = document.querySelectorAll('.details-phone');
             const typeEls = document.querySelectorAll('.details-type');
+            const typeBadgeEls = document.querySelectorAll('.details-type-badge');
+            const customerIdEls = document.querySelectorAll('.details-customer-id');
             const regEls = document.querySelectorAll('.details-reg');
             const balanceEls = document.querySelectorAll('.details-balance');
             const reasonEls = document.querySelectorAll('.details-reason');
@@ -252,11 +254,13 @@
                 }
             }
 
-            nameEls.forEach(el => el.textContent = u.full_name);
+            nameEls.forEach(el => el.textContent = u.full_name || 'N/A');
             accEls.forEach(el => el.textContent = u.account_no || 'N/A');
             emailEls.forEach(el => el.textContent = u.email || 'N/A');
             phoneEls.forEach(el => el.textContent = u.phone || 'N/A');
             typeEls.forEach(el => el.textContent = u.account_type ? (u.account_type.charAt(0).toUpperCase() + u.account_type.slice(1)) : 'N/A');
+            typeBadgeEls.forEach(el => el.textContent = (u.account_type || 'Savings').toUpperCase());
+            customerIdEls.forEach(el => el.textContent = u.customer_id || 'FNZ-USR-PENDING');
             regEls.forEach(el => el.textContent = u.created_at ? new Date(u.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : 'N/A');
             balanceEls.forEach(el => el.textContent = (window.FinzoUtils && window.FinzoUtils.formatINR) ? window.FinzoUtils.formatINR(u.balance || 0) : ('₹' + parseFloat(u.balance || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })));
             reasonEls.forEach(el => el.textContent = u.deletion_reason || 'Admin Action');
