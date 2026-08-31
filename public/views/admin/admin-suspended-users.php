@@ -1,6 +1,8 @@
 <?php
 $portal = 'admin';
 $pageTitle = 'Suspended Users';
+// Admin portal guard — server-side authentication & role check
+include __DIR__ . '/_guard.php';
 $pageHeader = '
 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
     <div>
@@ -90,8 +92,31 @@ ob_start();
           <div class="flex items-center justify-center" id="pag-controls"></div>
         </div>
       </div>
+
+      <!-- REINSTATE / REMOVE SUSPEND MODAL -->
+      <div class="fixed inset-0 z-[2000] hidden items-center justify-center p-4" id="reinstate-modal" role="dialog" aria-modal="true">
+        <div class="absolute inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-sm transition-all modal-backdrop" onclick="window.SuspendedUsers.closeReinstateModal()"></div>
+        <div class="relative w-full max-w-lg bg-surface dark:bg-[#1C1917] rounded-2xl overflow-hidden shadow-2xl border border-border-subtle dark:border-white/10 animate-modal-enter z-10">
+          <div class="p-8 pb-4 text-center">
+            <div class="w-16 h-16 rounded-full mx-auto flex items-center justify-center mb-4 bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-700/50 shadow-sm">
+              <span class="material-symbols-outlined text-4xl" aria-hidden="true">lock_open</span>
+            </div>
+            <h3 class="font-headline text-2xl font-black text-text-primary dark:text-stone-100">Restore User Account</h3>
+            <div class="text-sm text-text-secondary dark:text-stone-400 font-bold mt-4 px-4 leading-relaxed" id="reinstate-modal-text">
+              You are removing the suspension from this customer's account. Operational access and banking features will be restored immediately.
+            </div>
+          </div>
+          <div class="p-6 pt-4 border-t border-border-subtle dark:border-white/10 flex gap-3 justify-end bg-background/50 dark:bg-[#141211]">
+            <button type="button" onclick="window.SuspendedUsers.closeReinstateModal()" class="flex-1 py-3 bg-surface dark:bg-[#292524] hover:bg-surface-hover dark:hover:bg-[#383330] text-text-secondary dark:text-stone-300 font-black rounded-xl text-xs uppercase tracking-widest transition-all border border-border-subtle dark:border-white/10">Cancel</button>
+            <button type="button" id="reinstate-confirm-btn" onclick="window.SuspendedUsers.confirmReinstate()" class="flex-1 py-3 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white font-black rounded-xl text-xs uppercase tracking-widest shadow-md shadow-emerald-900/20 transition-all flex items-center justify-center gap-1.5 border-0">
+              <span class="material-symbols-outlined text-base" aria-hidden="true">lock_open</span>
+              Confirm & Reinstate
+            </button>
+          </div>
+        </div>
+      </div>
 <?php
-$extraScripts = '<script defer src="/Finzo/public/assets/js/admin/suspended-users.js"></script>';
+$extraScripts = '<script defer src="/Finzo/public/assets/js/admin/suspended-users.js?v=' . time() . '"></script>';
 $slot = ob_get_clean();
 include __DIR__ . '/../layouts/app.php';
 ?>

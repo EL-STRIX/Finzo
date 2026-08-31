@@ -36,8 +36,12 @@ ob_start();
       
       <!-- TOP NAVIGATION -->
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 relative z-10">
-        <div class="flex items-center gap-4">
-          <a href="admin-users.php" class="w-10 h-10 flex items-center justify-center rounded-xl bg-surface border border-border-subtle hover:bg-background transition-all text-text-secondary hover:text-text-primary shadow-sm shrink-0" aria-label="Back to Users">
+          <?php
+            $fromParam = $_GET['from'] ?? '';
+            $backHref = ($fromParam === 'suspended') ? 'admin-suspended-users.php' : 'admin-users.php';
+            $backTitle = ($fromParam === 'suspended') ? 'Back to Suspended Users' : 'Back to Users';
+          ?>
+          <a href="<?= $backHref ?>" id="back-to-users-link" class="w-10 h-10 flex items-center justify-center rounded-xl bg-surface border border-border-subtle hover:bg-background transition-all text-text-secondary hover:text-text-primary shadow-sm shrink-0" aria-label="<?= $backTitle ?>">
             <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
           </a>
           <div>

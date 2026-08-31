@@ -51,6 +51,15 @@
             console.error('User ID is required in URL query string');
             return;
         }
+        
+        const backLink = document.getElementById('back-to-users-link');
+        if (backLink) {
+            const fromParam = urlParams.get('from');
+            if (fromParam === 'suspended' || (document.referrer && document.referrer.includes('admin-suspended-users.php'))) {
+                backLink.href = 'admin-suspended-users.php';
+                backLink.setAttribute('aria-label', 'Back to Suspended Users');
+            }
+        }
 
         try {
             const response = await window.api.get(`/users/${currentUserId}`);
