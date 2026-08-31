@@ -1274,7 +1274,7 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
                 ? $user['profile_picture']
                 : APP_URL . '/' . ltrim($user['profile_picture'], '/');
         } else {
-            $base_avatar_dir = UPLOAD_AVATARS_PATH;
+            $base_avatar_dir = defined('UPLOAD_AVATARS_PATH') ? UPLOAD_AVATARS_PATH : (defined('FINZO_ROOT') ? FINZO_ROOT . '/uploads/avatars/' : dirname(__DIR__, 3) . '/public/uploads/avatars/');
             $avatar_path = $base_avatar_dir . 'user_' . $userId . '.jpg';
             if (file_exists($avatar_path)) {
                 $avatar_url = APP_URL . '/uploads/avatars/user_' . $userId . '.jpg?t=' . filemtime($avatar_path);
@@ -1291,6 +1291,8 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
                 return $n[0] ?? '';
             }, explode(' ', $user['full_name']))),
             'avatar_url' => $avatar_url,
+            'profile_picture_url' => $avatar_url,
+            'profile_picture' => $user['profile_picture'] ?? null,
             'account_no' => $account ? $account['account_no'] : 'N/A',
             'account_type' => $account ? ucfirst($account['account_type']) : 'N/A',
             'balance' => $account ? $account['balance'] : 0,

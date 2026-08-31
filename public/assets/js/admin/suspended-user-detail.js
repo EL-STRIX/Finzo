@@ -32,11 +32,13 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const avatar = document.getElementById('detail-avatar');
         if (avatar) {
-            if (user.avatar_url) {
-                avatar.innerHTML = `<img src="${user.avatar_url}" class="w-full h-full object-cover rounded-2xl">`;
+            const avatarUrl = user.avatar_url || user.profile_picture_url;
+            const initials = user.initials || (user.full_name ? user.full_name.charAt(0).toUpperCase() : '??');
+            if (avatarUrl) {
+                avatar.innerHTML = `<img src="${avatarUrl}" class="w-full h-full object-cover rounded-2xl" alt="${user.full_name || 'Customer'}" onerror="this.parentElement.innerHTML='${initials}'">`;
                 avatar.style.background = 'none';
             } else {
-                avatar.textContent = user.initials || '??';
+                avatar.textContent = initials;
                 avatar.style.background = '';
             }
         }

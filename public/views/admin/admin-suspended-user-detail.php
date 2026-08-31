@@ -1,6 +1,8 @@
 <?php
 $portal = 'admin';
 $pageTitle = 'Suspension Detail';
+// Admin portal guard — server-side authentication & role check
+include __DIR__ . '/_guard.php';
 $pageHeader = '
 <div class="flex items-start sm:items-center justify-between w-full">
   <div class="flex items-center gap-4">
@@ -26,7 +28,7 @@ ob_start();
         <!-- PROFILE CARD -->
         <div class="ds-card p-6 sm:p-8">
           <div class="flex flex-col sm:flex-row items-center gap-6 sm:gap-8 border-b border-border-subtle pb-8 mb-8 text-center sm:text-left">
-            <div id="detail-avatar" class="w-24 h-24 rounded-2xl bg-primary-50 flex items-center justify-center text-3xl font-black text-primary shadow-sm">
+            <div id="detail-avatar" class="w-24 h-24 rounded-2xl bg-primary-50 dark:bg-primary/10 flex items-center justify-center text-3xl font-black text-primary shadow-sm overflow-hidden shrink-0 border border-border-subtle">
               -
             </div>
             <div class="flex-1">
@@ -217,7 +219,7 @@ ob_start();
 
 <div class="toast-wrap" id="toast-wrap"></div>
 <?php
-$extraScripts = '<script defer src="/Finzo/public/assets/js/admin/suspended-user-detail.js"></script>';
+$extraScripts = '<script defer src="/Finzo/public/assets/js/admin/suspended-user-detail.js?v=' . time() . '"></script>';
 $slot = ob_get_clean();
 include __DIR__ . '/../layouts/app.php';
 ?>

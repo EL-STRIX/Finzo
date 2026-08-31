@@ -814,9 +814,9 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
         return $this->fetchOne("
             SELECT id, customer_id, full_name, email, phone, status, dob, gender, father_name,
                    occupation, annual_income, street, city, state, pincode, country,
-                   id_type, id_number, kyc_submitted_at, created_at, updated_at
+                   id_type, id_number, kyc_submitted_at, created_at, updated_at, profile_picture
             FROM users WHERE id = ? AND status = 'suspended' AND is_deleted = 0
-        ", [$userId], \App\Domain\Models\Admin::class);
+        ", [$userId]);
     }
 
     public function getSuspendedUserProfile(int $userId) {
