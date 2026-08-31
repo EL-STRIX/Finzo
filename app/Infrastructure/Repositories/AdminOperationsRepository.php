@@ -234,9 +234,21 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
     public function getDeletedUsers(string $whereSql, array $params, int $perPage, int $offset) {
         return $this->fetchAll("
             SELECT u.id, u.customer_id, u.full_name, u.email, u.phone, u.status, u.deleted_at, u.created_at, u.profile_picture,
-                   a.account_no, a.account_type, a.balance
+                   a.account_no, a.account_type, a.balance,
+                   COALESCE(l.details, 'Admin Action') as deletion_reason,
+                   COALESCE(l.actor_id, 'Admin') as deleted_by
             FROM users u
             LEFT JOIN accounts a ON u.customer_id = a.user_id
+            LEFT JOIN (
+                SELECT log1.entity_id, log1.details, log1.created_at, log1.actor_id
+                FROM audit_log log1
+                INNER JOIN (
+                    SELECT entity_id, MAX(id) as max_id
+                    FROM audit_log
+                    WHERE action_type = 'user_deleted' AND entity_type = 'user'
+                    GROUP BY entity_id
+                ) log2 ON log1.id = log2.max_id
+            ) l ON (l.entity_id COLLATE utf8mb4_unicode_ci = u.customer_id COLLATE utf8mb4_unicode_ci OR l.entity_id COLLATE utf8mb4_unicode_ci = CAST(u.id AS CHAR) COLLATE utf8mb4_unicode_ci)
             WHERE {$whereSql}
             ORDER BY u.deleted_at DESC
             LIMIT {$perPage} OFFSET {$offset}
