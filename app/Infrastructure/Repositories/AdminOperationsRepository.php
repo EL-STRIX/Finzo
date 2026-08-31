@@ -900,7 +900,7 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
     {
         $stmt = $this->db->prepare("
             UPDATE users 
-            SET locked_until = NULL, failed_attempts = 0, password_hash = ?, temp_pass_status = 'done', updated_at = NOW() 
+            SET locked_until = NULL, failed_attempts = 0, password_hash = ?, temp_pass_status = 'pending', status = 'active', updated_at = NOW() 
             WHERE id = ?
         ");
         $stmt->execute([$passwordHash, $userId]);

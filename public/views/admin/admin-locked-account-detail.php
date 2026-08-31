@@ -112,7 +112,7 @@ ob_start();
                 <!-- ACCESS CONTROL -->
                 <div class="ds-card p-6" id="unlock-action-card">
                     <h3 class="text-[10px] font-black text-text-secondary uppercase tracking-widest mb-5">Access Control</h3>
-                    <button type="button" onclick="openUnlockModal()" data-action="openUnlockModal()" class="btn btn-primary w-full justify-center !py-3.5 shadow-lg shadow-warning/20 mb-4 !bg-warning !text-white !border-warning cursor-pointer">
+                    <button type="button" onclick="openUnlockModal()" class="btn btn-primary w-full justify-center !py-3.5 shadow-lg shadow-warning/20 mb-4 !bg-warning !text-white !border-warning cursor-pointer">
                         <span class="material-symbols-outlined text-lg mr-1.5" aria-hidden="true">vpn_key</span> Generate &amp; Unlock
                     </button>
                     <div class="p-3 bg-warning-bg/30 rounded-xl border border-warning text-center">
@@ -128,7 +128,7 @@ ob_start();
                     <div class="p-4 bg-surface rounded-xl mb-3 border border-success-bg shadow-sm">
                         <div class="text-[10px] font-black text-success uppercase tracking-widest mb-1 text-center">Temporary PIN</div>
                         <div id="display-pass" class="text-center font-code text-2xl font-black text-success py-2 border-b border-border-subtle mb-3"></div>
-                        <button type="button" onclick="copyDisplayPass()" data-action="copyDisplayPass()" class="w-full text-success text-[10px] font-black uppercase tracking-widest py-2 hover:bg-success-bg rounded transition-all cursor-pointer">Copy to Clipboard</button>
+                        <button type="button" onclick="copyDisplayPass()" class="w-full text-success text-[10px] font-black uppercase tracking-widest py-2 hover:bg-success-bg rounded transition-all cursor-pointer">Copy to Clipboard</button>
                     </div>
                     <div class="text-[10px] text-text-secondary text-center uppercase font-bold tracking-widest">Must reset PIN on first login</div>
                 </div>
@@ -170,8 +170,8 @@ ob_start();
                 <p class="text-sm text-text-secondary leading-relaxed mb-8">This will generate a 12-character one-time password for <strong id="modal-name" class="text-text-primary">-</strong>. User must reset their credentials immediately.</p>
                 
                 <div class="flex gap-3">
-                    <button type="button" onclick="closeModal()" data-action="closeModal()" class="flex-1 btn btn-secondary py-3 justify-center text-xs font-bold uppercase tracking-wider cursor-pointer">Cancel</button>
-                    <button type="button" id="gen-btn" onclick="doGenerate()" data-action="doGenerate()" class="flex-1 btn btn-primary !bg-warning !border-warning !text-white py-3 justify-center shadow-lg shadow-warning/20 text-xs font-bold uppercase tracking-wider cursor-pointer">Authorize</button>
+                    <button type="button" onclick="closeModal()" class="flex-1 btn btn-secondary py-3 justify-center text-xs font-bold uppercase tracking-wider cursor-pointer">Cancel</button>
+                    <button type="button" id="gen-btn" onclick="doGenerate()" class="flex-1 btn btn-primary !bg-warning !border-warning !text-white py-3 justify-center shadow-lg shadow-warning/20 text-xs font-bold uppercase tracking-wider cursor-pointer">Authorize</button>
                 </div>
             </div>
         </div>

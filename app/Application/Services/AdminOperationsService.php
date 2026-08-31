@@ -409,30 +409,24 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
         $where_clauses = ["u.is_deleted = 0"];
         $params = [];
 
-        // An account is locked if locked_until > NOW() OR failed_attempts >= 5 OR temp_pass_status IN ('pending', 'done')
+        // An account is locked if locked_until > NOW() OR failed_attempts >= 5 OR temp_pass_status = 'pending'
         if ($filters['tab'] === 'locked') {
-            $where_clauses[] = "(u.locked_until > NOW() OR u.failed_attempts >= 5 OR u.temp_pass_status IN ('pending', 'done'))";
+            $where_clauses[] = "(u.locked_until > NOW() OR u.failed_attempts >= 5 OR u.temp_pass_status = 'pending')";
         } elseif ($filters['tab'] === 'flagged') {
             $where_clauses[] = "(u.failed_attempts >= 3 AND (u.locked_until IS NULL OR u.locked_until <= NOW()) AND u.temp_pass_status = 'none')";
         } else {
-            $where_clauses[] = "(u.locked_until > NOW() OR u.failed_attempts >= 5 OR u.temp_pass_status IN ('pending', 'done'))";
+            $where_clauses[] = "(u.locked_until > NOW() OR u.failed_attempts >= 5 OR u.temp_pass_status = 'pending')";
         }
 
         if ($filters['status'] === \App\Domain\Enums\AccountStatusEnum::PENDING->value) {
-            $where_clauses[] = "(u.temp_pass_status = 'pending' OR (u.temp_pass_status = 'none' AND (u.locked_until > NOW() OR u.failed_attempts >= 5)))";
+            $where_clauses[] = "(u.temp_pass_status = 'none' AND (u.locked_until > NOW() OR u.failed_attempts >= 5))";
         } elseif ($filters['status'] === 'done') {
-            $where_clauses[] = "u.temp_pass_status = 'done'";
+            $where_clauses[] = "u.temp_pass_status = 'pending'";
         }
 
         if (!empty($filters['type'])) {
             $where_clauses[] = "a.account_type = ?";
             $params[] = strtolower($filters['type']);
-        }
-
-        if (!empty($filters['date'])) {
-            $where_clauses[] = "(DATE(u.locked_until) = ? OR DATE(u.updated_at) = ?)";
-            $params[] = $filters['date'];
-            $params[] = $filters['date'];
         }
 
         if (!empty($filters['search'])) {
@@ -471,7 +465,7 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
             }
             $acc['avatar_url'] = $avatar_url;
 
-            $is_done = ($acc['temp_pass_status'] === 'done');
+            $is_done = ($acc['temp_pass_status'] === 'pending');
             $acc['status_text'] = $is_done ? 'Done' : 'Pending';
             $acc['status_badge'] = $is_done ? 'badge-success' : 'badge-warn';
             $formatted_accounts[] = $acc;

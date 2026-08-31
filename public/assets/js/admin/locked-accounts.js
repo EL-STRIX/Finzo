@@ -287,7 +287,7 @@
             btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-base" aria-hidden="true">autorenew</span> <span>Generating...</span>';
 
             try {
-                const response = await window.api.post(`/users/locked/${pendingId}/unlock`, {});
+                const response = await window.api.post(`/users/locked/${pendingId}/unlock`, { user_id: pendingId });
 
                 if (response.status === 'success' || response.success) {
                     generatedPass = response.temp_password || (response.data && response.data.temp_password) || 'N/A';

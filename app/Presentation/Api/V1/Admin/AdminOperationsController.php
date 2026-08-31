@@ -491,8 +491,12 @@ class AdminOperationsController
 
     public function unlockAccount(?string $id = null, ?string $extra = null): array
     {
-        $userId  = intval($_POST['user_id'] ?? 0);
-        $adminId = \App\Shared\Security\Auth::user()['id'];
+        $raw = file_get_contents('php://input');
+        $json = json_decode($raw, true);
+        $userId = intval($id ?: ($_POST['user_id'] ?? ($json['user_id'] ?? 0)));
+        $adminUser = \App\Shared\Security\Auth::user();
+        $adminId = $adminUser['id'] ?? ($_SESSION['admin_id'] ?? 1);
+
         if (!$userId) {
             throw new ApiException('User ID is required', 422);
         }

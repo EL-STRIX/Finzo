@@ -207,13 +207,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // ── Generate & Unlock ──
     window.doGenerate = async () => {
         const btn = document.getElementById('gen-btn');
-        if (!btn) return;
+        if (!btn || btn.disabled) return;
 
         const originalHTML = btn.innerHTML;
-        window.api.setButtonLoading(btn, true);
+        btn.disabled = true;
+        btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-base" aria-hidden="true">autorenew</span> <span>Processing...</span>';
 
         try {
-            const response = await window.api.post(`/users/locked/${userId}/unlock`, {});
+            const response = await window.api.post(`/users/locked/${userId}/unlock`, { user_id: userId });
             if (response.success || response.status === 'success') {
                 const pass = response.temp_password || response.data?.temp_password || 'N/A';
 
@@ -230,18 +231,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 const tempPassCard = document.getElementById('temp-pass-card');
                 if (tempPassCard) tempPassCard.classList.remove('hidden');
 
-                toast('Account unlocked successfully!', 'success');
+                toast('Account unlocked successfully! Temporary PIN generated.', 'success');
 
                 // Reload the detail to reflect new status
                 setTimeout(() => loadDetail(), 500);
             } else {
                 toast(response.message || 'Unlock failed', 'error');
-                window.api.setButtonLoading(btn, false, originalHTML);
             }
         } catch (error) {
             console.error('Unlock error:', error);
             toast('Action failed. Please try again.', 'error');
-            window.api.setButtonLoading(btn, false, originalHTML);
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = originalHTML;
         }
     };
 
