@@ -409,23 +409,36 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
         $where_clauses = ["u.is_deleted = 0"];
         $params = [];
 
+        // An account is locked if locked_until > NOW() OR failed_attempts >= 5 OR temp_pass_status IN ('pending', 'done')
         if ($filters['tab'] === 'locked') {
-            $where_clauses[] = "u.temp_pass_status IN ('pending', 'done')";
+            $where_clauses[] = "(u.locked_until > NOW() OR u.failed_attempts >= 5 OR u.temp_pass_status IN ('pending', 'done'))";
         } elseif ($filters['tab'] === 'flagged') {
-            $where_clauses[] = "u.failed_attempts >= 3 AND u.temp_pass_status = 'none'";
+            $where_clauses[] = "(u.failed_attempts >= 3 AND (u.locked_until IS NULL OR u.locked_until <= NOW()) AND u.temp_pass_status = 'none')";
         } else {
-            $where_clauses[] = "(u.temp_pass_status IN ('pending', 'done') OR u.failed_attempts >= 3)";
+            $where_clauses[] = "(u.locked_until > NOW() OR u.failed_attempts >= 5 OR u.temp_pass_status IN ('pending', 'done'))";
         }
 
         if ($filters['status'] === \App\Domain\Enums\AccountStatusEnum::PENDING->value) {
-            $where_clauses[] = "u.temp_pass_status = 'pending'";
+            $where_clauses[] = "(u.temp_pass_status = 'pending' OR (u.temp_pass_status = 'none' AND (u.locked_until > NOW() OR u.failed_attempts >= 5)))";
         } elseif ($filters['status'] === 'done') {
             $where_clauses[] = "u.temp_pass_status = 'done'";
         }
 
+        if (!empty($filters['type'])) {
+            $where_clauses[] = "a.account_type = ?";
+            $params[] = strtolower($filters['type']);
+        }
+
+        if (!empty($filters['date'])) {
+            $where_clauses[] = "(DATE(u.locked_until) = ? OR DATE(u.updated_at) = ?)";
+            $params[] = $filters['date'];
+            $params[] = $filters['date'];
+        }
+
         if (!empty($filters['search'])) {
-            $where_clauses[] = "(u.full_name LIKE ? OR u.email LIKE ? OR u.phone LIKE ?)";
+            $where_clauses[] = "(u.full_name LIKE ? OR u.email LIKE ? OR u.phone LIKE ? OR a.account_no LIKE ?)";
             $s = "%{$filters['search']}%";
+            $params[] = $s;
             $params[] = $s;
             $params[] = $s;
             $params[] = $s;
@@ -441,19 +454,26 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
 
         $formatted_accounts = [];
         foreach ($accounts as $acc) {
-            $locked_timestamp = strtotime($acc['updated_at']);
+            $locked_timestamp = ($acc['locked_until'] && strtotime($acc['locked_until']) > 0) ? strtotime($acc['locked_until']) : strtotime($acc['updated_at']);
             $acc['locked_at'] = date('d M Y', $locked_timestamp);
             $acc['lock_time'] = date('h:i A', $locked_timestamp);
 
-            $acc['temp_pass_status'] = $acc['temp_pass_status'] ?? 'pending';
-
-            if ($acc['temp_pass_status'] === 'done') {
-                $acc['status_text'] = 'Done';
-                $acc['status_badge'] = 'badge-success';
+            $avatar_url = null;
+            if (!empty($acc['profile_picture'])) {
+                $avatar_url = str_starts_with($acc['profile_picture'], 'http')
+                    ? $acc['profile_picture']
+                    : APP_URL . '/' . ltrim($acc['profile_picture'], '/');
             } else {
-                $acc['status_text'] = 'Pending';
-                $acc['status_badge'] = 'badge-warn';
+                $avatar_path = FINZO_ROOT . '/uploads/avatars/user_' . $acc['id'] . '.jpg';
+                if (file_exists($avatar_path)) {
+                    $avatar_url = APP_URL . '/uploads/avatars/user_' . $acc['id'] . '.jpg?t=' . filemtime($avatar_path);
+                }
             }
+            $acc['avatar_url'] = $avatar_url;
+
+            $is_done = ($acc['temp_pass_status'] === 'done');
+            $acc['status_text'] = $is_done ? 'Done' : 'Pending';
+            $acc['status_badge'] = $is_done ? 'badge-success' : 'badge-warn';
             $formatted_accounts[] = $acc;
         }
 
@@ -480,6 +500,19 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
 
         $is_locked = ($user['failed_attempts'] >= 5) || ($user['locked_until'] && strtotime($user['locked_until']) > time());
         $lock_ts = $user['locked_until'] ? strtotime($user['locked_until']) : strtotime($user['updated_at']);
+
+        $avatar_url = null;
+        if (!empty($user['profile_picture'])) {
+            $avatar_url = str_starts_with($user['profile_picture'], 'http')
+                ? $user['profile_picture']
+                : APP_URL . '/' . ltrim($user['profile_picture'], '/');
+        } else {
+            $avatar_path = FINZO_ROOT . '/uploads/avatars/user_' . $userId . '.jpg';
+            if (file_exists($avatar_path)) {
+                $avatar_url = APP_URL . '/uploads/avatars/user_' . $userId . '.jpg?t=' . filemtime($avatar_path);
+            }
+        }
+        $user['avatar_url'] = $avatar_url;
 
         $user['is_locked']        = $is_locked;
         $user['initials']         = strtoupper(substr($user['full_name'], 0, 1));

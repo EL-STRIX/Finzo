@@ -390,7 +390,12 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
     // ---------------------------------------------------------
     public function countLockedAccounts(string $whereSql, array $params): int
     {
-        return (int)$this->fetchOne("SELECT COUNT(*) as count FROM users u WHERE {$whereSql}", $params)['count'] ?? 0;
+        return (int)$this->fetchOne("
+            SELECT COUNT(DISTINCT u.id) as count 
+            FROM users u 
+            LEFT JOIN accounts a ON u.customer_id = a.user_id 
+            WHERE {$whereSql}
+        ", $params)['count'] ?? 0;
     }
 
     public function getLockedAccounts(string $whereSql, array $params, int $perPage, int $offset) {
@@ -416,7 +421,7 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
             FROM users u
             LEFT JOIN accounts a ON u.customer_id = a.user_id
             WHERE u.id = ?
-        ", [$userId], \App\Domain\Models\Admin::class) ?: null;
+        ", [$userId]) ?: null;
     }
 
     public function getUserAuditLogs(string $customerId) {
@@ -427,7 +432,7 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
                OR (actor_id = ? AND actor_role = 'User')
             ORDER BY created_at DESC
             LIMIT 20
-        ", [$customerId, $customerId], \App\Domain\Models\Admin::class);
+        ", [$customerId, $customerId]);
     }
 
     // ---------------------------------------------------------
