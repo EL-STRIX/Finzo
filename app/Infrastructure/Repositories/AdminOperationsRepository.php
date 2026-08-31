@@ -645,7 +645,7 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
                     WHERE action_type = 'user_suspended' AND entity_type = 'user'
                     GROUP BY entity_id
                 ) log2 ON log1.id = log2.max_id
-            ) l ON u.id = l.entity_id
+            ) l ON (l.entity_id COLLATE utf8mb4_unicode_ci = u.customer_id COLLATE utf8mb4_unicode_ci OR l.entity_id COLLATE utf8mb4_unicode_ci = CAST(u.id AS CHAR) COLLATE utf8mb4_unicode_ci)
             WHERE {$whereSql}
         ";
         return (int)$this->fetchOne($sql, $params)['count'] ?? 0;
@@ -669,7 +669,7 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
                     WHERE action_type = 'user_suspended' AND entity_type = 'user'
                     GROUP BY entity_id
                 ) log2 ON log1.id = log2.max_id
-            ) l ON u.id = l.entity_id
+            ) l ON (l.entity_id COLLATE utf8mb4_unicode_ci = u.customer_id COLLATE utf8mb4_unicode_ci OR l.entity_id COLLATE utf8mb4_unicode_ci = CAST(u.id AS CHAR) COLLATE utf8mb4_unicode_ci)
             WHERE {$whereSql}
             ORDER BY raw_suspended_at DESC
             LIMIT {$perPage} OFFSET {$offset}
