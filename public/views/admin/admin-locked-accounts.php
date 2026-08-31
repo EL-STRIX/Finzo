@@ -25,8 +25,8 @@ ob_start();
                 <div class="absolute -right-20 -top-20 w-64 h-64 bg-primary/5 rounded-full blur-3xl -z-10 pointer-events-none"></div>
                 <div class="absolute -left-20 -bottom-20 w-64 h-64 bg-accent/5 rounded-full blur-3xl -z-10 pointer-events-none"></div>
                 <div class="p-4 sm:p-6 border-b border-border-subtle bg-background/40 backdrop-blur-xl relative z-10">
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 items-end">
-                    <div class="col-span-2">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+                    <div class="sm:col-span-2">
                         <label for="search-input" class="fin-label mb-2 block text-[10px] font-black text-text-secondary uppercase tracking-widest">Search Account</label>
                         <div class="relative">
                             <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-text-secondary" aria-hidden="true">search</span>
@@ -62,10 +62,6 @@ ob_start();
                                 <div class="finzo-dropdown-option" data-value="done">Done</div>
                             </div>
                         </div>
-                    </div>
-                    <div>
-                        <label for="date-filter" class="fin-label mb-2 block text-[10px] font-black text-text-secondary uppercase tracking-widest">Locked On</label>
-                        <input type="date" id="date-filter" class="fin-input w-full">
                     </div>
                 </div>
 

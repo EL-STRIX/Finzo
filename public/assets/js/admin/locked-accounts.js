@@ -15,7 +15,6 @@
     const tableBody = document.getElementById('table-body');
     const pagInfo = document.getElementById('pag-info');
     const pagControls = document.getElementById('pag-controls');
-    const dateFilter = document.getElementById('date-filter');
     const typeFilter = document.getElementById('type-filter');
     
     // Modal Elements
@@ -50,13 +49,11 @@
             const search = document.getElementById('search-input')?.value || '';
             const typeFilter = document.getElementById('type-filter')?.value || '';
             const statusFilter = document.getElementById('status-filter')?.value || '';
-            const dateFilter = document.getElementById('date-filter')?.value || '';
 
             let url = `/users/locked?page=${currentPage}&per_page=${ROWS_PP}`;
             if (search) url += `&search=${encodeURIComponent(search)}`;
             if (typeFilter) url += `&type=${encodeURIComponent(typeFilter)}`;
             if (statusFilter) url += `&status=${encodeURIComponent(statusFilter)}`;
-            if (dateFilter) url += `&date=${encodeURIComponent(dateFilter)}`;
 
             const response = await window.api.get(url);
             
@@ -200,7 +197,6 @@
         
         resetFilters: () => {
             if (searchInput) searchInput.value = '';
-            if (dateFilter) dateFilter.value = '';
             
             const td = document.getElementById('type-dropdown');
             if (td) {
@@ -210,6 +206,17 @@
                 if (label) label.textContent = 'All Types';
                 td.querySelectorAll('.finzo-dropdown-option').forEach(o => o.classList.remove('is-selected'));
                 const firstOpt = td.querySelector('.finzo-dropdown-option');
+                if (firstOpt) firstOpt.classList.add('is-selected');
+            }
+
+            const sd = document.getElementById('status-dropdown');
+            if (sd) {
+                const hiddenInput = sd.querySelector('input[type="hidden"]');
+                if (hiddenInput) hiddenInput.value = '';
+                const label = sd.querySelector('.dropdown-label');
+                if (label) label.textContent = 'All Statuses';
+                sd.querySelectorAll('.finzo-dropdown-option').forEach(o => o.classList.remove('is-selected'));
+                const firstOpt = sd.querySelector('.finzo-dropdown-option');
                 if (firstOpt) firstOpt.classList.add('is-selected');
             }
 
@@ -351,14 +358,6 @@
                 currentPage = 1;
                 loadData();
             }, 500));
-        }
-
-        // Date Filter Listener
-        if (dateFilter) {
-            dateFilter.addEventListener('change', () => {
-                currentPage = 1;
-                loadData();
-            });
         }
 
         // Dropdown Filters change listeners
