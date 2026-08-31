@@ -170,9 +170,20 @@
         setText('info-income', user.annual_income ? (user.annual_income.startsWith('₹') ? user.annual_income : `₹${user.annual_income}`) : 'N/A');
         setText('info-source-income', user.source_of_income || 'N/A');
 
-        // Contact
+        // Contact & Branch
         setText('info-phone', user.phone || 'N/A');
         setText('info-email', user.email || 'N/A');
+
+        const branchEl = document.getElementById('info-branch');
+        if (branchEl) {
+            if (user.branch_name && user.branch_name !== 'Unassigned') {
+                const branchCodeStr = user.branch_code ? `<span class="font-mono text-xs opacity-60 font-semibold ml-1">(${user.branch_code})</span>` : '';
+                branchEl.innerHTML = `<span class="inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-sm text-primary">store</span><span>${user.branch_name}</span>${branchCodeStr}</span>`;
+            } else {
+                branchEl.textContent = 'Unassigned / Central';
+            }
+            branchEl.querySelectorAll('.skeleton').forEach(s => s.remove());
+        }
 
         // Identification
         const idType = user.id_type ? user.id_type.toUpperCase() : 'AADHAAR';

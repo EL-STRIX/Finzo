@@ -1,6 +1,8 @@
 <?php
 $portal = 'admin';
 $pageTitle = 'Finzo Admin — User Dossier';
+// Admin portal guard — server-side authentication & role check
+include __DIR__ . '/_guard.php';
 ob_start();
 ?>
   <style>
@@ -118,7 +120,7 @@ ob_start();
               <div id="info-source-income" class="text-sm font-bold text-text-primary"><div class="skeleton w-24 h-4"></div></div>
             </div>
 
-            <!-- Contact -->
+            <!-- Contact & Branch -->
             <div>
               <p class="fin-label">PHONE NUMBER</p>
               <div id="info-phone" class="text-sm font-bold text-text-primary"><div class="skeleton w-28 h-4"></div></div>
@@ -126,6 +128,10 @@ ob_start();
             <div>
               <p class="fin-label">EMAIL ADDRESS</p>
               <div id="info-email" class="text-sm font-bold text-text-primary break-all"><div class="skeleton w-40 h-4"></div></div>
+            </div>
+            <div>
+              <p class="fin-label">SERVICING BRANCH</p>
+              <div id="info-branch" class="text-sm font-bold text-text-primary"><div class="skeleton w-32 h-4"></div></div>
             </div>
             
             <!-- Identification -->

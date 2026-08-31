@@ -141,6 +141,16 @@ async function initProfile() {
     const interestEl = document.getElementById('info-interest-rate');
     if (interestEl) interestEl.textContent = hasAccount ? (account.interest_rate + '% p.a.') : '—';
 
+    const branchEl = document.getElementById('info-branch-name');
+    if (branchEl) {
+      if (user.branch_name && user.branch_name !== 'Unassigned') {
+        const branchCode = user.branch_code ? ` (${user.branch_code})` : '';
+        branchEl.textContent = user.branch_name + branchCode;
+      } else {
+        branchEl.textContent = 'Unassigned';
+      }
+    }
+
     const limitEl = document.getElementById('info-daily-limit');
     if (limitEl) limitEl.textContent = hasAccount ? (typeof formatINR === 'function' ? formatINR(account.daily_limit) : '₹' + account.daily_limit) : '—';
 

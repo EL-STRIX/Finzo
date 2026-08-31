@@ -6,6 +6,47 @@
     let currentPage = 1;
 
     /**
+     * Load active branches to populate branch dropdowns
+     */
+    async function loadBranches() {
+        try {
+            const response = await window.api.get('/branches', { per_page: 100 });
+            const payload = response?.data || response;
+            const branches = payload?.branches || response?.branches || [];
+
+            if (Array.isArray(branches) && branches.length > 0) {
+                // Populate Filter Dropdown
+                const filterMenu = document.getElementById('branch-dropdown-menu');
+                if (filterMenu) {
+                    filterMenu.innerHTML = '<div class="finzo-dropdown-option is-selected" data-value="all">All Branches</div>';
+                    branches.forEach(b => {
+                        const opt = document.createElement('div');
+                        opt.className = 'finzo-dropdown-option';
+                        opt.setAttribute('data-value', b.id);
+                        opt.textContent = `${b.name} (${b.branch_code || 'BR'})`;
+                        filterMenu.appendChild(opt);
+                    });
+                }
+
+                // Populate Export Modal Dropdown
+                const exportMenu = document.getElementById('export-branch-menu');
+                if (exportMenu) {
+                    exportMenu.innerHTML = '<div class="finzo-dropdown-option is-selected" data-value="all">All Branches</div>';
+                    branches.forEach(b => {
+                        const opt = document.createElement('div');
+                        opt.className = 'finzo-dropdown-option';
+                        opt.setAttribute('data-value', b.id);
+                        opt.textContent = `${b.name} (${b.branch_code || 'BR'})`;
+                        exportMenu.appendChild(opt);
+                    });
+                }
+            }
+        } catch (error) {
+            console.error('Failed to load branches:', error);
+        }
+    }
+
+    /**
      * Load users from API with current filters
      */
     async function loadUsers() {
@@ -18,6 +59,7 @@
                 search: document.getElementById('user-search')?.value?.trim() || '',
                 status: document.getElementById('filter-status')?.value || 'all',
                 activity: document.getElementById('filter-activity')?.value || 'all',
+                branch_id: document.getElementById('filter-branch')?.value || 'all',
                 page: currentPage,
                 per_page: 10
             });
@@ -45,7 +87,7 @@
         if (!tbody) return;
 
         if (!users.length) {
-            tbody.innerHTML = '<tr><td colspan="7" class="py-12 text-center"><div class="flex flex-col items-center justify-center"><span class="material-symbols-outlined text-4xl text-text-muted/30 mb-3">inventory_2</span><div class="text-sm font-bold text-text-muted uppercase tracking-widest">No users found.</div></div></td></tr>';
+            tbody.innerHTML = '<tr><td colspan="8" class="py-12 text-center"><div class="flex flex-col items-center justify-center"><span class="material-symbols-outlined text-4xl text-text-muted/30 mb-3">inventory_2</span><div class="text-sm font-bold text-text-muted uppercase tracking-widest">No users found.</div></div></td></tr>';
             return;
         }
 
@@ -84,6 +126,17 @@
             const joinedDate = u.created_at ? (window.FinzoUtils ? window.FinzoUtils.formatDate(u.created_at) : u.created_at) : '—';
             const lastActive = u.last_login_at ? (window.FinzoUtils ? window.FinzoUtils.formatDate(u.last_login_at) : u.last_login_at) : 'Never';
             
+            const branchName = u.branch_name || 'Unassigned';
+            const branchCode = u.branch_code ? `<span class="font-mono text-[10px] opacity-60 ml-1 font-semibold">(${escHtml(u.branch_code)})</span>` : '';
+            const branchHtml = `
+                <td class="text-xs font-semibold">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-subtle border border-border-subtle text-text-primary text-[11px]">
+                        <span class="material-symbols-outlined text-[13px] text-primary shrink-0">store</span>
+                        <span class="truncate max-w-[130px] font-semibold">${escHtml(branchName)}</span>${branchCode}
+                    </span>
+                </td>
+            `;
+
             rowsHtml += `
             <tr>
                 <td>
@@ -97,6 +150,7 @@
                 </td>
                 <td class="text-xs opacity-70">${u.email || '—'}</td>
                 <td class="text-xs">${u.phone || 'N/A'}</td>
+                ${branchHtml}
                 <td><span class="status-badge ${statusClass}"><span class="status-dot"></span>${statusText}</span></td>
                 <td class="text-xs font-semibold opacity-70">${joinedDate}</td>
                 <td class="text-[11px] opacity-60 font-semibold">${lastActive}</td>
@@ -118,35 +172,50 @@
     function updatePagination(total, pages) {
         const info = document.getElementById('pagination-info');
         if (info) {
-            const start = (currentPage - 1) * 10 + 1;
+            const start = total === 0 ? 0 : (currentPage - 1) * 10 + 1;
             const end = Math.min(currentPage * 10, total);
-            info.textContent = `Showing ${total === 0 ? 0 : start}-${end} of ${total} Users`;
-        }
-
-        const container = document.getElementById('page-numbers');
-        if (container) {
-            let html = '';
-            for (let i = 1; i <= pages; i++) {
-                html += `<button class="page-num ${i === currentPage ? 'btn btn-primary active' : 'btn btn-secondary'} w-8 h-8 p-0 rounded-lg text-xs" data-page="${i}">${i}</button>`;
-            }
-            container.innerHTML = html;
+            info.textContent = `Showing ${start}-${end} of ${total} Users`;
         }
 
         const prevBtn = document.getElementById('prev-btn');
+        if (prevBtn) prevBtn.disabled = currentPage <= 1;
+
         const nextBtn = document.getElementById('next-btn');
-        if (prevBtn) prevBtn.disabled = (currentPage === 1);
-        if (nextBtn) nextBtn.disabled = (currentPage === pages || pages === 0);
+        if (nextBtn) nextBtn.disabled = currentPage >= pages;
+
+        const container = document.getElementById('page-numbers');
+        if (container) {
+            container.innerHTML = '';
+            for (let i = 1; i <= pages; i++) {
+                if (i === 1 || i === pages || (i >= currentPage - 1 && i <= currentPage + 1)) {
+                    const btn = document.createElement('button');
+                    btn.className = `w-8 h-8 rounded-lg text-xs font-bold transition-all page-num ${
+                        i === currentPage 
+                            ? 'bg-primary text-white shadow-sm' 
+                            : 'bg-surface border border-border-subtle text-text-secondary hover:bg-background'
+                    }`;
+                    btn.textContent = i;
+                    btn.setAttribute('data-page', i);
+                    container.appendChild(btn);
+                } else if (i === currentPage - 2 || i === currentPage + 2) {
+                    const dots = document.createElement('span');
+                    dots.className = 'w-8 h-8 flex items-center justify-center text-xs font-bold text-text-muted opacity-50';
+                    dots.textContent = '...';
+                    container.appendChild(dots);
+                }
+            }
+        }
     }
 
     /**
-     * Update stat cards
+     * Update top stats metrics safely
      */
     function updateStats(stats) {
-        const updateEl = (id, value) => {
+        const updateEl = (id, val) => {
             const el = document.getElementById(id);
             if (el) {
                 el.classList.remove('skeleton');
-                el.textContent = value;
+                el.textContent = val.toLocaleString();
             }
         };
 
@@ -182,7 +251,7 @@
             });
         }
 
-        ['filter-status', 'filter-activity'].forEach(id => {
+        ['filter-status', 'filter-activity', 'filter-branch'].forEach(id => {
             const el = document.getElementById(id);
             if (el) {
                 el.addEventListener('change', () => {
@@ -199,6 +268,7 @@
                 if(document.getElementById('user-search')) document.getElementById('user-search').value = '';
                 if(document.getElementById('filter-status')) document.getElementById('filter-status').value = 'all';
                 if(document.getElementById('filter-activity')) document.getElementById('filter-activity').value = 'all';
+                if(document.getElementById('filter-branch')) document.getElementById('filter-branch').value = 'all';
                 
                 // Reset custom dropdown labels
                 document.querySelectorAll('.dropdown-label').forEach(label => {
@@ -254,9 +324,11 @@
             // Sync modal dropdowns with current page filter values
             const curStatus = document.getElementById('filter-status')?.value || 'all';
             const curActivity = document.getElementById('filter-activity')?.value || 'all';
+            const curBranch = document.getElementById('filter-branch')?.value || 'all';
 
             setModalDropdownValue('export-status-dropdown', 'export-filter-status', curStatus);
             setModalDropdownValue('export-activity-dropdown', 'export-filter-activity', curActivity);
+            setModalDropdownValue('export-branch-dropdown', 'export-filter-branch', curBranch);
 
             exportModal.classList.remove('hidden');
             exportModal.style.display = 'flex';
@@ -326,9 +398,10 @@
                     const search = document.getElementById('user-search') ? document.getElementById('user-search').value.trim() : '';
                     const status = document.getElementById('export-filter-status') ? document.getElementById('export-filter-status').value : 'all';
                     const activity = document.getElementById('export-filter-activity') ? document.getElementById('export-filter-activity').value : 'all';
+                    const branch_id = document.getElementById('export-filter-branch') ? document.getElementById('export-filter-branch').value : 'all';
                     const sort = 'newest';
                     
-                    const params = { search, status, sort, activity };
+                    const params = { search, status, sort, activity, branch_id };
                     const basePath = window.location.pathname.includes('/public/') ? '/Finzo/public' : '/Finzo';
                     const exportUrl = window.api && typeof window.api.buildUrl === 'function'
                         ? window.api.buildUrl('/users/export', params)
@@ -364,6 +437,7 @@
     // Initialize
     document.addEventListener('DOMContentLoaded', () => {
         bindEvents();
+        loadBranches();
         loadUsers();
     });
 })();

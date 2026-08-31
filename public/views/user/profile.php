@@ -64,6 +64,10 @@ ob_start();
                             <td class="py-2 text-text-muted font-medium pr-3">Interest Rate</td>
                             <td class="py-2 font-bold text-emerald-600 dark:text-emerald-400 text-right" id="info-interest-rate">—</td>
                         </tr>
+                        <tr class="border-b border-border-main">
+                            <td class="py-2 text-text-muted font-medium pr-3">Branch</td>
+                            <td class="py-2 font-semibold text-text-main text-right" id="info-branch-name">—</td>
+                        </tr>
                         <tr>
                             <td class="py-2 text-text-muted font-medium pr-3">Daily Limit</td>
                             <td class="py-2 font-semibold text-text-main text-right" id="info-daily-limit">—</td>
