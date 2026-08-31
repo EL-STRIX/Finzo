@@ -653,7 +653,7 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
 
     public function getSuspendedUsers(string $whereSql, array $params, int $perPage, int $offset) {
         $sql = "
-            SELECT u.id, u.customer_id, u.full_name, u.email, u.phone, u.status, u.created_at, u.updated_at,
+            SELECT u.id, u.customer_id, u.full_name, u.email, u.phone, u.status, u.created_at, u.updated_at, u.profile_picture,
                    a.account_no, a.account_type, a.balance,
                    COALESCE(l.details, 'Suspended') as raw_reason,
                    COALESCE(l.created_at, u.updated_at) as raw_suspended_at,

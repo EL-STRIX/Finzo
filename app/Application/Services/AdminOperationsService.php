@@ -975,8 +975,19 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
                 $u['suspended_at'] = 'N/A';
             }
 
-            $avatar_path = $base_avatar_dir . 'user_' . $u['id'] . '.jpg';
-            $u['avatar_url'] = file_exists($avatar_path) ? APP_URL . '/uploads/avatars/user_' . $u['id'] . '.jpg?t=' . filemtime($avatar_path) : null;
+            $avatar_url = null;
+            if (!empty($u['profile_picture'])) {
+                $avatar_url = str_starts_with($u['profile_picture'], 'http')
+                    ? $u['profile_picture']
+                    : APP_URL . '/' . ltrim($u['profile_picture'], '/');
+            } else {
+                $avatar_path = $base_avatar_dir . 'user_' . $u['id'] . '.jpg';
+                if (file_exists($avatar_path)) {
+                    $avatar_url = APP_URL . '/uploads/avatars/user_' . $u['id'] . '.jpg?t=' . filemtime($avatar_path);
+                }
+            }
+            $u['avatar_url'] = $avatar_url;
+            $u['profile_picture_url'] = $avatar_url;
 
             $u['duration'] = 'Permanent';
 
