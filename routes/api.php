@@ -135,7 +135,11 @@ $router->get('/api/v1/admin/reports/download', [AdminReportController::class, 'd
 use App\Presentation\Api\V1\Admin\LedgerController;
 $router->get('/api/v1/admin/ledger/accounts', [LedgerController::class, 'getChartOfAccounts'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->get('/api/v1/admin/ledger/journals', [LedgerController::class, 'getJournals'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
+$router->get('/api/v1/admin/ledger/journals/{id}', [LedgerController::class, 'getJournalDetail'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
+$router->get('/api/v1/admin/ledger/summary', [LedgerController::class, 'getSummary'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
+$router->get('/api/v1/admin/ledger/export', [LedgerController::class, 'exportJournals'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->get('/api/v1/admin/ledger/periods/active', [LedgerController::class, 'getActivePeriod'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
+$router->post('/api/v1/admin/ledger/periods/open', [LedgerController::class, 'openPeriod'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->post('/api/v1/admin/ledger/periods/close', [LedgerController::class, 'closePeriod'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 use App\Presentation\Middleware\UserAuthMiddleware;
 $router->get('/api/v1/user/dashboard', [UserController::class, 'dashboard'], [UserAuthMiddleware::class]);
