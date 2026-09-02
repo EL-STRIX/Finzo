@@ -33,19 +33,14 @@ class RequestHelper {
             ob_end_clean();
             $payload = ['success' => false, 'status' => $e->getCode(), 'message' => $e->getMessage()];
             if (!empty($e->getPayload())) $payload = array_merge($payload, $e->getPayload());
-            // Since we are testing, we can format it like json_response does when testing
-            throw new \Exception(json_encode($payload));
+            throw new \App\Shared\Core\Exceptions\TestResponseException(json_encode($payload));
         } catch (\Throwable $e) {
             ob_end_clean();
             throw $e;
         }
         
         $output = ob_get_clean();
-        if (!empty($output)) {
-            throw new \Exception($output);
-        }
-        
-        return $output;
+        return $output ?: '';
     }
 
     public static function post(string $controllerPath, array $postData, array $sessionData = [], array $fileData = []) {
@@ -68,6 +63,32 @@ class RequestHelper {
 
     public static function getJson(string $controllerPath, array $getData, array $sessionData = []) {
         $output = self::get($controllerPath, $getData, $sessionData);
+        $decoded = json_decode($output, true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new \Exception("Failed to decode JSON. Output was: \n" . $output);
+        }
+        return $decoded;
+    }
+
+    public static function put(string $controllerPath, array $postData, array $sessionData = []) {
+        return self::dispatchRoute('PUT', $controllerPath, $postData, [], $sessionData);
+    }
+
+    public static function putJson(string $controllerPath, array $postData, array $sessionData = []) {
+        $output = self::put($controllerPath, $postData, $sessionData);
+        $decoded = json_decode($output, true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new \Exception("Failed to decode JSON. Output was: \n" . $output);
+        }
+        return $decoded;
+    }
+
+    public static function delete(string $controllerPath, array $postData = [], array $sessionData = []) {
+        return self::dispatchRoute('DELETE', $controllerPath, $postData, [], $sessionData);
+    }
+
+    public static function deleteJson(string $controllerPath, array $postData = [], array $sessionData = []) {
+        $output = self::delete($controllerPath, $postData, $sessionData);
         $decoded = json_decode($output, true);
         if (json_last_error() !== JSON_ERROR_NONE) {
             throw new \Exception("Failed to decode JSON. Output was: \n" . $output);

@@ -98,16 +98,16 @@ class Router
 
         foreach ($this->routes as $route) {
             if ($route['method'] === $method && preg_match($route['pattern'], $uri, $matches)) {
-                // Execute middleware
-                foreach ($route['middleware'] as $mw) {
-                    $mwInstance = new $mw();
-                    $mwInstance->handle();
-                }
-
                 // Filter out numeric keys from matches
                 $params = array_filter($matches, 'is_string', ARRAY_FILTER_USE_KEY);
 
                 try {
+                    // Execute middleware
+                    foreach ($route['middleware'] as $mw) {
+                        $mwInstance = new $mw();
+                        $mwInstance->handle();
+                    }
+
                     $handler = $route['handler'];
                     if (is_array($handler) && count($handler) === 2) {
                         $controllerClass = $handler[0];
