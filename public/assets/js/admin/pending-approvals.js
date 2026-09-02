@@ -399,14 +399,27 @@
             });
         }
 
+        function resetFinzoDropdown(inputEl, defaultValue, defaultLabel) {
+            if (!inputEl) return;
+            inputEl.value = defaultValue;
+            const dropdown = inputEl.closest('.finzo-dropdown');
+            if (dropdown) {
+                const label = dropdown.querySelector('.dropdown-label');
+                if (label) label.textContent = defaultLabel;
+                dropdown.querySelectorAll('.finzo-dropdown-option').forEach(opt => {
+                    opt.classList.toggle('is-selected', opt.dataset.value === defaultValue);
+                });
+            }
+        }
+
         // 8. Reset All Filters Button
         if (btnResetFilters) {
             btnResetFilters.addEventListener('click', () => {
                 if (searchInput) searchInput.value = '';
                 if (btnClearSearch) btnClearSearch.classList.add('hidden');
-                if (accountTypeSelect) accountTypeSelect.value = 'all';
-                if (idTypeSelect) idTypeSelect.value = 'all';
-                if (sortSelect) sortSelect.value = 'newest';
+                resetFinzoDropdown(accountTypeSelect, 'all', 'All Accounts');
+                resetFinzoDropdown(idTypeSelect, 'all', 'All ID Types');
+                resetFinzoDropdown(sortSelect, 'newest', 'Newest First');
                 setActiveTab('all');
                 currentPage = 1;
                 loadApplications();

@@ -110,10 +110,10 @@ ob_start();
     <!-- ═══════════════════════════════════════════════════════════════ -->
     <!-- 3. QUEUE CONTAINER (COMPREHENSIVE FILTERS + DATA TABLE)          -->
     <!-- ═══════════════════════════════════════════════════════════════ -->
-    <div class="ds-card bg-surface border border-border-subtle rounded-xl shadow-xs overflow-hidden">
+    <div class="ds-card bg-surface border border-border-subtle rounded-xl shadow-xs relative">
         
         <!-- Controls Toolbar: Search + Status Tabs -->
-        <div class="p-4 sm:p-5 border-b border-border-subtle bg-surface-subtle flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+        <div class="p-4 sm:p-5 border-b border-border-subtle bg-surface-subtle flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 rounded-t-xl">
             <!-- Search -->
             <div class="w-full md:w-96">
                 <label for="search-pending" class="sr-only">Search Applications</label>
@@ -147,40 +147,61 @@ ob_start();
         </div>
 
         <!-- Filter Sub-bar: Account Type + ID Document + Sort Order + Reset -->
-        <div class="px-4 sm:px-5 py-3 border-b border-border-subtle bg-surface flex flex-wrap items-center justify-between gap-3 text-xs">
-            <div class="flex flex-wrap items-center gap-3">
+        <div class="px-4 sm:px-5 py-2.5 border-b border-border-subtle bg-surface flex flex-wrap items-center justify-between gap-3 text-xs relative z-20">
+            <div class="flex flex-wrap items-center gap-3 sm:gap-4">
                 <!-- Account Type Filter -->
                 <div class="flex items-center gap-1.5">
-                    <label for="filter-account-type" class="text-[11px] font-bold text-text-secondary uppercase tracking-wider">Account:</label>
-                    <select id="filter-account-type" class="bg-surface-subtle text-text-primary border border-border-subtle rounded-lg px-2.5 py-1.5 text-xs font-medium cursor-pointer focus:outline-none focus:border-primary">
-                        <option value="all">All Accounts</option>
-                        <option value="savings">Savings Account</option>
-                        <option value="current">Current Account</option>
-                    </select>
+                    <span class="text-[11px] font-bold text-text-secondary uppercase tracking-wider">Account:</span>
+                    <div class="finzo-dropdown min-w-[135px]" id="dropdown-account-type">
+                        <input type="hidden" id="filter-account-type" value="all">
+                        <div class="finzo-dropdown-trigger !h-8 !py-1 !px-2.5 !text-xs !rounded-lg !bg-surface-subtle !border-border-subtle hover:!border-primary text-text-primary flex items-center justify-between gap-1.5 cursor-pointer transition-all duration-200 shadow-2xs" tabindex="0" role="button" aria-haspopup="listbox" aria-expanded="false">
+                            <span class="dropdown-label font-medium truncate text-text-primary">All Accounts</span>
+                            <span class="material-symbols-outlined chevron transition-transform duration-300 text-[16px] text-text-secondary shrink-0" aria-hidden="true">expand_more</span>
+                        </div>
+                        <div class="finzo-dropdown-menu !z-50 !min-w-[155px] !p-1.5 shadow-xl">
+                            <div class="finzo-dropdown-option is-selected !py-1.5 !px-2.5 !text-xs font-medium rounded-md" data-value="all">All Accounts</div>
+                            <div class="finzo-dropdown-option !py-1.5 !px-2.5 !text-xs font-medium rounded-md" data-value="savings">Savings Account</div>
+                            <div class="finzo-dropdown-option !py-1.5 !px-2.5 !text-xs font-medium rounded-md" data-value="current">Current Account</div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- ID Document Filter -->
                 <div class="flex items-center gap-1.5">
-                    <label for="filter-id-type" class="text-[11px] font-bold text-text-secondary uppercase tracking-wider">Document:</label>
-                    <select id="filter-id-type" class="bg-surface-subtle text-text-primary border border-border-subtle rounded-lg px-2.5 py-1.5 text-xs font-medium cursor-pointer focus:outline-none focus:border-primary">
-                        <option value="all">All ID Types</option>
-                        <option value="aadhaar">Aadhaar Card</option>
-                        <option value="pan">PAN Card</option>
-                        <option value="passport">Passport</option>
-                        <option value="voter">Voter ID</option>
-                        <option value="driving">Driving License</option>
-                    </select>
+                    <span class="text-[11px] font-bold text-text-secondary uppercase tracking-wider">Document:</span>
+                    <div class="finzo-dropdown min-w-[135px]" id="dropdown-id-type">
+                        <input type="hidden" id="filter-id-type" value="all">
+                        <div class="finzo-dropdown-trigger !h-8 !py-1 !px-2.5 !text-xs !rounded-lg !bg-surface-subtle !border-border-subtle hover:!border-primary text-text-primary flex items-center justify-between gap-1.5 cursor-pointer transition-all duration-200 shadow-2xs" tabindex="0" role="button" aria-haspopup="listbox" aria-expanded="false">
+                            <span class="dropdown-label font-medium truncate text-text-primary">All ID Types</span>
+                            <span class="material-symbols-outlined chevron transition-transform duration-300 text-[16px] text-text-secondary shrink-0" aria-hidden="true">expand_more</span>
+                        </div>
+                        <div class="finzo-dropdown-menu !z-50 !min-w-[155px] !p-1.5 shadow-xl">
+                            <div class="finzo-dropdown-option is-selected !py-1.5 !px-2.5 !text-xs font-medium rounded-md" data-value="all">All ID Types</div>
+                            <div class="finzo-dropdown-option !py-1.5 !px-2.5 !text-xs font-medium rounded-md" data-value="aadhaar">Aadhaar Card</div>
+                            <div class="finzo-dropdown-option !py-1.5 !px-2.5 !text-xs font-medium rounded-md" data-value="pan">PAN Card</div>
+                            <div class="finzo-dropdown-option !py-1.5 !px-2.5 !text-xs font-medium rounded-md" data-value="passport">Passport</div>
+                            <div class="finzo-dropdown-option !py-1.5 !px-2.5 !text-xs font-medium rounded-md" data-value="voter">Voter ID</div>
+                            <div class="finzo-dropdown-option !py-1.5 !px-2.5 !text-xs font-medium rounded-md" data-value="driving">Driving License</div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Sort Order Filter -->
                 <div class="flex items-center gap-1.5">
-                    <label for="filter-sort" class="text-[11px] font-bold text-text-secondary uppercase tracking-wider">Sort:</label>
-                    <select id="filter-sort" class="bg-surface-subtle text-text-primary border border-border-subtle rounded-lg px-2.5 py-1.5 text-xs font-medium cursor-pointer focus:outline-none focus:border-primary">
-                        <option value="newest">Newest First</option>
-                        <option value="oldest">Oldest First</option>
-                        <option value="name_asc">Name (A-Z)</option>
-                        <option value="name_desc">Name (Z-A)</option>
-                    </select>
+                    <span class="text-[11px] font-bold text-text-secondary uppercase tracking-wider">Sort:</span>
+                    <div class="finzo-dropdown min-w-[130px]" id="dropdown-sort">
+                        <input type="hidden" id="filter-sort" value="newest">
+                        <div class="finzo-dropdown-trigger !h-8 !py-1 !px-2.5 !text-xs !rounded-lg !bg-surface-subtle !border-border-subtle hover:!border-primary text-text-primary flex items-center justify-between gap-1.5 cursor-pointer transition-all duration-200 shadow-2xs" tabindex="0" role="button" aria-haspopup="listbox" aria-expanded="false">
+                            <span class="dropdown-label font-medium truncate text-text-primary">Newest First</span>
+                            <span class="material-symbols-outlined chevron transition-transform duration-300 text-[16px] text-text-secondary shrink-0" aria-hidden="true">expand_more</span>
+                        </div>
+                        <div class="finzo-dropdown-menu !z-50 !min-w-[145px] !p-1.5 shadow-xl">
+                            <div class="finzo-dropdown-option is-selected !py-1.5 !px-2.5 !text-xs font-medium rounded-md" data-value="newest">Newest First</div>
+                            <div class="finzo-dropdown-option !py-1.5 !px-2.5 !text-xs font-medium rounded-md" data-value="oldest">Oldest First</div>
+                            <div class="finzo-dropdown-option !py-1.5 !px-2.5 !text-xs font-medium rounded-md" data-value="name_asc">Name (A-Z)</div>
+                            <div class="finzo-dropdown-option !py-1.5 !px-2.5 !text-xs font-medium rounded-md" data-value="name_desc">Name (Z-A)</div>
+                        </div>
+                    </div>
                 </div>
             </div>
 

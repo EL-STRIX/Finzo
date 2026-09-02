@@ -51,12 +51,11 @@ ob_start();
               <div class="finzo-dropdown-menu z-50">
                 <div class="finzo-dropdown-option is-selected" data-value="">All Reasons</div>
                 <div class="finzo-dropdown-option" data-value="KYC Documentation Expired/Invalid">KYC Documentation Expired/Invalid</div>
-                <div class="finzo-dropdown-option" data-value="Suspicious UPI Transaction Patterns">Suspicious UPI Transaction Patterns</div>
+                <div class="finzo-dropdown-option" data-value="Suspicious UPI/Transfer Patterns">Suspicious UPI/Transfer Patterns</div>
                 <div class="finzo-dropdown-option" data-value="Regulatory Compliance Hold (RBI)">Regulatory Compliance Hold (RBI)</div>
-                <div class="finzo-dropdown-option" data-value="Multiple Failed Auth Attempts">Multiple Failed Auth Attempts</div>
-                <div class="finzo-dropdown-option" data-value="Non-Compliance with IRDAI">Non-Compliance with IRDAI</div>
-                <div class="finzo-dropdown-option" data-value="Legal/Account Dispute">Legal/Account Dispute</div>
-                <div class="finzo-dropdown-option" data-value="Other">Other</div>
+                <div class="finzo-dropdown-option" data-value="Multiple Failed Authentication Attempts">Multiple Failed Authentication Attempts</div>
+                <div class="finzo-dropdown-option" data-value="Non-Compliance with Anti-Fraud Policy">Non-Compliance with Anti-Fraud Policy</div>
+                <div class="finzo-dropdown-option" data-value="Legal or Account Ownership Dispute">Legal or Account Ownership Dispute</div>
               </div>
             </div>
           </div>
