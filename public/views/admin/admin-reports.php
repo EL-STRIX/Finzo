@@ -107,11 +107,11 @@ ob_start();
                 </div>
                 
                 <div class="pt-2 flex flex-col sm:flex-row gap-3">
-                    <button type="button" class="btn btn-primary flex-1 btn-generate flex items-center justify-center gap-2 shadow-sm" data-type="financial">
+                    <button type="button" class="btn btn-primary flex-1 btn-generate flex items-center justify-center gap-2 shadow-sm" data-type="financial" id="btn-generate-financial">
                         <span class="material-symbols-outlined text-[18px]" aria-hidden="true">analytics</span>
                         <span>Generate Insights</span>
                     </button>
-                    <button type="button" class="btn btn-secondary flex-1 btn-export-csv flex items-center justify-center gap-2" data-type="financial">
+                    <button type="button" class="btn btn-secondary flex-1 btn-export-csv flex items-center justify-center gap-2" data-type="financial" id="btn-export-financial">
                         <span class="material-symbols-outlined text-[18px]" aria-hidden="true">download</span>
                         <span>Export CSV</span>
                     </button>
@@ -154,11 +154,11 @@ ob_start();
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="fin-label text-xs font-bold text-text-secondary uppercase tracking-wider block mb-1">Date From</label>
-                        <input type="date" name="date_from" class="fin-input !h-10 !text-sm font-medium" required />
+                        <input type="date" name="date_from" id="demographics-date-from" class="fin-input !h-10 !text-sm font-medium" />
                     </div>
                     <div>
                         <label class="fin-label text-xs font-bold text-text-secondary uppercase tracking-wider block mb-1">Date To</label>
-                        <input type="date" name="date_to" class="fin-input !h-10 !text-sm font-medium" required />
+                        <input type="date" name="date_to" id="demographics-date-to" class="fin-input !h-10 !text-sm font-medium" />
                     </div>
                 </div>
 
@@ -180,11 +180,11 @@ ob_start();
                 </div>
                 
                 <div class="pt-2 flex flex-col sm:flex-row gap-3">
-                    <button type="button" class="btn btn-primary flex-1 !bg-info !border-info hover:!bg-info/90 btn-generate flex items-center justify-center gap-2 shadow-sm" data-type="demographics">
+                    <button type="button" class="btn btn-primary flex-1 btn-generate flex items-center justify-center gap-2 shadow-sm" data-type="demographics" id="btn-generate-demographics">
                         <span class="material-symbols-outlined text-[18px]" aria-hidden="true">insights</span>
                         <span>Generate Insights</span>
                     </button>
-                    <button type="button" class="btn btn-secondary flex-1 !text-info !border-info hover:!bg-info hover:!text-white btn-export-csv flex items-center justify-center gap-2" data-type="demographics">
+                    <button type="button" class="btn btn-secondary flex-1 btn-export-csv flex items-center justify-center gap-2 shadow-sm" data-type="demographics" id="btn-export-demographics">
                         <span class="material-symbols-outlined text-[18px]" aria-hidden="true">download</span>
                         <span>Export CSV</span>
                     </button>

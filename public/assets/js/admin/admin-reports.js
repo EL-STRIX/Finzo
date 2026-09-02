@@ -1,10 +1,11 @@
 /**
  * Finzo Admin — Advanced Reporting Engine
- * Version 2.2 — Relies on global FinzoUI dropdown handler; no local dropdown re-init.
+ * Version 2.3 — Reliable Event Delegation, Flexible Date Filtering, Timezone-Safe Formatting, and Instant CSV Streaming
  */
 
 (function() {
-    
+    'use strict';
+
     /**
      * Unified Toast Dispatcher
      */
@@ -29,28 +30,36 @@
     }
 
     /**
-     * Handle Synchronous Report Generation
+     * Timezone-safe local date string (YYYY-MM-DD)
      */
-    async function handleGenerate(type) {
-        const form = document.getElementById(`form-${type}-report`);
-        if (!form) return;
+    function formatLocalDate(d) {
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
 
-        if (!window.api || typeof window.api.get !== 'function') {
-            toast('API module not loaded. Please refresh the page.', 'error');
-            return;
-        }
+    /**
+     * Collect form parameters for a given report type
+     */
+    function getReportParams(type) {
+        const form = document.getElementById(`form-${type}-report`);
+        if (!form) return null;
 
         const dateFromInput = form.querySelector('input[name="date_from"]');
         const dateToInput = form.querySelector('input[name="date_to"]');
 
-        if (!dateFromInput || !dateFromInput.value || !dateToInput || !dateToInput.value) {
-            toast('Please select both start and end dates', 'warning');
-            return;
+        const dateFrom = dateFromInput ? dateFromInput.value.trim() : '';
+        const dateTo = dateToInput ? dateToInput.value.trim() : '';
+
+        if (dateFrom && dateTo && dateFrom > dateTo) {
+            toast('Date From cannot be after Date To', 'warning');
+            return null;
         }
 
-        const dateFrom = dateFromInput.value;
-        const dateTo = dateToInput.value;
-        const params = { date_from: dateFrom, date_to: dateTo };
+        const params = {};
+        if (dateFrom) params.date_from = dateFrom;
+        if (dateTo) params.date_to = dateTo;
 
         if (type === 'financial') {
             const branchVal = document.getElementById('financial-branch-input')?.value || '';
@@ -59,6 +68,26 @@
             const statusVal = document.getElementById('demographics-status-input')?.value || '';
             if (statusVal) params.status = statusVal;
         }
+
+        return params;
+    }
+
+    /**
+     * Handle Synchronous Report Generation
+     */
+    async function handleGenerate(type) {
+        if (!type) return;
+
+        const form = document.getElementById(`form-${type}-report`);
+        if (!form) return;
+
+        if (!window.api || typeof window.api.get !== 'function') {
+            toast('API module not loaded. Please refresh the page.', 'error');
+            return;
+        }
+
+        const params = getReportParams(type);
+        if (params === null) return; // Validation failed
 
         const queryParams = new URLSearchParams(params).toString();
         const submitBtn = form.querySelector('.btn-generate');
@@ -102,10 +131,10 @@
 
     /**
      * Handle Direct CSV Export Download
-     * Uses window.api so the authenticated session cookie is passed,
-     * and the core api.js blob handler streams the file to the browser.
      */
     async function handleExport(type) {
+        if (!type) return;
+
         const form = document.getElementById(`form-${type}-report`);
         if (!form) return;
 
@@ -114,25 +143,13 @@
             return;
         }
 
-        const dateFromInput = form.querySelector('input[name="date_from"]');
-        const dateToInput = form.querySelector('input[name="date_to"]');
-
-        const dateFrom = dateFromInput ? dateFromInput.value : '';
-        const dateTo   = dateToInput  ? dateToInput.value  : '';
-        const params = { date_from: dateFrom, date_to: dateTo };
-
-        if (type === 'financial') {
-            const branchVal = document.getElementById('financial-branch-input')?.value || '';
-            if (branchVal) params.branch_id = branchVal;
-        } else if (type === 'demographics') {
-            const statusVal = document.getElementById('demographics-status-input')?.value || '';
-            if (statusVal) params.status = statusVal;
-        }
+        const params = getReportParams(type);
+        if (params === null) return;
 
         const queryParams = new URLSearchParams(params).toString();
-
         const exportBtn = form.querySelector('.btn-export-csv');
         const originalHtml = exportBtn ? exportBtn.innerHTML : '';
+
         if (exportBtn) {
             exportBtn.innerHTML = '<span class="material-symbols-outlined text-[18px] animate-spin">refresh</span><span>Preparing...</span>';
             exportBtn.disabled = true;
@@ -153,7 +170,6 @@
             }
         }
     }
-
 
     /**
      * Render Financial Report Metrics
@@ -214,6 +230,9 @@
                 <div class="font-headline text-lg font-black text-primary font-mono">${data.total_transactions || 0} Txns</div>
             </div>
         `;
+
+        // Smooth scroll to results for visual confirmation
+        container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 
     /**
@@ -240,7 +259,9 @@
                 </div>
             `;
         });
-        if (branchHtml === '') branchHtml = '<div class="text-xs text-text-secondary">No branch distribution records</div>';
+        if (branchHtml === '') {
+            branchHtml = '<div class="text-xs text-text-secondary py-1 italic">No branch distribution records found for this period</div>';
+        }
 
         metricsContainer.innerHTML = `
             <!-- Top Summary Grid -->
@@ -298,36 +319,77 @@
                 </div>
             </div>
         `;
+
+        // Smooth scroll to results for visual confirmation
+        container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 
     /**
      * Initialization on DOM ready
      */
     function init() {
-        // Set default dates to current month range
         const today = new Date();
-        const firstDay = new Date(today.getFullYear(), today.getMonth(), 1).toISOString().split('T')[0];
-        const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0).toISOString().split('T')[0];
-        
-        document.querySelectorAll('input[type="date"]').forEach(input => {
-            if (input.name === 'date_from' && !input.value) input.value = firstDay;
-            if (input.name === 'date_to' && !input.value) input.value = lastDay;
-        });
 
-        // Bind Generate buttons
-        document.querySelectorAll('.btn-generate').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const type = e.currentTarget.dataset.type;
-                handleGenerate(type);
-            });
-        });
+        // Financial defaults: Start of current month to end of current month
+        const financialFrom = formatLocalDate(new Date(today.getFullYear(), today.getMonth(), 1));
+        const financialTo = formatLocalDate(new Date(today.getFullYear(), today.getMonth() + 1, 0));
 
-        // Bind Export buttons
-        document.querySelectorAll('.btn-export-csv').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const type = e.currentTarget.dataset.type;
-                handleExport(type);
-            });
+        const formFinancial = document.getElementById('form-financial-report');
+        if (formFinancial) {
+            const fromInput = formFinancial.querySelector('input[name="date_from"]');
+            const toInput = formFinancial.querySelector('input[name="date_to"]');
+            if (fromInput && !fromInput.value) fromInput.value = financialFrom;
+            if (toInput && !toInput.value) toInput.value = financialTo;
+        }
+
+        // Demographics defaults: Start of current year to end of current month (covers existing customer census)
+        const demoFrom = formatLocalDate(new Date(today.getFullYear(), 0, 1));
+        const demoTo = formatLocalDate(new Date(today.getFullYear(), today.getMonth() + 1, 0));
+
+        const formDemo = document.getElementById('form-demographics-report');
+        if (formDemo) {
+            const fromInput = formDemo.querySelector('input[name="date_from"]');
+            const toInput = formDemo.querySelector('input[name="date_to"]');
+            if (fromInput && !fromInput.value) fromInput.value = demoFrom;
+            if (toInput && !toInput.value) toInput.value = demoTo;
+        }
+
+        // Direct ID Event Listeners
+        const btnGenFinancial = document.getElementById('btn-generate-financial');
+        if (btnGenFinancial) {
+            btnGenFinancial.addEventListener('click', () => handleGenerate('financial'));
+        }
+
+        const btnExportFinancial = document.getElementById('btn-export-financial');
+        if (btnExportFinancial) {
+            btnExportFinancial.addEventListener('click', () => handleExport('financial'));
+        }
+
+        const btnGenDemo = document.getElementById('btn-generate-demographics');
+        if (btnGenDemo) {
+            btnGenDemo.addEventListener('click', () => handleGenerate('demographics'));
+        }
+
+        const btnExportDemo = document.getElementById('btn-export-demographics');
+        if (btnExportDemo) {
+            btnExportDemo.addEventListener('click', () => handleExport('demographics'));
+        }
+
+        // Delegated Click Listener as universal fallback
+        document.addEventListener('click', (e) => {
+            const genBtn = e.target.closest('.btn-generate');
+            if (genBtn && genBtn.dataset.type && !genBtn.disabled) {
+                if (!genBtn.id) {
+                    handleGenerate(genBtn.dataset.type);
+                }
+            }
+
+            const exportBtn = e.target.closest('.btn-export-csv');
+            if (exportBtn && exportBtn.dataset.type && !exportBtn.disabled) {
+                if (!exportBtn.id) {
+                    handleExport(exportBtn.dataset.type);
+                }
+            }
         });
     }
 

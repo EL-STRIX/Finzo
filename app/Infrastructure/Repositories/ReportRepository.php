@@ -162,12 +162,16 @@ class ReportRepository extends BaseRepository implements ReportRepositoryInterfa
         $kycWhere = ["u.is_deleted = 0"];
         $kycParams = [];
         if (!empty($filters['date_from'])) {
-            $kycWhere[] = "DATE(k.created_at) >= ?";
+            $kycWhere[] = "DATE(u.created_at) >= ?";
             $kycParams[] = $filters['date_from'];
         }
         if (!empty($filters['date_to'])) {
-            $kycWhere[] = "DATE(k.created_at) <= ?";
+            $kycWhere[] = "DATE(u.created_at) <= ?";
             $kycParams[] = $filters['date_to'];
+        }
+        if (!empty($filters['status'])) {
+            $kycWhere[] = "u.status = ?";
+            $kycParams[] = $filters['status'];
         }
         $kycWhereSql = implode(' AND ', $kycWhere);
 
@@ -283,7 +287,6 @@ class ReportRepository extends BaseRepository implements ReportRepositoryInterfa
                 u.email,
                 u.phone,
                 u.status,
-                u.tier,
                 COALESCE(a.account_no, 'N/A') as account_no,
                 COALESCE(a.account_type, 'N/A') as account_type,
                 COALESCE(a.balance, 0) as balance,
