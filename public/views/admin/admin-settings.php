@@ -86,7 +86,7 @@ ob_start();
     <div class="flex-1 min-w-0 space-y-0">
 
         <!-- BANKING Panel -->
-        <div id="tab-banking" class="settings-panel ds-card p-6 lg:p-8">
+        <div id="tab-banking" class="settings-panel ds-card p-6 lg:p-8 relative overflow-hidden">
             <div class="border-b border-border-subtle pb-4 mb-6">
                 <div class="flex items-center gap-2">
                     <span class="material-symbols-outlined text-primary text-[22px]" aria-hidden="true">account_balance</span>
@@ -100,10 +100,11 @@ ob_start();
                 ['icon' => 'account_balance_wallet', 'label' => 'Minimum Account Balance', 'desc' => 'Minimum required balance to keep an account active'],
                 ['icon' => 'payments', 'label' => 'Withdrawal Limit per Transaction', 'desc' => 'Maximum single withdrawal amount allowed'],
             ]) ?>
+            <?= renderPanelOverlay() ?>
         </div>
 
         <!-- SECURITY Panel -->
-        <div id="tab-security" class="settings-panel ds-card p-6 lg:p-8 hidden">
+        <div id="tab-security" class="settings-panel ds-card p-6 lg:p-8 hidden relative overflow-hidden">
             <div class="border-b border-border-subtle pb-4 mb-6">
                 <div class="flex items-center gap-2">
                     <span class="material-symbols-outlined text-warning text-[22px]" aria-hidden="true">security</span>
@@ -117,10 +118,11 @@ ob_start();
                 ['icon' => 'phonelink_lock', 'label' => 'Two-Factor Authentication', 'desc' => 'Enforce 2FA for all admin and staff accounts'],
                 ['icon' => 'password', 'label' => 'Password Rotation Policy', 'desc' => 'Force password reset interval in days'],
             ]) ?>
+            <?= renderPanelOverlay() ?>
         </div>
 
         <!-- APPLICATION Panel -->
-        <div id="tab-application" class="settings-panel ds-card p-6 lg:p-8 hidden">
+        <div id="tab-application" class="settings-panel ds-card p-6 lg:p-8 hidden relative overflow-hidden">
             <div class="border-b border-border-subtle pb-4 mb-6">
                 <div class="flex items-center gap-2">
                     <span class="material-symbols-outlined text-info text-[22px]" aria-hidden="true">app_settings_alt</span>
@@ -134,10 +136,11 @@ ob_start();
                 ['icon' => 'how_to_reg', 'label' => 'Allow User Registration', 'desc' => 'Enable or disable new customer onboarding'],
                 ['icon' => 'language', 'label' => 'Platform Locale', 'desc' => 'Default language and regional formatting settings'],
             ]) ?>
+            <?= renderPanelOverlay() ?>
         </div>
 
         <!-- OPERATIONAL Panel -->
-        <div id="tab-operational" class="settings-panel ds-card p-6 lg:p-8 hidden">
+        <div id="tab-operational" class="settings-panel ds-card p-6 lg:p-8 hidden relative overflow-hidden">
             <div class="border-b border-border-subtle pb-4 mb-6">
                 <div class="flex items-center gap-2">
                     <span class="material-symbols-outlined text-accent text-[22px]" aria-hidden="true">manufacturing</span>
@@ -151,6 +154,7 @@ ob_start();
                 ['icon' => 'savings', 'label' => 'Interest Accrual Cycle', 'desc' => 'Frequency of interest computation (daily/monthly)'],
                 ['icon' => 'mail', 'label' => 'Notification Dispatch Mode', 'desc' => 'Control transactional email and SMS delivery'],
             ]) ?>
+            <?= renderPanelOverlay() ?>
         </div>
 
         <!-- BACKUP Panel -->
@@ -238,36 +242,54 @@ ob_start();
 
 <?php
 /**
- * Renders a "Coming Soon" grid of mocked setting rows.
+ * Renders a grid of blurred mocked setting rows.
+ * The content is visible but blurred underneath the panel-level overlay.
  */
 function renderComingSoonPanel(array $items): string
 {
     $html = '<div class="grid grid-cols-1 md:grid-cols-2 gap-5">';
     foreach ($items as $item) {
         $html .= '
-        <div class="relative p-5 rounded-2xl border border-border-subtle bg-background overflow-hidden group">
-            <!-- Coming Soon Overlay -->
-            <div class="absolute inset-0 flex flex-col items-center justify-center bg-surface/70 backdrop-blur-[3px] z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 gap-1.5">
-                <span class="material-symbols-outlined text-3xl text-primary">schedule</span>
-                <span class="text-[10px] font-black text-primary uppercase tracking-widest">Coming Soon</span>
-            </div>
-            <div class="flex items-start gap-4">
+        <div class="relative p-5 rounded-2xl border border-border-subtle bg-background overflow-hidden">
+            <div class="flex items-start gap-4 blur-[2px] select-none pointer-events-none">
                 <div class="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center border border-primary/20 shrink-0 mt-0.5">
                     <span class="material-symbols-outlined text-xl" aria-hidden="true">' . htmlspecialchars($item['icon']) . '</span>
                 </div>
                 <div class="flex-1">
                     <div class="flex items-center justify-between gap-2">
                         <span class="text-sm font-black text-text-primary">' . htmlspecialchars($item['label']) . '</span>
-                        <span class="px-2 py-0.5 rounded-full bg-warning/10 text-warning text-[9px] font-black uppercase tracking-wider shrink-0">Soon</span>
                     </div>
                     <p class="text-xs text-text-secondary mt-1 leading-relaxed">' . htmlspecialchars($item['desc']) . '</p>
-                    <div class="mt-3 h-8 rounded-lg bg-border-subtle/50 animate-pulse"></div>
+                    <div class="mt-3 h-8 rounded-lg bg-border-subtle/50"></div>
                 </div>
             </div>
         </div>';
     }
     $html .= '</div>';
     return $html;
+}
+
+/**
+ * Renders a full-panel persistent "Coming Soon" frosted-glass overlay.
+ */
+function renderPanelOverlay(): string
+{
+    return '
+    <div class="absolute inset-0 z-20 flex flex-col items-center justify-center gap-4"
+         style="background: rgba(var(--color-surface-rgb, 15 15 20), 0.55); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);">
+        <div class="flex flex-col items-center gap-3 text-center px-6">
+            <div class="w-16 h-16 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center">
+                <span class="material-symbols-outlined text-4xl text-primary">rocket_launch</span>
+            </div>
+            <div>
+                <div class="text-lg font-headline font-black text-text-primary tracking-tight">Coming Soon</div>
+                <div class="text-xs font-bold text-text-secondary uppercase tracking-widest mt-1">This feature is under active development</div>
+            </div>
+            <div class="px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-xs font-black text-primary uppercase tracking-widest">
+                🚀 &nbsp;Launching Soon
+            </div>
+        </div>
+    </div>';
 }
 
 $slot = ob_get_clean();
