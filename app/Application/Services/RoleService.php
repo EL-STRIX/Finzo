@@ -36,22 +36,27 @@ class RoleService implements RoleServiceInterface
 
     public function createRole(array $data): array
     {
-        if (empty($data['name'])) {
+        $name = trim($data['name'] ?? '');
+        if ($name === '') {
             throw new ValidationException(json_encode(['name' => 'Role name is required']));
         }
 
-        $existing = $this->repository->getRoleByName($data['name']);
+        $existing = $this->repository->getRoleByName($name);
         if ($existing) {
             throw new ValidationException(json_encode(['name' => 'Role name already exists']));
         }
 
-        $roleId = $this->repository->createRole($data['name']);
+        $description = !empty($data['description']) ? trim($data['description']) : null;
+        $roleId = $this->repository->createRole($name, $description);
         
-        if (isset($data['permission_ids']) && is_array($data['permission_ids'])) {
-            $this->repository->assignPermissionsToRole($roleId, $data['permission_ids']);
+        $permissionIds = $data['permissions'] ?? ($data['permission_ids'] ?? null);
+        if (is_array($permissionIds)) {
+            $permissionIds = array_map('intval', array_filter($permissionIds, 'is_numeric'));
+            $this->repository->assignPermissionsToRole($roleId, $permissionIds);
         }
 
-        $this->security->writeAuditLog('role_created', $roleId, 'role', \App\Shared\Security\Auth::user()['id'], 'admin');
+        $adminId = \App\Shared\Security\Auth::user()['id'] ?? 1;
+        $this->security->writeAuditLog('role_created', $roleId, 'role', $adminId, 'admin', "Created role: {$name}");
 
         return $this->getRoleDetails($roleId);
     }
@@ -63,23 +68,29 @@ class RoleService implements RoleServiceInterface
             throw new ApiException('Role not found', 404);
         }
         
-        if ($role['name'] === 'super_admin') {
-            throw new ApiException('The super_admin role cannot be modified', 403);
+        $name = isset($data['name']) ? trim($data['name']) : $role['name'];
+        if ($role['name'] === 'super_admin' && $name !== 'super_admin') {
+            throw new ApiException('The super_admin role name cannot be modified', 403);
         }
 
-        if (!empty($data['name']) && $data['name'] !== $role['name']) {
-            $existing = $this->repository->getRoleByName($data['name']);
-            if ($existing && $existing['id'] !== $id) {
+        if ($name !== '' && $name !== $role['name']) {
+            $existing = $this->repository->getRoleByName($name);
+            if ($existing && (int)$existing['id'] !== $id) {
                 throw new ValidationException(json_encode(['name' => 'Role name already exists']));
             }
-            $this->repository->updateRole($id, $data['name']);
         }
 
-        if (isset($data['permission_ids']) && is_array($data['permission_ids'])) {
-            $this->repository->assignPermissionsToRole($id, $data['permission_ids']);
+        $description = array_key_exists('description', $data) ? ($data['description'] !== null ? trim($data['description']) : null) : ($role['description'] ?? null);
+        $this->repository->updateRole($id, $name, $description);
+
+        $permissionIds = $data['permissions'] ?? ($data['permission_ids'] ?? null);
+        if (is_array($permissionIds)) {
+            $permissionIds = array_map('intval', array_filter($permissionIds, 'is_numeric'));
+            $this->repository->assignPermissionsToRole($id, $permissionIds);
         }
 
-        $this->security->writeAuditLog('role_updated', $id, 'role', \App\Shared\Security\Auth::user()['id'], 'admin');
+        $adminId = \App\Shared\Security\Auth::user()['id'] ?? 1;
+        $this->security->writeAuditLog('role_updated', $id, 'role', $adminId, 'admin', "Updated role: {$name}");
 
         return $this->getRoleDetails($id);
     }
@@ -91,15 +102,28 @@ class RoleService implements RoleServiceInterface
             throw new ApiException('Role not found', 404);
         }
 
-        if ($role['name'] === 'super_admin') {
-            throw new ApiException('The super_admin role cannot be deleted', 403);
+        $protectedRoles = ['super_admin', 'admin', 'customer'];
+        if (in_array(strtolower($role['name']), $protectedRoles, true)) {
+            throw new ApiException("The '{$role['name']}' system role is protected and cannot be deleted", 403);
+        }
+
+        // Check if any admin or staff currently uses this role
+        $db = \App\Shared\Core\Database::getInstance();
+        $assignedAdmins = (int)$db->query("SELECT COUNT(*) FROM admin_users WHERE admin_role = " . $db->quote($role['name']) . " AND is_deleted = 0")->fetchColumn();
+        $assignedStaff = (int)$db->query("SELECT COUNT(*) FROM staff WHERE designation = " . $db->quote($role['name']) . " AND status != 'deleted'")->fetchColumn();
+        $assignedModels = (int)$db->query("SELECT COUNT(*) FROM model_has_roles WHERE role_id = " . (int)$id)->fetchColumn();
+
+        if ($assignedAdmins > 0 || $assignedStaff > 0 || $assignedModels > 0) {
+            $totalActive = $assignedAdmins + $assignedStaff + $assignedModels;
+            throw new ApiException("Cannot delete role '{$role['name']}' because it is currently assigned to {$totalActive} active user(s). Reassign them before deleting.", 400);
         }
 
         $this->repository->deleteRole($id);
         
-        $this->security->writeAuditLog('role_deleted', $id, 'role', \App\Shared\Security\Auth::user()['id'], 'admin');
+        $adminId = \App\Shared\Security\Auth::user()['id'] ?? 1;
+        $this->security->writeAuditLog('role_deleted', $id, 'role', $adminId, 'admin', "Deleted role: {$role['name']}");
 
-        return ['success' => true, 'message' => 'Role deleted successfully'];
+        return ['success' => true, 'message' => "Role '{$role['name']}' deleted successfully"];
     }
 
     public function getPermissions(): array
