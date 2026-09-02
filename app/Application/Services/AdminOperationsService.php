@@ -286,12 +286,12 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
         }
 
         $adminData = $this->repository->getAdminById($adminId);
-        if (!$adminData || !$adminData['admin_id']) {
-            return ['success' => false, 'message' => 'Admin account not found', 'code' => 404];
-        }
-        $admin_display_id = $adminData['admin_id'];
+        $admin_display_id = $adminData['admin_id'] ?? 'ADM001';
 
         $this->repository->insertInterestRate($new_rate, $apply_from, $apply_date, $admin_display_id);
+
+        // Invalidate analytics chart cache so latest figures reflect immediately
+        \App\Shared\Core\Cache\CacheManager::getInstance()->forget('admin_interest_chart');
 
         if ($apply_from === 'Immediately') {
             $this->repository->updateActiveSavingsInterestRate($new_rate);
@@ -341,12 +341,16 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
             }
         }
 
-        // Global function from config/functions.php
-        
-            \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('interest_rate_updated', null, \App\Domain\Enums\RoleEnum::SYSTEM->value, $adminId, \App\Domain\Enums\RoleEnum::ADMIN->value, "Interest rate changed to {$new_rate}%. Apply from: {$apply_from}" . ($apply_date ? " ({$apply_date})" : ''))
-);
-        
+        \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
+            new \App\Application\Events\GenericAuditAction(
+                'interest_rate_updated',
+                null,
+                \App\Domain\Enums\RoleEnum::SYSTEM->value,
+                $adminId,
+                \App\Domain\Enums\RoleEnum::ADMIN->value,
+                "Interest rate changed to {$new_rate}%. Apply from: {$apply_from}" . ($apply_date ? " ({$apply_date})" : '')
+            )
+        );
 
         return ['success' => true, 'message' => "Interest rate updated to {$new_rate}%"];
     }

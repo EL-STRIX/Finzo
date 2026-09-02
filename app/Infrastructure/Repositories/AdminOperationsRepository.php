@@ -259,11 +259,25 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
     // Interest Rate Methods
     // ---------------------------------------------------------
     public function getCurrentInterestRate() {
+        $active = $this->fetchOne("
+            SELECT ir.rate, ir.apply_from_type, ir.apply_from_date, ir.created_at,
+                   COALESCE(au.full_name, 'System Administrator') as changed_by_name
+            FROM interest_rates ir
+            LEFT JOIN admin_users au ON (ir.changed_by_admin_id COLLATE utf8mb4_unicode_ci = au.admin_id COLLATE utf8mb4_unicode_ci OR ir.changed_by_admin_id COLLATE utf8mb4_unicode_ci = CAST(au.id AS CHAR) COLLATE utf8mb4_unicode_ci)
+            WHERE ir.apply_from_date <= CURRENT_DATE()
+            ORDER BY ir.apply_from_date DESC, ir.created_at DESC
+            LIMIT 1
+        ", []);
+
+        if ($active) {
+            return $active;
+        }
+
         return $this->fetchOne("
             SELECT ir.rate, ir.apply_from_type, ir.apply_from_date, ir.created_at,
-                   au.full_name as changed_by_name
+                   COALESCE(au.full_name, 'System Administrator') as changed_by_name
             FROM interest_rates ir
-            JOIN admin_users au ON ir.changed_by_admin_id = au.admin_id
+            LEFT JOIN admin_users au ON (ir.changed_by_admin_id COLLATE utf8mb4_unicode_ci = au.admin_id COLLATE utf8mb4_unicode_ci OR ir.changed_by_admin_id COLLATE utf8mb4_unicode_ci = CAST(au.id AS CHAR) COLLATE utf8mb4_unicode_ci)
             ORDER BY ir.created_at DESC
             LIMIT 1
         ", []) ?: null;
@@ -272,9 +286,9 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
     public function getInterestHistory() {
         return $this->fetchAll("
             SELECT ir.id, ir.rate, ir.apply_from_type, ir.apply_from_date, ir.created_at,
-                   au.full_name as changed_by_name
+                   COALESCE(au.full_name, 'System Administrator') as changed_by_name
             FROM interest_rates ir
-            JOIN admin_users au ON ir.changed_by_admin_id = au.admin_id
+            LEFT JOIN admin_users au ON (ir.changed_by_admin_id COLLATE utf8mb4_unicode_ci = au.admin_id COLLATE utf8mb4_unicode_ci OR ir.changed_by_admin_id COLLATE utf8mb4_unicode_ci = CAST(au.id AS CHAR) COLLATE utf8mb4_unicode_ci)
             ORDER BY ir.created_at DESC
             LIMIT 10
         ", []);

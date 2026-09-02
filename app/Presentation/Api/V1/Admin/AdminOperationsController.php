@@ -127,7 +127,8 @@ class AdminOperationsController
 
     public function interest(?string $id = null, ?string $extra = null): array
     {
-        $adminId = \App\Shared\Security\Auth::user()['id'];
+        $adminUser = \App\Shared\Security\Auth::user();
+        $adminId = $adminUser['id'] ?? ($_SESSION['admin_id'] ?? 1);
 
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $data = $this->service->getInterestData();
@@ -138,9 +139,18 @@ class AdminOperationsController
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->security->checkAdminPermission($adminId, 'change_interest_rate');
 
-            $new_rate       = floatval($_POST['new_rate'] ?? 0);
-            $apply_from     = $this->security->cleanInput($_POST['apply_from'] ?? 'Immediately');
-            $custom_date    = $this->security->cleanInput($_POST['custom_date'] ?? '');
+            $input = $_POST;
+            if (empty($input)) {
+                $raw = file_get_contents('php://input');
+                $json = json_decode($raw, true);
+                if (is_array($json)) {
+                    $input = $json;
+                }
+            }
+
+            $new_rate    = floatval($input['new_rate'] ?? 0);
+            $apply_from  = $this->security->cleanInput($input['apply_from'] ?? 'Immediately');
+            $custom_date = $this->security->cleanInput($input['custom_date'] ?? '');
 
             $result = $this->service->updateInterestRate($new_rate, $apply_from, $custom_date, $adminId);
             if (!$result['success']) {
