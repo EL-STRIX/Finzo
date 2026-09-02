@@ -124,7 +124,13 @@ $router->post('/api/v1/admin/cards/{id}/force-close', [AdminCardController::clas
 
 use App\Presentation\Api\V1\Admin\AdminReportController;
 $router->get('/api/v1/admin/reports/financial', [AdminReportController::class, 'financialSummary'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
+$router->get('/api/v1/admin/reports/financial/export', [AdminReportController::class, 'exportFinancial'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
+$router->post('/api/v1/admin/reports/financial/async', [AdminReportController::class, 'asyncFinancial'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->get('/api/v1/admin/reports/demographics', [AdminReportController::class, 'demographics'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
+$router->get('/api/v1/admin/reports/demographics/export', [AdminReportController::class, 'exportDemographics'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
+$router->post('/api/v1/admin/reports/demographics/async', [AdminReportController::class, 'asyncDemographics'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
+$router->get('/api/v1/admin/reports/branches', [AdminReportController::class, 'branches'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
+$router->get('/api/v1/admin/reports/download', [AdminReportController::class, 'downloadExport'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 
 use App\Presentation\Api\V1\Admin\LedgerController;
 $router->get('/api/v1/admin/ledger/accounts', [LedgerController::class, 'getChartOfAccounts'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
