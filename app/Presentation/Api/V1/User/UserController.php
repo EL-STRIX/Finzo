@@ -309,9 +309,23 @@ class UserController
             $customer_id = $_SESSION['user_customer_id'];
             $notification_count = (int)$this->service->getUnreadNotificationCount($customer_id);
             $greeting = get_greeting();
-            $avatar_url = !\App\Shared\Core\Validation\Validator::isEmpty($user['profile_picture'])
-                ? (str_starts_with($user['profile_picture'], 'http') ? $user['profile_picture'] : APP_URL . '/' . ltrim($user['profile_picture'], '/'))
-                : null;
+            $rawPic = $user['profile_picture'] ?? null;
+            if (!empty($rawPic)) {
+                if (str_starts_with($rawPic, 'http')) {
+                    $avatar_url = $rawPic;
+                } else {
+                    $cleanPic = ltrim($rawPic, '/');
+                    // Stored paths start with 'uploads/' or 'storage/' — files live under public/
+                    if (!str_starts_with($cleanPic, 'public/')) {
+                        $cleanPic = 'public/' . $cleanPic;
+                    }
+                    $avatar_url = APP_URL . '/' . $cleanPic;
+                }
+            } else {
+                $avatar_url = null;
+            }
+            // Keep session in sync so PHP sidebar renders photo immediately on next page load
+            $_SESSION['user_avatar'] = $avatar_url;
 
             $past_rejections_raw = $this->service->getPastRejections($user['customer_id']);
             $past_rejections = [];

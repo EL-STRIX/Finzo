@@ -1,6 +1,8 @@
 let currentStep = 1;
 const uploads = { profile: null, front: null, back: null };
 const formValues = {};
+// True when a rejected user is resubmitting — existing files on server are accepted
+let isRejectedResubmit = false;
 
 (async function() {
   await fetchUserSession();
@@ -9,14 +11,99 @@ const formValues = {};
   if (s === 'under_review') { window.location.href = 'account-pending.php'; return; }
   
   if (s === 'rejected') {
+    isRejectedResubmit = true;
     if (UserState.rejectionReason) {
       showToast('Your previous application was rejected: ' + UserState.rejectionReason, 'error');
     }
+    // Pre-fill all fields with existing KYC data so user doesn't re-enter everything
+    await prefillRejectedUserData();
   }
   
   await loadBranches();
   document.body.classList.add('ready');
 })();
+
+// Helper: set a finzo custom dropdown value by updating its hidden input and label
+function setDropdownValue(hiddenInputId, value) {
+  const input = document.getElementById(hiddenInputId);
+  if (!input) return;
+  input.value = value;
+  // Find the matching option to update the visible label
+  const container = input.closest('.finzo-dropdown');
+  if (!container) return;
+  const label = container.querySelector('.dropdown-label');
+  const option = container.querySelector(`.finzo-dropdown-option[data-value="${CSS.escape(value)}"]`);
+  if (label && option) {
+    label.textContent = option.textContent;
+    label.classList.remove('text-text-muted');
+  }
+}
+
+async function prefillRejectedUserData() {
+  try {
+    let res;
+    if (window.api && typeof window.api.get === 'function') {
+      res = await window.api.get('/user/profile');
+    } else {
+      const r = await fetch('/Finzo/public/api/v1/user/profile', { credentials: 'same-origin' });
+      res = await r.json();
+    }
+    if (!res || !res.success || !res.user) return;
+    const u = res.user;
+
+    // --- Step 1: Personal ---
+    if (u.dob) { const el = document.getElementById('dob'); if (el) el.value = u.dob; }
+    if (u.gender)          setDropdownValue('gender', u.gender);
+    if (u.father_name)     { const el = document.getElementById('father-name'); if (el) el.value = u.father_name; }
+    if (u.mother_name)     { const el = document.getElementById('mother-name'); if (el) el.value = u.mother_name; }
+    if (u.marital_status)  setDropdownValue('marital-status', u.marital_status);
+    if (u.nationality)     { const el = document.getElementById('nationality'); if (el) el.value = u.nationality; }
+    if (u.occupation)      { const el = document.getElementById('occupation'); if (el) el.value = u.occupation; }
+    if (u.annual_income)   setDropdownValue('income', u.annual_income);
+    if (u.source_of_income) setDropdownValue('source-of-income', u.source_of_income);
+
+    // Show existing profile photo preview
+    if (u.profile_picture) {
+      let src = u.profile_picture;
+      if (!src.startsWith('http')) {
+        const clean = src.replace(/^\/+/, '');
+        src = clean.startsWith('uploads/') ? '/Finzo/public/' + clean : '/Finzo/public/uploads/' + clean;
+      }
+      const wrap = document.getElementById('profile-preview-wrap');
+      const img  = document.getElementById('profile-preview');
+      if (wrap && img) { wrap.classList.add('hidden'); img.src = src; img.classList.remove('hidden'); }
+      const box = document.getElementById('profile-box');
+      if (box) { box.classList.add('border-success-base', 'border-solid'); box.classList.remove('border-dashed'); }
+    }
+
+    // --- Step 2: Address ---
+    if (u.street)  { const el = document.getElementById('street');  if (el) el.value = u.street; }
+    if (u.city)    { const el = document.getElementById('city');    if (el) el.value = u.city; }
+    if (u.state)   { const el = document.getElementById('state');   if (el) el.value = u.state; }
+    if (u.pincode) { const el = document.getElementById('pincode'); if (el) el.value = u.pincode; }
+
+    // --- Step 3: Documents ---
+    if (u.id_type)   setDropdownValue('id-type', u.id_type);
+    if (u.id_number) { const el = document.getElementById('id-number'); if (el) el.value = u.id_number; }
+
+    // Show "existing" badge on document upload boxes so user knows files are on file
+    if (u.id_front_path) {
+      const wrap = document.getElementById('front-preview-wrap');
+      if (wrap) wrap.innerHTML = '<span class="material-symbols-outlined text-2xl text-success-base mb-1">check_circle</span><div class="text-xs font-bold text-success-base">Existing file on server</div><div class="text-[10px] text-text-muted mt-0.5">Upload new to replace</div>';
+      const box = document.getElementById('front-box');
+      if (box) { box.classList.add('border-success-base', 'border-solid'); box.classList.remove('border-dashed'); }
+    }
+    if (u.id_back_path) {
+      const wrap = document.getElementById('back-preview-wrap');
+      if (wrap) wrap.innerHTML = '<span class="material-symbols-outlined text-2xl text-success-base mb-1">check_circle</span><div class="text-xs font-bold text-success-base">Existing file on server</div><div class="text-[10px] text-text-muted mt-0.5">Upload new to replace</div>';
+      const box = document.getElementById('back-box');
+      if (box) { box.classList.add('border-success-base', 'border-solid'); box.classList.remove('border-dashed'); }
+    }
+  } catch(e) {
+    console.warn('Failed to prefill rejected user data:', e);
+  }
+}
+
 
 async function loadBranches() {
   try {
@@ -85,7 +172,7 @@ function goToStep(targetStep) {
 function validateStep(step) {
   if (step === 1) {
     const profileFile = uploads.profile || document.getElementById('profile-input')?.files?.[0];
-    if (!profileFile) { showToast('Profile photo is required', 'error'); return false; }
+    if (!profileFile && !isRejectedResubmit) { showToast('Profile photo is required', 'error'); return false; }
     
     const fieldMap = [
       { id: 'dob', label: 'Date of Birth' },
@@ -138,7 +225,7 @@ function validateStep(step) {
     
     const frontFile = uploads.front || document.getElementById('front-input')?.files?.[0];
     const backFile = uploads.back || document.getElementById('back-input')?.files?.[0];
-    if (!frontFile || !backFile) { showToast('Both front and back images of ID document are required', 'error'); return false; }
+    if ((!frontFile || !backFile) && !isRejectedResubmit) { showToast('Both front and back images of ID document are required', 'error'); return false; }
     
     formValues['id-type'] = idType;
     formValues['id-number'] = idNum;
@@ -200,7 +287,7 @@ async function submitProfile() {
   const frontFile = uploads.front || document.getElementById('front-input')?.files?.[0];
   const backFile = uploads.back || document.getElementById('back-input')?.files?.[0];
 
-  if (!profileFile) {
+  if (!profileFile && !isRejectedResubmit) {
     showToast('Profile photo is required (Step 1)', 'error');
     goToStep(1);
     return;

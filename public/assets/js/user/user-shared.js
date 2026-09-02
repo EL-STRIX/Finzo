@@ -125,15 +125,26 @@ async function fetchUserSession() {
       }
 
       if (_userCache.avatarUrl) {
+        const resolvePhotoSrc = (src) => {
+          if (!src || src.startsWith('http') || src.startsWith('data:')) return src;
+          const clean = src.replace(/^\/+/, '');
+          return clean.startsWith('Finzo/public/') ? '/' + clean :
+                 (clean.startsWith('uploads/') || clean.startsWith('assets/')) ? '/Finzo/public/' + clean :
+                 '/Finzo/public/uploads/' + clean;
+        };
+        const photoSrc = resolvePhotoSrc(_userCache.avatarUrl);
+        const imgTag = `<img src="${photoSrc}?v=${Date.now()}" alt="${_userCache.name}" class="w-full h-full object-cover rounded-full">`;
+
+        // Update navbar header avatar
         document.querySelectorAll('.header-avatar').forEach(el => {
-          let photoSrc = _userCache.avatarUrl;
-          if (!photoSrc.startsWith('http') && !photoSrc.startsWith('data:')) {
-            const clean = photoSrc.replace(/^\/+/, '');
-            photoSrc = clean.startsWith('Finzo/public/') ? '/' + clean :
-                       (clean.startsWith('uploads/') || clean.startsWith('assets/')) ? '/Finzo/public/' + clean :
-                       '/Finzo/public/uploads/' + clean;
-          }
-          el.innerHTML = `<img src="${photoSrc}?v=${Date.now()}" alt="${_userCache.name}" class="w-full h-full object-cover rounded-full">`;
+          el.innerHTML = imgTag;
+        });
+
+        // Update sidebar avatar — built by buildSidebar() before session loaded
+        document.querySelectorAll('.sidebar-avatar').forEach(el => {
+          el.style.backgroundImage = '';
+          el.style.color = '';
+          el.innerHTML = imgTag;
         });
       }
 

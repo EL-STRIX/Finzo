@@ -22,7 +22,8 @@ ob_start();
     <div class="flex items-start gap-3 p-4 rounded-md mb-8 text-sm bg-danger-surface border border-danger-surface text-danger-text">
         <span class="material-symbols-outlined text-xl flex-shrink-0 mt-0.5" aria-hidden="true">error</span>
         <div>
-            <strong>Reason:</strong> Identity Verification Failed. The uploaded ID document was unreadable or expired.
+            <strong>Reason:</strong> <span id="tl-rejection-reason">Your application could not be approved. Please review and resubmit your information.</span>
+            <div class="text-xs mt-1 opacity-70" id="tl-rejection-time"></div>
         </div>
     </div>
 
