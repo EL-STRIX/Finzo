@@ -19,7 +19,9 @@
     if (UserState.openedDate) {
       document.getElementById('acc-opened').textContent = new Date(UserState.openedDate).toLocaleDateString('en-IN', {month:'short', year:'numeric', day:'numeric'}).toUpperCase();
     }
-    document.getElementById('acc-interest').textContent = UserState.interestRate + '% p.a.';
+    const isCurrent = (UserState.accountType || '').toLowerCase() === 'current';
+    const accInterestEl = document.getElementById('acc-interest');
+    if (accInterestEl) accInterestEl.textContent = isCurrent ? 'N/A' : (UserState.interestRate + '% p.a.');
   })();
 
   let dailyLimit = 10000, usedToday = 0;

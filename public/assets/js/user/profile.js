@@ -136,10 +136,11 @@ async function initProfile() {
 
     // 2. Account details — only show when a real account exists
     const accTypeEl = document.getElementById('info-acc-type');
+    const isCurrent = hasAccount && (account.account_type || '').toLowerCase() === 'current';
     if (accTypeEl) accTypeEl.textContent = hasAccount ? (account.account_type.charAt(0).toUpperCase() + account.account_type.slice(1)) + ' Account' : '—';
 
     const interestEl = document.getElementById('info-interest-rate');
-    if (interestEl) interestEl.textContent = hasAccount ? (account.interest_rate + '% p.a.') : '—';
+    if (interestEl) interestEl.textContent = hasAccount ? (isCurrent ? 'N/A (Current Account)' : (account.interest_rate + '% p.a.')) : '—';
 
     const branchEl = document.getElementById('info-branch-name');
     if (branchEl) {
@@ -152,7 +153,7 @@ async function initProfile() {
     }
 
     const limitEl = document.getElementById('info-daily-limit');
-    if (limitEl) limitEl.textContent = hasAccount ? (typeof formatINR === 'function' ? formatINR(account.daily_limit) : '₹' + account.daily_limit) : '—';
+    if (limitEl) limitEl.textContent = hasAccount ? (isCurrent ? 'Unlimited' : (typeof formatINR === 'function' ? formatINR(account.daily_limit) : '₹' + account.daily_limit)) : '—';
 
     // Account card (dark) — show only when account allocated
     const accountCard = document.getElementById('account-dark-card');

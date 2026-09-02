@@ -256,9 +256,37 @@
         accounts.forEach(acc => {
             const balanceNum = parseFloat(acc.balance || 0);
             const balanceFormatted = '₹' + balanceNum.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            const isCurrent = (acc.account_type || '').toLowerCase() === 'current';
             const typeFormatted = acc.account_type ? (acc.account_type.charAt(0).toUpperCase() + acc.account_type.slice(1)) : 'Savings';
             const isActive = (acc.status || 'active') === 'active';
             const statusClass = isActive ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' : 'bg-surface text-text-secondary border-border-subtle';
+
+            let metaBottomHtml = '';
+            if (isCurrent) {
+                metaBottomHtml = `
+                    <div class="mt-4 pt-3 border-t border-border-subtle flex items-center justify-between text-[10px] font-mono text-text-secondary font-bold">
+                        <div class="flex items-center gap-1.5 cursor-pointer hover:text-primary transition-colors" onclick="navigator.clipboard.writeText('${acc.account_no}'); if(window.showToast) window.showToast('Account number copied!', 'success');" title="Click to copy">
+                            <span>${acc.account_no || 'Pending'}</span>
+                            <span class="material-symbols-outlined text-[13px] opacity-60" aria-hidden="true">content_copy</span>
+                        </div>
+                        <div>Opened: ${acc.opened_date ? acc.opened_date.split(' ')[0] : 'N/A'}</div>
+                    </div>
+                `;
+            } else {
+                metaBottomHtml = `
+                    <div class="mt-4 pt-3 border-t border-border-subtle flex items-center justify-between text-[10px] font-mono text-text-secondary font-bold">
+                        <div class="flex items-center gap-1.5 cursor-pointer hover:text-primary transition-colors" onclick="navigator.clipboard.writeText('${acc.account_no}'); if(window.showToast) window.showToast('Account number copied!', 'success');" title="Click to copy">
+                            <span>${acc.account_no || 'Pending'}</span>
+                            <span class="material-symbols-outlined text-[13px] opacity-60" aria-hidden="true">content_copy</span>
+                        </div>
+                        <div>Interest: ${acc.interest_rate || '0'}%</div>
+                    </div>
+                    <div class="mt-2 flex items-center justify-between text-[10px] font-mono text-text-secondary opacity-75">
+                        <div>Daily Limit: ₹${parseFloat(acc.daily_limit || 0).toLocaleString('en-IN')}</div>
+                        <div>Opened: ${acc.opened_date ? acc.opened_date.split(' ')[0] : 'N/A'}</div>
+                    </div>
+                `;
+            }
 
             html += `
                 <div class="p-5 bg-background rounded-2xl border border-border-subtle hover:border-primary/40 transition-all shadow-sm group">
@@ -273,18 +301,7 @@
                     </div>
                     <div class="text-xs font-bold text-text-secondary uppercase tracking-widest">Available Balance</div>
                     <h4 class="font-headline text-2xl font-black text-text-primary tracking-tight mt-0.5 font-mono">${balanceFormatted}</h4>
-                    
-                    <div class="mt-4 pt-3 border-t border-border-subtle flex items-center justify-between text-[10px] font-mono text-text-secondary font-bold">
-                        <div class="flex items-center gap-1.5 cursor-pointer hover:text-primary transition-colors" onclick="navigator.clipboard.writeText('${acc.account_no}'); if(window.showToast) window.showToast('Account number copied!', 'success');" title="Click to copy">
-                            <span>${acc.account_no || 'Pending'}</span>
-                            <span class="material-symbols-outlined text-[13px] opacity-60" aria-hidden="true">content_copy</span>
-                        </div>
-                        <div>Interest: ${acc.interest_rate || '0'}%</div>
-                    </div>
-                    <div class="mt-2 flex items-center justify-between text-[10px] font-mono text-text-secondary opacity-75">
-                        <div>Daily Limit: ₹${parseFloat(acc.daily_limit || 0).toLocaleString('en-IN')}</div>
-                        <div>Opened: ${acc.opened_date ? acc.opened_date.split(' ')[0] : 'N/A'}</div>
-                    </div>
+                    ${metaBottomHtml}
                 </div>
             `;
         });
