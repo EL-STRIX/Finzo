@@ -25,7 +25,9 @@ class RoleController
         }
 
         // Super admins have universal access; other admins check manage_admins or manage_roles
-        if (!empty($admin['admin_role']) && $admin['admin_role'] === 'super_admin') {
+        // Note: Auth::user() exposes the role under the 'role' key (not 'admin_role')
+        $adminRole = strtolower((string)($admin['role'] ?? ($_SESSION['admin_role'] ?? '')));
+        if ($adminRole === 'super_admin') {
             return;
         }
 

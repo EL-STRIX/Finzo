@@ -40,6 +40,9 @@ class RoleService implements RoleServiceInterface
         if ($name === '') {
             throw new ValidationException(json_encode(['name' => 'Role name is required']));
         }
+        if (mb_strlen($name) > 50) {
+            throw new ValidationException(json_encode(['name' => 'Role name must not exceed 50 characters']));
+        }
 
         $existing = $this->repository->getRoleByName($name);
         if ($existing) {
@@ -47,6 +50,9 @@ class RoleService implements RoleServiceInterface
         }
 
         $description = !empty($data['description']) ? trim($data['description']) : null;
+        if ($description !== null && mb_strlen($description) > 255) {
+            throw new ValidationException(json_encode(['description' => 'Description must not exceed 255 characters']));
+        }
         $roleId = $this->repository->createRole($name, $description);
         
         $permissionIds = $data['permissions'] ?? ($data['permission_ids'] ?? null);
@@ -69,6 +75,9 @@ class RoleService implements RoleServiceInterface
         }
         
         $name = isset($data['name']) ? trim($data['name']) : $role['name'];
+        if (mb_strlen($name) > 50) {
+            throw new ValidationException(json_encode(['name' => 'Role name must not exceed 50 characters']));
+        }
         if ($role['name'] === 'super_admin' && $name !== 'super_admin') {
             throw new ApiException('The super_admin role name cannot be modified', 403);
         }
@@ -81,6 +90,9 @@ class RoleService implements RoleServiceInterface
         }
 
         $description = array_key_exists('description', $data) ? ($data['description'] !== null ? trim($data['description']) : null) : ($role['description'] ?? null);
+        if ($description !== null && mb_strlen($description) > 255) {
+            throw new ValidationException(json_encode(['description' => 'Description must not exceed 255 characters']));
+        }
         $this->repository->updateRole($id, $name, $description);
 
         $permissionIds = $data['permissions'] ?? ($data['permission_ids'] ?? null);

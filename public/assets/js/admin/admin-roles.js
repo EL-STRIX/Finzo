@@ -40,6 +40,20 @@
         else alert(msg);
     }
 
+    /**
+     * Escape untrusted strings before injecting into HTML/attribute context.
+     * Role names/descriptions are admin-supplied and must never be rendered raw.
+     */
+    function escapeHtml(value) {
+        if (value === null || value === undefined) return '';
+        return String(value)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+
     async function loadRoles() {
         try {
             const response = await window.api.get('/admin/roles');
@@ -124,7 +138,7 @@
             tbody.innerHTML = `
                 <tr>
                     <td colspan="6" class="py-12 text-center text-text-secondary">
-                        <span class="text-xs font-bold uppercase tracking-wider">No roles matching "${query}"</span>
+                        <span class="text-xs font-bold uppercase tracking-wider">No roles matching "${escapeHtml(query)}"</span>
                     </td>
                 </tr>
             `;
@@ -136,7 +150,9 @@
             const isProtected = isProtectedRole(role.name);
             const isSuper = (role.name || '').toLowerCase() === 'super_admin';
             const permCount = Array.isArray(role.permissions) ? role.permissions.length : (role.permissions_count || 0);
-            const formattedName = formatRoleName(role.name);
+            const safeFormattedName = escapeHtml(formatRoleName(role.name));
+            const safeName = escapeHtml(role.name);
+            const safeDescription = escapeHtml(role.description || '');
 
             let iconName = 'shield';
             let iconClass = 'bg-primary/10 text-primary border-primary/20';
@@ -158,15 +174,15 @@
                         </div>
                         <div>
                             <div class="font-black text-sm text-text-primary flex items-center gap-2">
-                                <span>${formattedName}</span>
+                                <span>${safeFormattedName}</span>
                                 ${isSuper ? '<span class="text-[9px] font-black uppercase bg-amber-500/10 text-amber-500 border border-amber-500/20 px-1.5 py-0.5 rounded">Super</span>' : ''}
                             </div>
-                            <span class="font-mono text-[10px] text-text-secondary">${role.name}</span>
+                            <span class="font-mono text-[10px] text-text-secondary">${safeName}</span>
                         </div>
                     </div>
                 </td>
-                <td class="text-xs text-text-secondary py-4 px-4 max-w-[240px] truncate" title="${role.description || ''}">
-                    ${role.description || '<span class="italic text-text-muted">No description provided</span>'}
+                <td class="text-xs text-text-secondary py-4 px-4 max-w-[240px] truncate" title="${safeDescription}">
+                    ${role.description ? safeDescription : '<span class="italic text-text-muted">No description provided</span>'}
                 </td>
                 <td class="py-4 px-4">
                     <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-black bg-primary-50 dark:bg-primary-900/20 text-primary border border-primary/20">
@@ -186,7 +202,7 @@
                             <span>Edit</span>
                         </button>
                         ${!isProtected ? `
-                        <button type="button" class="btn btn-secondary !px-2.5 !py-1.5 !text-xs !rounded-xl inline-flex items-center gap-1 text-error hover:!bg-error/10 hover:!border-error/40 cursor-pointer" onclick="window.RoleManager.openDeleteModal(${role.id}, '${role.name.replace(/'/g, "\\'")}')" title="Delete Role">
+                        <button type="button" class="btn btn-secondary !px-2.5 !py-1.5 !text-xs !rounded-xl inline-flex items-center gap-1 text-error hover:!bg-error/10 hover:!border-error/40 cursor-pointer" onclick="window.RoleManager.openDeleteModal(${Number(role.id)})" title="Delete Role">
                             <span class="material-symbols-outlined text-sm" aria-hidden="true">delete</span>
                         </button>
                         ` : ''}
@@ -256,8 +272,8 @@
                                 <input type="checkbox" name="permissions[]" value="${p.id}" class="fin-checkbox perm-checkbox rounded text-primary focus:ring-primary/20">
                             </div>
                             <div class="flex flex-col min-w-0">
-                                <span class="text-xs font-black text-text-primary group-hover:text-primary transition-colors truncate">${formatRoleName(p.name)}</span>
-                                <span class="text-[10px] text-text-secondary font-medium leading-tight mt-0.5">${p.description || p.name}</span>
+                                <span class="text-xs font-black text-text-primary group-hover:text-primary transition-colors truncate">${escapeHtml(formatRoleName(p.name))}</span>
+                                <span class="text-[10px] text-text-secondary font-medium leading-tight mt-0.5">${escapeHtml(p.description || p.name)}</span>
                             </div>
                         </label>
                     `).join('')}
@@ -355,13 +371,15 @@
             }
         },
 
-        openDeleteModal: (id, name) => {
+        openDeleteModal: (id) => {
             const modal = document.getElementById('delete-role-modal');
             const nameDisplay = document.getElementById('delete-role-name-display');
             const idInput = document.getElementById('delete-role-id');
 
             if (idInput) idInput.value = id;
-            if (nameDisplay) nameDisplay.textContent = formatRoleName(name) || name;
+            // Resolve the display name from the in-memory role list (never trust inline args)
+            const role = roles.find(r => Number(r.id) === Number(id));
+            if (nameDisplay) nameDisplay.textContent = role ? (formatRoleName(role.name) || role.name) : '';
 
             if (modal) {
                 modal.classList.remove('hidden');
