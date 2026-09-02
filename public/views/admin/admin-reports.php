@@ -4,6 +4,14 @@ $pageTitle = 'Finzo Admin — Advanced Reporting';
 // Admin portal guard — server-side authentication & role check
 include __DIR__ . '/_guard.php';
 
+$branchesList = [];
+try {
+    $branchStmt = \App\Shared\Core\Database::getInstance()->query("SELECT id, name, branch_code FROM branches WHERE status = 'active' ORDER BY name ASC");
+    $branchesList = $branchStmt ? $branchStmt->fetchAll(PDO::FETCH_ASSOC) : [];
+} catch (\Throwable $e) {
+    $branchesList = [];
+}
+
 $extraScripts = '<script defer src="/Finzo/public/assets/js/admin/admin-reports.js?v=' . time() . '"></script>';
 ob_start();
 ?>
@@ -68,26 +76,38 @@ ob_start();
                 </div>
             </div>
             
-            <form id="form-financial-report" class="space-y-4">
+            <form id="form-financial-report" class="space-y-4" onsubmit="return false;">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="fin-label text-xs font-bold text-text-secondary uppercase tracking-wider block mb-1">Date From</label>
-                        <input type="date" name="date_from" class="fin-input !h-10 !text-sm" required />
+                        <input type="date" name="date_from" class="fin-input !h-10 !text-sm font-medium" required />
                     </div>
                     <div>
                         <label class="fin-label text-xs font-bold text-text-secondary uppercase tracking-wider block mb-1">Date To</label>
-                        <input type="date" name="date_to" class="fin-input !h-10 !text-sm" required />
+                        <input type="date" name="date_to" class="fin-input !h-10 !text-sm font-medium" required />
                     </div>
                 </div>
+
+                <!-- Custom Animated Dropdown: Branch Filter -->
                 <div>
-                    <label class="fin-label text-xs font-bold text-text-secondary uppercase tracking-wider block mb-1">Branch Filter</label>
-                    <select name="branch_id" id="financial-branch-select" class="fin-input !h-10 !text-sm">
-                        <option value="">All Branches (Consolidated)</option>
-                    </select>
+                    <label class="fin-label text-xs font-bold text-text-secondary uppercase tracking-wider block mb-1">Registered Branch</label>
+                    <div class="finzo-dropdown relative w-full" id="financial-branch-dropdown">
+                        <input type="hidden" name="branch_id" id="financial-branch-input" value="">
+                        <div class="finzo-dropdown-trigger fin-input !flex items-center justify-between cursor-pointer !h-10 !py-2" id="financial-branch-trigger">
+                            <span class="dropdown-label truncate text-sm" id="financial-branch-label">All Registered Branches (Consolidated)</span>
+                            <span class="material-symbols-outlined chevron transition-transform duration-300 shrink-0" aria-hidden="true">expand_more</span>
+                        </div>
+                        <div class="finzo-dropdown-menu z-50 !max-h-60 overflow-y-auto" id="financial-branch-menu">
+                            <div class="finzo-dropdown-option is-selected text-xs font-bold" data-value="">All Registered Branches (Consolidated)</div>
+                            <?php foreach ($branchesList as $b): ?>
+                                <div class="finzo-dropdown-option text-xs font-bold" data-value="<?= htmlspecialchars((string)$b['id']) ?>"><?= htmlspecialchars($b['name']) ?> (<?= htmlspecialchars($b['branch_code'] ?? 'BR') ?>)</div>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="pt-2 flex flex-col sm:flex-row gap-3">
-                    <button type="submit" class="btn btn-primary flex-1 btn-generate flex items-center justify-center gap-2 shadow-sm" data-type="financial">
+                    <button type="button" class="btn btn-primary flex-1 btn-generate flex items-center justify-center gap-2 shadow-sm" data-type="financial">
                         <span class="material-symbols-outlined text-[18px]" aria-hidden="true">analytics</span>
                         <span>Generate Insights</span>
                     </button>
@@ -130,28 +150,37 @@ ob_start();
                 </div>
             </div>
             
-            <form id="form-demographics-report" class="space-y-4">
+            <form id="form-demographics-report" class="space-y-4" onsubmit="return false;">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="fin-label text-xs font-bold text-text-secondary uppercase tracking-wider block mb-1">Date From</label>
-                        <input type="date" name="date_from" class="fin-input !h-10 !text-sm" required />
+                        <input type="date" name="date_from" class="fin-input !h-10 !text-sm font-medium" required />
                     </div>
                     <div>
                         <label class="fin-label text-xs font-bold text-text-secondary uppercase tracking-wider block mb-1">Date To</label>
-                        <input type="date" name="date_to" class="fin-input !h-10 !text-sm" required />
+                        <input type="date" name="date_to" class="fin-input !h-10 !text-sm font-medium" required />
                     </div>
                 </div>
+
+                <!-- Custom Animated Dropdown: Status Filter -->
                 <div>
                     <label class="fin-label text-xs font-bold text-text-secondary uppercase tracking-wider block mb-1">Customer Status</label>
-                    <select name="status" class="fin-input !h-10 !text-sm">
-                        <option value="">All Statuses (Active &amp; Suspended)</option>
-                        <option value="active">Active Only</option>
-                        <option value="suspended">Suspended Only</option>
-                    </select>
+                    <div class="finzo-dropdown relative w-full" id="demographics-status-dropdown">
+                        <input type="hidden" name="status" id="demographics-status-input" value="">
+                        <div class="finzo-dropdown-trigger fin-input !flex items-center justify-between cursor-pointer !h-10 !py-2" id="demographics-status-trigger">
+                            <span class="dropdown-label truncate text-sm" id="demographics-status-label">All Statuses (Active &amp; Suspended)</span>
+                            <span class="material-symbols-outlined chevron transition-transform duration-300 shrink-0" aria-hidden="true">expand_more</span>
+                        </div>
+                        <div class="finzo-dropdown-menu z-50 !max-h-60 overflow-y-auto" id="demographics-status-menu">
+                            <div class="finzo-dropdown-option is-selected text-xs font-bold" data-value="">All Statuses (Active &amp; Suspended)</div>
+                            <div class="finzo-dropdown-option text-xs font-bold" data-value="active">Active Only</div>
+                            <div class="finzo-dropdown-option text-xs font-bold" data-value="suspended">Suspended Only</div>
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="pt-2 flex flex-col sm:flex-row gap-3">
-                    <button type="submit" class="btn btn-primary flex-1 !bg-info !border-info hover:!bg-info/90 btn-generate flex items-center justify-center gap-2 shadow-sm" data-type="demographics">
+                    <button type="button" class="btn btn-primary flex-1 !bg-info !border-info hover:!bg-info/90 btn-generate flex items-center justify-center gap-2 shadow-sm" data-type="demographics">
                         <span class="material-symbols-outlined text-[18px]" aria-hidden="true">insights</span>
                         <span>Generate Insights</span>
                     </button>

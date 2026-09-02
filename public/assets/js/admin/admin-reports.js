@@ -1,6 +1,6 @@
 /**
  * Finzo Admin — Advanced Reporting Engine
- * Version 2.0 — Financial Aggregation, Demographic Visualizations, and Instant CSV Streaming
+ * Version 2.1 — Custom Animated Dropdowns, Registered Branches, Financial & Demographic Visualizations, and Instant CSV Streaming
  */
 
 (function() {
@@ -29,43 +29,106 @@
     }
 
     /**
-     * Fetch active branches and populate select dropdown
+     * Initialize Custom Dropdowns with Smooth Animations
      */
-    async function loadBranches() {
-        try {
-            const res = await window.api.get('/admin/reports/branches');
-            if (res && res.success && Array.isArray(res.data)) {
-                const select = document.getElementById('financial-branch-select');
-                if (select) {
-                    res.data.forEach(branch => {
-                        const opt = document.createElement('option');
-                        opt.value = branch.id;
-                        opt.textContent = `${branch.name} (${branch.branch_code})`;
-                        select.appendChild(opt);
-                    });
+    function initCustomDropdowns() {
+        document.querySelectorAll('.finzo-dropdown').forEach(dropdown => {
+            const trigger = dropdown.querySelector('.finzo-dropdown-trigger');
+            const menu = dropdown.querySelector('.finzo-dropdown-menu');
+            const label = dropdown.querySelector('.dropdown-label');
+            const hiddenInput = dropdown.querySelector('input[type="hidden"]');
+            const chevron = dropdown.querySelector('.chevron');
+            const options = dropdown.querySelectorAll('.finzo-dropdown-option');
+
+            if (!trigger || !menu) return;
+
+            // Toggle Open/Close
+            trigger.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const isOpen = menu.classList.contains('is-open') || dropdown.classList.contains('is-open');
+
+                // Close all other dropdowns
+                document.querySelectorAll('.finzo-dropdown.is-open, .finzo-dropdown-menu.is-open').forEach(el => {
+                    if (el !== dropdown && el !== menu) {
+                        el.classList.remove('is-open');
+                        const otherChevron = el.querySelector?.('.chevron') || el.closest?.('.finzo-dropdown')?.querySelector('.chevron');
+                        if (otherChevron) otherChevron.style.transform = 'rotate(0deg)';
+                    }
+                });
+
+                if (isOpen) {
+                    dropdown.classList.remove('is-open');
+                    menu.classList.remove('is-open');
+                    if (chevron) chevron.style.transform = 'rotate(0deg)';
+                } else {
+                    dropdown.classList.add('is-open');
+                    menu.classList.add('is-open');
+                    if (chevron) chevron.style.transform = 'rotate(180deg)';
                 }
-            }
-        } catch (e) {
-            console.warn('Branch list load bypassed:', e);
-        }
+            });
+
+            // Option selection
+            options.forEach(option => {
+                option.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const val = option.getAttribute('data-value') || '';
+                    const text = option.textContent.trim();
+
+                    if (hiddenInput) {
+                        hiddenInput.value = val;
+                        hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
+                    }
+                    if (label) label.textContent = text;
+
+                    options.forEach(o => o.classList.remove('is-selected'));
+                    option.classList.add('is-selected');
+
+                    dropdown.classList.remove('is-open');
+                    menu.classList.remove('is-open');
+                    if (chevron) chevron.style.transform = 'rotate(0deg)';
+                });
+            });
+        });
+
+        // Click outside listener
+        document.addEventListener('click', () => {
+            document.querySelectorAll('.finzo-dropdown.is-open, .finzo-dropdown-menu.is-open').forEach(el => {
+                el.classList.remove('is-open');
+            });
+            document.querySelectorAll('.finzo-dropdown .chevron').forEach(ch => {
+                ch.style.transform = 'rotate(0deg)';
+            });
+        });
     }
 
     /**
      * Handle Synchronous Report Generation
      */
-    async function handleGenerate(e, type) {
-        e.preventDefault();
+    async function handleGenerate(type) {
         const form = document.getElementById(`form-${type}-report`);
         if (!form) return;
 
-        if (!form.checkValidity()) {
-            form.reportValidity();
+        const dateFromInput = form.querySelector('input[name="date_from"]');
+        const dateToInput = form.querySelector('input[name="date_to"]');
+        
+        if (!dateFromInput.value || !dateToInput.value) {
+            toast('Please select both start and end dates', 'warning');
             return;
         }
 
-        const formData = new FormData(form);
-        const queryParams = new URLSearchParams(formData).toString();
-        const submitBtn = form.querySelector('button[type="submit"]');
+        const dateFrom = dateFromInput.value;
+        const dateTo = dateToInput.value;
+        let queryParams = `date_from=${encodeURIComponent(dateFrom)}&date_to=${encodeURIComponent(dateTo)}`;
+
+        if (type === 'financial') {
+            const branchVal = document.getElementById('financial-branch-input')?.value || '';
+            if (branchVal) queryParams += `&branch_id=${encodeURIComponent(branchVal)}`;
+        } else if (type === 'demographics') {
+            const statusVal = document.getElementById('demographics-status-input')?.value || '';
+            if (statusVal) queryParams += `&status=${encodeURIComponent(statusVal)}`;
+        }
+
+        const submitBtn = form.querySelector('.btn-generate');
         const exportBtn = form.querySelector('.btn-export-csv');
 
         const originalSubmitHtml = submitBtn ? submitBtn.innerHTML : '';
@@ -109,8 +172,21 @@
         const form = document.getElementById(`form-${type}-report`);
         if (!form) return;
 
-        const formData = new FormData(form);
-        const queryParams = new URLSearchParams(formData).toString();
+        const dateFromInput = form.querySelector('input[name="date_from"]');
+        const dateToInput = form.querySelector('input[name="date_to"]');
+        
+        const dateFrom = dateFromInput ? dateFromInput.value : '';
+        const dateTo = dateToInput ? dateToInput.value : '';
+        let queryParams = `date_from=${encodeURIComponent(dateFrom)}&date_to=${encodeURIComponent(dateTo)}`;
+
+        if (type === 'financial') {
+            const branchVal = document.getElementById('financial-branch-input')?.value || '';
+            if (branchVal) queryParams += `&branch_id=${encodeURIComponent(branchVal)}`;
+        } else if (type === 'demographics') {
+            const statusVal = document.getElementById('demographics-status-input')?.value || '';
+            if (statusVal) queryParams += `&status=${encodeURIComponent(statusVal)}`;
+        }
+
         const downloadUrl = `/Finzo/api/v1/admin/reports/${type}/export?${queryParams}`;
 
         toast('Preparing CSV file download...', 'info');
@@ -204,7 +280,7 @@
             branchHtml += `
                 <div class="flex items-center justify-between text-xs py-1 border-b border-border-subtle last:border-0">
                     <span class="font-bold text-text-secondary">${branch}</span>
-                    <span class="font-mono font-black text-text-primary">${branchDist[branch]}</span>
+                    <span class="font-mono font-black text-text-primary">${branchDist[branch]} Customers</span>
                 </div>
             `;
         });
@@ -260,7 +336,7 @@
 
             <!-- Branch Allocation Table -->
             <div class="p-4 rounded-xl border border-border-subtle bg-surface">
-                <div class="text-[10px] font-black text-text-secondary uppercase tracking-widest mb-2">Customer Branch Allocation</div>
+                <div class="text-[10px] font-black text-text-secondary uppercase tracking-widest mb-2">Customer Branch Allocation (Top Active)</div>
                 <div class="space-y-1">
                     ${branchHtml}
                 </div>
@@ -282,11 +358,17 @@
             if (input.name === 'date_to' && !input.value) input.value = lastDay;
         });
 
-        loadBranches();
+        initCustomDropdowns();
 
-        document.getElementById('form-financial-report')?.addEventListener('submit', (e) => handleGenerate(e, 'financial'));
-        document.getElementById('form-demographics-report')?.addEventListener('submit', (e) => handleGenerate(e, 'demographics'));
+        // Bind Generate buttons
+        document.querySelectorAll('.btn-generate').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const type = e.currentTarget.dataset.type;
+                handleGenerate(type);
+            });
+        });
 
+        // Bind Export buttons
         document.querySelectorAll('.btn-export-csv').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const type = e.currentTarget.dataset.type;
