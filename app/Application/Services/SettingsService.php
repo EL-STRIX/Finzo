@@ -24,7 +24,15 @@ class SettingsService implements SettingsServiceInterface
 
     public function getGroupedSettings(): array
     {
-        return $this->repository->getSettingsGroupedByCategory();
+        $grouped = $this->repository->getSettingsGroupedByCategory();
+        foreach ($grouped as $cat => &$settings) {
+            foreach ($settings as &$setting) {
+                if (empty($setting['label'])) {
+                    $setting['label'] = ucwords(str_replace('_', ' ', $setting['setting_key']));
+                }
+            }
+        }
+        return $grouped;
     }
 
     public function getSetting(string $key)

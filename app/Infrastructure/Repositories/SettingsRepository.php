@@ -11,7 +11,7 @@ class SettingsRepository extends BaseRepository implements SettingsRepositoryInt
 
     public function getAllSettings(): array
     {
-        $stmt = $this->db->query("SELECT * FROM system_settings ORDER BY setting_category ASC, label ASC");
+        $stmt = $this->db->query("SELECT * FROM system_settings ORDER BY setting_category ASC, id ASC");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     

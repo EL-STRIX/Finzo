@@ -5,13 +5,23 @@ class SystemSeeder
     public function run(PDO $db): void
     {
         $db->exec("
-            INSERT IGNORE INTO system_settings (setting_key, setting_value, setting_category, description) VALUES 
-            ('maintenance_mode', 'false', 'application', 'Enable or disable maintenance mode'),
-            ('default_currency', 'INR', 'application', 'System default currency'),
-            ('max_failed_login_attempts', '5', 'security', 'Number of failed logins before lockout'),
-            ('customer_lockout_duration', '1800', 'security', 'Lockout duration in seconds'),
-            ('min_initial_deposit', '500', 'banking', 'Minimum deposit for new accounts'),
-            ('daily_transfer_limit', '10000', 'banking', 'Daily transfer limit for standard accounts');
+            INSERT INTO system_settings (setting_key, setting_value, setting_type, setting_category, label, description) VALUES 
+            ('min_initial_deposit', '500', 'number', 'banking', 'Minimum Initial Deposit (₹)', 'Minimum balance required when opening a new savings account'),
+            ('daily_transfer_limit', '10000', 'number', 'banking', 'Daily Transfer Limit (₹)', 'Maximum daily transaction exposure for standard accounts'),
+            ('savings_interest_rate', '4.25', 'number', 'banking', 'Savings Interest Rate (% p.a.)', 'Base annual interest rate credited to active savings accounts'),
+            ('max_failed_login_attempts', '5', 'number', 'security', 'Max Failed Login Attempts', 'Consecutive incorrect password attempts before account lockout'),
+            ('customer_lockout_duration', '1800', 'number', 'security', 'Lockout Duration (Seconds)', 'Duration a locked account remains in cooldown before retry'),
+            ('session_timeout_minutes', '30', 'number', 'security', 'Admin Session Timeout (Minutes)', 'Automatic logout duration for inactive administrative sessions'),
+            ('maintenance_mode', 'false', 'boolean', 'application', 'Maintenance Mode', 'Temporarily restrict non-administrative access for system maintenance'),
+            ('default_currency', 'INR', 'string', 'application', 'Default Currency', 'ISO currency symbol used across ledger and reporting'),
+            ('allow_user_registration', 'true', 'boolean', 'application', 'Public User Registration', 'Allow new customer onboarding applications from the public portal'),
+            ('auto_interest_calculation', 'true', 'boolean', 'operational', 'Automated Interest Calculation', 'Enable background worker to accrue and settle monthly interest'),
+            ('audit_log_retention_days', '90', 'number', 'operational', 'Audit Log Retention (Days)', 'Number of days system audit trails and logs are preserved')
+            ON DUPLICATE KEY UPDATE 
+                label = VALUES(label),
+                setting_type = VALUES(setting_type),
+                setting_category = VALUES(setting_category),
+                description = VALUES(description);
         ");
 
         $db->exec("

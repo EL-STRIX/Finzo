@@ -16,28 +16,49 @@ class AdminSettingsController
         $this->security = $security ?? new SecurityService();
     }
 
+    private function checkAccess(): void
+    {
+        $user = \App\Shared\Security\Auth::user();
+        if (($user['role'] ?? '') === 'super_admin' || ($user['admin_role'] ?? '') === 'super_admin') {
+            return;
+        }
+
+        try {
+            $this->security->enforcePermission('manage_admins');
+        } catch (\Throwable $e) {
+            $this->security->enforcePermission('manage_settings');
+        }
+    }
+
+    private function parseInput(): array
+    {
+        $input = $_POST;
+        $raw = file_get_contents('php://input');
+        if (!empty($raw)) {
+            $decoded = json_decode($raw, true);
+            if (is_array($decoded)) {
+                $input = array_merge($input, $decoded);
+            } else {
+                parse_str($raw, $parsed);
+                if (is_array($parsed)) {
+                    $input = array_merge($input, $parsed);
+                }
+            }
+        }
+        return $input;
+    }
+
     public function index(): array
     {
-        $this->security->enforcePermission('manage_settings');
+        $this->checkAccess();
         return ['success' => true, 'data' => $this->service->getGroupedSettings()];
     }
 
     public function update(): array
     {
-        $this->security->enforcePermission('manage_settings');
+        $this->checkAccess();
         
-        $is_json = (\App\Shared\Core\Validation\Validator::isSet($_SERVER['CONTENT_TYPE']) && strpos($_SERVER['CONTENT_TYPE'], 'application/json') !== false);
-        $input = $_POST;
-        if ($is_json) {
-            $json_input = json_decode(file_get_contents('php://input'), true);
-            if ($json_input !== null) {
-                $input = array_merge($input, $json_input);
-            }
-        } elseif ($_SERVER['REQUEST_METHOD'] === 'PUT' || $_SERVER['REQUEST_METHOD'] === 'PATCH') {
-            parse_str(file_get_contents("php://input"), $put_vars);
-            $input = array_merge($input, $put_vars);
-        }
-
+        $input = $this->parseInput();
         $settings = $input['settings'] ?? [];
         $adminId = \App\Shared\Security\Auth::user()['id'] ?? null;
         
@@ -52,9 +73,10 @@ class AdminSettingsController
 
     public function triggerBackup(): array
     {
-        $this->security->enforcePermission('manage_settings');
+        $this->checkAccess();
         
-        $type = $_POST['type'] ?? 'full';
+        $input = $this->parseInput();
+        $type = $input['type'] ?? 'full';
         if (!in_array($type, ['full', 'schema', 'data'])) {
             $type = 'full';
         }
