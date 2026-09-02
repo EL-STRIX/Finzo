@@ -254,7 +254,7 @@
                 modalTitle.textContent = 'Generate Temporary Password';
             }
             if (modalText) {
-                modalText.innerHTML = `A secure 12-character temporary password will be generated for <strong>${name}</strong> (${accNo}). It will be valid for <strong>24 hours only</strong>. The customer must log in with this password and will be required to set a new password immediately.`;
+                modalText.innerHTML = `A secure 12-character temporary password will be generated for <strong>${name}</strong> (${accNo}). It will be valid for <strong>60 minutes only</strong>. Once generated, the account is unlocked and removed from the active locked accounts list.`;
             }
 
             if (passSec) passSec.classList.add('hidden');
@@ -312,7 +312,7 @@
                         modalTitle.textContent = 'Account Unlocked';
                     }
                     if (modalText) {
-                        modalText.innerHTML = `Access has been restored. A temporary password was generated and logged in the system.`;
+                        modalText.innerHTML = `Access has been restored. A 60-minute temporary password was generated. The account has been removed from the active locked queue.`;
                     }
 
                     if (passVal) passVal.textContent = generatedPass;

@@ -1,6 +1,7 @@
 <?php
 $portal = 'admin';
 $pageTitle = 'Locked Account Detail';
+include __DIR__ . '/_guard.php';
 $pageHeader = '
 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
     <div class="flex items-center gap-4">
@@ -117,7 +118,7 @@ ob_start();
                     </button>
                     <div class="p-3 bg-warning-bg/30 rounded-xl border border-warning text-center">
                         <p class="text-[10px] font-black text-warning uppercase tracking-widest leading-relaxed">
-                            Unlocking will provide a temporary PIN valid for 24 hours only.
+                            Unlocking will provide a temporary password valid for 60 minutes only. Once generated, the account is removed from the active locked queue.
                         </p>
                     </div>
                 </div>
@@ -167,7 +168,7 @@ ob_start();
                     <span class="material-symbols-outlined text-4xl" aria-hidden="true">vpn_key</span>
                 </div>
                 <h3 class="text-xl font-black font-headline mb-3">Restore Access?</h3>
-                <p class="text-sm text-text-secondary leading-relaxed mb-8">This will generate a 12-character one-time password for <strong id="modal-name" class="text-text-primary">-</strong>. User must reset their credentials immediately.</p>
+                <p class="text-sm text-text-secondary leading-relaxed mb-8">This will generate a 12-character one-time password valid for 60 minutes for <strong id="modal-name" class="text-text-primary">-</strong>. The account will be unlocked and removed from the active locked queue.</p>
                 
                 <div class="flex gap-3">
                     <button type="button" onclick="closeModal()" class="flex-1 btn btn-secondary py-3 justify-center text-xs font-bold uppercase tracking-wider cursor-pointer">Cancel</button>

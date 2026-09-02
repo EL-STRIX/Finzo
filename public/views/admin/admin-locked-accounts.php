@@ -1,6 +1,7 @@
 <?php
 $portal = 'admin';
 $pageTitle = 'Locked Accounts';
+include __DIR__ . '/_guard.php';
 $pageHeader = '
 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
     <div>
@@ -16,7 +17,7 @@ ob_start();
                 <span class="material-symbols-outlined text-warning" aria-hidden="true">info</span>
                 <div>
                     <h4 class="text-sm font-bold text-warning">How account locking works</h4>
-                    <p class="text-xs text-warning/80 mt-1">If a user enters the wrong password 5 times within 24 hours, their account is automatically locked. Administrators can generate a 24-hour temporary password to restore access.</p>
+                    <p class="text-xs text-warning/80 mt-1">If a user enters the wrong password 5 times, their account is automatically locked. Administrators can generate a 60-minute temporary password to restore access. Once generated, the account is unlocked and removed from the active locked queue.</p>
                 </div>
             </div>
 
@@ -119,7 +120,7 @@ ob_start();
                             <div class="grid grid-cols-2 gap-3 mt-3">
                                 <div class="bg-amber-500/10 p-2.5 rounded-xl flex items-center gap-2 border border-amber-500/20">
                                     <span class="material-symbols-outlined text-amber-600 dark:text-amber-400 text-sm" aria-hidden="true">schedule</span>
-                                    <span class="text-[10px] font-black text-amber-600 dark:text-amber-400 uppercase">24H Validity</span>
+                                    <span class="text-[10px] font-black text-amber-600 dark:text-amber-400 uppercase">60 Min Validity</span>
                                 </div>
                                 <div class="bg-primary/10 p-2.5 rounded-xl flex items-center gap-2 border border-primary/20">
                                     <span class="material-symbols-outlined text-primary text-sm" aria-hidden="true">verified_user</span>

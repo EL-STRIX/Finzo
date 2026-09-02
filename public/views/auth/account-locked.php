@@ -101,7 +101,7 @@
                             </li>
                             <li class="flex items-start gap-2">
                                 <span class="text-primary font-bold mt-0.5">2.</span>
-                                <span>The administrator will verify your identity and generate a new temporary password.</span>
+                                <span>The administrator will verify your identity and generate a new 60-minute temporary password.</span>
                             </li>
                             <li class="flex items-start gap-2">
                                 <span class="text-primary font-bold mt-0.5">3.</span>
