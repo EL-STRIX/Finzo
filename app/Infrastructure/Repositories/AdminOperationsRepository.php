@@ -1173,7 +1173,7 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
         // 3. User status conditions aggregated in a single query
         $userStatusCounts = $this->fetchOne("
             SELECT
-                COALESCE(SUM(CASE WHEN is_deleted = 0 AND (locked_until > NOW() OR failed_attempts >= {$maxFailedAttempts} OR temp_pass_status = 'pending') THEN 1 ELSE 0 END), 0) as locked_accounts,
+                COALESCE(SUM(CASE WHEN is_deleted = 0 AND (locked_until > NOW() OR failed_attempts >= {$maxFailedAttempts}) THEN 1 ELSE 0 END), 0) as locked_accounts,
                 COALESCE(SUM(CASE WHEN is_deleted = 1 THEN 1 ELSE 0 END), 0) as soft_deleted_users
             FROM users
         ") ?: [];

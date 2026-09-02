@@ -44,7 +44,12 @@ class AuthService implements \App\Domain\Contracts\Services\AuthServiceInterface
             throw new ApiException("Account locked due to too many failed attempts. Try again in {$remaining} minute(s).", 423);
         }
 
-
+        if (!empty($user['temp_pass_status']) && $user['temp_pass_status'] === 'pending') {
+            $updated_ts = !empty($user['updated_at']) ? strtotime($user['updated_at']) : 0;
+            if ($updated_ts > 0 && ($updated_ts + 3600) < time()) {
+                throw new ApiException('Your temporary password has expired (valid for 60 minutes). Please contact an administrator to generate a new one.', 401);
+            }
+        }
 
         if ($user['status'] === \App\Domain\Enums\AccountStatusEnum::SUSPENDED->value) {
             throw new ApiException('Your account has been suspended. Please contact support.', 403);

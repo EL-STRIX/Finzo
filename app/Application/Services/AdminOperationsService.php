@@ -398,19 +398,22 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
         $where_clauses = ["u.is_deleted = 0"];
         $params = [];
 
-        // An account is listed as locked if it is currently locked, has
-        // exhausted its failed attempts, or a temporary password has been
-        // issued but not yet consumed by a successful customer login.
+        // An account is listed in the active locked queue if it is currently locked
+        // or has exceeded max failed attempts. Once an account is unlocked with a 60-min
+        // temporary password, it is removed from the active locked accounts list.
         if ($filters['tab'] === 'flagged') {
             $where_clauses[] = "(u.failed_attempts >= 3 AND u.failed_attempts < {$max_attempts} AND (u.locked_until IS NULL OR u.locked_until <= NOW()) AND u.temp_pass_status = 'none')";
         } else {
-            $where_clauses[] = "(u.locked_until > NOW() OR u.failed_attempts >= {$max_attempts} OR u.temp_pass_status = 'pending')";
-        }
-
-        if ($filters['status'] === \App\Domain\Enums\AccountStatusEnum::PENDING->value) {
-            $where_clauses[] = "(u.temp_pass_status = 'none' AND (u.locked_until > NOW() OR u.failed_attempts >= {$max_attempts}))";
-        } elseif ($filters['status'] === 'done') {
-            $where_clauses[] = "u.temp_pass_status = 'pending'";
+            if ($filters['status'] === 'done') {
+                // If explicitly filtering by "Done", show accounts unlocked with a temp password within the 60-minute window
+                $where_clauses[] = "(u.temp_pass_status = 'pending' AND u.updated_at >= DATE_SUB(NOW(), INTERVAL 60 MINUTE))";
+            } elseif ($filters['status'] === \App\Domain\Enums\AccountStatusEnum::PENDING->value) {
+                $where_clauses[] = "(u.locked_until > NOW() OR u.failed_attempts >= {$max_attempts})";
+            } else {
+                // Default: Locked accounts queue only contains accounts actively locked needing resolution.
+                // Accounts unlocked with a 60-minute temporary password are removed from the active list.
+                $where_clauses[] = "(u.locked_until > NOW() OR u.failed_attempts >= {$max_attempts})";
+            }
         }
 
         if (!empty($filters['type'])) {
@@ -525,7 +528,6 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
             if ($temp_data['expires'] > time()) {
                 $user['temp_password_active'] = true;
                 $user['temp_password'] = $temp_data['password'];
-                $user['is_locked'] = true;
             } else {
                 unset($_SESSION['temp_passwords'][$userId]);
             }
@@ -1425,15 +1427,13 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
         if (function_exists('send_notification') && isset($pdo)) {
             send_notification($pdo, $userId, \App\Domain\Enums\NotificationTypeEnum::SECURITY->value,
                 'Account Unlocked',
-                'Your account has been unlocked by an administrator. Your password has been reset to a temporary one. Please check with an admin if you did not request this.'
+                'Your account has been unlocked by an administrator. A temporary password valid for 60 minutes has been generated. Please log in and change your password immediately.'
             );
         }
 
-        
-            \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('account_unlocked', $userId, \App\Domain\Enums\RoleEnum::USER->value, $adminId, \App\Domain\Enums\RoleEnum::ADMIN->value, "Manually unlocked account and reset password for {$user['full_name']} ({$user['email']}). Previous attempts: {$user['failed_attempts']}")
-);
-        
+        \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
+            new \App\Application\Events\GenericAuditAction('account_unlocked', $userId, \App\Domain\Enums\RoleEnum::USER->value, $adminId, \App\Domain\Enums\RoleEnum::ADMIN->value, "Manually unlocked account and issued 60-minute temporary password for {$user['full_name']} ({$user['email']}). Previous attempts: {$user['failed_attempts']}")
+        );
 
         if (!isset($_SESSION['temp_passwords'])) {
             $_SESSION['temp_passwords'] = [];
@@ -1445,8 +1445,9 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
 
         return [
             'success' => true,
-            'message' => 'Account unlocked and temporary password generated.',
-            'temp_password' => $temp_pass
+            'message' => 'Account unlocked and temporary password generated (valid for 60 minutes).',
+            'temp_password' => $temp_pass,
+            'expires_in' => 3600
         ];
     }
     /**
