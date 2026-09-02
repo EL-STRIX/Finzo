@@ -214,6 +214,51 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
         ", [$monthDate]);
     }
 
+    public function getMonthlyChartDataSixMonths(): array
+    {
+        $deposit = \App\Domain\Enums\TransactionTypeEnum::DEPOSIT->value;
+        $withdrawal = \App\Domain\Enums\TransactionTypeEnum::WITHDRAWAL->value;
+        $transfer = \App\Domain\Enums\TransactionTypeEnum::TRANSFER->value;
+        $completed = \App\Domain\Enums\AccountStatusEnum::COMPLETED->value;
+
+        $sql = "
+            SELECT
+                DATE_FORMAT(created_at, '%Y-%m') as ym,
+                COALESCE(SUM(CASE WHEN type = '{$deposit}' THEN amount ELSE 0 END), 0) as deposits,
+                COALESCE(SUM(CASE WHEN type = '{$withdrawal}' THEN amount ELSE 0 END), 0) as withdrawals,
+                COALESCE(SUM(CASE WHEN type = '{$transfer}' THEN amount ELSE 0 END), 0) as transfers,
+                COUNT(*) as count
+            FROM transactions
+            WHERE status = '{$completed}'
+              AND created_at >= DATE_SUB(DATE_FORMAT(NOW(), '%Y-%m-01'), INTERVAL 5 MONTH)
+            GROUP BY DATE_FORMAT(created_at, '%Y-%m')
+        ";
+        $stmt = $this->db->query($sql);
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $mapped = [];
+        foreach ($rows as $row) {
+            $mapped[$row['ym']] = $row;
+        }
+
+        $result = [];
+        for ($i = 5; $i >= 0; $i--) {
+            $ym = date('Y-m', strtotime("-{$i} months"));
+            $month_label = date('M Y', strtotime("-{$i} months"));
+            $dataRow = $mapped[$ym] ?? null;
+
+            $result[] = [
+                'month'       => $month_label,
+                'deposits'    => (float)($dataRow['deposits'] ?? 0),
+                'withdrawals' => (float)($dataRow['withdrawals'] ?? 0),
+                'transfers'   => (float)($dataRow['transfers'] ?? 0),
+                'count'       => (int)($dataRow['count'] ?? 0)
+            ];
+        }
+
+        return $result;
+    }
+
     public function getAdminById(int $adminId) {
         return $this->fetchOne("SELECT full_name, email, profile_photo, admin_role, admin_id FROM admin_users WHERE id = ?", [$adminId], \App\Domain\Models\Admin::class) ?: null;
     }
@@ -1068,16 +1113,29 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
         $under_review_status = \App\Domain\Enums\AccountStatusEnum::UNDER_REVIEW->value;
         $suspended_status = \App\Domain\Enums\AccountStatusEnum::SUSPENDED->value;
 
-        $pending_users = (int)$this->getSingleStat("SELECT COUNT(*) FROM users WHERE (status = '{$under_review_status}' OR (status = '{$pending_status}' AND kyc_submitted_at IS NOT NULL)) AND is_deleted = 0");
+        $userStats = $this->fetchOne("
+            SELECT
+                COUNT(*) as total_users,
+                COALESCE(SUM(CASE WHEN status = '{$active_status}' THEN 1 ELSE 0 END), 0) as active_users,
+                COALESCE(SUM(CASE WHEN (status = '{$under_review_status}' OR (status = '{$pending_status}' AND kyc_submitted_at IS NOT NULL)) THEN 1 ELSE 0 END), 0) as pending_users,
+                COALESCE(SUM(CASE WHEN status = '{$suspended_status}' THEN 1 ELSE 0 END), 0) as suspended_users
+            FROM users
+            WHERE is_deleted = 0
+        ") ?: [];
+
+        $staffCount = (int)$this->getSingleStat("SELECT COUNT(*) FROM staff");
+        $branchCount = (int)$this->getSingleStat("SELECT COUNT(*) FROM branches");
+
+        $pending_users = (int)($userStats['pending_users'] ?? 0);
 
         return [
-            'total_users'        => (int)$this->getSingleStat("SELECT COUNT(*) FROM users WHERE is_deleted = 0"),
-            'active_users'       => (int)$this->getSingleStat("SELECT COUNT(*) FROM users WHERE status = '{$active_status}' AND is_deleted = 0"),
+            'total_users'        => (int)($userStats['total_users'] ?? 0),
+            'active_users'       => (int)($userStats['active_users'] ?? 0),
             'pending_users'      => $pending_users,
             'pending_approvals'  => $pending_users, // Alias for backward compatibility with frontend
-            'suspended_users'    => (int)$this->getSingleStat("SELECT COUNT(*) FROM users WHERE status = '{$suspended_status}' AND is_deleted = 0"),
-            'total_staff'        => (int)$this->getSingleStat("SELECT COUNT(*) FROM staff"),
-            'total_branches'     => (int)$this->getSingleStat("SELECT COUNT(*) FROM branches")
+            'suspended_users'    => (int)($userStats['suspended_users'] ?? 0),
+            'total_staff'        => $staffCount,
+            'total_branches'     => $branchCount
         ];
     }
 
@@ -1089,18 +1147,48 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
         $interest = \App\Domain\Enums\TransactionTypeEnum::INTEREST_CREDIT->value;
         $completed = \App\Domain\Enums\AccountStatusEnum::COMPLETED->value;
         $active = \App\Domain\Enums\AccountStatusEnum::ACTIVE->value;
+        $maxFailedAttempts = (int)get_setting($this->db, 'max_failed_login_attempts', 5);
+
+        // 1. Transactions aggregated in a single query
+        $txnStats = $this->fetchOne("
+            SELECT
+                COALESCE(SUM(CASE WHEN DATE(created_at) = CURDATE() THEN 1 ELSE 0 END), 0) as transactions_today,
+                COALESCE(SUM(CASE WHEN MONTH(created_at) = MONTH(CURDATE()) AND YEAR(created_at) = YEAR(CURDATE()) THEN 1 ELSE 0 END), 0) as transactions_month,
+                COALESCE(SUM(CASE WHEN type = '{$deposit}' AND status = '{$completed}' AND DATE(created_at) = CURDATE() THEN amount ELSE 0 END), 0) as deposits_today,
+                COALESCE(SUM(CASE WHEN type = '{$withdrawal}' AND status = '{$completed}' AND DATE(created_at) = CURDATE() THEN amount ELSE 0 END), 0) as withdrawals_today,
+                COALESCE(SUM(CASE WHEN type = '{$transfer}' AND status = '{$completed}' AND DATE(created_at) = CURDATE() THEN amount ELSE 0 END), 0) as transfers_today,
+                COALESCE(SUM(CASE WHEN type = '{$interest}' AND status = '{$completed}' THEN amount ELSE 0 END), 0) as interest_credited
+            FROM transactions
+        ") ?: [];
+
+        // 2. Accounts aggregated in a single query
+        $accStats = $this->fetchOne("
+            SELECT
+                COUNT(*) as total_accounts,
+                COALESCE(SUM(balance), 0) as total_balance
+            FROM accounts
+            WHERE status = '{$active}'
+        ") ?: [];
+
+        // 3. User status conditions aggregated in a single query
+        $userStatusCounts = $this->fetchOne("
+            SELECT
+                COALESCE(SUM(CASE WHEN is_deleted = 0 AND (locked_until > NOW() OR failed_attempts >= {$maxFailedAttempts} OR temp_pass_status = 'pending') THEN 1 ELSE 0 END), 0) as locked_accounts,
+                COALESCE(SUM(CASE WHEN is_deleted = 1 THEN 1 ELSE 0 END), 0) as soft_deleted_users
+            FROM users
+        ") ?: [];
 
         return [
-            'transactions_today' => (int)$this->getSingleStat("SELECT COUNT(*) FROM transactions WHERE DATE(created_at) = CURDATE()"),
-            'transactions_month' => (int)$this->getSingleStat("SELECT COUNT(*) FROM transactions WHERE MONTH(created_at) = MONTH(CURDATE()) AND YEAR(created_at) = YEAR(CURDATE())"),
-            'deposits_today'     => (float)$this->getSingleStat("SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE type = '{$deposit}' AND status = '{$completed}' AND DATE(created_at) = CURDATE()"),
-            'withdrawals_today'  => (float)$this->getSingleStat("SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE type = '{$withdrawal}' AND status = '{$completed}' AND DATE(created_at) = CURDATE()"),
-            'transfers_today'    => (float)$this->getSingleStat("SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE type = '{$transfer}' AND status = '{$completed}' AND DATE(created_at) = CURDATE()"),
-            'locked_accounts'    => (int)$this->getSingleStat("SELECT COUNT(*) FROM users WHERE is_deleted = 0 AND (locked_until > NOW() OR failed_attempts >= " . (int)get_setting($this->db, 'max_failed_login_attempts', 5) . " OR temp_pass_status = 'pending')"),
-            'total_balance'      => (float)$this->getSingleStat("SELECT COALESCE(SUM(balance), 0) FROM accounts WHERE status = '{$active}'"),
-            'total_accounts'     => (int)$this->getSingleStat("SELECT COUNT(*) FROM accounts WHERE status = '{$active}'"),
-            'interest_credited'  => (float)$this->getSingleStat("SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE type = '{$interest}' AND status = '{$completed}'"),
-            'soft_deleted_users' => (int)$this->getSingleStat("SELECT COUNT(*) FROM users WHERE is_deleted = 1")
+            'transactions_today' => (int)($txnStats['transactions_today'] ?? 0),
+            'transactions_month' => (int)($txnStats['transactions_month'] ?? 0),
+            'deposits_today'     => (float)($txnStats['deposits_today'] ?? 0),
+            'withdrawals_today'  => (float)($txnStats['withdrawals_today'] ?? 0),
+            'transfers_today'    => (float)($txnStats['transfers_today'] ?? 0),
+            'locked_accounts'    => (int)($userStatusCounts['locked_accounts'] ?? 0),
+            'total_balance'      => (float)($accStats['total_balance'] ?? 0),
+            'total_accounts'     => (int)($accStats['total_accounts'] ?? 0),
+            'interest_credited'  => (float)($txnStats['interest_credited'] ?? 0),
+            'soft_deleted_users' => (int)($userStatusCounts['soft_deleted_users'] ?? 0)
         ];
     }
 

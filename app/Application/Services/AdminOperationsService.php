@@ -78,44 +78,21 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
      */
     public function getDashboardData(int $adminId): array
     {
-        $stats = $this->repository->getDashboardStats();
-
-        $stats_cache = \App\Shared\Core\Cache\CacheManager::getInstance()->get('admin_dashboard_stats', function() {
-            return $this->repository->getCachedDashboardStats();
-        }, 15); // 15 seconds cache
-
-        $stats = array_merge($stats, $stats_cache);
+        $stats = \App\Shared\Core\Cache\CacheManager::getInstance()->get('admin_dashboard_stats', function() {
+            $baseStats = $this->repository->getDashboardStats();
+            $cachedStats = $this->repository->getCachedDashboardStats();
+            return array_merge($baseStats, $cachedStats);
+        }, 60);
 
         $recent_users = $this->repository->getDashboardRecentUsers();
         foreach ($recent_users as &$u) {
-            $profile_pic_url = $u['profile_picture'] ? APP_URL . '/' . $u['profile_picture'] : null;
-            if (!$profile_pic_url) {
-                $avatar_path = 'uploads/avatars/user_' . $u['id'] . '.jpg';
-                if (file_exists(FINZO_ROOT . '/' . $avatar_path)) {
-                    $profile_pic_url = APP_URL . '/' . $avatar_path;
-                }
-            }
-            $u['profile_picture_url'] = $profile_pic_url;
+            $u['profile_picture_url'] = !empty($u['profile_picture']) ? (APP_URL . '/' . ltrim($u['profile_picture'], '/')) : null;
         }
         unset($u);
 
         $monthly_chart_data = \App\Shared\Core\Cache\CacheManager::getInstance()->get('admin_dashboard_chart', function() {
-            $data = [];
-            for ($i = 5; $i >= 0; $i--) {
-                $month_date = date('Y-m', strtotime("-{$i} months"));
-                $month_label = date('M Y', strtotime("-{$i} months"));
-                $month_data = $this->repository->getMonthlyChartDataRow($month_date);
-
-                $data[] = [
-                    'month'       => $month_label,
-                    'deposits'    => (float)($month_data['deposits'] ?? 0),
-                    'withdrawals' => (float)($month_data['withdrawals'] ?? 0),
-                    'transfers'   => (float)($month_data['transfers'] ?? 0),
-                    'count'       => (int)($month_data['count'] ?? 0)
-                ];
-            }
-            return $data;
-        }, 30); // 30 seconds cache
+            return $this->repository->getMonthlyChartDataSixMonths();
+        }, 300);
 
         $admin_data = $this->repository->getAdminById($adminId);
 

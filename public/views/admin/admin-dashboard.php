@@ -4,6 +4,21 @@ $pageTitle = 'Finzo Admin — Dashboard';
 // Admin portal guard — server-side authentication & role check
 include __DIR__ . '/_guard.php';
 $useCharts = true;
+
+// Preload initial dashboard data server-side for instantaneous first-paint render
+$adminId = (int)($_SESSION['admin_id'] ?? 1);
+$initialDashboardData = null;
+try {
+    $container = \App\Shared\Core\Container::getInstance();
+    $adminOpsService = $container->get(\App\Application\Services\AdminOperationsService::class);
+    $initialDashboardData = $adminOpsService->getDashboardData($adminId);
+} catch (\Throwable $e) {
+    // Fallback gracefully if database is temporarily unavailable
+}
+
+$extraScripts = '<script>window.initialDashboardData = ' . json_encode($initialDashboardData, JSON_UNESCAPED_UNICODE) . ';</script>' .
+    '<script defer src="/Finzo/public/assets/js/admin/dashboard.js?v=' . time() . '"></script>';
+
 ob_start();
 ?>
             <!-- TOP PAGE HEADER -->
@@ -232,7 +247,8 @@ ob_start();
                 </div>
             </div>
 <?php
-$extraScripts = '<script defer src="/Finzo/public/assets/js/admin/dashboard.js"></script>';
+$extraScripts = '<script>window.initialDashboardData = ' . json_encode($initialDashboardData, JSON_UNESCAPED_UNICODE) . ';</script>' .
+    '<script defer src="/Finzo/public/assets/js/admin/dashboard.js?v=' . time() . '"></script>';
 $slot = ob_get_clean();
 include __DIR__ . '/../layouts/app.php';
 ?>
