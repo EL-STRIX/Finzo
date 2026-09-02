@@ -409,19 +409,19 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
         $where_clauses = ["u.is_deleted = 0"];
         $params = [];
 
-        // An account is locked if locked_until > NOW() OR failed_attempts >= 5 OR temp_pass_status = 'pending'
+        // An account is locked if locked_until > NOW() OR failed_attempts >= 5 OR (temp_pass_status = 'pending' AND updated_at >= NOW() - INTERVAL 60 MINUTE)
         if ($filters['tab'] === 'locked') {
-            $where_clauses[] = "(u.locked_until > NOW() OR u.failed_attempts >= 5 OR u.temp_pass_status = 'pending')";
+            $where_clauses[] = "(u.locked_until > NOW() OR u.failed_attempts >= 5 OR (u.temp_pass_status = 'pending' AND u.updated_at >= NOW() - INTERVAL 60 MINUTE))";
         } elseif ($filters['tab'] === 'flagged') {
             $where_clauses[] = "(u.failed_attempts >= 3 AND (u.locked_until IS NULL OR u.locked_until <= NOW()) AND u.temp_pass_status = 'none')";
         } else {
-            $where_clauses[] = "(u.locked_until > NOW() OR u.failed_attempts >= 5 OR u.temp_pass_status = 'pending')";
+            $where_clauses[] = "(u.locked_until > NOW() OR u.failed_attempts >= 5 OR (u.temp_pass_status = 'pending' AND u.updated_at >= NOW() - INTERVAL 60 MINUTE))";
         }
 
         if ($filters['status'] === \App\Domain\Enums\AccountStatusEnum::PENDING->value) {
             $where_clauses[] = "(u.temp_pass_status = 'none' AND (u.locked_until > NOW() OR u.failed_attempts >= 5))";
         } elseif ($filters['status'] === 'done') {
-            $where_clauses[] = "u.temp_pass_status = 'pending'";
+            $where_clauses[] = "(u.temp_pass_status = 'pending' AND u.updated_at >= NOW() - INTERVAL 60 MINUTE)";
         }
 
         if (!empty($filters['type'])) {
@@ -448,7 +448,9 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
 
         $formatted_accounts = [];
         foreach ($accounts as $acc) {
-            $locked_timestamp = ($acc['locked_until'] && strtotime($acc['locked_until']) > 0) ? strtotime($acc['locked_until']) : strtotime($acc['updated_at']);
+            $locked_timestamp = (!empty($acc['locked_until']) && strtotime($acc['locked_until']) > 0)
+                ? strtotime($acc['locked_until'])
+                : (!empty($acc['updated_at']) ? strtotime($acc['updated_at']) : time());
             $acc['locked_at'] = date('d M Y', $locked_timestamp);
             $acc['lock_time'] = date('h:i A', $locked_timestamp);
 
@@ -457,7 +459,7 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
                 $avatar_url = str_starts_with($acc['profile_picture'], 'http')
                     ? $acc['profile_picture']
                     : APP_URL . '/' . ltrim($acc['profile_picture'], '/');
-            } else {
+            } elseif (!empty($acc['id'])) {
                 $avatar_path = FINZO_ROOT . '/uploads/avatars/user_' . $acc['id'] . '.jpg';
                 if (file_exists($avatar_path)) {
                     $avatar_url = APP_URL . '/uploads/avatars/user_' . $acc['id'] . '.jpg?t=' . filemtime($avatar_path);
@@ -465,7 +467,7 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
             }
             $acc['avatar_url'] = $avatar_url;
 
-            $is_done = ($acc['temp_pass_status'] === 'pending');
+            $is_done = (!empty($acc['temp_pass_status']) && $acc['temp_pass_status'] === 'pending');
             $acc['status_text'] = $is_done ? 'Done' : 'Pending';
             $acc['status_badge'] = $is_done ? 'badge-success' : 'badge-warn';
             $formatted_accounts[] = $acc;
@@ -1404,7 +1406,7 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
         }
         $_SESSION['temp_passwords'][$userId] = [
             'password' => $temp_pass,
-            'expires'  => time() + 300
+            'expires'  => time() + 3600
         ];
 
         return [

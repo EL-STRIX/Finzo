@@ -70,7 +70,7 @@
                     attempts: acc.failed_attempts || 0,
                     lockedDate: acc.locked_at || 'N/A',
                     lockTime: acc.lock_time || 'N/A',
-                    tempSent: acc.temp_pass_status === 'done' || acc.status_text === 'Done', 
+                    tempSent: acc.temp_pass_status === 'pending' || acc.status_text === 'Done', 
                     statusBadge: acc.status_badge || 'badge-warn',
                     statusText: acc.status_text || 'Pending'
                 }));
