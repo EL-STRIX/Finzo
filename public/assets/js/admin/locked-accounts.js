@@ -8,7 +8,7 @@
     let currentPage = 1;
     let pendingId = null;
     let generatedPass = '';
-    const ROWS_PP = 6;
+    const ROWS_PP = 10;
 
     // DOM Elements
     const searchInput = document.getElementById('search-input');
@@ -68,6 +68,7 @@
                     accNo: acc.account_no || 'N/A',
                     accType: (acc.account_type || '').toLowerCase() === 'savings' ? 'Savings' : 'Current',
                     attempts: acc.failed_attempts || 0,
+                    isLocked: acc.is_locked === true || acc.is_locked === 1,
                     lockedDate: acc.locked_at || 'N/A',
                     lockTime: acc.lock_time || 'N/A',
                     tempSent: acc.temp_pass_status === 'pending' || acc.status_text === 'Done', 
@@ -149,7 +150,7 @@
                         <a href="admin-locked-account-detail.php?id=${r.id}" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-colors text-slate-400 hover:text-primary" title="View Incident Investigation">
                             <span class="material-symbols-outlined" style="font-size:18px;" aria-hidden="true">visibility</span>
                         </a>
-                        ${!r.tempSent ? `
+                        ${(r.isLocked || !r.tempSent) ? `
                         <button class="p-2 hover:bg-amber-500/10 rounded-lg transition-colors text-amber-500 cursor-pointer" onclick="window.LockedAccounts.openUnlock('${r.id}','${r.name.replace(/'/g, "\\'")}','${r.accNo}')" title="Generate Temporary Password">
                             <span class="material-symbols-outlined" style="font-size:18px;" aria-hidden="true">key</span>
                         </button>

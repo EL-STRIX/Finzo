@@ -111,6 +111,22 @@ class SessionManager
         $_SESSION['user_balance']     = $account ? $account['balance'] : null;
         $_SESSION['role']             = 'customer';
         $_SESSION['last_activity']    = time();
+
+        // Build sidebar avatar URL so sidebar-user.php can show the photo on first load
+        $rawPic = $user['profile_picture'] ?? null;
+        if (!empty($rawPic)) {
+            if (str_starts_with($rawPic, 'http')) {
+                $_SESSION['user_avatar'] = $rawPic;
+            } else {
+                $cleanPic = ltrim($rawPic, '/');
+                if (!str_starts_with($cleanPic, 'public/')) {
+                    $cleanPic = 'public/' . $cleanPic;
+                }
+                $_SESSION['user_avatar'] = APP_URL . '/' . $cleanPic;
+            }
+        } else {
+            $_SESSION['user_avatar'] = null;
+        }
     }
 
     /**

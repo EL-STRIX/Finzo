@@ -400,6 +400,13 @@ class AdminStaffBranchRepository extends BaseRepository implements \App\Domain\C
             $params[] = $endDate;
         }
 
+        // Reason filter must run in SQL (before pagination) so totals and
+        // page contents stay consistent with the filtered result set.
+        if (!empty($reason) && $reason !== 'all') {
+            $whereClauses[] = "(SELECT alr.details FROM audit_log alr WHERE (alr.entity_id = s.staff_id OR alr.entity_id = CAST(s.id AS CHAR)) AND alr.action_type = 'staff_suspended' ORDER BY alr.id DESC LIMIT 1) LIKE ?";
+            $params[] = "%{$reason}%";
+        }
+
         if (!empty($search)) {
             $whereClauses[] = "(s.full_name LIKE ? OR s.personal_email LIKE ? OR s.staff_id LIKE ? OR s.phone LIKE ? OR b.name LIKE ?)";
             $s = "%{$search}%";
@@ -522,13 +529,6 @@ class AdminStaffBranchRepository extends BaseRepository implements \App\Domain\C
                 }
             } else {
                 $s['duration'] = 'Indefinite';
-            }
-
-            // Reason filter in PHP if specified
-            if (!empty($reason) && $reason !== 'all') {
-                if (stripos($s['suspension_reason'], $reason) === false && stripos($details, $reason) === false) {
-                    unset($staffList[$k]);
-                }
             }
         }
         $staffList = array_values($staffList);

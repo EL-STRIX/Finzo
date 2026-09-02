@@ -44,9 +44,7 @@ class AuthService implements \App\Domain\Contracts\Services\AuthServiceInterface
             throw new ApiException("Account locked due to too many failed attempts. Try again in {$remaining} minute(s).", 423);
         }
 
-        if ($user['status'] === \App\Domain\Enums\AccountStatusEnum::REJECTED->value) {
-            throw new ApiException('Your application has been rejected. Please contact support for assistance.', 403);
-        }
+
 
         if ($user['status'] === \App\Domain\Enums\AccountStatusEnum::SUSPENDED->value) {
             throw new ApiException('Your account has been suspended. Please contact support.', 403);
@@ -59,10 +57,14 @@ class AuthService implements \App\Domain\Contracts\Services\AuthServiceInterface
             $max_attempts = get_setting($pdo, 'max_failed_login_attempts', 5);
             $lockout_duration = get_setting($pdo, 'customer_lockout_duration', LOCKOUT_DURATION);
 
+            $ip_failed = get_client_ip();
             if ($new_attempts >= $max_attempts) {
                 $lock_until = date('Y-m-d H:i:s', time() + $lockout_duration);
                 $this->repository->lockUser($user['id'], $new_attempts, $lock_until);
 
+                \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
+    new \App\Application\Events\GenericAuditAction('login_failed', $user['id'], \App\Domain\Enums\RoleEnum::USER->value, $user['id'], \App\Domain\Enums\RoleEnum::USER->value, "Failed login attempt {$new_attempts} of {$max_attempts} from IP: {$ip_failed}")
+);
                 \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
     new \App\Application\Events\GenericAuditAction(\App\Domain\Enums\AuditActionEnum::ACCOUNT_LOCKED->value, $user['id'], \App\Domain\Enums\RoleEnum::USER->value, $user['id'], \App\Domain\Enums\RoleEnum::USER->value, "Account locked after {$new_attempts} failed login attempts")
 );
@@ -71,6 +73,10 @@ class AuthService implements \App\Domain\Contracts\Services\AuthServiceInterface
                 throw new ApiException("Account locked due to too many failed attempts. Try again in {$lockout_minutes} minutes.", 423);
             } else {
                 $this->repository->updateFailedAttempts($user['id'], $new_attempts);
+
+                \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
+    new \App\Application\Events\GenericAuditAction('login_failed', $user['id'], \App\Domain\Enums\RoleEnum::USER->value, $user['id'], \App\Domain\Enums\RoleEnum::USER->value, "Failed login attempt {$new_attempts} of {$max_attempts} from IP: {$ip_failed}")
+);
 
                 $remaining = $max_attempts - $new_attempts;
                 throw new ApiException("Invalid email or password. {$remaining} attempt(s) remaining.", 401);
