@@ -44,7 +44,15 @@
 
             if (response.status === 'success' || response.success) {
                 const data = response.data || response;
-                renderTable(data.users || [], data.total || 0, data.pages || 1);
+                const users = data.users || [];
+                // If the current page became empty (e.g. last row recovered on the
+                // final page), step back one page so earlier records stay visible.
+                if (!users.length && currentPage > 1) {
+                    currentPage -= 1;
+                    loadDeletedUsers();
+                    return;
+                }
+                renderTable(users, data.total || 0, data.pages || 1);
             } else {
                 if (tableContainer) tableContainer.style.display = 'none';
                 if (emptyState) {
@@ -217,9 +225,10 @@
                 }
             } catch (error) {
                 console.error('Recovery failed:', error);
-                if (window.showToast) window.showToast('Server error during recovery', 'error');
-                else if (window.portal && window.portal.showToast) window.portal.showToast('Server error during recovery', 'error');
-                else alert('Server error during recovery');
+                const fallbackMsg = (error && error.message) ? error.message : 'Server error during recovery';
+                if (window.showToast) window.showToast(fallbackMsg, 'error');
+                else if (window.portal && window.portal.showToast) window.portal.showToast(fallbackMsg, 'error');
+                else alert(fallbackMsg);
             }
         },
 
@@ -285,32 +294,6 @@
         recoverFromDetails: () => {
             window.DeletedUsers.closeModal('detailsModal');
             window.DeletedUsers.openRecoverModal(pendingUserId);
-        },
-
-        deletePermanentlyFromDetails: async () => {
-            if (!pendingUserId) return;
-            if (!confirm('Are you sure you want to PERMANENTLY delete this user? This action cannot be undone and all data will be lost forever.')) return;
-            
-            try {
-                const response = await window.api.patch('/users/' + pendingUserId, { action: 'hard_delete' });
-                if (response && (response.status === 'success' || response.success)) {
-                    if (window.showToast) window.showToast('User account permanently deleted', 'success');
-                    else if (window.portal && window.portal.showToast) window.portal.showToast('User account permanently deleted', 'success');
-                    else alert('User account permanently deleted');
-                    window.DeletedUsers.closeModal('detailsModal');
-                    loadDeletedUsers();
-                } else {
-                    const msg = (response && response.message) ? response.message : 'Failed to delete account';
-                    if (window.showToast) window.showToast(msg, 'error');
-                    else if (window.portal && window.portal.showToast) window.portal.showToast(msg, 'error');
-                    else alert(msg);
-                }
-            } catch (error) {
-                console.error('Delete failed:', error);
-                if (window.showToast) window.showToast('Server error during deletion', 'error');
-                else if (window.portal && window.portal.showToast) window.portal.showToast('Server error during deletion', 'error');
-                else alert('Server error during deletion');
-            }
         }
     };
 

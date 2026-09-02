@@ -26,9 +26,16 @@ class PdfService implements \App\Domain\Contracts\Services\PdfServiceInterface
      */
     public function getReceiptData(string $txnId, ?string $role, ?int $userId): ?array
     {
+        // Authentication gate — receipts must never be publicly accessible.
+        // Mirrors statement()/staffStatement() role enforcement.
+        if (!in_array($role, ['customer', 'staff', 'admin'], true)) {
+            return null;
+        }
+
         $txn = $this->repository->getTransactionForReceipt($txnId);
         if (!$txn) return null;
 
+        // Customers may only access receipts for their own accounts (IDOR protection)
         if ($role === 'customer' && $userId) {
             $user_accounts = $this->repository->getUserAccounts($userId);
             if (!in_array($txn['from_account_id'], $user_accounts) && !in_array($txn['to_account_id'], $user_accounts)) {

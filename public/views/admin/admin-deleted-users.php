@@ -252,18 +252,14 @@ ob_start();
                     </div>
 
                     <!-- Modal Footer -->
-                    <div class="p-4 sm:p-6 bg-background/50 border-t border-border-subtle flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0">
-                        <button type="button" onclick="window.DeletedUsers.deletePermanentlyFromDetails()" class="w-full sm:w-auto btn px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider text-rose-600 dark:text-rose-400 hover:bg-rose-500/10 border border-rose-500/30 transition-all inline-flex items-center justify-center gap-1.5 cursor-pointer shadow-sm">
-                            <span class="material-symbols-outlined text-base" aria-hidden="true">delete_forever</span>
-                            <span>Delete Permanently</span>
+                    <div class="p-4 sm:p-6 bg-background/50 border-t border-border-subtle flex items-center justify-end gap-3 shrink-0">
+                        <!-- Hard/permanent deletion is prohibited by data-retention policy (enforced server-side),
+                             so only recovery is offered here. -->
+                        <button type="button" onclick="window.DeletedUsers.closeModal('detailsModal')" class="flex-1 sm:flex-initial btn btn-secondary px-5 py-2.5 text-xs font-bold uppercase tracking-wider cursor-pointer">Close</button>
+                        <button type="button" onclick="window.DeletedUsers.recoverFromDetails()" class="flex-1 sm:flex-initial btn btn-primary px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider bg-emerald-600 hover:bg-emerald-700 text-white border-none shadow-md shadow-emerald-900/10 inline-flex items-center justify-center gap-1.5 cursor-pointer">
+                            <span class="material-symbols-outlined text-base" aria-hidden="true">restore</span>
+                            <span>Recover Account</span>
                         </button>
-                        <div class="flex items-center gap-3 w-full sm:w-auto justify-end">
-                            <button type="button" onclick="window.DeletedUsers.closeModal('detailsModal')" class="flex-1 sm:flex-initial btn btn-secondary px-5 py-2.5 text-xs font-bold uppercase tracking-wider cursor-pointer">Close</button>
-                            <button type="button" onclick="window.DeletedUsers.recoverFromDetails()" class="flex-1 sm:flex-initial btn btn-primary px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider bg-emerald-600 hover:bg-emerald-700 text-white border-none shadow-md shadow-emerald-900/10 inline-flex items-center justify-center gap-1.5 cursor-pointer">
-                                <span class="material-symbols-outlined text-base" aria-hidden="true">restore</span>
-                                <span>Recover Account</span>
-                            </button>
-                        </div>
                     </div>
                 </div>
             </div>

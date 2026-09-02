@@ -236,7 +236,7 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
             SELECT u.id, u.customer_id, u.full_name, u.email, u.phone, u.status, u.deleted_at, u.created_at, u.profile_picture,
                    a.account_no, a.account_type, a.balance,
                    COALESCE(l.details, 'Admin Action') as deletion_reason,
-                   COALESCE(l.actor_id, 'Admin') as deleted_by
+                   COALESCE(NULLIF(ad.full_name, ''), l.actor_id, 'Admin') as deleted_by
             FROM users u
             LEFT JOIN accounts a ON u.customer_id = a.user_id
             LEFT JOIN (
@@ -249,6 +249,7 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
                     GROUP BY entity_id
                 ) log2 ON log1.id = log2.max_id
             ) l ON (l.entity_id COLLATE utf8mb4_unicode_ci = u.customer_id COLLATE utf8mb4_unicode_ci OR l.entity_id COLLATE utf8mb4_unicode_ci = CAST(u.id AS CHAR) COLLATE utf8mb4_unicode_ci)
+            LEFT JOIN admin_users ad ON (ad.admin_id COLLATE utf8mb4_unicode_ci) = (l.actor_id COLLATE utf8mb4_unicode_ci)
             WHERE {$whereSql}
             ORDER BY u.deleted_at DESC
             LIMIT {$perPage} OFFSET {$offset}
@@ -509,7 +510,7 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
     // Recover User Methods
     // ---------------------------------------------------------
     public function getUserForRecovery(int $userId) {
-        return $this->fetchOne("SELECT id, customer_id, full_name, is_deleted FROM users WHERE id = ?", [$userId], \App\Domain\Models\Admin::class) ?: null;
+        return $this->fetchOne("SELECT id, customer_id, full_name, is_deleted FROM users WHERE id = ?", [$userId], \App\Domain\Models\User::class) ?: null;
     }
 
     public function recoverUser(int $userId, string $customerId): void
@@ -914,7 +915,7 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
     {
         $stmt = $this->db->prepare("
             UPDATE users 
-            SET locked_until = NULL, failed_attempts = 0, password_hash = ?, temp_pass_status = 'pending', status = 'active', updated_at = NOW() 
+            SET locked_until = NULL, failed_attempts = 0, password_hash = ?, temp_pass_status = 'pending', updated_at = NOW() 
             WHERE id = ?
         ");
         $stmt->execute([$passwordHash, $userId]);
@@ -1095,7 +1096,7 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
             'deposits_today'     => (float)$this->getSingleStat("SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE type = '{$deposit}' AND status = '{$completed}' AND DATE(created_at) = CURDATE()"),
             'withdrawals_today'  => (float)$this->getSingleStat("SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE type = '{$withdrawal}' AND status = '{$completed}' AND DATE(created_at) = CURDATE()"),
             'transfers_today'    => (float)$this->getSingleStat("SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE type = '{$transfer}' AND status = '{$completed}' AND DATE(created_at) = CURDATE()"),
-            'locked_accounts'    => (int)$this->getSingleStat("SELECT COUNT(*) FROM users WHERE locked_until > NOW() AND is_deleted = 0"),
+            'locked_accounts'    => (int)$this->getSingleStat("SELECT COUNT(*) FROM users WHERE is_deleted = 0 AND (locked_until > NOW() OR failed_attempts >= " . (int)get_setting($this->db, 'max_failed_login_attempts', 5) . " OR temp_pass_status = 'pending')"),
             'total_balance'      => (float)$this->getSingleStat("SELECT COALESCE(SUM(balance), 0) FROM accounts WHERE status = '{$active}'"),
             'total_accounts'     => (int)$this->getSingleStat("SELECT COUNT(*) FROM accounts WHERE status = '{$active}'"),
             'interest_credited'  => (float)$this->getSingleStat("SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE type = '{$interest}' AND status = '{$completed}'"),

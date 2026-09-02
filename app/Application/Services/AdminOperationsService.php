@@ -410,22 +410,30 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
      */
     public function getLockedAccounts(array $filters, int $page, int $perPage): array
     {
+        // Keep the admin list in sync with the real login lock behaviour:
+        // AuthService locks accounts using the max_failed_login_attempts setting.
+        try {
+            $max_attempts = (int)get_setting(\App\Shared\Core\Database::getInstance(), 'max_failed_login_attempts', 5);
+        } catch (\Throwable $e) {
+            $max_attempts = 5; // Settings unavailable (e.g. unit tests without DB)
+        }
+
         $where_clauses = ["u.is_deleted = 0"];
         $params = [];
 
-        // An account is locked if locked_until > NOW() OR failed_attempts >= 5 OR (temp_pass_status = 'pending' AND updated_at >= NOW() - INTERVAL 60 MINUTE)
-        if ($filters['tab'] === 'locked') {
-            $where_clauses[] = "(u.locked_until > NOW() OR u.failed_attempts >= 5 OR (u.temp_pass_status = 'pending' AND u.updated_at >= NOW() - INTERVAL 60 MINUTE))";
-        } elseif ($filters['tab'] === 'flagged') {
-            $where_clauses[] = "(u.failed_attempts >= 3 AND (u.locked_until IS NULL OR u.locked_until <= NOW()) AND u.temp_pass_status = 'none')";
+        // An account is listed as locked if it is currently locked, has
+        // exhausted its failed attempts, or a temporary password has been
+        // issued but not yet consumed by a successful customer login.
+        if ($filters['tab'] === 'flagged') {
+            $where_clauses[] = "(u.failed_attempts >= 3 AND u.failed_attempts < {$max_attempts} AND (u.locked_until IS NULL OR u.locked_until <= NOW()) AND u.temp_pass_status = 'none')";
         } else {
-            $where_clauses[] = "(u.locked_until > NOW() OR u.failed_attempts >= 5 OR (u.temp_pass_status = 'pending' AND u.updated_at >= NOW() - INTERVAL 60 MINUTE))";
+            $where_clauses[] = "(u.locked_until > NOW() OR u.failed_attempts >= {$max_attempts} OR u.temp_pass_status = 'pending')";
         }
 
         if ($filters['status'] === \App\Domain\Enums\AccountStatusEnum::PENDING->value) {
-            $where_clauses[] = "(u.temp_pass_status = 'none' AND (u.locked_until > NOW() OR u.failed_attempts >= 5))";
+            $where_clauses[] = "(u.temp_pass_status = 'none' AND (u.locked_until > NOW() OR u.failed_attempts >= {$max_attempts}))";
         } elseif ($filters['status'] === 'done') {
-            $where_clauses[] = "(u.temp_pass_status = 'pending' AND u.updated_at >= NOW() - INTERVAL 60 MINUTE)";
+            $where_clauses[] = "u.temp_pass_status = 'pending'";
         }
 
         if (!empty($filters['type'])) {
@@ -471,6 +479,9 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
             }
             $acc['avatar_url'] = $avatar_url;
 
+            $acc['is_locked'] = (!empty($acc['locked_until']) && strtotime($acc['locked_until']) > time())
+                || (int)($acc['failed_attempts'] ?? 0) >= $max_attempts;
+
             $is_done = (!empty($acc['temp_pass_status']) && $acc['temp_pass_status'] === 'pending');
             $acc['status_text'] = $is_done ? 'Done' : 'Pending';
             $acc['status_badge'] = $is_done ? 'badge-success' : 'badge-warn';
@@ -498,7 +509,12 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
             return ['success' => false, 'message' => 'User not found', 'code' => 404];
         }
 
-        $is_locked = ($user['failed_attempts'] >= 5) || ($user['locked_until'] && strtotime($user['locked_until']) > time());
+        try {
+            $max_attempts = (int)get_setting(\App\Shared\Core\Database::getInstance(), 'max_failed_login_attempts', 5);
+        } catch (\Throwable $e) {
+            $max_attempts = 5; // Settings unavailable (e.g. unit tests without DB)
+        }
+        $is_locked = ($user['failed_attempts'] >= $max_attempts) || ($user['locked_until'] && strtotime($user['locked_until']) > time());
         $lock_ts = $user['locked_until'] ? strtotime($user['locked_until']) : strtotime($user['updated_at']);
 
         $avatar_url = null;
@@ -656,9 +672,16 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
 * @param int $adminId
      * @return array
      */
-    public function recoverUser(int $userId, int $adminId): array
+    public function recoverUser(int $userId, int $adminId, string $balanceOption = 'full'): array
     {
         $pdo = \App\Shared\Core\Database::getInstance();
+
+        // Parity with processUserAction('recover'): recovering a user requires
+        // the soft-delete management permission (super admins bypass via RBAC).
+        if ($this->security !== null) {
+            $this->security->checkAdminPermission($adminId, 'soft_delete_user');
+        }
+
         $user = $this->repository->getUserForRecovery($userId);
 
         if (!$user) {
@@ -671,16 +694,40 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
 
         $this->repository->recoverUser($userId, $user['customer_id']);
 
-        if (function_exists('send_notification') && isset($pdo)) {
-            send_notification($pdo, $userId, \App\Domain\Enums\NotificationTypeEnum::SYSTEM->value,
-                'Account Restored',
-                'Your account has been restored and is now active. You can log in and continue banking.'
-            );
+        // Apply the chosen balance restoration policy (mirrors processUserAction 'recover').
+        if ($balanceOption === 'mandatory') {
+            $account = $this->repository->getUserForActionByCustomer($user['customer_id']);
+            if ($account && (float) $account['balance'] > 500) {
+                $deduction_amount = (float) $account['balance'] - 500;
+                $transactionId = 'TXN' . strtoupper(uniqid());
+                $this->repository->addSystemChargeTransaction($transactionId, (int) $account['id'], $deduction_amount);
+                if (function_exists('send_notification') && isset($pdo)) {
+                    send_notification($pdo, $userId, \App\Domain\Enums\NotificationTypeEnum::SYSTEM->value,
+                        'Account Restored – Balance Adjusted',
+                        'Your account has been restored. As per the recovery policy, your balance has been adjusted to the mandatory minimum of ₹500.00. An amount of ₹' . number_format($deduction_amount, 2) . ' was cleared as part of the restore process. This adjustment does not count toward your daily transfer limit.'
+                    );
+                }
+            } else {
+                if (function_exists('send_notification') && isset($pdo)) {
+                    send_notification($pdo, $userId, \App\Domain\Enums\NotificationTypeEnum::SYSTEM->value,
+                        'Account Restored',
+                        'Your account has been restored and is now active with your mandatory minimum balance. You can log in and continue banking.'
+                    );
+                }
+            }
+            $this->repository->updateAccountBalanceLease500($user['customer_id']);
+        } else {
+            if (function_exists('send_notification') && isset($pdo)) {
+                send_notification($pdo, $userId, \App\Domain\Enums\NotificationTypeEnum::SYSTEM->value,
+                    'Account Restored',
+                    'Your account has been restored and is now active. Your full balance has been retained. You can log in and continue banking.'
+                );
+            }
         }
 
         
             \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('user_recovered', $userId, \App\Domain\Enums\RoleEnum::USER->value, $adminId, \App\Domain\Enums\RoleEnum::ADMIN->value, "Recovered deleted user: {$user['full_name']}")
+    new \App\Application\Events\GenericAuditAction('user_recovered', $userId, \App\Domain\Enums\RoleEnum::USER->value, $adminId, \App\Domain\Enums\RoleEnum::ADMIN->value, "Recovered deleted user: {$user['full_name']}" . ($balanceOption === 'mandatory' ? ' with mandatory balance of 500' : ''))
 );
         
 
@@ -1374,15 +1421,21 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
         $symbols = '@#$%!';
         $chars = $lower . $upper . $digits . $symbols;
         
+        // Guarantee at least one character from each character class,
+        // generated with a cryptographically secure source.
         $temp_pass = '';
-        $temp_pass .= $lower[rand(0, strlen($lower) - 1)];
-        $temp_pass .= $upper[rand(0, strlen($upper) - 1)];
-        $temp_pass .= $digits[rand(0, strlen($digits) - 1)];
-        $temp_pass .= $symbols[rand(0, strlen($symbols) - 1)];
+        $temp_pass .= $lower[random_int(0, strlen($lower) - 1)];
+        $temp_pass .= $upper[random_int(0, strlen($upper) - 1)];
+        $temp_pass .= $digits[random_int(0, strlen($digits) - 1)];
+        $temp_pass .= $symbols[random_int(0, strlen($symbols) - 1)];
         for ($i = 4; $i < 12; $i++) {
-            $temp_pass .= $chars[rand(0, strlen($chars) - 1)];
+            $temp_pass .= $chars[random_int(0, strlen($chars) - 1)];
         }
-        $temp_pass = str_shuffle($temp_pass);
+        // Fisher-Yates shuffle (str_shuffle/rand are not CSPRNG-safe)
+        for ($i = strlen($temp_pass) - 1; $i > 0; $i--) {
+            $j = random_int(0, $i);
+            [$temp_pass[$i], $temp_pass[$j]] = [$temp_pass[$j], $temp_pass[$i]];
+        }
 
         $user = $this->repository->getUserForUnlock($userId);
         if (!$user) {

@@ -171,7 +171,8 @@ class AdminOperationsController
         $filters = [
             'tab'    => $this->security->cleanInput($_GET['tab'] ?? 'locked'),
             'search' => $this->security->cleanInput($_GET['search'] ?? ''),
-            'status' => $this->security->cleanInput($_GET['status'] ?? '')
+            'status' => $this->security->cleanInput($_GET['status'] ?? ''),
+            'type'   => $this->security->cleanInput($_GET['type'] ?? '')
         ];
         $page     = max(1, intval($_GET['page'] ?? 1));
         $per_page = min(50, max(10, intval($_GET['per_page'] ?? 20)));
@@ -220,7 +221,21 @@ class AdminOperationsController
             throw new ApiException('User ID is required', 422);
         }
 
-        $result = $this->service->recoverUser($userId, $adminId);
+        $input = $_POST;
+        if (empty($input)) {
+            $raw = file_get_contents('php://input');
+            $json = json_decode($raw, true);
+            if (is_array($json)) {
+                $input = $json;
+            }
+        }
+
+        $balanceOption = $this->security->cleanInput($input['balance_option'] ?? 'full');
+        if (!in_array($balanceOption, ['full', 'mandatory'], true)) {
+            $balanceOption = 'full';
+        }
+
+        $result = $this->service->recoverUser($userId, $adminId, $balanceOption);
         if (!$result['success']) {
             throw new ApiException($result['message'], $result['code'] ?? 500);
         }

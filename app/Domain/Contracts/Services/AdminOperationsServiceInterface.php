@@ -14,7 +14,7 @@ interface AdminOperationsServiceInterface
     public function getLockedAccounts(array $filters, int $page, int $perPage): array;
     public function getLockedAccountDetail(int $userId): array;
     public function getPendingApprovals(array $filters, int $page, int $perPage): array;
-    public function recoverUser(int $userId, int $adminId): array;
+    public function recoverUser(int $userId, int $adminId, string $balanceOption = 'full'): array;
     public function getApplicationDetails(int $userId): array;
     public function processApplication(int $userId, string $action, string $reason, string $notes, int $adminId): array;
     public function getSuspendedUsers(array $filters, int $page, int $perPage): array;
