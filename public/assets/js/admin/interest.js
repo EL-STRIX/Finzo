@@ -104,21 +104,28 @@
                 // Render Analytics Chart
                 if (chartContainer && Array.isArray(info.chart_data)) {
                     const rawData = info.chart_data;
-                    const maxVal = Math.max(...rawData, 1);
+                    const maxVal = Math.max(...rawData, 0);
                     
                     const chartHtml = rawData.map((val, idx) => {
-                        const height = maxVal > 0 ? Math.max(8, (val / maxVal) * 100) : 8;
-                        const formattedVal = '₹' + parseFloat(val || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                        const numVal = parseFloat(val || 0);
+                        let heightPercent = 0;
+                        if (maxVal > 0 && numVal > 0) {
+                            heightPercent = Math.max(12, Math.round((numVal / maxVal) * 100));
+                        }
+                        const formattedVal = '₹' + numVal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
                         const monthLabel = getMonthLabel(11 - idx);
+                        const hasValue = numVal > 0;
 
                         return `
-                            <div class="chart-bar flex-1 bg-primary/20 hover:bg-primary rounded-t-sm transition-all duration-300 relative group cursor-pointer flex flex-col justify-end" style="height: 100%;">
-                                <div class="w-full bg-primary/70 group-hover:bg-primary rounded-t-sm transition-all duration-300" style="height: ${height}%;"></div>
+                            <div class="flex-1 flex flex-col justify-end relative group cursor-pointer h-full" title="${monthLabel}: ${formattedVal}">
+                                <div class="w-full h-full bg-slate-100 dark:bg-white/5 hover:bg-slate-200/50 dark:hover:bg-white/10 rounded-t-sm flex flex-col justify-end p-0.5 transition-colors">
+                                    <div class="w-full ${hasValue ? 'bg-emerald-500 dark:bg-emerald-400 group-hover:bg-emerald-600 shadow-sm' : 'bg-slate-300/40 dark:bg-white/10'} rounded-t-sm transition-all duration-500" style="height: ${hasValue ? heightPercent : 4}%;"></div>
+                                </div>
                                 <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:flex flex-col items-center z-30 pointer-events-none">
-                                    <div class="bg-slate-900 text-white text-[10px] font-black py-1 px-2.5 rounded shadow-xl whitespace-nowrap">
+                                    <div class="bg-slate-900 text-white text-[10px] font-black py-1 px-2.5 rounded shadow-xl whitespace-nowrap border border-slate-700">
                                         ${monthLabel}: ${formattedVal}
                                     </div>
-                                    <div class="w-1.5 h-1.5 bg-slate-900 rotate-45 -mt-0.5"></div>
+                                    <div class="w-1.5 h-1.5 bg-slate-900 rotate-45 -mt-0.5 border-r border-b border-slate-700"></div>
                                 </div>
                             </div>
                         `;

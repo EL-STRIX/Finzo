@@ -108,7 +108,7 @@ ob_start();
                     <!-- Interest Chart -->
                     <div class="ds-card p-8">
                         <div class="text-[10px] font-black text-text-secondary uppercase tracking-widest mb-8">Credited Interest (12 Mo)</div>
-                        <div id="interest-chart-container" class="h-40 flex items-end gap-2 px-2">
+                        <div id="interest-chart-container" class="h-44 flex items-stretch gap-2 px-2 pt-4">
                             <!-- Bars injected by JS -->
                         </div>
                         <div class="flex justify-between mt-4 text-[10px] font-black text-text-secondary uppercase tracking-widest">
