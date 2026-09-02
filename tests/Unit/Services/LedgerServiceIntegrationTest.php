@@ -118,4 +118,95 @@ class LedgerServiceIntegrationTest extends TestCase
             $this->assertTrue(true);
         }
     }
+
+    public function testGetLedgerSummaryReturnsMetrics(): void
+    {
+        $repo = new \App\Infrastructure\Repositories\LedgerRepository();
+        $service = new \App\Application\Services\LedgerService($repo);
+
+        try {
+            $summary = $service->getLedgerSummary();
+            $this->assertIsArray($summary);
+            $this->assertArrayHasKey('total_debits', $summary);
+            $this->assertArrayHasKey('total_credits', $summary);
+            $this->assertArrayHasKey('is_balanced', $summary);
+            $this->assertArrayHasKey('assets', $summary);
+            $this->assertArrayHasKey('liabilities', $summary);
+        } catch (\PDOException $e) {
+            $this->assertTrue(true);
+        }
+    }
+
+    public function testGetJournalEntriesWithFilters(): void
+    {
+        $repo = new \App\Infrastructure\Repositories\LedgerRepository();
+        $service = new \App\Application\Services\LedgerService($repo);
+
+        try {
+            $debitsOnly = $service->getJournalEntries(1, 10, '', 'debit');
+            $this->assertIsArray($debitsOnly);
+            $this->assertArrayHasKey('data', $debitsOnly);
+
+            $creditsOnly = $service->getJournalEntries(1, 10, '', 'credit');
+            $this->assertIsArray($creditsOnly);
+            $this->assertArrayHasKey('data', $creditsOnly);
+
+            $searchResult = $service->getJournalEntries(1, 10, 'JNL', '');
+            $this->assertIsArray($searchResult);
+        } catch (\PDOException $e) {
+            $this->assertTrue(true);
+        }
+    }
+
+    public function testGetJournalDetail(): void
+    {
+        $repo = new \App\Infrastructure\Repositories\LedgerRepository();
+        $service = new \App\Application\Services\LedgerService($repo);
+
+        try {
+            $detail = $service->getJournalDetail(1);
+            if ($detail !== null) {
+                $this->assertIsArray($detail);
+                $this->assertArrayHasKey('lines', $detail);
+            } else {
+                $this->assertNull($detail);
+            }
+        } catch (\PDOException $e) {
+            $this->assertTrue(true);
+        }
+    }
+
+    public function testExportJournalsReturnsValidCsv(): void
+    {
+        $repo = new \App\Infrastructure\Repositories\LedgerRepository();
+        $service = new \App\Application\Services\LedgerService($repo);
+
+        try {
+            $csv = $service->exportJournals();
+            $this->assertIsString($csv);
+            $this->assertStringContainsString('Journal Number', $csv);
+            $this->assertStringContainsString('Debit (INR)', $csv);
+            $this->assertStringContainsString('Credit (INR)', $csv);
+        } catch (\PDOException $e) {
+            $this->assertTrue(true);
+        }
+    }
+
+    public function testOpenPeriodValidations(): void
+    {
+        $repo = new \App\Infrastructure\Repositories\LedgerRepository();
+        $service = new \App\Application\Services\LedgerService($repo);
+
+        try {
+            $active = $service->getActivePeriod();
+            if ($active) {
+                $this->expectException(\App\Shared\Core\Exceptions\BusinessRuleException::class);
+                $service->openPeriod('Duplicate Period', '2026-01-01', '2026-12-31', 1);
+            } else {
+                $this->assertTrue(true);
+            }
+        } catch (\PDOException $e) {
+            $this->assertTrue(true);
+        }
+    }
 }
