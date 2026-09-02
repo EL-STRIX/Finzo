@@ -1,6 +1,6 @@
 /**
  * Finzo Admin — Advanced Reporting Engine
- * Version 2.1 — Custom Animated Dropdowns, Registered Branches, Financial & Demographic Visualizations, and Instant CSV Streaming
+ * Version 2.2 — Relies on global FinzoUI dropdown handler; no local dropdown re-init.
  */
 
 (function() {
@@ -29,105 +29,38 @@
     }
 
     /**
-     * Initialize Custom Dropdowns with Smooth Animations
-     */
-    function initCustomDropdowns() {
-        document.querySelectorAll('.finzo-dropdown').forEach(dropdown => {
-            const trigger = dropdown.querySelector('.finzo-dropdown-trigger');
-            const menu = dropdown.querySelector('.finzo-dropdown-menu');
-            const label = dropdown.querySelector('.dropdown-label');
-            const hiddenInput = dropdown.querySelector('input[type="hidden"]');
-            const chevron = dropdown.querySelector('.chevron');
-            const options = dropdown.querySelectorAll('.finzo-dropdown-option');
-
-            if (!trigger || !menu) return;
-
-            // Toggle Open/Close
-            trigger.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const isOpen = menu.classList.contains('is-open') || dropdown.classList.contains('is-open');
-
-                // Close all other dropdowns
-                document.querySelectorAll('.finzo-dropdown.is-open, .finzo-dropdown-menu.is-open').forEach(el => {
-                    if (el !== dropdown && el !== menu) {
-                        el.classList.remove('is-open');
-                        const otherChevron = el.querySelector?.('.chevron') || el.closest?.('.finzo-dropdown')?.querySelector('.chevron');
-                        if (otherChevron) otherChevron.style.transform = 'rotate(0deg)';
-                    }
-                });
-
-                if (isOpen) {
-                    dropdown.classList.remove('is-open');
-                    menu.classList.remove('is-open');
-                    if (chevron) chevron.style.transform = 'rotate(0deg)';
-                } else {
-                    dropdown.classList.add('is-open');
-                    menu.classList.add('is-open');
-                    if (chevron) chevron.style.transform = 'rotate(180deg)';
-                }
-            });
-
-            // Option selection
-            options.forEach(option => {
-                option.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    const val = option.getAttribute('data-value') || '';
-                    const text = option.textContent.trim();
-
-                    if (hiddenInput) {
-                        hiddenInput.value = val;
-                        hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
-                    }
-                    if (label) label.textContent = text;
-
-                    options.forEach(o => o.classList.remove('is-selected'));
-                    option.classList.add('is-selected');
-
-                    dropdown.classList.remove('is-open');
-                    menu.classList.remove('is-open');
-                    if (chevron) chevron.style.transform = 'rotate(0deg)';
-                });
-            });
-        });
-
-        // Click outside listener
-        document.addEventListener('click', () => {
-            document.querySelectorAll('.finzo-dropdown.is-open, .finzo-dropdown-menu.is-open').forEach(el => {
-                el.classList.remove('is-open');
-            });
-            document.querySelectorAll('.finzo-dropdown .chevron').forEach(ch => {
-                ch.style.transform = 'rotate(0deg)';
-            });
-        });
-    }
-
-    /**
      * Handle Synchronous Report Generation
      */
     async function handleGenerate(type) {
         const form = document.getElementById(`form-${type}-report`);
         if (!form) return;
 
+        if (!window.api || typeof window.api.get !== 'function') {
+            toast('API module not loaded. Please refresh the page.', 'error');
+            return;
+        }
+
         const dateFromInput = form.querySelector('input[name="date_from"]');
         const dateToInput = form.querySelector('input[name="date_to"]');
-        
-        if (!dateFromInput.value || !dateToInput.value) {
+
+        if (!dateFromInput || !dateFromInput.value || !dateToInput || !dateToInput.value) {
             toast('Please select both start and end dates', 'warning');
             return;
         }
 
         const dateFrom = dateFromInput.value;
         const dateTo = dateToInput.value;
-        let queryParams = `date_from=${encodeURIComponent(dateFrom)}&date_to=${encodeURIComponent(dateTo)}`;
+        const params = { date_from: dateFrom, date_to: dateTo };
 
         if (type === 'financial') {
             const branchVal = document.getElementById('financial-branch-input')?.value || '';
-            if (branchVal) queryParams += `&branch_id=${encodeURIComponent(branchVal)}`;
+            if (branchVal) params.branch_id = branchVal;
         } else if (type === 'demographics') {
             const statusVal = document.getElementById('demographics-status-input')?.value || '';
-            if (statusVal) queryParams += `&status=${encodeURIComponent(statusVal)}`;
+            if (statusVal) params.status = statusVal;
         }
 
+        const queryParams = new URLSearchParams(params).toString();
         const submitBtn = form.querySelector('.btn-generate');
         const exportBtn = form.querySelector('.btn-export-csv');
 
@@ -139,23 +72,25 @@
         if (exportBtn) exportBtn.disabled = true;
 
         try {
-            const endpoint = `/admin/reports/${type}?${queryParams}`;
-            const res = await window.api.get(endpoint);
+            const res = await window.api.get(`/admin/reports/${type}?${queryParams}`);
 
-            if (res && (res.success || res.status === 200 || res.data)) {
-                const data = res.data || res;
+            // Unwrap: service returns {success, report, data} at top level
+            const data = (res && res.data) ? res.data : res;
+
+            if (res && res.success === true && data) {
                 if (type === 'financial') {
                     renderFinancialResults(data);
                 } else {
                     renderDemographicsResults(data);
                 }
-                toast(`${type.charAt(0).toUpperCase() + type.slice(1)} report insights generated`, 'success');
+                const label = type === 'financial' ? 'Financial' : 'Demographics';
+                toast(`${label} report generated successfully`, 'success');
             } else {
-                toast(res.message || 'Failed to generate report', 'error');
+                toast(res?.message || 'Failed to generate report. Please try again.', 'error');
             }
         } catch (error) {
-            console.error('Report error:', error);
-            toast('Failed to generate report from server', 'error');
+            console.error('Report generation error:', error);
+            toast('Server error while generating report', 'error');
         } finally {
             if (submitBtn) {
                 submitBtn.innerHTML = originalSubmitHtml;
@@ -167,37 +102,58 @@
 
     /**
      * Handle Direct CSV Export Download
+     * Uses window.api so the authenticated session cookie is passed,
+     * and the core api.js blob handler streams the file to the browser.
      */
-    function handleExport(type) {
+    async function handleExport(type) {
         const form = document.getElementById(`form-${type}-report`);
         if (!form) return;
 
+        if (!window.api || typeof window.api.get !== 'function') {
+            toast('API module not loaded. Please refresh the page.', 'error');
+            return;
+        }
+
         const dateFromInput = form.querySelector('input[name="date_from"]');
         const dateToInput = form.querySelector('input[name="date_to"]');
-        
+
         const dateFrom = dateFromInput ? dateFromInput.value : '';
-        const dateTo = dateToInput ? dateToInput.value : '';
-        let queryParams = `date_from=${encodeURIComponent(dateFrom)}&date_to=${encodeURIComponent(dateTo)}`;
+        const dateTo   = dateToInput  ? dateToInput.value  : '';
+        const params = { date_from: dateFrom, date_to: dateTo };
 
         if (type === 'financial') {
             const branchVal = document.getElementById('financial-branch-input')?.value || '';
-            if (branchVal) queryParams += `&branch_id=${encodeURIComponent(branchVal)}`;
+            if (branchVal) params.branch_id = branchVal;
         } else if (type === 'demographics') {
             const statusVal = document.getElementById('demographics-status-input')?.value || '';
-            if (statusVal) queryParams += `&status=${encodeURIComponent(statusVal)}`;
+            if (statusVal) params.status = statusVal;
         }
 
-        const downloadUrl = `/Finzo/api/v1/admin/reports/${type}/export?${queryParams}`;
+        const queryParams = new URLSearchParams(params).toString();
 
-        toast('Preparing CSV file download...', 'info');
-        
-        // Trigger browser download
-        const iframe = document.createElement('iframe');
-        iframe.style.display = 'none';
-        iframe.src = downloadUrl;
-        document.body.appendChild(iframe);
-        setTimeout(() => iframe.remove(), 10000);
+        const exportBtn = form.querySelector('.btn-export-csv');
+        const originalHtml = exportBtn ? exportBtn.innerHTML : '';
+        if (exportBtn) {
+            exportBtn.innerHTML = '<span class="material-symbols-outlined text-[18px] animate-spin">refresh</span><span>Preparing...</span>';
+            exportBtn.disabled = true;
+        }
+
+        toast('Preparing CSV export — downloading shortly...', 'info');
+
+        try {
+            // api.js blob handler fires automatically for text/csv content-type
+            await window.api.get(`/admin/reports/${type}/export?${queryParams}`);
+        } catch (err) {
+            console.error('Export error:', err);
+            toast('Failed to export CSV. Please try again.', 'error');
+        } finally {
+            if (exportBtn) {
+                exportBtn.innerHTML = originalHtml;
+                exportBtn.disabled = false;
+            }
+        }
     }
+
 
     /**
      * Render Financial Report Metrics
@@ -357,8 +313,6 @@
             if (input.name === 'date_from' && !input.value) input.value = firstDay;
             if (input.name === 'date_to' && !input.value) input.value = lastDay;
         });
-
-        initCustomDropdowns();
 
         // Bind Generate buttons
         document.querySelectorAll('.btn-generate').forEach(btn => {
