@@ -157,12 +157,19 @@ ob_start();
                             <span class="material-symbols-outlined text-xs">close</span>
                         </button>
                     </div>
-                    <!-- Type Filter -->
-                    <select id="journals-type-filter" class="py-1.5 px-3 bg-background border border-border-subtle rounded-xl text-xs font-bold text-text-primary focus:outline-none focus:border-primary cursor-pointer">
-                        <option value="">All Lines</option>
-                        <option value="debit">Debit Only (DR)</option>
-                        <option value="credit">Credit Only (CR)</option>
-                    </select>
+                    <!-- Type Filter Dropdown -->
+                    <div class="finzo-dropdown min-w-[145px] relative" id="journals-type-dropdown">
+                        <input type="hidden" id="journals-type-filter" value="">
+                        <div class="finzo-dropdown-trigger fin-input !h-[34px] !py-1 !px-3 !flex items-center justify-between cursor-pointer w-full text-xs font-bold bg-background border border-border-subtle rounded-xl text-text-primary hover:border-primary transition-colors">
+                            <span class="dropdown-label truncate">All Lines</span>
+                            <span class="material-symbols-outlined chevron text-sm transition-transform duration-300 text-text-secondary" aria-hidden="true">expand_more</span>
+                        </div>
+                        <div class="finzo-dropdown-menu w-full z-50">
+                            <div class="finzo-dropdown-option is-selected text-xs py-2 px-3" data-value="">All Lines</div>
+                            <div class="finzo-dropdown-option text-xs py-2 px-3" data-value="debit">Debit Only (DR)</div>
+                            <div class="finzo-dropdown-option text-xs py-2 px-3" data-value="credit">Credit Only (CR)</div>
+                        </div>
+                    </div>
                 </div>
             </div>
             
