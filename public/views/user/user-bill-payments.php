@@ -15,7 +15,7 @@ ob_start();
             </span>
         </div>
         <h1 class="font-display text-3xl font-extrabold text-text-primary tracking-tight">Bill Payments &amp; Utilities</h1>
-        <p class="text-text-secondary text-sm mt-1">Unified Bharat BillPay (BBPS) integration for electricity, water, mobile recharge, broadband, and municipal services.</p>
+        <p class="text-text-secondary text-sm mt-1">Unified Bharat BillPay (BBPS) integration for electricity, water, mobile recharge, broadband, DTH, gas &amp; FASTag.</p>
     </div>
     <div class="flex items-center gap-3">
         <button id="btn-bill-waitlist" class="btn btn-primary shadow-lg hover:shadow-primary/25 transition-all flex items-center gap-2">
@@ -44,7 +44,7 @@ ob_start();
             Seamless Utility &amp; Biller Payments
         </h2>
         <p class="text-text-secondary text-sm leading-relaxed mb-6">
-            We are integrating Finzo directly with NPCI’s Bharat BillPay System (BBPS). Settle daily utility dues, configure automated recurring debits, fetch live meter bills, and receive instant digital receipt statements without convenience fees or third-party redirection.
+            We are integrating Finzo directly with NPCI's Bharat BillPay System (BBPS). Settle daily utility dues, configure automated recurring debits, fetch live meter bills, and receive instant digital receipt statements without convenience fees or third-party redirection.
         </p>
 
         <div class="flex flex-wrap items-center gap-3">
@@ -69,13 +69,14 @@ ob_start();
     <div class="flex items-center justify-between mb-4">
         <div>
             <h3 class="font-headline font-bold text-lg text-text-primary">Supported Biller Categories</h3>
-            <p class="text-xs text-text-secondary">Click any utility category to explore upcoming supported billers.</p>
+            <p class="text-xs text-text-secondary">Click any utility category to explore upcoming supported billers and run a demo simulation.</p>
         </div>
         <span id="active-category-pill" class="text-xs font-mono font-bold px-2.5 py-1 rounded-lg bg-primary/10 text-primary border border-primary/20">Electricity Selected</span>
     </div>
 
-    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4" id="category-grid">
-        <div onclick="setCategory('Electricity', 'bolt', ['Tata Power', 'Adani Electricity', 'BESCOM Bangalore', 'BSES Rajdhani Delhi', 'MSEB Maharashtra', 'WBSEDCL'])" class="category-card active-category ds-card p-4 border border-primary/40 bg-primary/5 hover:border-primary transition-all cursor-pointer flex flex-col items-center text-center group">
+    <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3" id="category-grid">
+
+        <div data-cat-id="electricity" class="category-card active-category ds-card p-4 border border-primary/40 bg-primary/5 hover:border-primary transition-all cursor-pointer flex flex-col items-center text-center group">
             <div class="w-12 h-12 rounded-xl bg-amber-500/10 text-amber-500 group-hover:scale-110 transition-transform flex items-center justify-center mb-2">
                 <span class="material-symbols-outlined text-2xl">bolt</span>
             </div>
@@ -83,7 +84,7 @@ ob_start();
             <span class="text-[10px] text-text-secondary mt-0.5">Power Utilities</span>
         </div>
 
-        <div onclick="setCategory('Water', 'water_drop', ['Delhi Jal Board (DJB)', 'BWSSB Bangalore', 'Municipal Corp of Mumbai', 'Chennai Metrowater', 'Hyderabad HMWSSB'])" class="category-card ds-card p-4 border border-border-subtle bg-surface/80 hover:border-primary/50 transition-all cursor-pointer flex flex-col items-center text-center group">
+        <div data-cat-id="water" class="category-card ds-card p-4 border border-border-subtle bg-surface/80 hover:border-primary/50 transition-all cursor-pointer flex flex-col items-center text-center group">
             <div class="w-12 h-12 rounded-xl bg-blue-500/10 text-blue-500 group-hover:scale-110 transition-transform flex items-center justify-center mb-2">
                 <span class="material-symbols-outlined text-2xl">water_drop</span>
             </div>
@@ -91,7 +92,7 @@ ob_start();
             <span class="text-[10px] text-text-secondary mt-0.5">Municipal Supply</span>
         </div>
 
-        <div onclick="setCategory('Mobile', 'smartphone', ['Airtel Postpaid & Prepaid', 'Jio Telecommunications', 'Vodafone Idea (Vi)', 'BSNL Mobile'])" class="category-card ds-card p-4 border border-border-subtle bg-surface/80 hover:border-primary/50 transition-all cursor-pointer flex flex-col items-center text-center group">
+        <div data-cat-id="mobile" class="category-card ds-card p-4 border border-border-subtle bg-surface/80 hover:border-primary/50 transition-all cursor-pointer flex flex-col items-center text-center group">
             <div class="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-500 group-hover:scale-110 transition-transform flex items-center justify-center mb-2">
                 <span class="material-symbols-outlined text-2xl">smartphone</span>
             </div>
@@ -99,7 +100,7 @@ ob_start();
             <span class="text-[10px] text-text-secondary mt-0.5">Recharge &amp; Postpaid</span>
         </div>
 
-        <div onclick="setCategory('Broadband', 'wifi', ['JioFiber GigaFast', 'Airtel Xstream Fiber', 'ACT Fibernet', 'Tata Play Fiber', 'Hathway Broadband'])" class="category-card ds-card p-4 border border-border-subtle bg-surface/80 hover:border-primary/50 transition-all cursor-pointer flex flex-col items-center text-center group">
+        <div data-cat-id="broadband" class="category-card ds-card p-4 border border-border-subtle bg-surface/80 hover:border-primary/50 transition-all cursor-pointer flex flex-col items-center text-center group">
             <div class="w-12 h-12 rounded-xl bg-indigo-500/10 text-indigo-500 group-hover:scale-110 transition-transform flex items-center justify-center mb-2">
                 <span class="material-symbols-outlined text-2xl">wifi</span>
             </div>
@@ -107,27 +108,36 @@ ob_start();
             <span class="text-[10px] text-text-secondary mt-0.5">Fiber &amp; Cable</span>
         </div>
 
-        <div onclick="setCategory('DTH', 'tv', ['Tata Play DTH', 'Airtel Digital TV', 'Dish TV India', 'Sun Direct', 'D2H Videocon'])" class="category-card ds-card p-4 border border-border-subtle bg-surface/80 hover:border-primary/50 transition-all cursor-pointer flex flex-col items-center text-center group">
+        <div data-cat-id="dth" class="category-card ds-card p-4 border border-border-subtle bg-surface/80 hover:border-primary/50 transition-all cursor-pointer flex flex-col items-center text-center group">
             <div class="w-12 h-12 rounded-xl bg-rose-500/10 text-rose-500 group-hover:scale-110 transition-transform flex items-center justify-center mb-2">
                 <span class="material-symbols-outlined text-2xl">tv</span>
             </div>
-            <span class="text-xs font-bold text-text-primary">DTH Cable</span>
+            <span class="text-xs font-bold text-text-primary">DTH / Cable</span>
             <span class="text-[10px] text-text-secondary mt-0.5">Satellite TV</span>
         </div>
 
-        <div onclick="setCategory('Piped Gas', 'local_fire_department', ['Indraprastha Gas (IGL)', 'Mahanagar Gas (MGL)', 'Adani Total Gas', 'Gujarat Gas Ltd', 'FASTag Recharges'])" class="category-card ds-card p-4 border border-border-subtle bg-surface/80 hover:border-primary/50 transition-all cursor-pointer flex flex-col items-center text-center group">
+        <div data-cat-id="gas" class="category-card ds-card p-4 border border-border-subtle bg-surface/80 hover:border-primary/50 transition-all cursor-pointer flex flex-col items-center text-center group">
             <div class="w-12 h-12 rounded-xl bg-orange-500/10 text-orange-500 group-hover:scale-110 transition-transform flex items-center justify-center mb-2">
                 <span class="material-symbols-outlined text-2xl">local_fire_department</span>
             </div>
-            <span class="text-xs font-bold text-text-primary">Gas &amp; FASTag</span>
-            <span class="text-[10px] text-text-secondary mt-0.5">Piped PNG &amp; Tolls</span>
+            <span class="text-xs font-bold text-text-primary">Piped Gas</span>
+            <span class="text-[10px] text-text-secondary mt-0.5">PNG &amp; Cylinders</span>
         </div>
+
+        <div data-cat-id="fastag" class="category-card ds-card p-4 border border-border-subtle bg-surface/80 hover:border-primary/50 transition-all cursor-pointer flex flex-col items-center text-center group">
+            <div class="w-12 h-12 rounded-xl bg-teal-500/10 text-teal-500 group-hover:scale-110 transition-transform flex items-center justify-center mb-2">
+                <span class="material-symbols-outlined text-2xl">toll</span>
+            </div>
+            <span class="text-xs font-bold text-text-primary">FASTag</span>
+            <span class="text-[10px] text-text-secondary mt-0.5">NHAI Toll Recharge</span>
+        </div>
+
     </div>
 </div>
 
-<!-- Interactive BBPS Sandbox & Biller Directory Preview -->
+<!-- Interactive BBPS Sandbox & Benefits Preview -->
 <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-8 ds-animate-slide-up">
-    
+
     <!-- Sandbox Form -->
     <div class="lg:col-span-6 ds-card p-6 border border-border-subtle bg-surface/80 flex flex-col justify-between">
         <div>
@@ -141,23 +151,31 @@ ob_start();
                 </div>
             </div>
 
-            <form id="sandbox-bill-form" onsubmit="simulateBillFetch(event)" class="space-y-4">
+            <form id="sandbox-bill-form" class="space-y-4">
+                <!-- Provider Dropdown — uses the global Finzo animated dropdown system -->
                 <div>
                     <label class="fin-label fin-label-required">Selected Provider / Biller</label>
-                    <select id="sandbox-biller-select" class="fin-select w-full" required>
-                        <option value="Tata Power Delhi">Tata Power</option>
-                        <option value="Adani Electricity Mumbai">Adani Electricity</option>
-                        <option value="BESCOM Bangalore">BESCOM Bangalore</option>
-                        <option value="BSES Rajdhani Power">BSES Rajdhani Delhi</option>
-                        <option value="MSEB Maharashtra">MSEB Maharashtra</option>
-                    </select>
+                    <div class="finzo-dropdown relative w-full" id="biller-dropdown">
+                        <!-- trigger: ui-components.js sets aria-* automatically, do not duplicate -->
+                        <div class="finzo-dropdown-trigger fin-input !flex items-center justify-between cursor-pointer w-full !h-[44px] text-sm">
+                            <span class="dropdown-label" id="biller-selected-label">Tata Power Delhi</span>
+                            <span class="chevron material-symbols-outlined text-text-secondary text-sm">expand_more</span>
+                        </div>
+                        <!-- menu: options injected by JS per category -->
+                        <div class="finzo-dropdown-menu !z-[1500] !w-full" id="biller-dropdown-menu">
+                            <!-- populated by buildBillerOptions() in user-bill-payments.js -->
+                        </div>
+                        <!-- hidden input MUST be inside .finzo-dropdown so ui-components.js updates it on selection -->
+                        <input type="hidden" id="sandbox-biller-value" value="Tata Power Delhi" />
+                    </div>
                 </div>
 
+                <!-- Consumer Number field (label changes per category) -->
                 <div>
-                    <label class="fin-label fin-label-required">Consumer / Account / CA Number</label>
+                    <label class="fin-label fin-label-required" id="consumer-no-label">Consumer / CA Number</label>
                     <div class="relative">
-                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary text-sm">badge</span>
-                        <input type="text" id="sandbox-consumer-no" class="fin-input w-full pl-9 font-mono" required placeholder="e.g. 1029384756" value="1029384756" />
+                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary text-sm" id="consumer-icon">badge</span>
+                        <input type="text" id="sandbox-consumer-no" class="fin-input w-full pl-9 font-mono" placeholder="e.g. 1029384756" value="1029384756" />
                     </div>
                 </div>
 
@@ -170,22 +188,26 @@ ob_start();
             </form>
 
             <!-- Simulation Result Card -->
-            <div id="sandbox-result" class="mt-5 p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/5 hidden animate-in fade-in slide-in-from-top-2 duration-300">
+            <div id="sandbox-result" class="mt-5 p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/5 hidden">
                 <div class="flex items-center justify-between mb-2">
                     <div class="flex items-center gap-1.5 text-xs font-bold text-emerald-600 dark:text-emerald-400">
                         <span class="material-symbols-outlined text-sm">verified</span>
                         <span>Bill Discovered via BBPS</span>
                     </div>
-                    <span class="text-[10px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">DUE IN 8 DAYS</span>
+                    <span id="demo-due-badge" class="text-[10px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">DUE IN 8 DAYS</span>
                 </div>
                 <div class="grid grid-cols-2 gap-2 text-xs border-t border-emerald-500/10 pt-2 mt-2">
                     <div>
-                        <span class="text-text-secondary text-[10px] uppercase font-bold">Consumer Name</span>
-                        <div class="font-bold text-text-primary" id="demo-consumer-name">Sujay Paul</div>
+                        <span class="text-text-secondary text-[10px] uppercase font-bold" id="demo-name-label">Consumer Name</span>
+                        <div class="font-bold text-text-primary" id="demo-consumer-name">Arjun Sharma</div>
                     </div>
                     <div>
-                        <span class="text-text-secondary text-[10px] uppercase font-bold">Invoice Amount</span>
+                        <span class="text-text-secondary text-[10px] uppercase font-bold">Amount Due</span>
                         <div class="font-black text-base text-primary font-mono" id="demo-bill-amount">₹ 1,420.00</div>
+                    </div>
+                    <div class="col-span-2 mt-1">
+                        <span class="text-text-secondary text-[10px] uppercase font-bold">Provider</span>
+                        <div class="font-bold text-text-primary text-xs" id="demo-provider-name">Tata Power Delhi</div>
                     </div>
                 </div>
                 <div class="text-[11px] text-text-secondary mt-3">
@@ -200,7 +222,7 @@ ob_start();
         </div>
     </div>
 
-    <!-- Supported Billers Grid & Benefits Showcase -->
+    <!-- Benefits Showcase -->
     <div class="lg:col-span-6 ds-card p-6 border border-border-subtle flex flex-col justify-between">
         <div>
             <div class="flex items-center justify-between mb-4">
