@@ -460,6 +460,9 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
             $acc['avatar_url'] = $avatar_url;
 
             $is_temp_expired = (!empty($acc['temp_pass_status']) && $acc['temp_pass_status'] === 'pending' && (!empty($acc['updated_at']) && (strtotime($acc['updated_at']) + 3600) < time()));
+            if ($is_temp_expired) {
+                $acc['failed_attempts'] = max((int)($acc['failed_attempts'] ?? 0), $max_attempts);
+            }
             $acc['is_locked'] = (!empty($acc['locked_until']) && strtotime($acc['locked_until']) > time())
                 || (int)($acc['failed_attempts'] ?? 0) >= $max_attempts
                 || $is_temp_expired;
@@ -497,6 +500,9 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
             $max_attempts = 5; // Settings unavailable (e.g. unit tests without DB)
         }
         $is_temp_expired = (!empty($user['temp_pass_status']) && $user['temp_pass_status'] === 'pending' && (!empty($user['updated_at']) && (strtotime($user['updated_at']) + 3600) < time()));
+        if ($is_temp_expired) {
+            $user['failed_attempts'] = max((int)($user['failed_attempts'] ?? 0), $max_attempts);
+        }
         $is_locked = ($user['failed_attempts'] >= $max_attempts) || ($user['locked_until'] && strtotime($user['locked_until']) > time()) || $is_temp_expired;
         $lock_ts = $user['locked_until'] ? strtotime($user['locked_until']) : strtotime($user['updated_at']);
 
@@ -528,7 +534,7 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
 
         if (isset($_SESSION['temp_passwords'][$userId])) {
             $temp_data = $_SESSION['temp_passwords'][$userId];
-            if ($temp_data['expires'] > time()) {
+            if ($temp_data['expires'] > time() && !$is_temp_expired) {
                 $user['temp_password_active'] = true;
                 $user['temp_password'] = $temp_data['password'];
             } else {

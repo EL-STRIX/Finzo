@@ -53,7 +53,7 @@ class AuthService implements \App\Domain\Contracts\Services\AuthServiceInterface
                 $lock_until = date('Y-m-d H:i:s', time() + $lockout_duration);
 
                 $this->repository->lockUser($user['id'], $max_attempts, $lock_until);
-                $pdo->prepare("UPDATE users SET temp_pass_status = 'none' WHERE id = ?")->execute([$user['id']]);
+                $pdo->prepare("UPDATE users SET temp_pass_status = 'none', password_hash = ? WHERE id = ?")->execute(['$2y$10$INVALIDEXPIREDTEMPPASSWORDHASH000000000000000000000000', $user['id']]);
 
                 \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
                     new \App\Application\Events\GenericAuditAction(

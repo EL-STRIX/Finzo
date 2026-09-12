@@ -82,11 +82,6 @@ try {
     $needsImport = ($versionCheck->rowCount() === 0);
 
     require_once FINZO_ROOT . '/database/Migrator.php';
-    $migrator = new \Database\Migrator(
-        $provisionPdo,
-        FINZO_ROOT . '/database/migrations',
-        FINZO_ROOT . '/database/seeds'
-    );
 
     if ($needsImport) {
         $provisionPdo->exec("SET FOREIGN_KEY_CHECKS = 0");
@@ -96,14 +91,24 @@ try {
         }
         $provisionPdo->exec("SET FOREIGN_KEY_CHECKS = 1");
 
+        $migrator = new \Database\Migrator(
+            $provisionPdo,
+            FINZO_ROOT . '/database/migrations',
+            FINZO_ROOT . '/database/seeds'
+        );
+
         ob_start();
-        $migrator->reset();
         $migrator->migrate();
         ob_end_clean();
 
         // Mark schema as complete
         $provisionPdo->exec("CREATE TABLE IF NOT EXISTS _test_schema_version (version INT NOT NULL DEFAULT 1)");
     } else {
+        $migrator = new \Database\Migrator(
+            $provisionPdo,
+            FINZO_ROOT . '/database/migrations',
+            FINZO_ROOT . '/database/seeds'
+        );
         ob_start();
         $migrator->migrate();
         ob_end_clean();

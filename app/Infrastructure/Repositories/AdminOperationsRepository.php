@@ -467,7 +467,7 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
             FROM users u
             LEFT JOIN accounts a ON u.customer_id = a.user_id
             WHERE {$whereSql}
-            ORDER BY u.locked_until DESC, u.failed_attempts DESC
+            ORDER BY COALESCE(u.locked_until, u.updated_at) DESC, u.failed_attempts DESC
             LIMIT {$perPage} OFFSET {$offset}
         ", $params);
     }
@@ -476,7 +476,7 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
         return $this->fetchOne("
             SELECT u.id, u.customer_id, u.full_name, u.email, u.phone, u.status,
                    u.profile_picture, u.failed_attempts, u.locked_until,
-                   u.last_login_at, u.last_login_ip, u.updated_at,
+                   u.last_login_at, u.last_login_ip, u.updated_at, u.temp_pass_status,
                    a.account_no, a.account_type, a.balance, a.opened_date
             FROM users u
             LEFT JOIN accounts a ON u.customer_id = a.user_id
