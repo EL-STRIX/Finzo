@@ -124,6 +124,16 @@ class AuthBruteforceTest extends TestCase {
             $this->assertStringContainsString('expired (valid for 60 minutes)', $response['message']);
         }
 
+        // 6b. Verify user is now re-locked and appears in the active locked accounts list
+        $lockedListRelocked = $adminOpsService->getLockedAccounts(['tab' => 'locked', 'search' => $email, 'status' => '', 'type' => ''], 1, 10);
+        $this->assertGreaterThanOrEqual(1, $lockedListRelocked['total'], 'Expired account must reappear in active locked list');
+        $this->assertTrue($lockedListRelocked['accounts'][0]['is_locked']);
+
+        // 6c. Verify admin can again regenerate a temporary password for the user
+        $unlockRes2 = $adminOpsService->unlockAccount($userId, $adminId);
+        $this->assertTrue($unlockRes2['success']);
+        $this->assertNotEmpty($unlockRes2['temp_password']);
+
         // 7. Verify a user logging in within the 60 minutes succeeds and clears temp_pass_status
         $emailValid = 'locked_valid_' . time() . '_' . rand(1000, 9999) . '@example.com';
         $customerIdValid = UserFactory::createCustomer([

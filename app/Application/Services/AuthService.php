@@ -47,7 +47,26 @@ class AuthService implements \App\Domain\Contracts\Services\AuthServiceInterface
         if (!empty($user['temp_pass_status']) && $user['temp_pass_status'] === 'pending') {
             $updated_ts = !empty($user['updated_at']) ? strtotime($user['updated_at']) : 0;
             if ($updated_ts > 0 && ($updated_ts + 3600) < time()) {
-                throw new ApiException('Your temporary password has expired (valid for 60 minutes). Please contact an administrator to generate a new one.', 401);
+                $pdo = $this->repository->getPDO();
+                $max_attempts = get_setting($pdo, 'max_failed_login_attempts', 5);
+                $lockout_duration = get_setting($pdo, 'customer_lockout_duration', LOCKOUT_DURATION);
+                $lock_until = date('Y-m-d H:i:s', time() + $lockout_duration);
+
+                $this->repository->lockUser($user['id'], $max_attempts, $lock_until);
+                $pdo->prepare("UPDATE users SET temp_pass_status = 'none' WHERE id = ?")->execute([$user['id']]);
+
+                \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
+                    new \App\Application\Events\GenericAuditAction(
+                        \App\Domain\Enums\AuditActionEnum::ACCOUNT_LOCKED->value,
+                        $user['id'],
+                        \App\Domain\Enums\RoleEnum::USER->value,
+                        $user['id'],
+                        \App\Domain\Enums\RoleEnum::USER->value,
+                        "Account re-locked after 60-minute temporary password expired without login"
+                    )
+                );
+
+                throw new ApiException('Your temporary password has expired (valid for 60 minutes). Your account has been locked. Please contact an administrator to generate a new one.', 401);
             }
         }
 

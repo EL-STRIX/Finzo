@@ -408,11 +408,11 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
                 // If explicitly filtering by "Done", show accounts unlocked with a temp password within the 60-minute window
                 $where_clauses[] = "(u.temp_pass_status = 'pending' AND u.updated_at >= DATE_SUB(NOW(), INTERVAL 60 MINUTE))";
             } elseif ($filters['status'] === \App\Domain\Enums\AccountStatusEnum::PENDING->value) {
-                $where_clauses[] = "(u.locked_until > NOW() OR u.failed_attempts >= {$max_attempts})";
+                $where_clauses[] = "(u.locked_until > NOW() OR u.failed_attempts >= {$max_attempts} OR (u.temp_pass_status = 'pending' AND u.updated_at < DATE_SUB(NOW(), INTERVAL 60 MINUTE)))";
             } else {
-                // Default: Locked accounts queue only contains accounts actively locked needing resolution.
-                // Accounts unlocked with a 60-minute temporary password are removed from the active list.
-                $where_clauses[] = "(u.locked_until > NOW() OR u.failed_attempts >= {$max_attempts})";
+                // Default: Locked accounts queue contains accounts actively locked needing resolution,
+                // including accounts where the 60-minute temporary password expired without being used.
+                $where_clauses[] = "(u.locked_until > NOW() OR u.failed_attempts >= {$max_attempts} OR (u.temp_pass_status = 'pending' AND u.updated_at < DATE_SUB(NOW(), INTERVAL 60 MINUTE)))";
             }
         }
 
@@ -459,10 +459,12 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
             }
             $acc['avatar_url'] = $avatar_url;
 
+            $is_temp_expired = (!empty($acc['temp_pass_status']) && $acc['temp_pass_status'] === 'pending' && (!empty($acc['updated_at']) && (strtotime($acc['updated_at']) + 3600) < time()));
             $acc['is_locked'] = (!empty($acc['locked_until']) && strtotime($acc['locked_until']) > time())
-                || (int)($acc['failed_attempts'] ?? 0) >= $max_attempts;
+                || (int)($acc['failed_attempts'] ?? 0) >= $max_attempts
+                || $is_temp_expired;
 
-            $is_done = (!empty($acc['temp_pass_status']) && $acc['temp_pass_status'] === 'pending');
+            $is_done = (!empty($acc['temp_pass_status']) && $acc['temp_pass_status'] === 'pending' && !$is_temp_expired);
             $acc['status_text'] = $is_done ? 'Done' : 'Pending';
             $acc['status_badge'] = $is_done ? 'badge-success' : 'badge-warn';
             $formatted_accounts[] = $acc;
@@ -494,7 +496,8 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
         } catch (\Throwable $e) {
             $max_attempts = 5; // Settings unavailable (e.g. unit tests without DB)
         }
-        $is_locked = ($user['failed_attempts'] >= $max_attempts) || ($user['locked_until'] && strtotime($user['locked_until']) > time());
+        $is_temp_expired = (!empty($user['temp_pass_status']) && $user['temp_pass_status'] === 'pending' && (!empty($user['updated_at']) && (strtotime($user['updated_at']) + 3600) < time()));
+        $is_locked = ($user['failed_attempts'] >= $max_attempts) || ($user['locked_until'] && strtotime($user['locked_until']) > time()) || $is_temp_expired;
         $lock_ts = $user['locked_until'] ? strtotime($user['locked_until']) : strtotime($user['updated_at']);
 
         $avatar_url = null;
