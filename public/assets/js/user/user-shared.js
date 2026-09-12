@@ -657,12 +657,26 @@ function showToast(message, type = 'success', duration = 3000) {
     document.body.appendChild(container);
   }
   const toast = document.createElement('div');
-  const icons = { success: 'check_circle', error: 'cancel', warning: 'warning', info: 'info' };
-  const colors = { success: '#10b981', error: '#f43f5e', warning: '#f59e0b', info: '#0891b2' };
-  toast.className = `toast toast-${type}`;
-  toast.innerHTML = `<span class="material-symbols-outlined"  aria-hidden="true">${icons[type]}</span><span>${message}</span>`;
+  const typeClass = (type === 'error' || type === 'danger') ? 'toast-danger' : `toast-${type}`;
+  const icons = { success: 'check_circle', error: 'cancel', danger: 'cancel', warning: 'warning', info: 'info' };
+  toast.className = `toast ${typeClass}`;
+  toast.innerHTML = `
+    <div class="toast-icon">
+      <span class="material-symbols-outlined text-base" aria-hidden="true">${icons[type] || 'info'}</span>
+    </div>
+    <div class="toast-content">
+      <div class="toast-title">${type.charAt(0).toUpperCase() + type.slice(1)}</div>
+      <div class="toast-message">${message}</div>
+    </div>
+  `;
   container.appendChild(toast);
-  setTimeout(() => { toast.style.opacity = '0'; toast.style.transform = 'translateX(20px)'; toast.style.transition = '0.3s'; setTimeout(() => toast.remove(), 300); }, duration);
+  requestAnimationFrame(() => {
+    toast.classList.add('is-active');
+  });
+  setTimeout(() => {
+    toast.classList.remove('is-active');
+    setTimeout(() => toast.remove(), 350);
+  }, duration);
 }
 window.showToast = showToast;
 

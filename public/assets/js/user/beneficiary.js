@@ -183,14 +183,18 @@ async function lookupBen() {
   }
 }
 
+let isSavingBeneficiary = false;
+
 async function addBeneficiary() {
+  if (isSavingBeneficiary) return;
+
   const nickInput = document.getElementById('new-nick');
   const accInput = document.getElementById('new-acc');
   const nick = (nickInput ? nickInput.value : '').trim();
   const acc = (accInput ? accInput.value : '').trim().toUpperCase();
 
   if (!nick || !acc) {
-    toast('Please fill in both Nickname and Account Number', 'error');
+    toast('Please fill in both Nickname and Account Number', 'warning');
     if (!nick && nickInput) nickInput.focus();
     else if (!acc && accInput) accInput.focus();
     return;
@@ -207,6 +211,7 @@ async function addBeneficiary() {
     }
   }
 
+  isSavingBeneficiary = true;
   if (saveBtn) {
     saveBtn.disabled = true;
     saveBtn.innerHTML = '<span class="material-symbols-outlined animate-spin text-sm">sync</span><span>Saving...</span>';
@@ -244,6 +249,7 @@ async function addBeneficiary() {
     console.error('Error saving beneficiary:', e);
     toast('Connection error saving beneficiary', 'error');
   } finally {
+    isSavingBeneficiary = false;
     if (saveBtn) {
       saveBtn.disabled = false;
       saveBtn.innerHTML = originalSaveBtnHtml;

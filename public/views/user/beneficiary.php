@@ -51,7 +51,7 @@ ob_start();
                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" aria-hidden="true">tag</span>
                <input type="text" class="form-control pl-10 font-mono font-bold uppercase tracking-wider" id="new-acc" placeholder="FNZ20260002" oninput="resetLookup()"/>
             </div>
-            <button id="btn-lookup-ben" type="button" class="btn btn-secondary px-5 flex items-center gap-1.5 cursor-pointer" onclick="lookupBen()" data-action="lookupBen()"><span class="material-symbols-outlined text-sm">verified</span><span>Verify Account</span></button>
+            <button id="btn-lookup-ben" type="button" class="btn btn-secondary px-5 flex items-center gap-1.5 cursor-pointer"><span class="material-symbols-outlined text-sm">verified</span><span>Verify Account</span></button>
           </div>
           <div id="ben-result" class="hidden mt-3 p-3 rounded-lg text-xs font-bold flex items-center gap-2 animate-in fade-in slide-in-from-top-1 duration-200"></div>
         </div>
@@ -67,7 +67,7 @@ ob_start();
           </div>
         </div>
         
-        <button id="btn-save-ben" type="button" class="btn btn-primary w-full h-12 mt-2 cursor-pointer flex items-center justify-center gap-2" onclick="addBeneficiary()" data-action="addBeneficiary()">Save Beneficiary</button>
+        <button id="btn-save-ben" type="button" class="btn btn-primary w-full h-12 mt-2 cursor-pointer flex items-center justify-center gap-2">Save Beneficiary</button>
       </div>
     </div>
 
