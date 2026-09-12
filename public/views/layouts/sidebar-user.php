@@ -167,7 +167,11 @@ function isActiveUserNav($path, $current) {
                             <span class="material-symbols-outlined text-[18px]" aria-hidden="true">savings</span>
                             <span>Investments &amp; FDs</span>
                         </div>
-                        <?php if (!$isActive): ?><span class="material-symbols-outlined text-[14px] text-text-secondary" aria-hidden="true">lock</span><?php endif; ?>
+                        <?php if ($isActive): ?>
+                            <span class="text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">Soon</span>
+                        <?php else: ?>
+                            <span class="material-symbols-outlined text-[14px] text-text-secondary" aria-hidden="true">lock</span>
+                        <?php endif; ?>
                     </a>
                 </li>
 
@@ -177,7 +181,11 @@ function isActiveUserNav($path, $current) {
                             <span class="material-symbols-outlined text-[18px]" aria-hidden="true">payments</span>
                             <span>Bill Payments</span>
                         </div>
-                        <?php if (!$isActive): ?><span class="material-symbols-outlined text-[14px] text-text-secondary" aria-hidden="true">lock</span><?php endif; ?>
+                        <?php if ($isActive): ?>
+                            <span class="text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">Soon</span>
+                        <?php else: ?>
+                            <span class="material-symbols-outlined text-[14px] text-text-secondary" aria-hidden="true">lock</span>
+                        <?php endif; ?>
                     </a>
                 </li>
             </ul>
