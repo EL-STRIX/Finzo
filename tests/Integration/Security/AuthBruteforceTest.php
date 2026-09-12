@@ -146,8 +146,8 @@ class AuthBruteforceTest extends TestCase {
             $this->fail("Expected TestResponseException on successful login");
         } catch (\Throwable $e) {
             $loginResponse = json_decode($e->getMessage(), true);
-            $this->assertEquals(200, $loginResponse['status']);
-            $this->assertTrue($loginResponse['success'], 'Login with temporary password within 60 minutes must succeed');
+            $this->assertEquals(200, $loginResponse['status'] ?? null, 'Expected 200 OK: ' . ($loginResponse['message'] ?? $e->getMessage()));
+            $this->assertTrue($loginResponse['success'] ?? false, 'Login with temporary password within 60 minutes must succeed');
         }
 
         $stmt = $db->prepare("SELECT temp_pass_status, failed_attempts FROM users WHERE id = ?");
