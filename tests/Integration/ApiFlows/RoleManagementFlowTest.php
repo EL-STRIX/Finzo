@@ -110,7 +110,7 @@ class RoleManagementFlowTest extends TestCase
     /** An admin without manage_admins/manage_roles (and not super_admin) is denied: deny-by-default */
     public function testNonPrivilegedAdminCannotAccessRoleEndpoints(): void
     {
-        $session = $this->createAdminSession('auditor');
+        $session = $this->createAdminSession('moderator');
 
         try {
             RequestHelper::getJson('api/v1/admin/roles', [], $session);
