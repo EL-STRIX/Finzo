@@ -139,7 +139,11 @@ function isActiveUserNav($path, $current) {
                             <span class="material-symbols-outlined text-[18px]" aria-hidden="true">account_balance_wallet</span>
                             <span>Loans &amp; Credit</span>
                         </div>
-                        <?php if (!$isActive): ?><span class="material-symbols-outlined text-[14px] text-text-secondary" aria-hidden="true">lock</span><?php endif; ?>
+                        <?php if ($isActive): ?>
+                            <span class="text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded bg-primary/10 text-primary border border-primary/20">Soon</span>
+                        <?php else: ?>
+                            <span class="material-symbols-outlined text-[14px] text-text-secondary" aria-hidden="true">lock</span>
+                        <?php endif; ?>
                     </a>
                 </li>
 
@@ -149,7 +153,11 @@ function isActiveUserNav($path, $current) {
                             <span class="material-symbols-outlined text-[18px]" aria-hidden="true">credit_card</span>
                             <span>Cards &amp; Controls</span>
                         </div>
-                        <?php if (!$isActive): ?><span class="material-symbols-outlined text-[14px] text-text-secondary" aria-hidden="true">lock</span><?php endif; ?>
+                        <?php if ($isActive): ?>
+                            <span class="text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded bg-accent/10 text-accent border border-accent/20">Soon</span>
+                        <?php else: ?>
+                            <span class="material-symbols-outlined text-[14px] text-text-secondary" aria-hidden="true">lock</span>
+                        <?php endif; ?>
                     </a>
                 </li>
 

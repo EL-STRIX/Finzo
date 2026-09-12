@@ -7,19 +7,25 @@ ob_start();
 <!-- Header -->
 <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8 ds-animate-fade">
     <div>
-        <div class="text-xs font-bold text-text-secondary uppercase tracking-widest mb-1">Financial Products</div>
+        <div class="flex items-center gap-2 mb-1">
+            <span class="text-xs font-bold text-text-secondary uppercase tracking-widest">Financial Products</span>
+            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-primary/10 text-primary border border-primary/20">
+                <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+                Coming Soon
+            </span>
+        </div>
         <h1 class="font-display text-3xl font-extrabold text-text-primary tracking-tight">Loans &amp; Credit Services</h1>
-        <p class="text-text-secondary text-sm mt-1">Manage active credit facilities, calculate monthly EMIs, and apply for flexible personal or business loans.</p>
+        <p class="text-text-secondary text-sm mt-1">Estimate your monthly installments with our actuarial EMI calculator and explore upcoming flexible credit facilities.</p>
     </div>
     <div class="flex items-center gap-3">
-        <button onclick="openApplyLoanModal()" class="btn btn-primary shadow-lg hover:shadow-primary/25 transition-all">
-            <span class="material-symbols-outlined text-[20px]">add_card</span>
-            <span>Apply for New Loan</span>
+        <button id="btn-user-loan-notify" class="btn btn-primary shadow-lg hover:shadow-primary/25 transition-all flex items-center gap-2">
+            <span class="material-symbols-outlined text-[20px]">notifications_active</span>
+            <span>Join Early Access Waitlist</span>
         </button>
     </div>
 </div>
 
-<!-- Interactive EMI Calculator Section -->
+<!-- Interactive EMI Calculator Section (Fully Functional Client-Side) -->
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8 ds-animate-slide-up">
     <!-- Calculator Form Controls -->
     <div class="lg:col-span-2 ds-card p-6 border border-border-subtle bg-surface/80 backdrop-blur-md">
@@ -29,7 +35,7 @@ ob_start();
             </div>
             <div>
                 <h3 class="font-headline font-bold text-lg text-text-primary">Interactive EMI Calculator</h3>
-                <p class="text-xs text-text-secondary">Estimate your monthly installment based on principal amount and tenure.</p>
+                <p class="text-xs text-text-secondary">Estimate your monthly installment based on principal amount, tenure, and interest rate.</p>
             </div>
         </div>
 
@@ -100,111 +106,58 @@ ob_start();
             </div>
         </div>
 
-        <button onclick="applyWithCalcValues()" class="mt-6 btn btn-secondary btn-full">
-            <span>Apply With These Terms</span>
+        <button id="btn-calc-waitlist" class="mt-6 btn btn-secondary btn-full flex items-center justify-center gap-2">
+            <span>Pre-Register For These Terms</span>
             <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
         </button>
     </div>
 </div>
 
-<!-- Active Loans & Applications -->
-<div class="ds-card p-6 border border-border-subtle mb-8">
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-        <div>
-            <h3 class="font-headline font-bold text-xl text-text-primary">My Loan Facilities</h3>
-            <p class="text-xs text-text-secondary mt-0.5">List of all current, pending, and completed credit facilities associated with your profile.</p>
+<!-- COMING SOON CREDIT SUITE SHOWCASE -->
+<div class="ds-card p-8 border border-border-subtle relative overflow-hidden bg-gradient-to-br from-surface via-surface to-primary/5 mb-8">
+    <div class="absolute -right-20 -bottom-20 w-64 h-64 bg-primary/10 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="max-w-2xl mb-8">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary border border-primary/20 text-xs font-bold uppercase tracking-wider mb-3">
+            <span class="material-symbols-outlined text-[16px]">rocket_launch</span>
+            Launching Soon
         </div>
-        <div class="flex items-center gap-2">
-            <span class="text-xs text-text-secondary font-bold">Filter:</span>
-            <select id="loan-filter-status" onchange="filterLoans()" class="fin-select py-1.5 text-xs">
-                <option value="all">All Loans</option>
-                <option value="approved">Approved &amp; Active</option>
-                <option value="pending">Pending Approval</option>
-                <option value="rejected">Rejected</option>
-            </select>
-        </div>
+        <h2 class="text-2xl font-display font-extrabold text-text-primary tracking-tight mb-2">
+            Finzo Digital Credit Facilities
+        </h2>
+        <p class="text-text-secondary text-sm leading-relaxed">
+            We are working on bringing seamless, transparent borrowing directly into your Finzo account. Zero branch visits, paperless automated KYC, instant underwriting, and funds disbursed to your savings account in minutes.
+        </p>
     </div>
 
-    <!-- Loan List Grid / Table -->
-    <div id="loans-container" class="space-y-4">
-        <div class="py-12 text-center text-text-secondary text-xs font-bold uppercase tracking-wider">
-            Loading loan facilities...
-        </div>
-    </div>
-</div>
-
-<!-- Repayment Schedule Modal -->
-<div id="schedule-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="ds-card max-w-3xl w-full p-6 bg-surface border border-border-subtle max-h-[90vh] flex flex-col">
-        <div class="flex items-center justify-between border-b border-border-subtle pb-4 mb-4">
-            <div>
-                <h3 class="font-headline font-bold text-lg text-text-primary" id="schedule-modal-title">Loan Repayment Schedule</h3>
-                <p class="text-xs text-text-secondary">View detailed breakdown of installment dues and principal components.</p>
+    <!-- UPCOMING PRODUCT TIERS -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="p-5 rounded-2xl bg-background/60 border border-border-subtle hover:border-primary/40 transition-all">
+            <div class="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center mb-3">
+                <span class="material-symbols-outlined text-xl">person</span>
             </div>
-            <button onclick="closeScheduleModal()" class="w-8 h-8 rounded-full hover:bg-surface-hover flex items-center justify-center text-text-secondary">
-                <span class="material-symbols-outlined text-lg">close</span>
-            </button>
-        </div>
-        
-        <div class="flex-1 overflow-y-auto custom-scrollbar">
-            <table class="w-full text-left text-xs">
-                <thead class="border-b border-border-subtle uppercase text-[10px] font-bold text-text-secondary tracking-wider sticky top-0 bg-surface">
-                    <tr>
-                        <th class="py-3 px-2">#</th>
-                        <th class="py-3 px-2">Due Date</th>
-                        <th class="py-3 px-2">Amount</th>
-                        <th class="py-3 px-2">Principal</th>
-                        <th class="py-3 px-2">Interest</th>
-                        <th class="py-3 px-2">Status</th>
-                        <th class="py-3 px-2 text-right">Action</th>
-                    </tr>
-                </thead>
-                <tbody id="schedule-tbody" class="divide-y divide-border-subtle">
-                    <!-- Schedule Rows -->
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-
-<!-- Apply Loan Modal -->
-<div id="apply-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="ds-card max-w-lg w-full p-6 bg-surface border border-border-subtle">
-        <div class="flex items-center justify-between border-b border-border-subtle pb-4 mb-4">
-            <h3 class="font-headline font-bold text-lg text-text-primary">Apply for Credit Facility</h3>
-            <button onclick="closeApplyModal()" class="w-8 h-8 rounded-full hover:bg-surface-hover flex items-center justify-center text-text-secondary">
-                <span class="material-symbols-outlined text-lg">close</span>
-            </button>
+            <h4 class="font-headline font-bold text-sm text-text-primary mb-1">Instant Personal Loan</h4>
+            <p class="text-xs text-text-secondary mb-3 leading-relaxed">Pre-approved credit limits up to ₹5,00,000 for medical, travel, and personal expenses with 0 prepayment charges.</p>
+            <span class="text-[11px] font-mono font-bold text-primary">From 10.5% p.a. • 3-36 Months</span>
         </div>
 
-        <form id="loan-apply-form" onsubmit="submitLoanApplication(event)" class="space-y-4">
-            <div>
-                <label class="fin-label fin-label-required">Loan Product</label>
-                <select id="apply-product" class="fin-select w-full" required>
-                    <option value="">Select a loan product...</option>
-                </select>
+        <div class="p-5 rounded-2xl bg-background/60 border border-border-subtle hover:border-primary/40 transition-all">
+            <div class="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-500 flex items-center justify-center mb-3">
+                <span class="material-symbols-outlined text-xl">storefront</span>
             </div>
+            <h4 class="font-headline font-bold text-sm text-text-primary mb-1">Business Credit Line</h4>
+            <p class="text-xs text-text-secondary mb-3 leading-relaxed">Revolving working capital line for entrepreneurs and small businesses with interest charged only on utilized funds.</p>
+            <span class="text-[11px] font-mono font-bold text-purple-500">From 11.2% p.a. • Flexible Drawdowns</span>
+        </div>
 
-            <div>
-                <label class="fin-label fin-label-required">Loan Amount (₹)</label>
-                <input type="number" id="apply-amount" class="fin-input w-full" min="5000" max="5000000" step="5000" required placeholder="Enter amount" />
+        <div class="p-5 rounded-2xl bg-background/60 border border-border-subtle hover:border-primary/40 transition-all">
+            <div class="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center mb-3">
+                <span class="material-symbols-outlined text-xl">home</span>
             </div>
-
-            <div>
-                <label class="fin-label fin-label-required">Tenure (Months)</label>
-                <input type="number" id="apply-tenure" class="fin-input w-full" min="3" max="120" step="1" required placeholder="Enter tenure in months" />
-            </div>
-
-            <div>
-                <label class="fin-label fin-label-required">Purpose of Loan</label>
-                <textarea id="apply-purpose" class="fin-input w-full" rows="3" required placeholder="Provide purpose for credit request (e.g. Education, Business Expansion, Personal)"></textarea>
-            </div>
-
-            <div class="pt-4 flex justify-end gap-3 border-t border-border-subtle">
-                <button type="button" onclick="closeApplyModal()" class="btn btn-secondary">Cancel</button>
-                <button type="submit" class="btn btn-primary">Submit Application</button>
-            </div>
-        </form>
+            <h4 class="font-headline font-bold text-sm text-text-primary mb-1">Secured Micro-Mortgages</h4>
+            <p class="text-xs text-text-secondary mb-3 leading-relaxed">Longer-tenure affordable home renovation and property loans with customized reducing-balance amortization.</p>
+            <span class="text-[11px] font-mono font-bold text-emerald-500">From 8.75% p.a. • Up to 120 Months</span>
+        </div>
     </div>
 </div>
 

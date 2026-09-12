@@ -149,27 +149,39 @@ function isActive($key, $current) {
         
         <ul class="space-y-1 px-3">
             <li>
-                <a href="admin-loan-products.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg font-bold transition-all <?= isActive('loan-products', $currentPath) ?>">
-                    <span class="material-symbols-outlined text-[20px]" aria-hidden="true">real_estate_agent</span>
-                    <span class="text-sm">Loan Products</span>
+                <a href="admin-loan-products.php" class="flex items-center justify-between px-4 py-2.5 rounded-lg font-bold transition-all <?= isActive('loan-products', $currentPath) ?>">
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-[20px]" aria-hidden="true">real_estate_agent</span>
+                        <span class="text-sm">Loan Products</span>
+                    </div>
+                    <span class="text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded bg-primary/10 text-primary border border-primary/20">Soon</span>
                 </a>
             </li>
             <li>
-                <a href="admin-loans.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg font-bold transition-all <?= isActive('loans', $currentPath) ?>">
-                    <span class="material-symbols-outlined text-[20px]" aria-hidden="true">payments</span>
-                    <span class="text-sm">Loan Applications</span>
+                <a href="admin-loans.php" class="flex items-center justify-between px-4 py-2.5 rounded-lg font-bold transition-all <?= isActive('loans', $currentPath) ?>">
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-[20px]" aria-hidden="true">payments</span>
+                        <span class="text-sm">Loan Applications</span>
+                    </div>
+                    <span class="text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded bg-warning/10 text-warning border border-warning/20">Soon</span>
                 </a>
             </li>
             <li>
-                <a href="admin-card-products.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg font-bold transition-all <?= isActive('card-products', $currentPath) ?>">
-                    <span class="material-symbols-outlined text-[20px]" aria-hidden="true">featured_play_list</span>
-                    <span class="text-sm">Card Products</span>
+                <a href="admin-card-products.php" class="flex items-center justify-between px-4 py-2.5 rounded-lg font-bold transition-all <?= isActive('card-products', $currentPath) ?>">
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-[20px]" aria-hidden="true">featured_play_list</span>
+                        <span class="text-sm">Card Products</span>
+                    </div>
+                    <span class="text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded bg-accent/10 text-accent border border-accent/20">Soon</span>
                 </a>
             </li>
             <li>
-                <a href="admin-cards.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg font-bold transition-all <?= isActive('cards', $currentPath) ?>">
-                    <span class="material-symbols-outlined text-[20px]" aria-hidden="true">credit_card</span>
-                    <span class="text-sm">Card Issuance</span>
+                <a href="admin-cards.php" class="flex items-center justify-between px-4 py-2.5 rounded-lg font-bold transition-all <?= isActive('cards', $currentPath) ?>">
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-[20px]" aria-hidden="true">credit_card</span>
+                        <span class="text-sm">Card Issuance</span>
+                    </div>
+                    <span class="text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded bg-accent/10 text-accent border border-accent/20">Soon</span>
                 </a>
             </li>
         </ul>

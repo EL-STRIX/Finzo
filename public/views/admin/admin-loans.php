@@ -1,11 +1,24 @@
 <?php
 $portal = 'admin';
-$pageTitle = 'Finzo Admin — Loan Applications';
+$pageTitle = 'Finzo Admin — Loan Applications (Coming Soon)';
 $pageHeader = '
 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
     <div>
-        <h1 class="text-2xl font-headline font-black text-text-primary tracking-tight">Loan Applications</h1>
-        <p class="text-xs font-bold text-text-secondary uppercase tracking-widest mt-1">Review, approve, and manage user loans</p>
+        <div class="flex items-center gap-2 mb-1">
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-warning/10 text-warning border border-warning/20">
+                <span class="w-1.5 h-1.5 rounded-full bg-warning animate-pulse"></span>
+                In Development
+            </span>
+            <span class="text-text-muted text-xs font-mono">Module: Underwriting 2.0</span>
+        </div>
+        <h1 class="text-2xl font-headline font-black text-text-primary tracking-tight">Loan Applications & Underwriting</h1>
+        <p class="text-xs font-bold text-text-secondary uppercase tracking-widest mt-1">Multi-stage credit appraisal, risk analysis, and fund disbursement workflow</p>
+    </div>
+    <div class="flex items-center gap-3">
+        <button id="btn-notify-underwriting" class="btn btn-secondary !px-4 flex items-center gap-2">
+            <span class="material-symbols-outlined text-[18px]">notifications_active</span>
+            <span class="font-bold text-xs">Notify on Launch</span>
+        </button>
     </div>
 </div>
 ';
@@ -13,118 +26,104 @@ $extraScripts = '<script defer src="/Finzo/public/assets/js/admin/admin-loans.js
 ob_start();
 ?>
 
-<!-- STATS ROW -->
-<div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mb-6 relative z-10">
-    <div class="ds-card p-5 sm:p-6 flex flex-col items-start justify-center group relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
-        <div class="absolute -right-6 -top-6 w-24 h-24 bg-warning/10 rounded-full blur-2xl group-hover:bg-warning/20 transition-all"></div>
-        <div class="relative z-10">
-            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-warning/20 to-warning/5 text-warning flex items-center justify-center mb-4 border border-warning/20 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]">
-                <span class="material-symbols-outlined text-2xl">pending_actions</span>
-            </div>
-            <div class="text-xs font-bold text-text-secondary uppercase tracking-[0.15em] mb-2">Pending Review</div>
-            <div id="stat-pending" class="text-3xl font-black font-display tracking-tighter leading-none text-text-primary skeleton min-w-[40px]">—</div>
+<!-- COMING SOON HERO BANNER -->
+<div class="ds-card p-8 relative overflow-hidden shadow-2xl mb-8 border border-border-subtle bg-gradient-to-br from-surface via-surface to-warning/5">
+    <div class="absolute -right-24 -top-24 w-80 h-80 bg-warning/10 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute -left-20 -bottom-20 w-72 h-72 bg-primary/10 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="relative z-10 max-w-3xl">
+        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-warning/20 to-warning/5 text-warning flex items-center justify-center mb-6 border border-warning/20 shadow-lg">
+            <span class="material-symbols-outlined text-3xl">payments</span>
         </div>
-    </div>
-    <div class="ds-card p-5 sm:p-6 flex flex-col items-start justify-center group relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
-        <div class="absolute -right-6 -top-6 w-24 h-24 bg-success/10 rounded-full blur-2xl group-hover:bg-success/20 transition-all"></div>
-        <div class="relative z-10">
-            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-success/20 to-success/5 text-success flex items-center justify-center mb-4 border border-success/20 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]">
-                <span class="material-symbols-outlined text-2xl">verified</span>
+
+        <h2 class="text-3xl font-display font-black text-text-primary tracking-tight mb-3">
+            Digital Credit Underwriting Suite
+        </h2>
+        <p class="text-text-secondary text-sm leading-relaxed mb-6">
+            The automated credit assessment and loan application processing dashboard is currently in active development. This pipeline will provide end-to-end loan adjudication, bureau verification scorecards, dual-control maker-checker approval controls, and instant disbursement to customer savings accounts.
+        </p>
+
+        <div class="flex flex-wrap items-center gap-3">
+            <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-background/80 border border-border-subtle text-xs font-semibold text-text-secondary">
+                <span class="material-symbols-outlined text-emerald-500 text-sm">check_circle</span>
+                <span>Database Schemas & Tables Ready</span>
             </div>
-            <div class="text-xs font-bold text-text-secondary uppercase tracking-[0.15em] mb-2">Active Loans</div>
-            <div id="stat-active" class="text-3xl font-black font-display tracking-tighter leading-none text-text-primary skeleton min-w-[40px]">—</div>
-        </div>
-    </div>
-    <div class="ds-card p-5 sm:p-6 flex flex-col items-start justify-center group relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
-        <div class="absolute -right-6 -top-6 w-24 h-24 bg-error/10 rounded-full blur-2xl group-hover:bg-error/20 transition-all"></div>
-        <div class="relative z-10">
-            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-error/20 to-error/5 text-error flex items-center justify-center mb-4 border border-error/20 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]">
-                <span class="material-symbols-outlined text-2xl">gavel</span>
+            <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-background/80 border border-border-subtle text-xs font-semibold text-text-secondary">
+                <span class="material-symbols-outlined text-primary text-sm">architecture</span>
+                <span>Maker-Checker Approval Engine in Architecture Review</span>
             </div>
-            <div class="text-xs font-bold text-text-secondary uppercase tracking-[0.15em] mb-2">Defaulted / Foreclosed</div>
-            <div id="stat-defaulted" class="text-3xl font-black font-display tracking-tighter leading-none text-text-primary skeleton min-w-[40px]">—</div>
+            <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-background/80 border border-border-subtle text-xs font-semibold text-text-secondary">
+                <span class="material-symbols-outlined text-amber-500 text-sm">schedule</span>
+                <span>Target Release: Q4 2026</span>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- TABLE WRAPPER -->
-<div class="ds-card ds-card-dropdown-fix relative z-20 overflow-hidden shadow-2xl transition-all duration-300">
-    <div class="absolute -right-20 -top-20 w-64 h-64 bg-primary/5 rounded-full blur-3xl -z-10 pointer-events-none"></div>
-    <div class="absolute -left-20 -bottom-20 w-64 h-64 bg-accent/5 rounded-full blur-3xl -z-10 pointer-events-none"></div>
-    <!-- TABLE HEADER -->
-    <div class="p-4 sm:p-6 flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-border-subtle bg-background/40 backdrop-blur-xl relative z-10">
-        <div class="flex items-center gap-2">
-            <select id="filter-status" class="fin-input !py-1.5 !h-9 !text-sm !w-40 cursor-pointer">
-                <option value="all">All Applications</option>
-                <option value="pending" selected>Pending Review</option>
-                <option value="approved">Approved & Active</option>
-                <option value="rejected">Rejected</option>
-                <option value="foreclosed">Foreclosed</option>
-                <option value="closed">Closed / Paid</option>
-            </select>
+<!-- PLANNED CAPABILITIES GRID -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div class="ds-card p-6 border border-border-subtle hover:border-warning/40 transition-all group">
+        <div class="w-12 h-12 rounded-xl bg-warning/10 text-warning flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
+            <span class="material-symbols-outlined text-2xl">rule</span>
         </div>
-        <div class="relative w-full sm:w-64">
-            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <span class="material-symbols-outlined text-text-muted text-[18px]">search</span>
-            </div>
-            <input type="text" id="loan-search" class="fin-input !pl-9 !py-2 !h-9 !text-sm w-full bg-white dark:bg-surface" placeholder="Search loans..." />
-        </div>
+        <h3 class="font-headline font-bold text-base text-text-primary mb-2">Automated Underwriting</h3>
+        <p class="text-xs text-text-secondary leading-relaxed">
+            Algorithmic debt-to-income (DTI) evaluation, existing repayment history analysis, and risk scoring to streamline instant low-value retail loan approvals.
+        </p>
     </div>
 
-    <!-- TABLE AREA -->
-    <div class="ds-table-wrapper bg-white dark:bg-surface min-h-[300px]">
-        <table class="ds-table">
-            <thead>
-                <tr>
-                    <th class="w-16">ID</th>
-                    <th>User / Account</th>
-                    <th>Product</th>
-                    <th>Principal Amount</th>
-                    <th>Tenure</th>
-                    <th>Date Applied</th>
-                    <th>Status</th>
-                    <th class="text-right">Actions</th>
-                </tr>
-            </thead>
-            <tbody id="loans-tbody">
-                <tr><td colspan="8" class="py-12 text-center"><span class="loader"></span></td></tr>
-            </tbody>
-        </table>
+    <div class="ds-card p-6 border border-border-subtle hover:border-warning/40 transition-all group">
+        <div class="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
+            <span class="material-symbols-outlined text-2xl">account_balance_wallet</span>
+        </div>
+        <h3 class="font-headline font-bold text-base text-text-primary mb-2">Instant Fund Disbursement</h3>
+        <p class="text-xs text-text-secondary leading-relaxed">
+            Direct ledger posting of approved principal amounts directly into the borrower's savings account with automatic schedule amortization generation.
+        </p>
+    </div>
+
+    <div class="ds-card p-6 border border-border-subtle hover:border-warning/40 transition-all group">
+        <div class="w-12 h-12 rounded-xl bg-rose-500/10 text-rose-500 flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
+            <span class="material-symbols-outlined text-2xl">gavel</span>
+        </div>
+        <h3 class="font-headline font-bold text-base text-text-primary mb-2">Delinquency & Foreclosure</h3>
+        <p class="text-xs text-text-secondary leading-relaxed">
+            Real-time tracking of overdue installments, grace periods, penalty interest accrual, and administrative foreclosure with dual-approval audit logs.
+        </p>
     </div>
 </div>
 
-<!-- REVIEW MODAL -->
-<div id="review-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
-    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm modal-backdrop" onclick="document.getElementById('review-modal').classList.add('hidden')"></div>
-    <div class="bg-surface border border-border-subtle rounded-2xl shadow-2xl w-full max-w-lg relative z-10 max-h-[90vh] flex flex-col">
-        <div class="p-6 border-b border-border-subtle flex justify-between items-center bg-background rounded-t-2xl">
-            <h3 class="font-headline font-black tracking-tight text-lg" id="review-modal-title">Review Application</h3>
-            <button class="w-8 h-8 flex items-center justify-center rounded-lg bg-surface-subtle text-text-muted hover:text-text-primary hover:bg-border-subtle transition-colors" onclick="document.getElementById('review-modal').classList.add('hidden')">
-                <span class="material-symbols-outlined text-[18px]">close</span>
-            </button>
+<!-- ARCHITECTURE BLUEPRINT FOR FUTURE IMPLEMENTATION -->
+<div class="ds-card p-6 border border-border-subtle bg-surface/90">
+    <div class="flex items-center gap-3 mb-4 pb-4 border-b border-border-subtle">
+        <div class="w-10 h-10 rounded-xl bg-warning/10 text-warning flex items-center justify-center">
+            <span class="material-symbols-outlined text-xl">developer_board</span>
         </div>
-        <div class="p-6 overflow-y-auto custom-scrollbar flex-1 space-y-6">
-            <input type="hidden" id="review-loan-id" />
-            
-            <div class="p-4 rounded-xl bg-background border border-border-subtle">
-                <div class="text-[10px] font-black text-text-secondary uppercase tracking-widest mb-3">Application Details</div>
-                <div class="grid grid-cols-2 gap-4 text-sm">
-                    <div><span class="text-text-muted">User:</span> <span id="review-user" class="font-bold"></span></div>
-                    <div><span class="text-text-muted">Product:</span> <span id="review-product" class="font-bold"></span></div>
-                    <div><span class="text-text-muted">Amount:</span> <span id="review-amount" class="font-bold text-primary"></span></div>
-                    <div><span class="text-text-muted">Tenure:</span> <span id="review-tenure" class="font-bold"></span></div>
-                </div>
-            </div>
+        <div>
+            <h3 class="font-headline font-bold text-base text-text-primary">Implementation Specification</h3>
+            <p class="text-xs text-text-secondary">Clean architecture blueprint for implementing this feature backend</p>
+        </div>
+    </div>
 
-            <div>
-                <label class="fin-label">Review Notes (Optional)</label>
-                <textarea id="review-notes" class="fin-input" placeholder="Provide reason for approval/rejection..." rows="3"></textarea>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 text-xs">
+        <div class="space-y-3">
+            <div class="font-bold text-text-primary uppercase tracking-wider text-[11px]">Target API Contracts</div>
+            <div class="p-3 rounded-lg bg-background border border-border-subtle font-mono text-[11px] space-y-1.5">
+                <div class="text-emerald-500"><span class="font-bold">GET</span> /api/v1/admin/loan-applications <span class="text-text-muted">(Queue by status)</span></div>
+                <div class="text-primary"><span class="font-bold">POST</span> /api/v1/admin/loan-applications/approve <span class="text-text-muted">(Maker-checker approve & disburse)</span></div>
+                <div class="text-rose-500"><span class="font-bold">POST</span> /api/v1/admin/loan-applications/reject <span class="text-text-muted">(Decline with audit reason)</span></div>
+                <div class="text-amber-500"><span class="font-bold">GET</span> /api/v1/admin/loans/{id}/schedules <span class="text-text-muted">(View installment records)</span></div>
+                <div class="text-purple-500"><span class="font-bold">POST</span> /api/v1/admin/loans/{id}/foreclose <span class="text-text-muted">(Foreclosure execution)</span></div>
             </div>
-            
         </div>
-        <div class="p-6 border-t border-border-subtle bg-background rounded-b-2xl flex justify-between items-center gap-3">
-            <button type="button" class="btn btn-secondary !px-5 !text-error !border-error hover:!bg-error hover:!text-white" id="btn-reject-loan">Reject</button>
-            <button type="button" class="btn btn-primary !px-5 !bg-success !border-success hover:!bg-success/90" id="btn-approve-loan">Approve & Disburse</button>
+
+        <div class="space-y-3">
+            <div class="font-bold text-text-primary uppercase tracking-wider text-[11px]">Decoupled Components</div>
+            <ul class="space-y-1.5 text-text-secondary">
+                <li class="flex items-center gap-2"><span class="material-symbols-outlined text-text-muted text-[14px]">chevron_right</span> <strong>Controller:</strong> <code class="text-text-primary">AdminLoanController</code></li>
+                <li class="flex items-center gap-2"><span class="material-symbols-outlined text-text-muted text-[14px]">chevron_right</span> <strong>Service:</strong> <code class="text-text-primary">LoanService</code> implements <code class="text-text-primary">LoanServiceInterface</code></li>
+                <li class="flex items-center gap-2"><span class="material-symbols-outlined text-text-muted text-[14px]">chevron_right</span> <strong>Repository:</strong> <code class="text-text-primary">LoanRepository</code> (tables: <code class="text-text-primary">loan_applications</code>, <code class="text-text-primary">loans</code>, <code class="text-text-primary">loan_schedules</code>)</li>
+            </ul>
         </div>
     </div>
 </div>
