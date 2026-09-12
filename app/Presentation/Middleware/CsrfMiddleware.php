@@ -25,12 +25,13 @@ class CsrfMiddleware
 
 
 
-        $headers = function_exists('apache_request_headers') ? apache_request_headers() : [];
-        $headerToken = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? $headers['X-CSRF-Token'] ?? $headers['x-csrf-token'] ?? $headers['X-Csrf-Token'] ?? '';
+        $rawHeaders = function_exists('getallheaders') ? getallheaders() : (function_exists('apache_request_headers') ? apache_request_headers() : []);
+        $headers = array_change_key_case($rawHeaders, CASE_LOWER);
+        $headerToken = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? $headers['x-csrf-token'] ?? '';
         $token = $_POST['csrf_token'] ?? $headerToken;
         
-        // Handle PUT/DELETE/PATCH raw input
-        if (empty($token) && in_array($method, ['PUT', 'PATCH', 'DELETE'])) {
+        // Handle raw input (JSON or url-encoded) if token is not in POST or header
+        if (empty($token)) {
             $raw = file_get_contents('php://input');
             $input = json_decode($raw, true);
             if (is_array($input) && isset($input['csrf_token'])) {

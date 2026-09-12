@@ -139,9 +139,13 @@ class UserController
 
     public function beneficiary()
     {
-        $userId = $_SESSION['user_id'];
-        $customer_id = $this->service->getCustomerId($userId);
-        $userId = $customer_id ?: $userId;
+        $userId = $_SESSION['user_customer_id'] ?? null;
+        if (!$userId && !empty($_SESSION['user_id'])) {
+            $userId = $this->service->getCustomerId((int)$_SESSION['user_id']);
+        }
+        if (!$userId) {
+            $userId = $_SESSION['user_id'] ?? null;
+        }
 
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             try {
