@@ -154,13 +154,6 @@ $router->post('/api/user/transfer.php', [UserController::class, 'transfer'], [Us
 $router->post('/api/v1/user/security/change-password', [UserController::class, 'changePassword'], [UserAuthMiddleware::class]);
 $router->post('/api/v1/user/security/verify-pin', [UserController::class, 'verifyPin'], [UserAuthMiddleware::class]);
 
-use App\Presentation\Api\V1\User\UserInvestmentController;
-$router->get('/api/v1/user/investments', [UserInvestmentController::class, 'list'], [UserAuthMiddleware::class]);
-$router->post('/api/v1/user/investments/fd/create', [UserInvestmentController::class, 'create'], [UserAuthMiddleware::class]);
-$router->post('/api/v1/user/investments/fd/{id}/close', [UserInvestmentController::class, 'close'], [UserAuthMiddleware::class]);
-use App\Presentation\Api\V1\User\UserBillPaymentController;
-$router->get('/api/v1/user/billers', [UserBillPaymentController::class, 'billers'], [UserAuthMiddleware::class]);
-$router->get('/api/v1/user/billers/history', [UserBillPaymentController::class, 'history'], [UserAuthMiddleware::class]);
 use App\Presentation\Api\V1\User\UserSecurityCenterController;
 $router->get('/api/v1/user/security/overview', [UserSecurityCenterController::class, 'overview'], [UserAuthMiddleware::class]);
 $router->post('/api/v1/user/security/pin/set', [UserSecurityCenterController::class, 'setPin'], [UserAuthMiddleware::class]);
