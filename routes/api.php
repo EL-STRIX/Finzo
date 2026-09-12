@@ -86,12 +86,6 @@ $router->put('/api/v1/admin/roles/{id}', [RoleController::class, 'update'], [\Ap
 $router->delete('/api/v1/admin/roles/{id}', [RoleController::class, 'destroy'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->get('/api/v1/admin/permissions', [RoleController::class, 'permissions'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->post('/api/v1/admin/assign-roles', [RoleController::class, 'assignRoles'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
-
-use App\Presentation\Api\V1\Admin\AdminSettingsController;
-$router->get('/api/v1/admin/settings', [AdminSettingsController::class, 'index'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
-$router->put('/api/v1/admin/settings', [AdminSettingsController::class, 'update'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
-$router->patch('/api/v1/admin/settings', [AdminSettingsController::class, 'update'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
-$router->post('/api/v1/admin/settings/backup', [AdminSettingsController::class, 'triggerBackup'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->post('/api/v1/staff/{id}/photo', [AdminStaffController::class, 'uploadStaffPhoto'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->get('/api/v1/branches', [AdminBranchController::class, 'getBranches'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->post('/api/v1/branches', [AdminBranchController::class, 'createBranch'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);

@@ -18,13 +18,7 @@ class AdminFlowTest extends TestCase {
         ];
     }
 
-    public function testAdminDashboardAndSettingsFlow() {
-        // Fetch settings
-        try {
-            $response = RequestHelper::getJson('api/v1/admin/settings', [], $this->session);
-            $this->assertIsArray($response);
-        } catch (\Exception $e) { $this->assertTrue(true); }
-
+    public function testAdminDashboardAndStaffFlow() {
         try {
             $staffResponse = RequestHelper::getJson('api/v1/staff', [], $this->session);
             $this->assertIsArray($staffResponse);

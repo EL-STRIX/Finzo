@@ -17,7 +17,6 @@ class AppServiceProvider
         $container->bind(\App\Domain\Contracts\Repositories\UploadRepositoryInterface::class, \App\Infrastructure\Repositories\UploadRepository::class);
         $container->bind(\App\Domain\Contracts\Repositories\ReportRepositoryInterface::class, \App\Infrastructure\Repositories\ReportRepository::class);
         $container->bind(\App\Domain\Contracts\Repositories\RoleRepositoryInterface::class, \App\Infrastructure\Repositories\RoleRepository::class);
-        $container->bind(\App\Domain\Contracts\Repositories\SettingsRepositoryInterface::class, \App\Infrastructure\Repositories\SettingsRepository::class);
         $container->bind(\App\Domain\Contracts\Repositories\LedgerRepositoryInterface::class, \App\Infrastructure\Repositories\LedgerRepository::class);
 
         // Security & Infrastructure
@@ -32,7 +31,6 @@ class AppServiceProvider
         $container->bind(\App\Domain\Contracts\Services\AdminOperationsServiceInterface::class, \App\Application\Services\AdminOperationsService::class);
         $container->bind(\App\Domain\Contracts\Services\AdminStaffBranchServiceInterface::class, \App\Application\Services\AdminStaffBranchService::class);
         $container->bind(\App\Domain\Contracts\Services\RoleServiceInterface::class, \App\Application\Services\RoleService::class);
-        $container->bind(\App\Domain\Contracts\Services\SettingsServiceInterface::class, \App\Application\Services\SettingsService::class);
         $container->bind(\App\Domain\Contracts\Services\PdfServiceInterface::class, \App\Application\Services\PdfService::class);
         $container->bind(\App\Domain\Contracts\Services\UploadServiceInterface::class, \App\Application\Services\UploadService::class);
         $container->bind(\App\Domain\Contracts\Services\ReportServiceInterface::class, \App\Application\Services\ReportService::class);
