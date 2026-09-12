@@ -28,6 +28,23 @@
             });
         });
 
+        // Priority dropdown change listener
+        const prioInput = document.getElementById('filter-priority-select');
+        if (prioInput) {
+            prioInput.addEventListener('change', function() {
+                currentPriority = this.value || 'all';
+                loadSupportTickets();
+            });
+        }
+
+        // Quick status modal dropdown change listener
+        const quickStatusInput = document.getElementById('modal-quick-status');
+        if (quickStatusInput) {
+            quickStatusInput.addEventListener('change', function() {
+                submitStatusChange(this.value);
+            });
+        }
+
         // Initial load
         loadSupportTickets();
     }
@@ -205,8 +222,7 @@
                     `;
                 }
 
-                const quickStatusSelect = document.getElementById('modal-quick-status');
-                if (quickStatusSelect) quickStatusSelect.value = t.status;
+                setModalQuickStatus(t.status);
 
                 renderMessages(res.messages || []);
             } else {
@@ -333,6 +349,32 @@
         const modal = document.getElementById('ticket-modal');
         if (modal) modal.classList.add('hidden');
         activeTicketId = null;
+    }
+
+    function setModalQuickStatus(status) {
+        const input = document.getElementById('modal-quick-status');
+        const dropdown = document.getElementById('quick-status-dropdown');
+        if (!dropdown) return;
+        const label = dropdown.querySelector('.dropdown-label');
+        const options = dropdown.querySelectorAll('.finzo-dropdown-option');
+        const statusMap = {
+            'open': 'Open',
+            'in_progress': 'In Progress',
+            'resolved': 'Resolved',
+            'closed': 'Closed'
+        };
+        const val = status || 'open';
+        if (input) input.value = val;
+        if (label) label.textContent = statusMap[val] || val;
+        options.forEach(opt => {
+            if (opt.getAttribute('data-value') === val) {
+                opt.classList.add('is-selected');
+                opt.setAttribute('aria-selected', 'true');
+            } else {
+                opt.classList.remove('is-selected');
+                opt.setAttribute('aria-selected', 'false');
+            }
+        });
     }
 
     function handleSearchInput() {

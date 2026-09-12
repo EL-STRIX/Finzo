@@ -112,14 +112,21 @@ ob_start();
             <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted text-[20px]">search</span>
             <input type="text" id="search-ticket-input" class="fin-input w-full pl-10 pr-4 py-2 text-xs" placeholder="Search by ticket #, customer name, customer ID, or subject..." oninput="handleSearchInput()" />
         </div>
-        <div class="w-full sm:w-56">
-            <select id="filter-priority-select" class="fin-select w-full py-2 text-xs" onchange="handlePriorityFilter()">
-                <option value="all">All Priorities</option>
-                <option value="urgent">Urgent</option>
-                <option value="high">High Priority</option>
-                <option value="medium">Medium Priority</option>
-                <option value="low">Low Priority</option>
-            </select>
+        <div class="w-full sm:w-56 relative z-10">
+            <div class="finzo-dropdown relative w-full" id="priority-filter-dropdown">
+                <input type="hidden" id="filter-priority-select" value="all">
+                <div class="finzo-dropdown-trigger fin-input !flex items-center justify-between cursor-pointer w-full !py-2 !h-[42px] text-xs">
+                    <span class="dropdown-label font-bold text-xs text-text-primary">All Priorities</span>
+                    <span class="material-symbols-outlined chevron transition-transform duration-300 text-text-secondary text-[18px]" aria-hidden="true">expand_more</span>
+                </div>
+                <div class="finzo-dropdown-menu !z-[1000] !w-full">
+                    <div class="finzo-dropdown-option is-selected text-xs" data-value="all">All Priorities</div>
+                    <div class="finzo-dropdown-option text-xs" data-value="urgent">Urgent</div>
+                    <div class="finzo-dropdown-option text-xs" data-value="high">High Priority</div>
+                    <div class="finzo-dropdown-option text-xs" data-value="medium">Medium Priority</div>
+                    <div class="finzo-dropdown-option text-xs" data-value="low">Low Priority</div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -167,18 +174,25 @@ ob_start();
         </div>
 
         <!-- Ticket Quick Action Toolbar -->
-        <div class="flex items-center justify-between gap-3 p-3 rounded-xl bg-background border border-border-subtle mb-4">
+        <div class="flex items-center justify-between gap-3 p-3 rounded-xl bg-background border border-border-subtle mb-4 relative z-30">
             <div class="flex items-center gap-2">
                 <span class="material-symbols-outlined text-text-muted text-sm">tune</span>
                 <span class="text-xs font-bold text-text-secondary uppercase tracking-wider">Update Status:</span>
             </div>
-            <div class="flex items-center gap-2">
-                <select id="modal-quick-status" class="fin-select !py-1 text-xs font-bold" onchange="submitStatusChange(this.value)">
-                    <option value="open">Open</option>
-                    <option value="in_progress">In Progress</option>
-                    <option value="resolved">Resolved</option>
-                    <option value="closed">Closed</option>
-                </select>
+            <div class="w-44 relative">
+                <div class="finzo-dropdown relative w-full" id="quick-status-dropdown">
+                    <input type="hidden" id="modal-quick-status" value="open">
+                    <div class="finzo-dropdown-trigger fin-input !flex items-center justify-between cursor-pointer w-full !py-1.5 !h-[38px] text-xs font-bold">
+                        <span class="dropdown-label text-xs font-bold text-text-primary">Open</span>
+                        <span class="material-symbols-outlined chevron transition-transform duration-300 text-text-secondary text-[18px]" aria-hidden="true">expand_more</span>
+                    </div>
+                    <div class="finzo-dropdown-menu !z-[3500] !w-full">
+                        <div class="finzo-dropdown-option is-selected text-xs font-bold" data-value="open">Open</div>
+                        <div class="finzo-dropdown-option text-xs font-bold" data-value="in_progress">In Progress</div>
+                        <div class="finzo-dropdown-option text-xs font-bold" data-value="resolved">Resolved</div>
+                        <div class="finzo-dropdown-option text-xs font-bold" data-value="closed">Closed</div>
+                    </div>
+                </div>
             </div>
         </div>
 

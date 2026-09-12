@@ -3,10 +3,21 @@
  */
 
 let activeTicketId = null;
+let allUserTickets = [];
+let currentStatusFilter = 'all';
 
 document.addEventListener('DOMContentLoaded', async () => {
     buildSidebar('support');
     buildNavbar('Customer Support', 'Helpdesk & Disputes');
+
+    const statusFilter = document.getElementById('user-status-filter');
+    if (statusFilter) {
+        statusFilter.addEventListener('change', function() {
+            currentStatusFilter = this.value || 'all';
+            applyTicketFilter();
+        });
+    }
+
     await fetchUserSession();
     await loadTickets();
 });
@@ -16,7 +27,8 @@ async function loadTickets() {
     try {
         const res = await window.api.get('/user/support/tickets');
         if (res.success) {
-            renderTickets(res.tickets || []);
+            allUserTickets = res.tickets || [];
+            applyTicketFilter();
         } else {
             container.innerHTML = `<div class="py-12 text-center text-text-secondary text-xs font-bold uppercase tracking-wider">${res.message || 'No tickets.'}</div>`;
         }
@@ -24,6 +36,24 @@ async function loadTickets() {
         console.error('Failed to load tickets:', e);
         container.innerHTML = `<div class="py-12 text-center text-text-secondary text-xs font-bold uppercase tracking-wider">Error connecting to server.</div>`;
     }
+}
+
+function applyTicketFilter() {
+    if (!allUserTickets || !allUserTickets.length) {
+        renderTickets([]);
+        return;
+    }
+    if (currentStatusFilter === 'all') {
+        renderTickets(allUserTickets);
+        return;
+    }
+    const filtered = allUserTickets.filter(t => {
+        if (currentStatusFilter === 'resolved') {
+            return t.status === 'resolved' || t.status === 'closed';
+        }
+        return t.status === currentStatusFilter;
+    });
+    renderTickets(filtered);
 }
 
 function renderTickets(tickets) {
@@ -143,7 +173,41 @@ async function submitReply(e) {
     }
 }
 
+function resetCreateTicketModal() {
+    const form = document.getElementById('create-ticket-form');
+    if (form) form.reset();
+
+    // Reset Category Dropdown
+    const catInput = document.getElementById('ticket-category');
+    const catDrop = document.getElementById('ticket-category-dropdown');
+    if (catInput && catDrop) {
+        catInput.value = 'Transaction Dispute';
+        const label = catDrop.querySelector('.dropdown-label');
+        if (label) label.textContent = 'Transaction Dispute';
+        catDrop.querySelectorAll('.finzo-dropdown-option').forEach(o => {
+            const isMatch = (o.getAttribute('data-value') === 'Transaction Dispute');
+            o.classList.toggle('is-selected', isMatch);
+            o.setAttribute('aria-selected', isMatch ? 'true' : 'false');
+        });
+    }
+
+    // Reset Priority Dropdown
+    const prioInput = document.getElementById('ticket-priority');
+    const prioDrop = document.getElementById('ticket-priority-dropdown');
+    if (prioInput && prioDrop) {
+        prioInput.value = 'medium';
+        const label = prioDrop.querySelector('.dropdown-label');
+        if (label) label.textContent = 'Medium Priority';
+        prioDrop.querySelectorAll('.finzo-dropdown-option').forEach(o => {
+            const isMatch = (o.getAttribute('data-value') === 'medium');
+            o.classList.toggle('is-selected', isMatch);
+            o.setAttribute('aria-selected', isMatch ? 'true' : 'false');
+        });
+    }
+}
+
 function openCreateTicketModal() {
+    resetCreateTicketModal();
     document.getElementById('create-ticket-modal')?.classList.remove('hidden');
 }
 
@@ -153,10 +217,10 @@ function closeCreateTicketModal() {
 
 async function submitCreateTicket(e) {
     e.preventDefault();
-    const category = document.getElementById('ticket-category').value;
-    const priority = document.getElementById('ticket-priority').value;
-    const subject = document.getElementById('ticket-subject').value;
-    const message = document.getElementById('ticket-message').value;
+    const category = document.getElementById('ticket-category')?.value || 'Transaction Dispute';
+    const priority = document.getElementById('ticket-priority')?.value || 'medium';
+    const subject = document.getElementById('ticket-subject')?.value || '';
+    const message = document.getElementById('ticket-message')?.value || '';
 
     if (!subject || !message) {
         showToast('Please fill in required fields.', 'error');
@@ -174,7 +238,7 @@ async function submitCreateTicket(e) {
         if (res.success) {
             showToast(res.message || 'Support ticket submitted successfully!', 'success');
             closeCreateTicketModal();
-            document.getElementById('create-ticket-form').reset();
+            resetCreateTicketModal();
             await loadTickets();
         } else {
             showToast(res.message || 'Failed to create ticket.', 'error');
