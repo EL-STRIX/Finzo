@@ -1,6 +1,6 @@
 <?php
 $portal = 'admin';
-$pageTitle = 'Finzo Admin — System Settings';
+$pageTitle = 'Finzo Admin — System Settings (Coming Soon)';
 include __DIR__ . '/_guard.php';
 
 $extraScripts = '<script defer src="/Finzo/public/assets/js/admin/admin-settings.js?v=' . time() . '"></script>';
@@ -11,24 +11,67 @@ ob_start();
 <!-- TOP PAGE HEADER -->
 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 relative z-10">
     <div>
-        <h1 class="text-2xl font-headline font-black text-text-primary tracking-tight">System Settings</h1>
-        <p class="text-xs font-bold text-text-secondary uppercase tracking-widest mt-1">Global Parameters, Security Policies &amp; Governance</p>
+        <div class="flex items-center gap-2 mb-1">
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-primary/10 text-primary border border-primary/20">
+                <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+                In Development
+            </span>
+            <span class="text-text-muted text-xs font-mono">Module: Governance 2.0</span>
+        </div>
+        <h1 class="text-2xl font-headline font-black text-text-primary tracking-tight">System Settings &amp; Configuration</h1>
+        <p class="text-xs font-bold text-text-secondary uppercase tracking-widest mt-1">Global Parameters, Security Policies &amp; Institutional Governance</p>
     </div>
-    <div class="flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-border-subtle bg-surface/80 shadow-sm text-xs font-bold text-text-secondary uppercase tracking-widest">
-        <span class="material-symbols-outlined text-[16px] text-warning" aria-hidden="true">engineering</span>
-        <span>Under Development</span>
+    <div class="flex items-center gap-3">
+        <button id="btn-notify-settings" class="btn btn-secondary !px-4 flex items-center gap-2">
+            <span class="material-symbols-outlined text-[18px]">notifications_active</span>
+            <span class="font-bold text-xs">Notify on Launch</span>
+        </button>
     </div>
 </div>
 
-<!-- SYSTEM STATUS CARDS -->
-<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 relative z-10">
+<!-- COMING SOON HERO BANNER -->
+<div class="ds-card p-8 relative overflow-hidden shadow-2xl mb-8 border border-border-subtle bg-gradient-to-br from-surface via-surface to-primary/5">
+    <div class="absolute -right-24 -top-24 w-80 h-80 bg-primary/10 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute -left-20 -bottom-20 w-72 h-72 bg-accent/10 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="relative z-10 max-w-3xl">
+        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 text-primary flex items-center justify-center mb-6 border border-primary/20 shadow-lg">
+            <span class="material-symbols-outlined text-3xl">settings_suggest</span>
+        </div>
+
+        <h2 class="text-3xl font-display font-black text-text-primary tracking-tight mb-3">
+            Centralized Core Banking Configuration Engine
+        </h2>
+        <p class="text-text-secondary text-sm leading-relaxed mb-6">
+            The unified system settings and institutional governance console is undergoing active architectural development. This engine will centralize real-time control over core transaction limits, interest rate schedules, multi-factor security rules, automated database snapshots, and tenant-wide maintenance windows.
+        </p>
+
+        <div class="flex flex-wrap items-center gap-3">
+            <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-background/80 border border-border-subtle text-xs font-semibold text-text-secondary">
+                <span class="material-symbols-outlined text-emerald-500 text-sm">check_circle</span>
+                <span>Database Schemas &amp; Setting Keys Ready</span>
+            </div>
+            <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-background/80 border border-border-subtle text-xs font-semibold text-text-secondary">
+                <span class="material-symbols-outlined text-primary text-sm">tune</span>
+                <span>Dynamic Parameter Engine in Architecture Review</span>
+            </div>
+            <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-background/80 border border-border-subtle text-xs font-semibold text-text-secondary">
+                <span class="material-symbols-outlined text-amber-500 text-sm">schedule</span>
+                <span>Target Release: Q4 2026</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SYSTEM STATUS KPI CARDS -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 relative z-10">
     <div class="ds-card p-5 flex items-center gap-4">
         <div class="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center border border-primary/20 shrink-0">
             <span class="material-symbols-outlined text-2xl" aria-hidden="true">tune</span>
         </div>
         <div>
             <div class="text-[10px] font-black text-text-secondary uppercase tracking-widest">Active Parameters</div>
-            <div class="text-xl font-black font-display text-text-primary">Coming Soon</div>
+            <div class="text-xl font-black font-display text-text-primary">Managed via Config</div>
         </div>
     </div>
     <div class="ds-card p-5 flex items-center gap-4">
@@ -37,7 +80,7 @@ ob_start();
         </div>
         <div>
             <div class="text-[10px] font-black text-text-secondary uppercase tracking-widest">Platform Status</div>
-            <div class="text-xl font-black font-display text-emerald-500">Operational</div>
+            <div class="text-xl font-black font-display text-emerald-500">All Systems Operational</div>
         </div>
     </div>
     <div class="ds-card p-5 flex items-center gap-4">
@@ -46,12 +89,12 @@ ob_start();
         </div>
         <div>
             <div class="text-[10px] font-black text-text-secondary uppercase tracking-widest">Disaster Recovery</div>
-            <div class="text-xl font-black font-display text-text-primary">BCDR Ready</div>
+            <div class="text-xl font-black font-display text-text-primary">Automated Backup Ready</div>
         </div>
     </div>
 </div>
 
-<div class="flex flex-col lg:flex-row gap-6 lg:gap-8 relative z-10">
+<div class="flex flex-col lg:flex-row gap-6 lg:gap-8 relative z-10 mb-8">
 
     <!-- SETTINGS NAVIGATION SIDEBAR -->
     <div class="w-full lg:w-64 shrink-0">
@@ -159,91 +202,62 @@ ob_start();
 
         <!-- BACKUP Panel -->
         <div id="tab-backup" class="settings-panel hidden space-y-6">
-            <div class="ds-card p-6 lg:p-8">
+            <div class="ds-card p-6 lg:p-8 relative overflow-hidden">
                 <div class="border-b border-border-subtle pb-4 mb-6">
                     <div class="flex items-center gap-2">
                         <span class="material-symbols-outlined text-info text-[24px]" aria-hidden="true">cloud_sync</span>
                         <h2 class="text-lg font-headline font-black text-text-primary">Disaster Recovery &amp; Backup</h2>
                     </div>
-                    <p class="text-xs font-bold text-text-secondary uppercase tracking-widest mt-1">Execute manual database snapshots or export structures for disaster recovery</p>
+                    <p class="text-xs font-bold text-text-secondary uppercase tracking-widest mt-1">Automated database snapshots and export mechanisms for business continuity</p>
                 </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <!-- Full Backup Card -->
-                    <div class="border border-border-subtle rounded-2xl p-5 bg-background flex flex-col justify-between relative overflow-hidden opacity-60">
-                        <div class="absolute inset-0 flex flex-col items-center justify-center bg-surface/80 backdrop-blur-[2px] z-10 gap-2">
-                            <span class="material-symbols-outlined text-4xl text-text-secondary">schedule</span>
-                            <span class="text-xs font-black text-text-secondary uppercase tracking-widest">Coming Soon</span>
-                        </div>
-                        <div>
-                            <div class="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-4 border border-primary/20">
-                                <span class="material-symbols-outlined text-2xl" aria-hidden="true">database</span>
-                            </div>
-                            <h3 class="font-headline font-black text-base text-text-primary">Full Database Snapshot</h3>
-                            <p class="text-xs text-text-secondary mt-1 mb-6 leading-relaxed">Generates a complete SQL dump containing table schema, constraints, and all transactional data.</p>
-                        </div>
-                        <button type="button" class="btn btn-primary !w-full flex items-center justify-center gap-2" disabled>
-                            <span class="material-symbols-outlined text-[18px]" aria-hidden="true">download</span>
-                            <span>Run Full Backup</span>
-                        </button>
-                    </div>
-
-                    <!-- Schema Only Card -->
-                    <div class="border border-border-subtle rounded-2xl p-5 bg-background flex flex-col justify-between relative overflow-hidden opacity-60">
-                        <div class="absolute inset-0 flex flex-col items-center justify-center bg-surface/80 backdrop-blur-[2px] z-10 gap-2">
-                            <span class="material-symbols-outlined text-4xl text-text-secondary">schedule</span>
-                            <span class="text-xs font-black text-text-secondary uppercase tracking-widest">Coming Soon</span>
-                        </div>
-                        <div>
-                            <div class="w-12 h-12 rounded-xl bg-info-bg text-info flex items-center justify-center mb-4 border border-info/20">
-                                <span class="material-symbols-outlined text-2xl" aria-hidden="true">schema</span>
-                            </div>
-                            <h3 class="font-headline font-black text-base text-text-primary">Schema Only</h3>
-                            <p class="text-xs text-text-secondary mt-1 mb-6 leading-relaxed">Exports DDL table definitions, triggers, views, and foreign key relations without customer rows.</p>
-                        </div>
-                        <button type="button" class="btn btn-secondary !w-full !border-info !text-info flex items-center justify-center gap-2" disabled>
-                            <span class="material-symbols-outlined text-[18px]" aria-hidden="true">code</span>
-                            <span>Backup Schema</span>
-                        </button>
-                    </div>
-
-                    <!-- Data Only Card -->
-                    <div class="border border-border-subtle rounded-2xl p-5 bg-background flex flex-col justify-between relative overflow-hidden opacity-60">
-                        <div class="absolute inset-0 flex flex-col items-center justify-center bg-surface/80 backdrop-blur-[2px] z-10 gap-2">
-                            <span class="material-symbols-outlined text-4xl text-text-secondary">schedule</span>
-                            <span class="text-xs font-black text-text-secondary uppercase tracking-widest">Coming Soon</span>
-                        </div>
-                        <div>
-                            <div class="w-12 h-12 rounded-xl bg-success-bg text-success flex items-center justify-center mb-4 border border-success/20">
-                                <span class="material-symbols-outlined text-2xl" aria-hidden="true">data_object</span>
-                            </div>
-                            <h3 class="font-headline font-black text-base text-text-primary">Data Rows Only</h3>
-                            <p class="text-xs text-text-secondary mt-1 mb-6 leading-relaxed">Exports raw table records via INSERT statements without modifying or re-creating existing schema.</p>
-                        </div>
-                        <button type="button" class="btn btn-secondary !w-full !border-success !text-success flex items-center justify-center gap-2" disabled>
-                            <span class="material-symbols-outlined text-[18px]" aria-hidden="true">table_rows</span>
-                            <span>Backup Data</span>
-                        </button>
-                    </div>
-                </div>
+                <?= renderComingSoonPanel([
+                    ['icon' => 'database', 'label' => 'Full Database Snapshot', 'desc' => 'Complete dump of all relational tables and ledger journals'],
+                    ['icon' => 'schedule_send', 'label' => 'Automated Backup Schedule', 'desc' => 'Cron frequency for continuous off-site replication'],
+                    ['icon' => 'security', 'label' => 'AES-256 Backup Encryption', 'desc' => 'Cryptographic key rotation for backup archive storage'],
+                    ['icon' => 'history_toggle_drop_down', 'label' => 'Point-in-Time Recovery', 'desc' => 'WAL archiving for zero-data-loss rollback capability'],
+                ]) ?>
+                <?= renderPanelOverlay() ?>
             </div>
+        </div>
+    </div>
+</div>
 
-            <div class="p-4 rounded-xl bg-warning-bg border border-warning/30 flex gap-3 text-warning">
-                <span class="material-symbols-outlined shrink-0 text-xl" aria-hidden="true">info</span>
-                <div class="text-xs leading-relaxed">
-                    <strong class="font-black block mb-1 uppercase tracking-wider">Storage &amp; Encryption Policy</strong>
-                    All backup archives will be written to <code>/storage/backups</code> and isolated from public HTTP access. This feature is being prepared for production release.
-                </div>
+<!-- ARCHITECTURE BLUEPRINT FOR FUTURE IMPLEMENTATION -->
+<div class="ds-card p-6 border border-border-subtle bg-surface/90">
+    <div class="flex items-center gap-3 mb-4 pb-4 border-b border-border-subtle">
+        <div class="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+            <span class="material-symbols-outlined text-xl">developer_board</span>
+        </div>
+        <div>
+            <h3 class="font-headline font-bold text-base text-text-primary">Implementation Specification</h3>
+            <p class="text-xs text-text-secondary">Clean architecture blueprint for implementing this feature backend</p>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 text-xs">
+        <div class="space-y-3">
+            <div class="font-bold text-text-primary uppercase tracking-wider text-[11px]">Target API Contracts</div>
+            <div class="p-3 rounded-lg bg-background border border-border-subtle font-mono text-[11px] space-y-1.5">
+                <div class="text-emerald-500"><span class="font-bold">GET</span> /api/v1/admin/settings <span class="text-text-muted">(Fetch grouped system settings)</span></div>
+                <div class="text-primary"><span class="font-bold">PUT/PATCH</span> /api/v1/admin/settings <span class="text-text-muted">(Bulk update parameters with audit log)</span></div>
+                <div class="text-blue-500"><span class="font-bold">POST</span> /api/v1/admin/settings/backup <span class="text-text-muted">(Trigger manual disaster recovery snapshot)</span></div>
             </div>
         </div>
 
+        <div class="space-y-3">
+            <div class="font-bold text-text-primary uppercase tracking-wider text-[11px]">Decoupled Components</div>
+            <ul class="space-y-1.5 text-text-secondary">
+                <li class="flex items-center gap-2"><span class="material-symbols-outlined text-text-muted text-[14px]">chevron_right</span> <strong>Controller:</strong> <code class="text-text-primary">AdminSettingsController</code></li>
+                <li class="flex items-center gap-2"><span class="material-symbols-outlined text-text-muted text-[14px]">chevron_right</span> <strong>Service:</strong> <code class="text-text-primary">SettingsService</code> implements <code class="text-text-primary">SettingsServiceInterface</code></li>
+                <li class="flex items-center gap-2"><span class="material-symbols-outlined text-text-muted text-[14px]">chevron_right</span> <strong>Repository:</strong> <code class="text-text-primary">SettingsRepository</code> (mapped to DB table: <code class="text-text-primary">system_settings</code>)</li>
+            </ul>
+        </div>
     </div>
 </div>
 
 <?php
 /**
  * Renders a grid of blurred mocked setting rows.
- * The content is visible but blurred underneath the panel-level overlay.
  */
 function renderComingSoonPanel(array $items): string
 {
@@ -283,10 +297,10 @@ function renderPanelOverlay(): string
             </div>
             <div>
                 <div class="text-lg font-headline font-black text-text-primary tracking-tight">Coming Soon</div>
-                <div class="text-xs font-bold text-text-secondary uppercase tracking-widest mt-1">This feature is under active development</div>
+                <div class="text-xs font-bold text-text-secondary uppercase tracking-widest mt-1">This configuration module is under active development</div>
             </div>
             <div class="px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-xs font-black text-primary uppercase tracking-widest">
-                🚀 &nbsp;Launching Soon
+                🚀 &nbsp;Launching Q4 2026
             </div>
         </div>
     </div>';

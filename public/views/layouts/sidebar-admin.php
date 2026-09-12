@@ -254,9 +254,12 @@ function isActive($key, $current) {
                 </a>
             </li>
             <li>
-                <a href="admin-settings.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg font-bold transition-all <?= isActive('settings', $currentPath) ?>">
-                    <span class="material-symbols-outlined text-[20px]" aria-hidden="true">settings</span>
-                    <span class="text-sm">System Settings</span>
+                <a href="admin-settings.php" class="flex items-center justify-between px-4 py-2.5 rounded-lg font-bold transition-all <?= isActive('settings', $currentPath) ?>">
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-[20px]" aria-hidden="true">settings</span>
+                        <span class="text-sm">System Settings</span>
+                    </div>
+                    <span class="text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded bg-primary/10 text-primary border border-primary/20">Soon</span>
                 </a>
             </li>
         </ul>

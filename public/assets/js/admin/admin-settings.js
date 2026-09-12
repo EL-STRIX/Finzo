@@ -1,8 +1,14 @@
 /**
  * Finzo Admin — System Settings
- * UI-only tab switcher. All features are Coming Soon.
+ * UI-only tab switcher with interactive preview notifications.
+ * 
+ * Clean architecture reference:
+ * When the backend settings engine is implemented in the future,
+ * connect this view to GET /api/v1/admin/settings and PUT /api/v1/admin/settings.
  */
 (function () {
+    'use strict';
+
     function init() {
         const tabs = document.querySelectorAll('.settings-tab-ui');
         const panels = document.querySelectorAll('.settings-panel');
@@ -25,6 +31,15 @@
                 if (activePanel) activePanel.classList.remove('hidden');
             });
         });
+
+        const notifyBtn = document.getElementById('btn-notify-settings');
+        if (notifyBtn) {
+            notifyBtn.addEventListener('click', function() {
+                if (window.showToast) {
+                    window.showToast('You will be notified once the System Settings engine backend is deployed.', 'info');
+                }
+            });
+        }
     }
 
     if (document.readyState === 'loading') {
