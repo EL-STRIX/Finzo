@@ -20,6 +20,8 @@ abstract class TestCase extends BaseTestCase {
         
         // Initialize the global database connection via the singleton wrapper
         $this->db = Database::getInstance();
+        $this->db->exec("SET time_zone = '" . date('P') . "'");
+        $this->db->exec("SET sql_mode = 'STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION'");
         
         // Enforce strict test isolation by starting a database transaction.
         // This ensures no test logic permanently mutates the test database.

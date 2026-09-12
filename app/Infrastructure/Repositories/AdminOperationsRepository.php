@@ -164,15 +164,18 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
         }
 
         if (!empty($filters['search'])) {
-            $where_clauses[] = "(al.actor_id LIKE ? OR al.entity_id LIKE ? OR al.details LIKE ? OR al.action_type LIKE ? OR al.ip_address LIKE ? OR al.event_id LIKE ? OR al.uuid LIKE ?)";
+            // Name search uses EXISTS subqueries so that count/export queries
+            // (which do not join users/staff/admin_users) stay valid, and so
+            // LEFT JOIN fan-out can never double-count aggregated rows.
+            $where_clauses[] = "(al.actor_id LIKE ? OR al.entity_id LIKE ? OR al.details LIKE ? OR al.action_type LIKE ? OR al.ip_address LIKE ? OR al.event_id LIKE ? OR al.uuid LIKE ?
+                OR EXISTS (SELECT 1 FROM users uu WHERE uu.full_name LIKE ? AND (uu.id = al.actor_id OR uu.customer_id = al.actor_id OR uu.id = al.entity_id OR uu.customer_id = al.entity_id))
+                OR EXISTS (SELECT 1 FROM staff ss WHERE ss.full_name LIKE ? AND (ss.id = al.actor_id OR ss.staff_id = al.actor_id OR ss.id = al.entity_id OR ss.staff_id = al.entity_id))
+                OR EXISTS (SELECT 1 FROM admin_users aa WHERE aa.full_name LIKE ? AND (aa.id = al.actor_id OR aa.admin_id = al.actor_id OR aa.id = al.entity_id OR aa.admin_id = al.entity_id))
+            )";
             $s = "%{$filters['search']}%";
-            $params[] = $s;
-            $params[] = $s;
-            $params[] = $s;
-            $params[] = $s;
-            $params[] = $s;
-            $params[] = $s;
-            $params[] = $s;
+            for ($i = 0; $i < 10; $i++) {
+                $params[] = $s;
+            }
         }
 
         return [implode(' AND ', $where_clauses), $params];
@@ -192,8 +195,8 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
         return $this->fetchAll("
             SELECT id, full_name, email, status, created_at, profile_picture
             FROM users
-            WHERE is_deleted = 0
-            ORDER BY created_at DESC
+            WHERE is_deleted = 0 AND (status IN ('active', 'under_review') OR (status = 'pending' AND kyc_submitted_at IS NOT NULL))
+            ORDER BY COALESCE(kyc_submitted_at, created_at) DESC
             LIMIT 10
         ", []);
     }
@@ -209,6 +212,51 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
             WHERE status = 'completed'
                 AND DATE_FORMAT(created_at, '%Y-%m') = ?
         ", [$monthDate]);
+    }
+
+    public function getMonthlyChartDataSixMonths(): array
+    {
+        $deposit = \App\Domain\Enums\TransactionTypeEnum::DEPOSIT->value;
+        $withdrawal = \App\Domain\Enums\TransactionTypeEnum::WITHDRAWAL->value;
+        $transfer = \App\Domain\Enums\TransactionTypeEnum::TRANSFER->value;
+        $completed = \App\Domain\Enums\AccountStatusEnum::COMPLETED->value;
+
+        $sql = "
+            SELECT
+                DATE_FORMAT(created_at, '%Y-%m') as ym,
+                COALESCE(SUM(CASE WHEN type = '{$deposit}' THEN amount ELSE 0 END), 0) as deposits,
+                COALESCE(SUM(CASE WHEN type = '{$withdrawal}' THEN amount ELSE 0 END), 0) as withdrawals,
+                COALESCE(SUM(CASE WHEN type = '{$transfer}' THEN amount ELSE 0 END), 0) as transfers,
+                COUNT(*) as count
+            FROM transactions
+            WHERE status = '{$completed}'
+              AND created_at >= DATE_SUB(DATE_FORMAT(NOW(), '%Y-%m-01'), INTERVAL 5 MONTH)
+            GROUP BY DATE_FORMAT(created_at, '%Y-%m')
+        ";
+        $stmt = $this->db->query($sql);
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $mapped = [];
+        foreach ($rows as $row) {
+            $mapped[$row['ym']] = $row;
+        }
+
+        $result = [];
+        for ($i = 5; $i >= 0; $i--) {
+            $ym = date('Y-m', strtotime("-{$i} months"));
+            $month_label = date('M Y', strtotime("-{$i} months"));
+            $dataRow = $mapped[$ym] ?? null;
+
+            $result[] = [
+                'month'       => $month_label,
+                'deposits'    => (float)($dataRow['deposits'] ?? 0),
+                'withdrawals' => (float)($dataRow['withdrawals'] ?? 0),
+                'transfers'   => (float)($dataRow['transfers'] ?? 0),
+                'count'       => (int)($dataRow['count'] ?? 0)
+            ];
+        }
+
+        return $result;
     }
 
     public function getAdminById(int $adminId) {
@@ -231,9 +279,22 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
     public function getDeletedUsers(string $whereSql, array $params, int $perPage, int $offset) {
         return $this->fetchAll("
             SELECT u.id, u.customer_id, u.full_name, u.email, u.phone, u.status, u.deleted_at, u.created_at, u.profile_picture,
-                   a.account_no, a.account_type, a.balance
+                   a.account_no, a.account_type, a.balance,
+                   COALESCE(l.details, 'Admin Action') as deletion_reason,
+                   COALESCE(NULLIF(ad.full_name, ''), l.actor_id, 'Admin') as deleted_by
             FROM users u
             LEFT JOIN accounts a ON u.customer_id = a.user_id
+            LEFT JOIN (
+                SELECT log1.entity_id, log1.details, log1.created_at, log1.actor_id
+                FROM audit_log log1
+                INNER JOIN (
+                    SELECT entity_id, MAX(id) as max_id
+                    FROM audit_log
+                    WHERE action_type = 'user_deleted' AND entity_type = 'user'
+                    GROUP BY entity_id
+                ) log2 ON log1.id = log2.max_id
+            ) l ON (l.entity_id COLLATE utf8mb4_unicode_ci = u.customer_id COLLATE utf8mb4_unicode_ci OR l.entity_id COLLATE utf8mb4_unicode_ci = CAST(u.id AS CHAR) COLLATE utf8mb4_unicode_ci)
+            LEFT JOIN admin_users ad ON (ad.admin_id COLLATE utf8mb4_unicode_ci) = (l.actor_id COLLATE utf8mb4_unicode_ci)
             WHERE {$whereSql}
             ORDER BY u.deleted_at DESC
             LIMIT {$perPage} OFFSET {$offset}
@@ -244,11 +305,25 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
     // Interest Rate Methods
     // ---------------------------------------------------------
     public function getCurrentInterestRate() {
+        $active = $this->fetchOne("
+            SELECT ir.rate, ir.apply_from_type, ir.apply_from_date, ir.created_at,
+                   COALESCE(au.full_name, 'System Administrator') as changed_by_name
+            FROM interest_rates ir
+            LEFT JOIN admin_users au ON (ir.changed_by_admin_id COLLATE utf8mb4_unicode_ci = au.admin_id COLLATE utf8mb4_unicode_ci OR ir.changed_by_admin_id COLLATE utf8mb4_unicode_ci = CAST(au.id AS CHAR) COLLATE utf8mb4_unicode_ci)
+            WHERE ir.apply_from_date <= CURRENT_DATE()
+            ORDER BY ir.apply_from_date DESC, ir.created_at DESC
+            LIMIT 1
+        ", []);
+
+        if ($active) {
+            return $active;
+        }
+
         return $this->fetchOne("
             SELECT ir.rate, ir.apply_from_type, ir.apply_from_date, ir.created_at,
-                   au.full_name as changed_by_name
+                   COALESCE(au.full_name, 'System Administrator') as changed_by_name
             FROM interest_rates ir
-            JOIN admin_users au ON ir.changed_by_admin_id = au.admin_id
+            LEFT JOIN admin_users au ON (ir.changed_by_admin_id COLLATE utf8mb4_unicode_ci = au.admin_id COLLATE utf8mb4_unicode_ci OR ir.changed_by_admin_id COLLATE utf8mb4_unicode_ci = CAST(au.id AS CHAR) COLLATE utf8mb4_unicode_ci)
             ORDER BY ir.created_at DESC
             LIMIT 1
         ", []) ?: null;
@@ -257,9 +332,9 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
     public function getInterestHistory() {
         return $this->fetchAll("
             SELECT ir.id, ir.rate, ir.apply_from_type, ir.apply_from_date, ir.created_at,
-                   au.full_name as changed_by_name
+                   COALESCE(au.full_name, 'System Administrator') as changed_by_name
             FROM interest_rates ir
-            JOIN admin_users au ON ir.changed_by_admin_id = au.admin_id
+            LEFT JOIN admin_users au ON (ir.changed_by_admin_id COLLATE utf8mb4_unicode_ci = au.admin_id COLLATE utf8mb4_unicode_ci OR ir.changed_by_admin_id COLLATE utf8mb4_unicode_ci = CAST(au.id AS CHAR) COLLATE utf8mb4_unicode_ci)
             ORDER BY ir.created_at DESC
             LIMIT 10
         ", []);
@@ -354,10 +429,12 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
                 COALESCE(u.state, '') as 'State',
                 COALESCE(u.pincode, '') as 'PIN Code',
                 COALESCE(u.country, 'India') as 'Country',
+                COALESCE(b.name, 'Unassigned') as 'Servicing Branch',
                 u.created_at as 'Registration Date',
                 COALESCE(u.last_login_at, 'Never') as 'Last Active',
                 COALESCE(u.last_login_ip, 'N/A') as 'Last Login IP'
             FROM users u
+            LEFT JOIN branches b ON u.branch_id = b.id
             WHERE {$whereSql}
             ORDER BY {$orderSql}
         ";
@@ -373,7 +450,12 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
     // ---------------------------------------------------------
     public function countLockedAccounts(string $whereSql, array $params): int
     {
-        return (int)$this->fetchOne("SELECT COUNT(*) as count FROM users u WHERE {$whereSql}", $params)['count'] ?? 0;
+        return (int)$this->fetchOne("
+            SELECT COUNT(DISTINCT u.id) as count 
+            FROM users u 
+            LEFT JOIN accounts a ON u.customer_id = a.user_id 
+            WHERE {$whereSql}
+        ", $params)['count'] ?? 0;
     }
 
     public function getLockedAccounts(string $whereSql, array $params, int $perPage, int $offset) {
@@ -399,7 +481,7 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
             FROM users u
             LEFT JOIN accounts a ON u.customer_id = a.user_id
             WHERE u.id = ?
-        ", [$userId], \App\Domain\Models\Admin::class) ?: null;
+        ", [$userId]) ?: null;
     }
 
     public function getUserAuditLogs(string $customerId) {
@@ -410,7 +492,7 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
                OR (actor_id = ? AND actor_role = 'User')
             ORDER BY created_at DESC
             LIMIT 20
-        ", [$customerId, $customerId], \App\Domain\Models\Admin::class);
+        ", [$customerId, $customerId]);
     }
 
     // ---------------------------------------------------------
@@ -418,27 +500,35 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
     // ---------------------------------------------------------
     public function countPendingApprovals(string $whereSql, array $params): int
     {
-        return (int)$this->fetchOne("SELECT COUNT(*) as count FROM users u WHERE {$whereSql}", $params)['count'] ?? 0;
+        return (int)$this->fetchOne("
+            SELECT COUNT(DISTINCT u.id) as count 
+            FROM users u 
+            LEFT JOIN accounts a ON u.customer_id = a.user_id
+            LEFT JOIN kyc_applications k ON u.customer_id = k.user_id
+            WHERE {$whereSql}
+        ", $params)['count'] ?? 0;
     }
 
-    public function getPendingApprovals(string $whereSql, array $params, int $perPage, int $offset) {
+    public function getPendingApprovals(string $whereSql, array $params, int $perPage, int $offset, string $orderBy = 'u.kyc_submitted_at DESC, u.created_at DESC') {
         return $this->fetchAll("
             SELECT u.id, u.customer_id, u.full_name, u.email, u.phone, u.status,
                    u.kyc_submitted_at, u.created_at, u.profile_picture,
-                   a.account_type,
+                   COALESCE(a.account_type, k.account_type, 'savings') as account_type,
                    k.application_no, k.submission_count, k.submitted_at,
                    SUBSTRING(u.full_name, 1, 1) as initials,
                    CASE u.status
                        WHEN 'pending'      THEN 'Pending Review'
                        WHEN 'under_review' THEN 'Under Review'
+                       WHEN 'active'       THEN 'Approved'
+                       WHEN 'rejected'     THEN 'Rejected'
                        ELSE u.status
                    END as status_text,
-                   k.id_type
+                   COALESCE(k.id_type, u.id_type, 'N/A') as id_type
             FROM users u
             LEFT JOIN accounts a ON u.customer_id = a.user_id
             LEFT JOIN kyc_applications k ON u.customer_id = k.user_id
             WHERE {$whereSql}
-            ORDER BY u.kyc_submitted_at DESC, u.created_at DESC
+            ORDER BY {$orderBy}
             LIMIT {$perPage} OFFSET {$offset}
         ", $params);
     }
@@ -446,12 +536,18 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
     public function getPendingApprovalsStats() {
         return $this->fetchOne("
             SELECT
-                SUM(CASE WHEN status = 'pending'      THEN 1 ELSE 0 END) as pending_review,
-                SUM(CASE WHEN status = 'under_review' THEN 1 ELSE 0 END) as under_review,
-                SUM(CASE WHEN status = 'active' AND DATE(kyc_submitted_at) = CURDATE() THEN 1 ELSE 0 END) as approved_today,
-                SUM(CASE WHEN status = 'rejected' AND DATE(kyc_submitted_at) = CURDATE() THEN 1 ELSE 0 END) as rejected_today,
-                SUM(CASE WHEN status = 'active' THEN 1 ELSE 0 END) as total_approved
-            FROM users WHERE is_deleted = 0
+                SUM(CASE WHEN (u.status = 'pending' AND u.kyc_submitted_at IS NOT NULL) THEN 1 ELSE 0 END) as pending_review,
+                SUM(CASE WHEN u.status = 'under_review' THEN 1 ELSE 0 END) as under_review,
+                SUM(CASE WHEN u.status = 'active' AND EXISTS (
+                        SELECT 1 FROM kyc_applications k
+                        WHERE k.user_id = u.customer_id AND DATE(k.reviewed_at) = CURDATE()
+                    ) THEN 1 ELSE 0 END) as approved_today,
+                SUM(CASE WHEN u.status = 'rejected' AND EXISTS (
+                        SELECT 1 FROM kyc_applications k
+                        WHERE k.user_id = u.customer_id AND DATE(k.reviewed_at) = CURDATE()
+                    ) THEN 1 ELSE 0 END) as rejected_today,
+                SUM(CASE WHEN u.status = 'active' THEN 1 ELSE 0 END) as total_approved
+            FROM users u WHERE u.is_deleted = 0
         ", []);
     }
 
@@ -459,7 +555,7 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
     // Recover User Methods
     // ---------------------------------------------------------
     public function getUserForRecovery(int $userId) {
-        return $this->fetchOne("SELECT id, customer_id, full_name, is_deleted FROM users WHERE id = ?", [$userId], \App\Domain\Models\Admin::class) ?: null;
+        return $this->fetchOne("SELECT id, customer_id, full_name, is_deleted FROM users WHERE id = ?", [$userId], \App\Domain\Models\User::class) ?: null;
     }
 
     public function recoverUser(int $userId, string $customerId): void
@@ -473,11 +569,32 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
     // ---------------------------------------------------------
     public function getApplicationUser(int $userId) {
         return $this->fetchOne("
-            SELECT id, customer_id, full_name, email, phone, status, profile_picture, dob, gender, father_name, mother_name, marital_status, nationality,
-                   occupation, annual_income, source_of_income, street, city, state, pincode, country,
-                   id_type, id_number, id_front_path, id_back_path,
-                   kyc_submitted_at, rejection_reason, created_at
-            FROM users WHERE id = ? AND is_deleted = 0
+            SELECT u.id, u.customer_id, u.full_name, u.email, u.phone, u.status,
+                   COALESCE(k.profile_picture, u.profile_picture) AS profile_picture,
+                   COALESCE(k.dob, u.dob) AS dob,
+                   COALESCE(k.gender, u.gender) AS gender,
+                   COALESCE(k.father_name, u.father_name) AS father_name,
+                   COALESCE(k.mother_name, u.mother_name) AS mother_name,
+                   COALESCE(k.marital_status, u.marital_status) AS marital_status,
+                   COALESCE(k.nationality, u.nationality) AS nationality,
+                   COALESCE(k.occupation, u.occupation) AS occupation,
+                   COALESCE(k.annual_income, u.annual_income) AS annual_income,
+                   COALESCE(k.source_of_income, u.source_of_income) AS source_of_income,
+                   COALESCE(k.street, u.street) AS street,
+                   COALESCE(k.city, u.city) AS city,
+                   COALESCE(k.state, u.state) AS state,
+                   COALESCE(k.pincode, u.pincode) AS pincode,
+                   u.country,
+                   COALESCE(k.id_type, u.id_type) AS id_type,
+                   COALESCE(k.id_number, u.id_number) AS id_number,
+                   COALESCE(k.id_front_path, u.id_front_path) AS id_front_path,
+                   COALESCE(k.id_back_path, u.id_back_path) AS id_back_path,
+                   u.kyc_submitted_at, u.rejection_reason, u.created_at,
+                   (SELECT k2.reviewed_at FROM kyc_applications k2 WHERE k2.user_id = u.customer_id ORDER BY k2.id DESC LIMIT 1) AS approval_reviewed_at,
+                   (SELECT k2.admin_notes FROM kyc_applications k2 WHERE k2.user_id = u.customer_id ORDER BY k2.id DESC LIMIT 1) AS admin_notes
+            FROM users u
+            LEFT JOIN kyc_applications k ON u.customer_id = k.user_id
+            WHERE u.id = ? AND u.is_deleted = 0
         ", [$userId], \App\Domain\Models\Admin::class) ?: null;
     }
 
@@ -501,7 +618,59 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
 
     public function approveApplication(int $userId, string $customerId, string $accountNo, string $adminDisplayId): void
     {
-        $this->execute("UPDATE users SET status = 'active', updated_at = NOW() WHERE id = ?", [$userId]);
+        $app = $this->fetchOne("SELECT * FROM kyc_applications WHERE user_id = ?", [$customerId]);
+        if ($app) {
+            $this->execute("
+                UPDATE users SET 
+                    status = 'active',
+                    profile_picture = ?,
+                    dob = ?,
+                    gender = ?,
+                    father_name = ?,
+                    mother_name = ?,
+                    marital_status = ?,
+                    nationality = ?,
+                    occupation = ?,
+                    annual_income = ?,
+                    source_of_income = ?,
+                    street = ?,
+                    city = ?,
+                    state = ?,
+                    pincode = ?,
+                    id_type = ?,
+                    id_number = ?,
+                    id_front_path = ?,
+                    id_back_path = ?,
+                    branch_id = COALESCE(?, branch_id),
+                    kyc_submitted_at = ?,
+                    updated_at = NOW() 
+                WHERE id = ?
+            ", [
+                $app['profile_picture'],
+                $app['dob'],
+                $app['gender'],
+                $app['father_name'],
+                $app['mother_name'],
+                $app['marital_status'],
+                $app['nationality'],
+                $app['occupation'],
+                $app['annual_income'],
+                $app['source_of_income'],
+                $app['street'],
+                $app['city'],
+                $app['state'],
+                $app['pincode'],
+                $app['id_type'],
+                $app['id_number'],
+                $app['id_front_path'],
+                $app['id_back_path'],
+                $app['branch_id'] ?? null,
+                $app['submitted_at'],
+                $userId
+            ]);
+        } else {
+            $this->execute("UPDATE users SET status = 'active', updated_at = NOW() WHERE id = ?", [$userId]);
+        }
         $this->execute("
             UPDATE accounts SET
                 account_no = ?, status = 'active', opened_date = CURDATE(), updated_at = NOW()
@@ -553,7 +722,7 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
                     WHERE action_type = 'user_suspended' AND entity_type = 'user'
                     GROUP BY entity_id
                 ) log2 ON log1.id = log2.max_id
-            ) l ON u.id = l.entity_id
+            ) l ON (l.entity_id COLLATE utf8mb4_unicode_ci = u.customer_id COLLATE utf8mb4_unicode_ci OR l.entity_id COLLATE utf8mb4_unicode_ci = CAST(u.id AS CHAR) COLLATE utf8mb4_unicode_ci)
             WHERE {$whereSql}
         ";
         return (int)$this->fetchOne($sql, $params)['count'] ?? 0;
@@ -561,7 +730,7 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
 
     public function getSuspendedUsers(string $whereSql, array $params, int $perPage, int $offset) {
         $sql = "
-            SELECT u.id, u.customer_id, u.full_name, u.email, u.phone, u.status, u.created_at, u.updated_at,
+            SELECT u.id, u.customer_id, u.full_name, u.email, u.phone, u.status, u.created_at, u.updated_at, u.profile_picture,
                    a.account_no, a.account_type, a.balance,
                    COALESCE(l.details, 'Suspended') as raw_reason,
                    COALESCE(l.created_at, u.updated_at) as raw_suspended_at,
@@ -577,7 +746,7 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
                     WHERE action_type = 'user_suspended' AND entity_type = 'user'
                     GROUP BY entity_id
                 ) log2 ON log1.id = log2.max_id
-            ) l ON u.id = l.entity_id
+            ) l ON (l.entity_id COLLATE utf8mb4_unicode_ci = u.customer_id COLLATE utf8mb4_unicode_ci OR l.entity_id COLLATE utf8mb4_unicode_ci = CAST(u.id AS CHAR) COLLATE utf8mb4_unicode_ci)
             WHERE {$whereSql}
             ORDER BY raw_suspended_at DESC
             LIMIT {$perPage} OFFSET {$offset}
@@ -684,14 +853,18 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
     // ---------------------------------------------------------
     public function countUsers(string $whereSql, array $params): int
     {
-        return (int)($this->fetchOne("SELECT COUNT(*) as count FROM users u WHERE {$whereSql}", $params)['count'] ?? 0);
+        return (int)($this->fetchOne("SELECT COUNT(*) as count FROM users u LEFT JOIN branches b ON u.branch_id = b.id WHERE {$whereSql}", $params)['count'] ?? 0);
     }
 
     public function getUsers(string $whereSql, array $params, int $perPage, int $offset, string $orderSql = 'u.created_at DESC') {
         $sql = "
             SELECT
-                u.id, u.customer_id, u.full_name, u.email, u.phone, u.status, u.created_at, u.last_login_at, u.profile_picture
+                u.id, u.customer_id, u.full_name, u.email, u.phone, u.status, u.created_at, u.last_login_at, u.profile_picture,
+                u.branch_id,
+                COALESCE(b.name, 'Unassigned') as branch_name,
+                COALESCE(b.branch_code, '') as branch_code
             FROM users u
+            LEFT JOIN branches b ON u.branch_id = b.id
             WHERE {$whereSql}
             ORDER BY {$orderSql}
             LIMIT {$perPage} OFFSET {$offset}
@@ -716,11 +889,19 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
     // ---------------------------------------------------------
     public function getSuspendedUser(int $userId) {
         return $this->fetchOne("
-            SELECT id, customer_id, full_name, email, phone, status, dob, gender, father_name,
-                   occupation, annual_income, street, city, state, pincode, country,
-                   id_type, id_number, kyc_submitted_at, created_at, updated_at
-            FROM users WHERE id = ? AND status = 'suspended' AND is_deleted = 0
-        ", [$userId], \App\Domain\Models\Admin::class);
+            SELECT u.id, u.customer_id, u.full_name, u.email, u.phone, u.status, u.dob, u.gender, u.father_name,
+                   u.occupation, u.annual_income, u.street, u.city, u.state, u.pincode, u.country,
+                   u.id_type, u.id_number, u.kyc_submitted_at, u.created_at, u.updated_at, u.profile_picture,
+                   COALESCE(u.branch_id, ka.branch_id) as branch_id,
+                   COALESCE(b.name, kb.name, 'Unassigned') as branch_name,
+                   COALESCE(b.branch_code, kb.branch_code, '') as branch_code,
+                   COALESCE(b.state, kb.state, '') as branch_state
+            FROM users u
+            LEFT JOIN branches b ON u.branch_id = b.id
+            LEFT JOIN kyc_applications ka ON ka.user_id = u.customer_id
+            LEFT JOIN branches kb ON ka.branch_id = kb.id
+            WHERE u.id = ? AND u.status = 'suspended' AND u.is_deleted = 0
+        ", [$userId]);
     }
 
     public function getSuspendedUserProfile(int $userId) {
@@ -779,7 +960,7 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
     {
         $stmt = $this->db->prepare("
             UPDATE users 
-            SET locked_until = NULL, failed_attempts = 0, password_hash = ?, temp_pass_status = 'done', updated_at = NOW() 
+            SET locked_until = NULL, failed_attempts = 0, password_hash = ?, temp_pass_status = 'pending', updated_at = NOW() 
             WHERE id = ?
         ");
         $stmt->execute([$passwordHash, $userId]);
@@ -868,14 +1049,22 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
     public function getUserProfile(int $userId)
     {
         $stmt = $this->db->prepare("
-            SELECT id, customer_id, full_name, email, phone, status, dob, gender, father_name,
-                   mother_name, marital_status, nationality, profile_picture,
-                   occupation, annual_income, source_of_income, street, city, state, pincode, country,
-                   id_type, id_number, id_front_path, id_back_path,
-                   kyc_submitted_at, rejection_reason, is_deleted, deleted_at,
-                   failed_attempts, locked_until, last_login_at, last_login_ip,
-                   created_at, updated_at
-            FROM users WHERE id = ?
+            SELECT u.id, u.customer_id, u.full_name, u.email, u.phone, u.status, u.dob, u.gender, u.father_name,
+                   u.mother_name, u.marital_status, u.nationality, u.profile_picture,
+                   u.occupation, u.annual_income, u.source_of_income, u.street, u.city, u.state, u.pincode, u.country,
+                   u.id_type, u.id_number, u.id_front_path, u.id_back_path,
+                   COALESCE(u.branch_id, ka.branch_id) as branch_id,
+                   COALESCE(b.name, kb.name, 'Unassigned') as branch_name,
+                   COALESCE(b.branch_code, kb.branch_code, '') as branch_code,
+                   COALESCE(b.state, kb.state, '') as branch_state,
+                   u.kyc_submitted_at, u.rejection_reason, u.is_deleted, u.deleted_at,
+                   u.failed_attempts, u.locked_until, u.last_login_at, u.last_login_ip,
+                   u.created_at, u.updated_at
+            FROM users u
+            LEFT JOIN branches b ON u.branch_id = b.id
+            LEFT JOIN kyc_applications ka ON ka.user_id = u.customer_id
+            LEFT JOIN branches kb ON ka.branch_id = kb.id
+            WHERE u.id = ?
         ");
         $stmt->execute([$userId]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
@@ -924,16 +1113,29 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
         $under_review_status = \App\Domain\Enums\AccountStatusEnum::UNDER_REVIEW->value;
         $suspended_status = \App\Domain\Enums\AccountStatusEnum::SUSPENDED->value;
 
-        $pending_users = (int)$this->getSingleStat("SELECT COUNT(*) FROM users WHERE status IN ('{$pending_status}', '{$under_review_status}') AND is_deleted = 0");
+        $userStats = $this->fetchOne("
+            SELECT
+                COUNT(*) as total_users,
+                COALESCE(SUM(CASE WHEN status = '{$active_status}' THEN 1 ELSE 0 END), 0) as active_users,
+                COALESCE(SUM(CASE WHEN (status = '{$under_review_status}' OR (status = '{$pending_status}' AND kyc_submitted_at IS NOT NULL)) THEN 1 ELSE 0 END), 0) as pending_users,
+                COALESCE(SUM(CASE WHEN status = '{$suspended_status}' THEN 1 ELSE 0 END), 0) as suspended_users
+            FROM users
+            WHERE is_deleted = 0
+        ") ?: [];
+
+        $staffCount = (int)$this->getSingleStat("SELECT COUNT(*) FROM staff");
+        $branchCount = (int)$this->getSingleStat("SELECT COUNT(*) FROM branches");
+
+        $pending_users = (int)($userStats['pending_users'] ?? 0);
 
         return [
-            'total_users'        => (int)$this->getSingleStat("SELECT COUNT(*) FROM users WHERE (is_deleted = 0 AND status IN ('{$active_status}', '{$suspended_status}')) OR is_deleted = 1"),
-            'active_users'       => (int)$this->getSingleStat("SELECT COUNT(*) FROM users WHERE status = '{$active_status}' AND is_deleted = 0"),
+            'total_users'        => (int)($userStats['total_users'] ?? 0),
+            'active_users'       => (int)($userStats['active_users'] ?? 0),
             'pending_users'      => $pending_users,
             'pending_approvals'  => $pending_users, // Alias for backward compatibility with frontend
-            'suspended_users'    => (int)$this->getSingleStat("SELECT COUNT(*) FROM users WHERE status = '{$suspended_status}' AND is_deleted = 0"),
-            'total_staff'        => (int)$this->getSingleStat("SELECT COUNT(*) FROM staff"),
-            'total_branches'     => (int)$this->getSingleStat("SELECT COUNT(*) FROM branches")
+            'suspended_users'    => (int)($userStats['suspended_users'] ?? 0),
+            'total_staff'        => $staffCount,
+            'total_branches'     => $branchCount
         ];
     }
 
@@ -945,18 +1147,48 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
         $interest = \App\Domain\Enums\TransactionTypeEnum::INTEREST_CREDIT->value;
         $completed = \App\Domain\Enums\AccountStatusEnum::COMPLETED->value;
         $active = \App\Domain\Enums\AccountStatusEnum::ACTIVE->value;
+        $maxFailedAttempts = (int)get_setting($this->db, 'max_failed_login_attempts', 5);
+
+        // 1. Transactions aggregated in a single query
+        $txnStats = $this->fetchOne("
+            SELECT
+                COALESCE(SUM(CASE WHEN DATE(created_at) = CURDATE() THEN 1 ELSE 0 END), 0) as transactions_today,
+                COALESCE(SUM(CASE WHEN MONTH(created_at) = MONTH(CURDATE()) AND YEAR(created_at) = YEAR(CURDATE()) THEN 1 ELSE 0 END), 0) as transactions_month,
+                COALESCE(SUM(CASE WHEN type = '{$deposit}' AND status = '{$completed}' AND DATE(created_at) = CURDATE() THEN amount ELSE 0 END), 0) as deposits_today,
+                COALESCE(SUM(CASE WHEN type = '{$withdrawal}' AND status = '{$completed}' AND DATE(created_at) = CURDATE() THEN amount ELSE 0 END), 0) as withdrawals_today,
+                COALESCE(SUM(CASE WHEN type = '{$transfer}' AND status = '{$completed}' AND DATE(created_at) = CURDATE() THEN amount ELSE 0 END), 0) as transfers_today,
+                COALESCE(SUM(CASE WHEN type = '{$interest}' AND status = '{$completed}' THEN amount ELSE 0 END), 0) as interest_credited
+            FROM transactions
+        ") ?: [];
+
+        // 2. Accounts aggregated in a single query
+        $accStats = $this->fetchOne("
+            SELECT
+                COUNT(*) as total_accounts,
+                COALESCE(SUM(balance), 0) as total_balance
+            FROM accounts
+            WHERE status = '{$active}'
+        ") ?: [];
+
+        // 3. User status conditions aggregated in a single query
+        $userStatusCounts = $this->fetchOne("
+            SELECT
+                COALESCE(SUM(CASE WHEN is_deleted = 0 AND (locked_until > NOW() OR failed_attempts >= {$maxFailedAttempts}) THEN 1 ELSE 0 END), 0) as locked_accounts,
+                COALESCE(SUM(CASE WHEN is_deleted = 1 THEN 1 ELSE 0 END), 0) as soft_deleted_users
+            FROM users
+        ") ?: [];
 
         return [
-            'transactions_today' => (int)$this->getSingleStat("SELECT COUNT(*) FROM transactions WHERE DATE(created_at) = CURDATE()"),
-            'transactions_month' => (int)$this->getSingleStat("SELECT COUNT(*) FROM transactions WHERE MONTH(created_at) = MONTH(CURDATE()) AND YEAR(created_at) = YEAR(CURDATE())"),
-            'deposits_today'     => (float)$this->getSingleStat("SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE type = '{$deposit}' AND status = '{$completed}' AND DATE(created_at) = CURDATE()"),
-            'withdrawals_today'  => (float)$this->getSingleStat("SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE type = '{$withdrawal}' AND status = '{$completed}' AND DATE(created_at) = CURDATE()"),
-            'transfers_today'    => (float)$this->getSingleStat("SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE type = '{$transfer}' AND status = '{$completed}' AND DATE(created_at) = CURDATE()"),
-            'locked_accounts'    => (int)$this->getSingleStat("SELECT COUNT(*) FROM users WHERE locked_until > NOW() AND is_deleted = 0"),
-            'total_balance'      => (float)$this->getSingleStat("SELECT COALESCE(SUM(balance), 0) FROM accounts WHERE status = '{$active}'"),
-            'total_accounts'     => (int)$this->getSingleStat("SELECT COUNT(*) FROM accounts WHERE status = '{$active}'"),
-            'interest_credited'  => (float)$this->getSingleStat("SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE type = '{$interest}' AND status = '{$completed}'"),
-            'soft_deleted_users' => (int)$this->getSingleStat("SELECT COUNT(*) FROM users WHERE is_deleted = 1")
+            'transactions_today' => (int)($txnStats['transactions_today'] ?? 0),
+            'transactions_month' => (int)($txnStats['transactions_month'] ?? 0),
+            'deposits_today'     => (float)($txnStats['deposits_today'] ?? 0),
+            'withdrawals_today'  => (float)($txnStats['withdrawals_today'] ?? 0),
+            'transfers_today'    => (float)($txnStats['transfers_today'] ?? 0),
+            'locked_accounts'    => (int)($userStatusCounts['locked_accounts'] ?? 0),
+            'total_balance'      => (float)($accStats['total_balance'] ?? 0),
+            'total_accounts'     => (int)($accStats['total_accounts'] ?? 0),
+            'interest_credited'  => (float)($txnStats['interest_credited'] ?? 0),
+            'soft_deleted_users' => (int)($userStatusCounts['soft_deleted_users'] ?? 0)
         ];
     }
 

@@ -3,8 +3,6 @@ $portal = 'user';
 $pageTitle = 'My Accounts';
 ob_start();
 ?>
-<script defer src="/Finzo/public/assets/js/user/user-shared.js?v=3"></script>
-
 <!-- Standard Page Header -->
   <div class="mb-8 ds-animate-fade">
     <div class="text-sm font-bold text-text-muted uppercase tracking-wider mb-1">Banking</div>
@@ -83,8 +81,6 @@ ob_start();
 </div>
 
 
-<script defer src="/Finzo/public/assets/js/core/utils.js"></script>
-  <script defer src="/Finzo/public/assets/js/core/api.js"></script>
 <script defer src="/Finzo/public/assets/js/user/accounts.js"></script>
 <?php
 $slot = ob_get_clean();

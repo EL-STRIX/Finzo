@@ -11,7 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
 
-    <script defer src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script src="/Finzo/public/assets/js/core/tailwind-config.js"></script>
     
     <link rel="stylesheet" href="/Finzo/public/assets/css/base/variables.css" />
@@ -108,7 +108,10 @@
 
                         <!-- Security Token / Password Input Component -->
                         <div class="fin-input-container">
-                            <label for="admin-token" class="fin-label fin-label-required">Security Token / Password</label>
+                            <div class="flex justify-between items-center mb-1">
+                                <label for="admin-token" class="fin-label fin-label-required">Security Token / Password</label>
+                                <a href="forgot-password.php?role=admin" class="btn-text">Forgot password?</a>
+                            </div>
                             <div class="fin-input-wrapper">
                                 <span class="material-symbols-outlined input-icon-left">vpn_key</span>
                                 <input type="password" id="admin-token" name="password" class="fin-input has-icon-left has-icon-right" placeholder="Enter security token or password" required autocomplete="current-password" />
@@ -139,7 +142,7 @@
                     <!-- Trust Badges Component -->
                     <div class="trust-badge-group">
                         <span class="trust-badge"><span class="material-symbols-outlined">admin_panel_settings</span> Zero-Trust Control</span>
-                        <span class="trust-badge"><span class="material-symbols-outlined">fingerprint</span> Hardware Token SSL</span>
+                        <span class="trust-badge"><span class="material-symbols-outlined">enhanced_encryption</span> 256-bit Encrypted</span>
                     </div>
                 </div>
             </div>

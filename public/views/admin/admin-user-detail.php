@@ -1,6 +1,8 @@
 <?php
 $portal = 'admin';
 $pageTitle = 'Finzo Admin — User Dossier';
+// Admin portal guard — server-side authentication & role check
+include __DIR__ . '/_guard.php';
 ob_start();
 ?>
   <style>
@@ -33,14 +35,18 @@ ob_start();
     <div class="space-y-6 sm:space-y-8">
       
       <!-- TOP NAVIGATION -->
-      <div class="flex items-center justify-between gap-4 relative z-10">
-        <div class="flex items-center gap-4">
-          <a href="admin-users.php" class="w-10 h-10 flex items-center justify-center rounded-xl bg-surface border border-border-subtle hover:bg-background transition-all text-text-secondary hover:text-text-primary shadow-sm" aria-label="Back to Users">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 relative z-10">
+          <?php
+            $fromParam = $_GET['from'] ?? '';
+            $backHref = ($fromParam === 'suspended') ? 'admin-suspended-users.php' : 'admin-users.php';
+            $backTitle = ($fromParam === 'suspended') ? 'Back to Suspended Users' : 'Back to Users';
+          ?>
+          <a href="<?= $backHref ?>" id="back-to-users-link" class="w-10 h-10 flex items-center justify-center rounded-xl bg-surface border border-border-subtle hover:bg-background transition-all text-text-secondary hover:text-text-primary shadow-sm shrink-0" aria-label="<?= $backTitle ?>">
             <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
           </a>
           <div>
-            <div class="text-[10px] font-black tracking-widest uppercase text-text-secondary">USER DOSSIER & PROFILE</div>
-            <div id="topbar-user-name" class="text-xl sm:text-2xl font-headline font-black tracking-tight text-text-primary">Loading User Profile...</div>
+            <h1 id="topbar-user-name" class="text-2xl font-headline font-black tracking-tight text-text-primary">Loading User Profile...</h1>
+            <p class="text-xs font-bold text-text-secondary uppercase tracking-widest mt-1">User Account Dossier &amp; Identity Records</p>
           </div>
         </div>
       </div>
@@ -60,9 +66,13 @@ ob_start();
                 <h3 id="user-name-title" class="font-headline text-2xl sm:text-3xl font-black tracking-tight text-text-primary">
                   <div class="skeleton w-48 h-8"></div>
                 </h3>
-                <div class="flex items-center justify-center sm:justify-start gap-3 mt-2">
+                <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2.5 mt-2">
                   <span id="user-status-badge" class="text-[10px] font-black px-2.5 py-1 rounded-md uppercase tracking-widest bg-surface border border-border-subtle text-text-secondary">
                     <div class="skeleton w-24 h-4"></div>
+                  </span>
+                  <span id="user-branch-badge" class="text-[10px] font-black px-2.5 py-1 rounded-md uppercase tracking-widest bg-primary/10 text-primary border border-primary/20 inline-flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-xs" aria-hidden="true">store</span>
+                    <span id="user-branch-text">Loading branch...</span>
                   </span>
                 </div>
               </div>
@@ -118,7 +128,7 @@ ob_start();
               <div id="info-source-income" class="text-sm font-bold text-text-primary"><div class="skeleton w-24 h-4"></div></div>
             </div>
 
-            <!-- Contact -->
+            <!-- Contact & Branch -->
             <div>
               <p class="fin-label">PHONE NUMBER</p>
               <div id="info-phone" class="text-sm font-bold text-text-primary"><div class="skeleton w-28 h-4"></div></div>
@@ -126,6 +136,10 @@ ob_start();
             <div>
               <p class="fin-label">EMAIL ADDRESS</p>
               <div id="info-email" class="text-sm font-bold text-text-primary break-all"><div class="skeleton w-40 h-4"></div></div>
+            </div>
+            <div>
+              <p class="fin-label">SERVICING BRANCH</p>
+              <div id="info-branch" class="text-sm font-bold text-text-primary"><div class="skeleton w-32 h-4"></div></div>
             </div>
             
             <!-- Identification -->
@@ -534,7 +548,7 @@ ob_start();
     </div>
   </div>
 <?php
-$extraScripts = '<script defer src="/Finzo/public/assets/js/admin/user-detail.js"></script>';
+$extraScripts = '<script defer src="/Finzo/public/assets/js/admin/user-detail.js?v=' . time() . '"></script>';
 $slot = ob_get_clean();
 include __DIR__ . '/../layouts/app.php';
 ?>

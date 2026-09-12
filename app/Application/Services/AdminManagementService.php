@@ -26,13 +26,6 @@ class AdminManagementService implements \App\Domain\Contracts\Services\AdminMana
         $this->repository = $repository;
     }
 
-    public function requireSuperAdmin(): void
-    {
-        if ($this->security) {
-            $this->security->enforceSuperAdmin();
-        }
-    }
-
 
 
     /**
@@ -472,6 +465,20 @@ class AdminManagementService implements \App\Domain\Contracts\Services\AdminMana
         }
         if (!empty($phone) && !validate_phone($phone)) {
             throw new ApiException('Invalid phone number format', 422, ['field' => 'phone']);
+        }
+        if ($gender !== '' && !in_array($gender, ['Male', 'Female', 'Other', 'Prefer not to say'], true)) {
+            throw new ApiException('Invalid gender selection', 422, ['field' => 'gender']);
+        }
+
+        // NULL-able DATE / ENUM columns: store NULL instead of '' to avoid strict-mode SQL errors
+        if ($date_of_birth === '') {
+            $date_of_birth = null;
+        }
+        if ($gender === '') {
+            $gender = null;
+        }
+        if ($phone === '') {
+            $phone = null;
         }
 
         $fields = ["full_name = ?", "phone = ?", "date_of_birth = ?", "gender = ?"];

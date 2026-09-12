@@ -25,47 +25,45 @@ class LedgerService implements LedgerServiceInterface
         return $this->repository->getChartOfAccounts();
     }
 
-    public function getJournalEntries(int $page, int $perPage): array
+    public function getJournalEntries(int $page, int $perPage, string $search = '', string $type = ''): array
     {
         $limit = max(10, min(100, $perPage));
         $offset = (max(1, $page) - 1) * $limit;
 
-        $lines = $this->repository->getJournalEntries($limit, $offset);
-        
-        // Group lines by journal entry ID
-        $entries = [];
+        $lines = $this->repository->getJournalEntries($limit, $offset, $search, $type);
+
+        // Flatten journal lines into the row shape the admin ledger table renders:
+        // transaction_id, created_at, type ('debit'|'credit'), amount, account_code, account_name, description.
+        $rows = [];
         foreach ($lines as $line) {
-            $jId = $line['id'];
-            if (!isset($entries[$jId])) {
-                $entries[$jId] = [
-                    'id' => $line['id'],
-                    'transaction_id' => $line['transaction_id'],
-                    'entry_date' => $line['entry_date'],
-                    'description' => $line['description'],
-                    'reference_id' => $line['reference_id'],
-                    'created_at' => $line['created_at'],
-                    'lines' => []
-                ];
-            }
-            $entries[$jId]['lines'][] = [
-                'line_id' => $line['line_id'],
-                'account_id' => $line['account_id'],
-                'account_code' => $line['account_code'],
-                'account_name' => $line['account_name'],
-                'debit_amount' => (float)$line['debit_amount'],
-                'credit_amount' => (float)$line['credit_amount']
+            $isDebit = (float)$line['debit_amount'] > 0;
+            $rows[] = [
+                'line_id'        => (int)$line['line_id'],
+                'journal_id'     => (int)$line['id'],
+                'transaction_id' => $line['transaction_id'],
+                'entry_date'     => $line['entry_date'],
+                'created_at'     => $line['created_at'],
+                'description'    => $line['description'],
+                'reference_id'   => $line['reference'],
+                'account_id'     => (int)$line['account_id'],
+                'account_code'   => $line['account_code'],
+                'account_name'   => $line['account_name'],
+                'type'           => $isDebit ? 'debit' : 'credit',
+                'amount'         => $isDebit ? (float)$line['debit_amount'] : (float)$line['credit_amount'],
+                'debit_amount'   => (float)$line['debit_amount'],
+                'credit_amount'  => (float)$line['credit_amount'],
             ];
         }
 
-        $total = $this->repository->getJournalEntriesCount();
+        $total = $this->repository->getJournalEntriesCount($search, $type);
         $pages = max(1, ceil($total / $limit));
 
         return [
-            'entries' => array_values($entries),
-            'total' => $total,
-            'pages' => $pages,
+            'data'         => $rows,
+            'total'        => $total,
+            'pages'        => $pages,
             'current_page' => $page,
-            'per_page' => $limit
+            'per_page'     => $limit
         ];
     }
 
@@ -77,7 +75,7 @@ class LedgerService implements LedgerServiceInterface
     public function closePeriod(int $periodId, int $adminId): void
     {
         $period = $this->repository->getActiveAccountingPeriod();
-        if (!$period || $period['id'] !== $periodId) {
+        if (!$period || (int)$period['id'] !== $periodId) {
             throw new \App\Shared\Core\Exceptions\BusinessRuleException('Invalid or inactive accounting period');
         }
 
@@ -85,15 +83,99 @@ class LedgerService implements LedgerServiceInterface
             throw new \Exception('Failed to close accounting period');
         }
 
+        $periodName = $period['period_name'] ?? $period['name'] ?? 'Accounting Period';
         $this->dispatcher->dispatch(
             new GenericAuditAction(
-                AuditActionEnum::SYSTEM_SETTINGS_UPDATE->value ?? 'SYSTEM_SETTINGS_UPDATE', 
+                AuditActionEnum::SYSTEM_SETTINGS_UPDATED->value, 
                 $periodId, 
                 'accounting_periods', 
                 $adminId, 
                 RoleEnum::ADMIN->value, 
-                "Closed accounting period: {$period['period_name']}"
+                "Closed accounting period: {$periodName}"
             )
         );
+    }
+
+    public function openPeriod(string $name, string $startDate, string $endDate, int $adminId): int
+    {
+        $active = $this->repository->getActiveAccountingPeriod();
+        if ($active) {
+            throw new \App\Shared\Core\Exceptions\BusinessRuleException('An accounting period is already open. Close it before opening a new period.');
+        }
+
+        if (empty(trim($name))) {
+            throw new \App\Shared\Core\Exceptions\BusinessRuleException('Period name is required');
+        }
+
+        if (empty($startDate) || empty($endDate) || strtotime($startDate) > strtotime($endDate)) {
+            throw new \App\Shared\Core\Exceptions\BusinessRuleException('Valid start and end dates are required (start date must be before end date)');
+        }
+
+        $periodId = $this->repository->openAccountingPeriod(trim($name), $startDate, $endDate);
+
+        $this->dispatcher->dispatch(
+            new GenericAuditAction(
+                AuditActionEnum::SYSTEM_SETTINGS_UPDATED->value, 
+                $periodId, 
+                'accounting_periods', 
+                $adminId, 
+                RoleEnum::ADMIN->value, 
+                "Opened new accounting period: {$name} ({$startDate} to {$endDate})"
+            )
+        );
+
+        return $periodId;
+    }
+
+    public function getLedgerSummary(): array
+    {
+        return $this->repository->getLedgerSummary();
+    }
+
+    public function getJournalDetail(int $journalId): ?array
+    {
+        return $this->repository->getJournalDetail($journalId);
+    }
+
+    public function exportJournals(string $search = '', string $type = ''): string
+    {
+        $lines = $this->repository->getAllJournalLinesForExport($search, $type);
+        $fp = fopen('php://temp', 'r+');
+        fputcsv($fp, [
+            'Journal Number',
+            'Posting Date',
+            'Reference',
+            'Description',
+            'Source Module',
+            'Account Code',
+            'Account Name',
+            'Category',
+            'Type',
+            'Debit (INR)',
+            'Credit (INR)',
+            'Created At'
+        ], ',', '"', "\\");
+
+        foreach ($lines as $line) {
+            fputcsv($fp, [
+                $line['journal_number'],
+                $line['posting_date'],
+                $line['reference'],
+                $line['description'],
+                $line['source_module'],
+                $line['account_code'],
+                $line['account_name'],
+                ucfirst((string)$line['category']),
+                $line['entry_type'],
+                number_format((float)$line['debit_amount'], 2, '.', ''),
+                number_format((float)$line['credit_amount'], 2, '.', ''),
+                $line['created_at']
+            ], ',', '"', "\\");
+        }
+
+        rewind($fp);
+        $csv = stream_get_contents($fp);
+        fclose($fp);
+        return $csv;
     }
 }

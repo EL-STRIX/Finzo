@@ -75,6 +75,7 @@ function isActive($key, $current) {
         ? 'bg-primary/5 dark:bg-primary/10 text-accent border-r-4 border-accent shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] active-nav-item'
         : 'text-text-secondary hover:bg-background hover:text-text-primary border-r-4 border-transparent';
 }
+
 ?>
 <!-- Admin Sidebar -->
 <aside class="admin-sidebar fixed top-16 left-0 h-[calc(100vh-4rem)] w-72 bg-surface border-r border-border-subtle z-40 transition-transform duration-300 -translate-x-full lg:translate-x-0 flex flex-col" id="admin-sidebar">
@@ -105,12 +106,9 @@ function isActive($key, $current) {
                 </a>
             </li>
             <li>
-                <a href="admin-pending-approvals.php" class="flex items-center justify-between px-4 py-2.5 rounded-lg font-bold transition-all group <?= isActive('approvals', $currentPath) ?>">
-                    <div class="flex items-center gap-3">
-                        <span class="material-symbols-outlined text-[20px]" aria-hidden="true">rule</span>
-                        <span class="text-sm">Approvals</span>
-                    </div>
-                    <span id="pending-badge-count" class="px-2 py-0.5 rounded-full bg-warning-bg text-warning text-[10px] font-black tracking-widest uppercase shadow-sm">...</span>
+                <a href="admin-pending-approvals.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg font-bold transition-all <?= isActive('approvals', $currentPath) ?>">
+                    <span class="material-symbols-outlined text-[20px]" aria-hidden="true">rule</span>
+                    <span class="text-sm">Approvals</span>
                 </a>
             </li>
             <li>
@@ -151,27 +149,39 @@ function isActive($key, $current) {
         
         <ul class="space-y-1 px-3">
             <li>
-                <a href="admin-loan-products.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg font-bold transition-all <?= isActive('loan-products', $currentPath) ?>">
-                    <span class="material-symbols-outlined text-[20px]" aria-hidden="true">real_estate_agent</span>
-                    <span class="text-sm">Loan Products</span>
+                <a href="admin-loan-products.php" class="flex items-center justify-between px-4 py-2.5 rounded-lg font-bold transition-all <?= isActive('loan-products', $currentPath) ?>">
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-[20px]" aria-hidden="true">real_estate_agent</span>
+                        <span class="text-sm">Loan Products</span>
+                    </div>
+                    <span class="text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded bg-primary/10 text-primary border border-primary/20">Soon</span>
                 </a>
             </li>
             <li>
-                <a href="admin-loans.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg font-bold transition-all <?= isActive('loans', $currentPath) ?>">
-                    <span class="material-symbols-outlined text-[20px]" aria-hidden="true">payments</span>
-                    <span class="text-sm">Loan Applications</span>
+                <a href="admin-loans.php" class="flex items-center justify-between px-4 py-2.5 rounded-lg font-bold transition-all <?= isActive('loans', $currentPath) ?>">
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-[20px]" aria-hidden="true">payments</span>
+                        <span class="text-sm">Loan Applications</span>
+                    </div>
+                    <span class="text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded bg-warning/10 text-warning border border-warning/20">Soon</span>
                 </a>
             </li>
             <li>
-                <a href="admin-card-products.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg font-bold transition-all <?= isActive('card-products', $currentPath) ?>">
-                    <span class="material-symbols-outlined text-[20px]" aria-hidden="true">featured_play_list</span>
-                    <span class="text-sm">Card Products</span>
+                <a href="admin-card-products.php" class="flex items-center justify-between px-4 py-2.5 rounded-lg font-bold transition-all <?= isActive('card-products', $currentPath) ?>">
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-[20px]" aria-hidden="true">featured_play_list</span>
+                        <span class="text-sm">Card Products</span>
+                    </div>
+                    <span class="text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded bg-accent/10 text-accent border border-accent/20">Soon</span>
                 </a>
             </li>
             <li>
-                <a href="admin-cards.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg font-bold transition-all <?= isActive('cards', $currentPath) ?>">
-                    <span class="material-symbols-outlined text-[20px]" aria-hidden="true">credit_card</span>
-                    <span class="text-sm">Card Issuance</span>
+                <a href="admin-cards.php" class="flex items-center justify-between px-4 py-2.5 rounded-lg font-bold transition-all <?= isActive('cards', $currentPath) ?>">
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-[20px]" aria-hidden="true">credit_card</span>
+                        <span class="text-sm">Card Issuance</span>
+                    </div>
+                    <span class="text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded bg-accent/10 text-accent border border-accent/20">Soon</span>
                 </a>
             </li>
         </ul>
@@ -244,9 +254,12 @@ function isActive($key, $current) {
                 </a>
             </li>
             <li>
-                <a href="admin-settings.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg font-bold transition-all <?= isActive('settings', $currentPath) ?>">
-                    <span class="material-symbols-outlined text-[20px]" aria-hidden="true">settings</span>
-                    <span class="text-sm">System Settings</span>
+                <a href="admin-settings.php" class="flex items-center justify-between px-4 py-2.5 rounded-lg font-bold transition-all <?= isActive('settings', $currentPath) ?>">
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-[20px]" aria-hidden="true">settings</span>
+                        <span class="text-sm">System Settings</span>
+                    </div>
+                    <span class="text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded bg-primary/10 text-primary border border-primary/20">Soon</span>
                 </a>
             </li>
         </ul>
@@ -261,12 +274,7 @@ function isActive($key, $current) {
                     <span class="text-sm">My Profile</span>
                 </a>
             </li>
-            <li>
-                <button data-toggle-theme class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-text-secondary hover:bg-background hover:text-text-primary font-bold transition-all text-left">
-                    <span class="material-symbols-outlined text-[20px]" data-theme-icon aria-hidden="true">light_mode</span>
-                    <span class="text-sm" data-theme-label>Toggle Theme</span>
-                </button>
-            </li>
+
             <li>
                 <a href="../auth/admin-login.php" class="flex items-center gap-3 px-3 py-2 rounded-lg text-error hover:bg-error-bg font-bold transition-all mt-2">
                     <span class="material-symbols-outlined text-[20px]" aria-hidden="true">logout</span>

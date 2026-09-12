@@ -1,28 +1,27 @@
 <?php
 $portal = 'admin';
 $pageTitle = 'Finzo Admin - Review Application';
-$pageHeader = '
-<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-    <div>
-        <div class="flex items-center gap-2 mb-2">
-            <a href="admin-pending-approvals.php" class="w-8 h-8 flex items-center justify-center rounded-xl bg-surface-hover hover:bg-border-subtle transition-colors text-text-secondary">
-                <span class="material-symbols-outlined text-sm" aria-hidden="true">arrow_back</span>
-            </a>
-            <div class="flex items-center gap-1.5 text-[10px] font-black tracking-widest uppercase text-text-secondary">
-                <span>Pending Approvals</span>
-                <span class="material-symbols-outlined text-xs" aria-hidden="true">chevron_right</span>
-                <span class="text-primary whitespace-nowrap" id="bc-name"><div class="skeleton w-24 h-3 inline-block"></div></span>
-            </div>
-        </div>
-        <h1 class="text-xl font-headline font-black text-text-primary tracking-tight">Review Application</h1>
-    </div>
-    <div class="flex items-center">
-        <span class="status-badge px-4 py-2 text-[10px] font-black uppercase tracking-widest bg-warning-bg text-warning rounded-full border border-warning" id="top-status-badge">PENDING</span>
-    </div>
-</div>
-';
+// Admin portal guard — server-side authentication & role check
+include __DIR__ . '/_guard.php';
+
 ob_start();
 ?>
+
+    <!-- TOP PAGE HEADER -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 relative z-10">
+        <div class="flex items-center gap-4">
+            <a href="admin-pending-approvals.php" class="w-10 h-10 flex items-center justify-center rounded-xl bg-surface border border-border-subtle hover:bg-surface-hover transition-colors text-text-secondary hover:text-text-primary shadow-xs shrink-0" title="Back to Pending Approvals">
+                <span class="material-symbols-outlined text-base" aria-hidden="true">arrow_back</span>
+            </a>
+            <div>
+                <h1 class="text-2xl font-headline font-black text-text-primary tracking-tight">Review Application</h1>
+                <p class="text-xs font-bold text-text-secondary uppercase tracking-widest mt-1">Applicant Dossier &amp; Identity Verification Review</p>
+            </div>
+        </div>
+        <div class="flex items-center">
+            <span class="status-badge px-3.5 py-1.5 text-xs font-black uppercase tracking-wider bg-warning-bg text-warning rounded-lg border border-warning/30" id="top-status-badge">PENDING</span>
+        </div>
+    </div>
 
     <div class="flex flex-col lg:flex-row gap-6 lg:gap-10">
         <!-- LEFT COLUMN (60%) -->
@@ -207,6 +206,21 @@ ob_start();
                 <div class="skeleton w-full h-8 mb-4"></div>
                 <div class="skeleton w-full h-8"></div>
               </div>
+            </div>
+          </div>
+
+          <!-- Internal Review Notes -->
+          <div class="ds-card">
+            <div class="p-5 sm:p-6 border-b border-border-subtle flex items-center gap-3">
+              <span class="material-symbols-outlined text-primary" aria-hidden="true">sticky_note_2</span>
+              <h3 class="text-sm font-black uppercase tracking-widest text-text-primary">Internal Review Notes</h3>
+            </div>
+            <div class="p-5 sm:p-8">
+              <textarea id="admin-notes-input" placeholder="Private notes for the approval audit trail (not visible to the applicant)..." class="fin-input w-full min-h-[110px] mb-5"></textarea>
+              <button id="saveAdminNotes" class="w-full btn btn-secondary !py-3.5 rounded-2xl text-xs justify-center">
+                <span class="material-symbols-outlined text-base" aria-hidden="true">save</span>
+                <span>Save Notes</span>
+              </button>
             </div>
           </div>
 

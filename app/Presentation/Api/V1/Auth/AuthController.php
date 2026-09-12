@@ -9,9 +9,9 @@ use App\Shared\Core\Exceptions\ApiException;
 
 class AuthController
 {
-    protected SecurityService $security;
+    protected ?\App\Domain\Contracts\Security\SecurityServiceInterface $security = null;
 
-    private AuthService $service;
+    private \App\Domain\Contracts\Services\AuthServiceInterface $service;
 
     public function __construct(\App\Domain\Contracts\Services\AuthServiceInterface $service, ?\App\Domain\Contracts\Security\SecurityServiceInterface $security = null)
     {
@@ -34,7 +34,7 @@ class AuthController
 
         $result = $this->service->loginUser($identity, $password);
 
-        $base = rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? '/index.php', 3), '/\\');
+        $base = $this->getBaseUrl();
 
         if ($result['mfa_required'] ?? false) {
             return [
@@ -53,6 +53,10 @@ class AuthController
         // $base is already defined above
         if ($user['status'] === \App\Domain\Enums\AccountStatusEnum::PENDING->value) {
             $redirect = $base . '/public/views/user/complete-profile.php';
+        } elseif ($user['status'] === \App\Domain\Enums\AccountStatusEnum::UNDER_REVIEW->value) {
+            $redirect = $base . '/public/views/user/account-pending.php';
+        } elseif ($user['status'] === \App\Domain\Enums\AccountStatusEnum::REJECTED->value) {
+            $redirect = $base . '/public/views/user/account-rejected.php';
         } else {
             $redirect = $base . '/public/views/user/dashboard.php';
         }
@@ -87,7 +91,7 @@ class AuthController
 
         $result = $this->service->loginAdmin($email, $password);
 
-        $base = rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? '/index.php', 3), '/\\');
+        $base = $this->getBaseUrl();
 
         if ($result['mfa_required'] ?? false) {
             return [
@@ -122,7 +126,7 @@ class AuthController
 
         $result = $this->service->loginStaff($identity, $password);
 
-        $base = rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? '/index.php', 3), '/\\');
+        $base = $this->getBaseUrl();
 
         if ($result['mfa_required'] ?? false) {
             return [
@@ -144,16 +148,9 @@ class AuthController
 
     public function forgotPassword(?string $id = null, ?string $extra = null): array
     {
-        $email = $this->security->cleanInput($_POST['email'] ?? '');
-        $csrfToken = $_POST['csrf_token'] ?? '';
-
-        \App\Presentation\Validators\AuthValidator::validateForgotPassword($email, $csrfToken, $this->security);
-
-        $this->service->forgotPassword($email);
-
         return [
-            'success' => true,
-            'message' => 'If an account with this email exists, a password reset link has been sent.'
+            'success' => false,
+            'message' => 'Email password recovery is currently under development (Coming Soon). Please contact your administrator to reset your password.'
         ];
     }
 
@@ -168,7 +165,7 @@ class AuthController
 
         $this->service->resetPassword($token, $newPassword);
 
-        $base = rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? '/index.php', 3), '/\\');
+        $base = $this->getBaseUrl();
 
         return [
             'success'  => true,
@@ -187,19 +184,19 @@ class AuthController
 
         $this->service->registerUser($fullName, $email, $phone, $password);
 
-        $base = rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? '/index.php', 3), '/\\');
+        $base = $this->getBaseUrl();
 
         return [
             'success'  => true,
             'message'  => 'Registration successful! Please complete your profile.',
-            'redirect' => $base . '/public/views/auth/login.php'
+            'redirect' => $base . '/public/views/user/complete-profile.php'
         ];
     }
 
     public function logout(?string $id = null, ?string $extra = null): array
     {
         $role = $_SESSION['role'] ?? '';
-        $base = rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? '/index.php', 3), '/\\');
+        $base = $this->getBaseUrl();
         \App\Shared\Security\SessionManager::destroy();
 
         switch ($role) {
@@ -245,5 +242,19 @@ class AuthController
             'success' => true,
             'csrf_token' => $token
         ];
+    }
+
+    private function getBaseUrl(): string
+    {
+        $scriptName = $_SERVER['SCRIPT_NAME'] ?? '/index.php';
+        $pos = strpos($scriptName, '/public');
+        if ($pos !== false) {
+            return substr($scriptName, 0, $pos);
+        }
+        $dir = dirname($scriptName);
+        if ($dir === '/' || $dir === '\\' || $dir === '.') {
+            return '';
+        }
+        return rtrim($dir, '/\\');
     }
 }

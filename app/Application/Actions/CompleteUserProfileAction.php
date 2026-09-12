@@ -3,7 +3,7 @@
 namespace App\Application\Actions;
 
 use App\Domain\Contracts\Services\UserServiceInterface;
-use App\Shared\Security\SecurityServiceInterface;
+use App\Domain\Contracts\Security\SecurityServiceInterface;
 use Exception;
 use PDOException;
 
@@ -27,16 +27,30 @@ class CompleteUserProfileAction
 
         $data = [
             'user_id' => $userId,
-            'dob' => $this->security->cleanInput($postData['dob'] ?? ''), 'gender' => $this->security->cleanInput($postData['gender'] ?? ''),
-            'father_name' => $this->security->cleanInput($postData['father_name'] ?? ''), 'mother_name' => $this->security->cleanInput($postData['mother_name'] ?? ''),
-            'marital_status' => $this->security->cleanInput($postData['marital_status'] ?? ''), 'nationality' => $this->security->cleanInput($postData['nationality'] ?? ''),
-            'occupation' => $this->security->cleanInput($postData['occupation'] ?? ''), 'annual_income' => $this->security->cleanInput($postData['annual_income'] ?? ''),
-            'source_of_income' => $this->security->cleanInput($postData['source_of_income'] ?? ''), 'street' => $this->security->cleanInput($postData['street'] ?? ''),
-            'city' => $this->security->cleanInput($postData['city'] ?? ''), 'state' => $this->security->cleanInput($postData['state'] ?? ''),
-            'pincode' => $this->security->cleanInput($postData['pincode'] ?? ''), 'id_type' => $this->security->cleanInput($postData['id_type'] ?? ''),
-            'id_number' => $this->security->cleanInput($postData['id_number'] ?? ''), 'account_type' => $this->security->cleanInput($postData['account_type'] ?? ''),
-            'initial_deposit' => floatval($postData['initial_deposit'] ?? 0), 'txn_pin' => $postData['txn_pin'] ?? '',
+            'dob' => $this->security->cleanInput($postData['dob'] ?? ''),
+            'gender' => $this->security->cleanInput($postData['gender'] ?? ''),
+            'father_name' => $this->security->cleanInput($postData['father_name'] ?? $postData['father-name'] ?? ''),
+            'mother_name' => $this->security->cleanInput($postData['mother_name'] ?? $postData['mother-name'] ?? ''),
+            'marital_status' => $this->security->cleanInput($postData['marital_status'] ?? $postData['marital-status'] ?? ''),
+            'nationality' => $this->security->cleanInput($postData['nationality'] ?? ''),
+            'occupation' => $this->security->cleanInput($postData['occupation'] ?? ''),
+            'annual_income' => $this->security->cleanInput($postData['annual_income'] ?? $postData['income'] ?? ''),
+            'source_of_income' => $this->security->cleanInput($postData['source_of_income'] ?? $postData['source-of-income'] ?? ''),
+            'street' => $this->security->cleanInput($postData['street'] ?? ''),
+            'city' => $this->security->cleanInput($postData['city'] ?? ''),
+            'state' => $this->security->cleanInput($postData['state'] ?? ''),
+            'pincode' => $this->security->cleanInput($postData['pincode'] ?? ''),
+            'id_type' => $this->security->cleanInput($postData['id_type'] ?? $postData['id-type'] ?? ''),
+            'id_number' => $this->security->cleanInput($postData['id_number'] ?? $postData['id-number'] ?? ''),
+            'account_type' => $this->security->cleanInput($postData['account_type'] ?? $postData['account-type'] ?? 'savings'),
+            'initial_deposit' => !empty($postData['initial_deposit']) ? floatval($postData['initial_deposit']) : 500.0,
+            'txn_pin' => !empty($postData['txn_pin']) ? (string)$postData['txn_pin'] : '1234',
+            'branch_id' => !empty($postData['branch']) ? intval($postData['branch']) : (!empty($postData['branch_id']) ? intval($postData['branch_id']) : null),
         ];
+
+        if (isset($files['profile_photo']) && !isset($files['profile_picture'])) {
+            $files['profile_picture'] = $files['profile_photo'];
+        }
 
         $existing_user = $this->userService->getUserFiles($userId);
         $data['has_profile_pic'] = !\App\Shared\Core\Validation\Validator::isEmpty($existing_user['profile_picture']);
@@ -64,7 +78,7 @@ class CompleteUserProfileAction
             $pdo = $this->userService->getDb();
             $pdo->beginTransaction();
             $stmt = $pdo->prepare(\App\Infrastructure\Repositories\QueryStore::get('q_ef776789'));
-            $stmt->execute([$paths['profile_pic_path'], $data['dob'], $data['gender'], $data['father_name'], $data['mother_name'], $data['marital_status'], $data['nationality'], $data['occupation'], $data['annual_income'], $data['source_of_income'], $data['street'], $data['city'], $data['state'], $data['pincode'], $data['id_type'], $data['id_number'], $paths['id_front_path'], $paths['id_back_path'], $userId]);
+            $stmt->execute([$data['branch_id'], $userId]);
 
             $txn_pin_hash = password_hash($data['txn_pin'], PASSWORD_BCRYPT);
             $existing_account = $this->userService->getExistingAccountByCustomerId($customer_id_str);
@@ -83,17 +97,76 @@ class CompleteUserProfileAction
             if ($existing_app) {
                 $new_count = $existing_app['submission_count'] + 1;
                 $stmt = $pdo->prepare(\App\Infrastructure\Repositories\QueryStore::get('q_371058c0'));
-                $stmt->execute([$new_count, $data['dob'], $data['gender'], $data['father_name'], $data['occupation'], $data['annual_income'], $data['street'], $data['city'], $data['state'], $data['pincode'], $data['id_type'], $data['id_number'], $paths['id_front_path'], $paths['id_back_path'], $data['account_type'], $data['initial_deposit'], $customer_id_str]);
+                $stmt->execute([
+                    $new_count,
+                    $paths['profile_pic_path'],
+                    $data['dob'],
+                    $data['gender'],
+                    $data['father_name'],
+                    $data['mother_name'],
+                    $data['marital_status'],
+                    $data['nationality'],
+                    $data['occupation'],
+                    $data['annual_income'],
+                    $data['source_of_income'],
+                    $data['street'],
+                    $data['city'],
+                    $data['state'],
+                    $data['pincode'],
+                    $data['id_type'],
+                    $data['id_number'],
+                    $paths['id_front_path'],
+                    $paths['id_back_path'],
+                    $data['account_type'],
+                    $data['initial_deposit'],
+                    $data['branch_id'],
+                    $customer_id_str
+                ]);
             } else {
                 $stmt = $pdo->prepare(\App\Infrastructure\Repositories\QueryStore::get('q_e07f7e3c'));
-                $stmt->execute([$customer_id_str, $application_no, $data['dob'], $data['gender'], $data['father_name'], $data['occupation'], $data['annual_income'], $data['street'], $data['city'], $data['state'], $data['pincode'], $data['id_type'], $data['id_number'], $paths['id_front_path'], $paths['id_back_path'], $data['account_type'], $data['initial_deposit']]);
+                $stmt->execute([
+                    $customer_id_str,
+                    $paths['profile_pic_path'],
+                    $application_no,
+                    $data['dob'],
+                    $data['gender'],
+                    $data['father_name'],
+                    $data['mother_name'],
+                    $data['marital_status'],
+                    $data['nationality'],
+                    $data['occupation'],
+                    $data['annual_income'],
+                    $data['source_of_income'],
+                    $data['street'],
+                    $data['city'],
+                    $data['state'],
+                    $data['pincode'],
+                    $data['id_type'],
+                    $data['id_number'],
+                    $paths['id_front_path'],
+                    $paths['id_back_path'],
+                    $data['account_type'],
+                    $data['initial_deposit'],
+                    $data['branch_id']
+                ]);
             }
             $pdo->commit();
             
             $_SESSION['user_status'] = 'under_review';
-            require_once FINZO_ROOT . '/config/mailer.php';
-            send_under_review_email($_SESSION['user_email'], $_SESSION['user_name']);
-            send_notification($pdo, $customer_id_str, \App\Domain\Enums\NotificationTypeEnum::SYSTEM->value, 'Application Submitted for Review', 'Your KYC profile has been successfully submitted. Our team will review your documents and notify you within 24 hours.');
+            try {
+                require_once FINZO_ROOT . '/config/mailer.php';
+                if (!empty($_SESSION['user_email'])) {
+                    send_under_review_email($_SESSION['user_email'], $_SESSION['user_name'] ?? 'Customer');
+                }
+            } catch (\Throwable $e) {
+                \App\Shared\Core\Logging\Logger::getInstance()->warning('Under review email dispatch failed', ['context' => $e->getMessage()]);
+            }
+
+            try {
+                send_notification($pdo, $customer_id_str, \App\Domain\Enums\NotificationTypeEnum::SYSTEM->value, 'Application Submitted for Review', 'Your KYC profile has been successfully submitted. Our team will review your documents and notify you within 24 hours.');
+            } catch (\Throwable $e) {
+                \App\Shared\Core\Logging\Logger::getInstance()->warning('Notification dispatch failed', ['context' => $e->getMessage()]);
+            }
             
         } catch (PDOException $e) {
             if (\App\Shared\Core\Validation\Validator::isSet($pdo)) {

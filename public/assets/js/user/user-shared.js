@@ -3,20 +3,21 @@
    ═══════════════════════════════════════════ */
 
 // ── THEME ──
-const THEME_KEY = 'finzo-user-theme';
+const THEME_KEY = 'finzo-theme';
 
 function initTheme() {
-  const saved = localStorage.getItem(THEME_KEY);
-  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  if (saved === 'dark' || (!saved && prefersDark)) {
-    document.documentElement.classList.add('dark');
-  }
+  const saved = localStorage.getItem(THEME_KEY) || 'light';
+  document.documentElement.setAttribute('data-theme', saved);
+  document.documentElement.classList.toggle('dark', saved === 'dark');
   updateThemeIcon();
 }
 
 function toggleTheme() {
-  const isDark = document.documentElement.classList.toggle('dark');
-  localStorage.setItem(THEME_KEY, isDark ? 'dark' : 'light');
+  const current = localStorage.getItem(THEME_KEY) || 'light';
+  const target = current === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', target);
+  document.documentElement.classList.toggle('dark', target === 'dark');
+  localStorage.setItem(THEME_KEY, target);
   updateThemeIcon();
 }
 
@@ -28,6 +29,14 @@ function updateThemeIcon() {
   labels.forEach(l => l.textContent = isDark ? 'Light Mode' : 'Dark Mode');
 }
 
+document.addEventListener('click', function(e) {
+  const toggleBtn = e.target.closest('[data-toggle-theme]');
+  if (toggleBtn) {
+    e.preventDefault();
+    toggleTheme();
+  }
+});
+
 initTheme();
 
 // ── USER STATE (Session-backed) ──
@@ -37,14 +46,15 @@ const STATE_KEYS = {
   STATUS: 'finzo_user_status',
 };
 
-// Internal cache — populated by fetchUserSession()
+// Internal cache — populated from window.__FINZO_USER__ for instant 0ms hydration, then refreshed by fetchUserSession()
+const _initUser = window.__FINZO_USER__ || {};
 const _userCache = {
-  status: 'pending',
-  id: 0,
-  customerId: '',
-  name: 'User',
-  email: '',
-  phone: '',
+  status: _initUser.status || 'pending',
+  id: _initUser.id || 0,
+  customerId: _initUser.customer_id || '',
+  name: _initUser.name || 'User',
+  email: _initUser.email || '',
+  phone: _initUser.phone || '',
   accountNo: '',
   accountType: 'savings',
   balance: '0',
@@ -53,7 +63,7 @@ const _userCache = {
   pastRejections: [],
   notifCount: parseInt(localStorage.getItem(STATE_KEYS.NOTIF_COUNT) || '0'),
   avatarUrl: null,
-  _loaded: false,
+  _loaded: !!_initUser.id,
 };
 
 /**
@@ -72,7 +82,7 @@ async function fetchUserSession() {
       _userCache.status = data.user?.status || 'pending';
       _userCache.id = data.user?.id || 0;
       _userCache.customerId = data.user?.customer_id || '';
-      _userCache.name = data.user?.name || 'User';
+      _userCache.name = data.user?.name || data.user?.full_name || 'User';
       _userCache.email = data.user?.email || '';
       _userCache.phone = data.user?.phone || '';
       _userCache.accountNo = data.account?.account_no || '';
@@ -88,20 +98,53 @@ async function fetchUserSession() {
       _userCache.avatarUrl = data.user?.avatar_url || null;
       _userCache._loaded = true;
 
-      // Sync header profile details dynamically
+      // Sync header and sidebar profile details dynamically
       const nameEl = document.getElementById('header-profile-name');
       const idEl = document.getElementById('header-profile-id');
       if (nameEl && _userCache.name) nameEl.textContent = _userCache.name;
       if (idEl && _userCache.customerId) idEl.textContent = 'ID: ' + _userCache.customerId;
 
+      document.querySelectorAll('.user-name, .sidebar-user-name').forEach(el => el.textContent = _userCache.name);
+      document.querySelectorAll('.user-id, .sidebar-user-id').forEach(el => el.textContent = _userCache.customerId ? 'ID: ' + _userCache.customerId : '');
+      document.querySelectorAll('.user-initials, .sidebar-avatar').forEach(el => {
+        if (!_userCache.avatarUrl) el.textContent = UserState.initials;
+      });
+
+      // Sync status badge in sidebar
+      const statusBadge = document.getElementById('sidebar-status-badge');
+      if (statusBadge) {
+        if (_userCache.status === 'active') {
+          statusBadge.innerHTML = `<div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-[10px] font-black uppercase tracking-wider"><div class="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>Account Active</div>`;
+        } else if (_userCache.status === 'under_review') {
+          statusBadge.innerHTML = `<div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-indigo-500/10 border border-indigo-500/30 text-indigo-600 dark:text-indigo-400 text-[10px] font-black uppercase tracking-wider"><div class="w-1.5 h-1.5 rounded-full bg-indigo-500"></div>Under Review</div>`;
+        } else if (_userCache.status === 'rejected') {
+          statusBadge.innerHTML = `<div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-rose-500/10 border border-rose-500/30 text-rose-600 dark:text-rose-400 text-[10px] font-black uppercase tracking-wider"><div class="w-1.5 h-1.5 rounded-full bg-rose-500"></div>Action Required</div>`;
+        } else {
+          statusBadge.innerHTML = `<div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-amber-500/10 border border-amber-500/30 text-amber-600 dark:text-amber-400 text-[10px] font-black uppercase tracking-wider"><div class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></div>Pending KYC</div>`;
+        }
+      }
+
       if (_userCache.avatarUrl) {
-        document.querySelectorAll('header .header-avatar').forEach(el => {
-          let photoSrc = _userCache.avatarUrl;
-          if (!photoSrc.startsWith('http') && !photoSrc.startsWith('data:')) {
-            const clean = photoSrc.replace(/^\/+/, '');
-            photoSrc = clean.startsWith('Finzo/public/') ? '/' + clean : '/Finzo/public/uploads/' + clean;
-          }
-          el.innerHTML = `<img src="${photoSrc}?v=${Date.now()}" alt="${_userCache.name}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+        const resolvePhotoSrc = (src) => {
+          if (!src || src.startsWith('http') || src.startsWith('data:')) return src;
+          const clean = src.replace(/^\/+/, '');
+          return clean.startsWith('Finzo/public/') ? '/' + clean :
+                 (clean.startsWith('uploads/') || clean.startsWith('assets/')) ? '/Finzo/public/' + clean :
+                 '/Finzo/public/uploads/' + clean;
+        };
+        const photoSrc = resolvePhotoSrc(_userCache.avatarUrl);
+        const imgTag = `<img src="${photoSrc}?v=${Date.now()}" alt="${_userCache.name}" class="w-full h-full object-cover rounded-full">`;
+
+        // Update navbar header avatar
+        document.querySelectorAll('.header-avatar').forEach(el => {
+          el.innerHTML = imgTag;
+        });
+
+        // Update sidebar avatar — built by buildSidebar() before session loaded
+        document.querySelectorAll('.sidebar-avatar').forEach(el => {
+          el.style.backgroundImage = '';
+          el.style.color = '';
+          el.innerHTML = imgTag;
         });
       }
 
@@ -113,6 +156,36 @@ async function fetchUserSession() {
     console.warn('Session fetch failed, using cached state:', err.message);
   }
 }
+
+// Global Event Listeners for Mobile Menu and Logout
+document.addEventListener('click', async function(e) {
+  const mobileBtn = e.target.closest('#mobile-menu-btn, .nav-mobile-toggle');
+  if (mobileBtn) {
+    e.preventDefault();
+    const sb = document.getElementById('sidebar') || document.getElementById('user-sidebar');
+    const overlay = document.getElementById('sidebar-overlay') || document.getElementById('user-sidebar-overlay');
+    if (sb) sb.classList.toggle('-translate-x-full');
+    if (overlay) {
+      overlay.classList.toggle('hidden');
+      overlay.classList.toggle('opacity-0');
+    }
+  }
+
+  const overlay = e.target.closest('#sidebar-overlay, #user-sidebar-overlay');
+  if (overlay) {
+    const sb = document.getElementById('sidebar') || document.getElementById('user-sidebar');
+    if (sb) sb.classList.add('-translate-x-full');
+    overlay.classList.add('hidden', 'opacity-0');
+  }
+
+  const logoutBtn = e.target.closest('#user-logout-btn');
+  if (logoutBtn) {
+    e.preventDefault();
+    if (confirm('Are you sure you want to log out of your Finzo Customer Account?')) {
+      await FinzoSession.logout();
+    }
+  }
+});
 
 const UserState = {
   get status() { return _userCache.status; },
@@ -355,26 +428,32 @@ function buildSidebar(activePage) {
   const isRejected = status === 'rejected';
 
   // Pages locked when not active
-  const lockedWhenInactive = ['accounts', 'transfer', 'transactions', 'statement', 'beneficiary'];
+  const lockedWhenInactive = ['dashboard', 'accounts', 'transfer', 'loans', 'cards', 'investments', 'bill-payments', 'transactions', 'statement', 'beneficiary'];
   
   const mainLinks = [
-    { id: 'dashboard', icon: 'dashboard', label: 'Dashboard', href: 'dashboard.php' },
+    { id: 'dashboard', icon: 'dashboard', label: 'Dashboard', href: 'dashboard.php', lockedWhenInactive: true },
     { id: 'accounts', icon: 'account_balance', label: 'My Accounts', href: 'accounts.php', lockedWhenInactive: true },
     { id: 'transfer', icon: 'swap_horiz', label: 'Fund Transfer', href: 'transfer.php', lockedWhenInactive: true },
+    { id: 'loans', icon: 'account_balance_wallet', label: 'Loans & Credit', href: 'user-loans.php', lockedWhenInactive: true },
+    { id: 'cards', icon: 'credit_card', label: 'Cards & Controls', href: 'user-cards.php', lockedWhenInactive: true },
+    { id: 'investments', icon: 'savings', label: 'Investments & FDs', href: 'user-investments.php', lockedWhenInactive: true },
+    { id: 'bill-payments', icon: 'payments', label: 'Bill Payments', href: 'user-bill-payments.php', lockedWhenInactive: true },
     { id: 'transactions', icon: 'receipt_long', label: 'Transactions', href: 'transactions.php', lockedWhenInactive: true },
     { id: 'beneficiary', icon: 'group', label: 'Beneficiaries', href: 'beneficiary.php', lockedWhenInactive: true },
     { id: 'statement', icon: 'description', label: 'Statement', href: 'statement.php', lockedWhenInactive: true },
+    { id: 'support', icon: 'help', label: 'Help & Support', href: 'user-support.php' },
     { id: 'notifications', icon: 'notifications', label: 'Notifications', href: 'notifications.php', badge: UserState.notifCount > 0 ? UserState.notifCount : null },
   ];
 
   const settingsLinks = [
     { id: 'profile', icon: 'person', label: 'My Profile', href: 'profile.php' },
-    { id: 'change-password', icon: 'lock', label: 'Change Password', href: 'change-password.php' },
   ];
 
-  // Add complete-profile for pending/rejected
-  if (isPending || isRejected) {
-    settingsLinks.unshift({ id: 'complete-profile', icon: 'assignment_ind', label: isPending ? 'Complete Profile' : 'Resubmit Profile', href: 'complete-profile.php', highlight: true });
+  // Add complete-profile at top of mainLinks for non-active users
+  if (!isActive) {
+    const kycLabel = isUnderReview ? 'KYC Status' : (isRejected ? 'Resubmit KYC' : 'Complete KYC');
+    const kycHref = isUnderReview ? 'account-pending.php' : (isRejected ? 'account-rejected.php' : 'complete-profile.php');
+    mainLinks.unshift({ id: 'complete-profile', icon: 'assignment_ind', label: kycLabel, href: kycHref, highlight: true });
   }
 
   const html = `
@@ -425,10 +504,6 @@ function buildSidebar(activePage) {
 
         <div class="sidebar-section">Account</div>
         <div class="sidebar-bottom">
-          <button class="nav-item" onclick="toggleTheme()">
-            <span class="material-symbols-outlined nav-icon" data-theme-icon aria-hidden="true">dark_mode</span>
-            <span data-theme-label>Dark Mode</span>
-          </button>
           <button class="nav-item logout-item" onclick="FinzoSession.logout()">
             <span class="material-symbols-outlined nav-icon" aria-hidden="true">logout</span>
             Logout
@@ -607,12 +682,14 @@ function openConfirm(title, text, onConfirm, danger = false) {
       <div class="modal-title">${title}</div>
       <div class="modal-text">${text}</div>
       <div class="modal-actions">
-        <button class="btn btn-ghost" onclick="document.getElementById('global-confirm-modal').remove()">Cancel</button>
+        <button class="btn btn-ghost" onclick="(function(){var m=document.getElementById('global-confirm-modal');if(m){m.classList.remove('is-active');setTimeout(()=>m.remove(),200);}})()">Cancel</button>
         <button class="btn ${danger ? 'btn-danger' : 'btn-primary'}" id="confirm-action-btn">Confirm</button>
       </div>
     </div>`;
   document.body.appendChild(modal);
-  document.getElementById('confirm-action-btn').onclick = () => { modal.remove(); onConfirm(); };
+  // Allow layout to settle, then activate to trigger transition
+  requestAnimationFrame(() => modal.classList.add('is-active'));
+  document.getElementById('confirm-action-btn').onclick = () => { modal.classList.remove('is-active'); setTimeout(() => modal.remove(), 200); onConfirm(); };
 }
 
 // ── AMOUNT FORMATTER ──
@@ -668,14 +745,16 @@ function handleStatusRedirect(currentPage) {
   // Pages only accessible when NOT active
   const pendingOnlyPages = ['complete-profile', 'account-pending', 'account-rejected'];
   // Pages only accessible when active
-  const activeOnlyPages = ['accounts', 'account-detail', 'transfer', 'transactions', 'statement', 'beneficiary'];
+  const activeOnlyPages = ['dashboard', 'accounts', 'account-detail', 'transfer', 'transactions', 'statement', 'beneficiary'];
 
   // Inactive users cannot access active-only pages
   if (activeOnlyPages.includes(currentPage) && status !== 'active') {
     if (status === 'under_review') {
       window.location.href = 'account-pending.php';
+    } else if (status === 'rejected') {
+      window.location.href = 'account-rejected.php';
     } else {
-      window.location.href = 'dashboard.php';
+      window.location.href = 'complete-profile.php';
     }
     return;
   }
@@ -719,10 +798,11 @@ window.FinzoSession = {
   },
   async logout() {
     try {
-      await window.api.post('/auth/logout', {});
+      const data = await window.api.post('/auth/logout', {});
       localStorage.removeItem(STATE_KEYS.STATUS);
       localStorage.removeItem(STATE_KEYS.NOTIF_COUNT);
-      window.location.href = '/Finzo/public/index.php';
+      const redirectUrl = (data && data.redirect) ? data.redirect.replace(/\/public\/public\//g, '/public/') : '/Finzo/public/views/auth/login.php';
+      window.location.href = redirectUrl;
     } catch (e) {
       window.location.href = '/Finzo/public/views/auth/login.php';
     }

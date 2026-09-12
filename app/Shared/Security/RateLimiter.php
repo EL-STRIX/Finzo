@@ -7,8 +7,11 @@ class RateLimiter
 {
     private static function getStoragePath(): string
     {
-        $path = FINZO_ROOT . '/storage/framework/cache';
-        if (!is_dir($path)) mkdir($path, 0777, true);
+        $root = defined('FINZO_ROOT') ? FINZO_ROOT : dirname(__DIR__, 3);
+        $path = $root . '/storage/framework/cache';
+        if (!is_dir($path)) {
+            @mkdir($path, 0777, true);
+        }
         return $path . '/rate_limits.json';
     }
 
@@ -16,10 +19,14 @@ class RateLimiter
     {
         $file = self::getStoragePath();
         
-        // Simple file-based atomic tracking (Enterprise would use Redis, but avoiding infrastructure changes)
-        $fp = fopen($file, 'c+');
+        $fp = @fopen($file, 'c+');
+        if (!$fp) {
+            return; // Fallback if file storage is temporarily unavailable
+        }
+
         if (flock($fp, LOCK_EX)) {
-            $data = json_decode(stream_get_contents($fp) ?: '{}', true) ?? [];
+            $content = stream_get_contents($fp);
+            $data = json_decode($content ?: '{}', true) ?? [];
             if (!is_array($data)) {
                 $data = [];
             }
@@ -27,21 +34,40 @@ class RateLimiter
             $now = time();
             $windowStart = $now - ($decayMinutes * 60);
 
-            // Clean up old entries
+            // Clean up old entries across all keys
             foreach ($data as $k => $requests) {
-                $data[$k] = array_filter($requests, fn($time) => $time > $windowStart);
-                if (empty($data[$k])) {
+                if (is_array($requests)) {
+                    $data[$k] = array_values(array_filter($requests, fn($time) => is_numeric($time) && $time > $windowStart));
+                    if (empty($data[$k])) {
+                        unset($data[$k]);
+                    }
+                } else {
                     unset($data[$k]);
                 }
             }
 
             // Check current key
-            if (!isset($data[$key])) $data[$key] = [];
+            if (!isset($data[$key]) || !is_array($data[$key])) {
+                $data[$key] = [];
+            }
             
-            if (count($data[$key]) >= $maxRequests) {
+            $currentCount = count($data[$key]);
+            $remaining = max(0, $maxRequests - $currentCount);
+            $resetTime = $now + ($decayMinutes * 60);
+
+            if (!headers_sent()) {
+                header("X-RateLimit-Limit: {$maxRequests}");
+                header("X-RateLimit-Remaining: {$remaining}");
+                header("X-RateLimit-Reset: {$resetTime}");
+            }
+
+            if ($currentCount >= $maxRequests) {
                 flock($fp, LOCK_UN);
                 fclose($fp);
-                throw new ApiException('Too Many Requests', 429);
+                if (!headers_sent()) {
+                    header("Retry-After: " . ($decayMinutes * 60));
+                }
+                throw new ApiException('Too Many Requests. Please wait 1 minute before trying again.', 429);
             }
 
             $data[$key][] = $now;

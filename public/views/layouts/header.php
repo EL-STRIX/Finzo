@@ -84,6 +84,11 @@ $headerInitials = strtoupper(substr($headerInitials ?: 'FZ', 0, 2));
     <!-- Right Side Actions -->
     <div class="flex items-center gap-2 sm:gap-4">
         
+        <!-- Global Theme Toggle Button -->
+        <button type="button" data-toggle-theme class="p-2 rounded-xl text-text-secondary hover:text-text-primary hover:bg-surface transition-all border border-border-subtle shadow-sm flex items-center justify-center cursor-pointer" title="Toggle Dark/Light Mode" aria-label="Toggle Theme">
+            <span class="material-symbols-outlined text-[20px]" data-theme-icon aria-hidden="true">dark_mode</span>
+        </button>
+
         <div class="h-6 w-px bg-border-subtle hidden sm:block"></div>
 
         <!-- User Profile Menu -->

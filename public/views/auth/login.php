@@ -11,7 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
 
-    <script defer src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script src="/Finzo/public/assets/js/core/tailwind-config.js"></script>
     
     <link rel="stylesheet" href="/Finzo/public/assets/css/base/variables.css" />
@@ -102,7 +102,7 @@
                         <div class="fin-input-container">
                             <div class="flex justify-between items-center mb-1">
                                 <label for="login-password" class="fin-label fin-label-required">Password</label>
-                                <a href="forgot-password.php" class="btn-text">Forgot password?</a>
+                                <a href="forgot-password.php?role=user" class="btn-text">Forgot password?</a>
                             </div>
                             <div class="fin-input-wrapper">
                                 <span class="material-symbols-outlined input-icon-left">lock</span>
@@ -140,7 +140,7 @@
                     <div class="auth-security-notice">
                         <span class="material-symbols-outlined auth-security-notice-icon">shield</span>
                         <div class="auth-security-notice-text">
-                            <strong>Protected Session:</strong> Never share your online banking credentials or OTP with anyone. Finzo staff will never request your password.
+                            <strong>Protected Session:</strong> Never share your online banking credentials with anyone. Finzo staff will never request your password or personal access codes.
                         </div>
                     </div>
 

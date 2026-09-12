@@ -51,6 +51,15 @@
             console.error('User ID is required in URL query string');
             return;
         }
+        
+        const backLink = document.getElementById('back-to-users-link');
+        if (backLink) {
+            const fromParam = urlParams.get('from');
+            if (fromParam === 'suspended' || (document.referrer && document.referrer.includes('admin-suspended-users.php'))) {
+                backLink.href = 'admin-suspended-users.php';
+                backLink.setAttribute('aria-label', 'Back to Suspended Users');
+            }
+        }
 
         try {
             const response = await window.api.get(`/users/${currentUserId}`);
@@ -170,9 +179,23 @@
         setText('info-income', user.annual_income ? (user.annual_income.startsWith('₹') ? user.annual_income : `₹${user.annual_income}`) : 'N/A');
         setText('info-source-income', user.source_of_income || 'N/A');
 
-        // Contact
+        // Contact & Branch
         setText('info-phone', user.phone || 'N/A');
         setText('info-email', user.email || 'N/A');
+
+        const branchName = (user.branch_name && user.branch_name !== 'Unassigned') ? user.branch_name : 'Unassigned / Central';
+        const branchCodeStr = user.branch_code ? `<span class="font-mono text-xs opacity-60 font-semibold ml-1">(${user.branch_code})</span>` : '';
+
+        const branchBadge = document.getElementById('user-branch-text');
+        if (branchBadge) {
+            branchBadge.textContent = branchName + (user.branch_code ? ` (${user.branch_code})` : '');
+        }
+
+        const branchEl = document.getElementById('info-branch');
+        if (branchEl) {
+            branchEl.innerHTML = `<span class="inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-sm text-primary">store</span><span>${branchName}</span>${branchCodeStr}</span>`;
+            branchEl.querySelectorAll('.skeleton').forEach(s => s.remove());
+        }
 
         // Identification
         const idType = user.id_type ? user.id_type.toUpperCase() : 'AADHAAR';
@@ -233,9 +256,37 @@
         accounts.forEach(acc => {
             const balanceNum = parseFloat(acc.balance || 0);
             const balanceFormatted = '₹' + balanceNum.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            const isCurrent = (acc.account_type || '').toLowerCase() === 'current';
             const typeFormatted = acc.account_type ? (acc.account_type.charAt(0).toUpperCase() + acc.account_type.slice(1)) : 'Savings';
             const isActive = (acc.status || 'active') === 'active';
             const statusClass = isActive ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' : 'bg-surface text-text-secondary border-border-subtle';
+
+            let metaBottomHtml = '';
+            if (isCurrent) {
+                metaBottomHtml = `
+                    <div class="mt-4 pt-3 border-t border-border-subtle flex items-center justify-between text-[10px] font-mono text-text-secondary font-bold">
+                        <div class="flex items-center gap-1.5 cursor-pointer hover:text-primary transition-colors" onclick="navigator.clipboard.writeText('${acc.account_no}'); if(window.showToast) window.showToast('Account number copied!', 'success');" title="Click to copy">
+                            <span>${acc.account_no || 'Pending'}</span>
+                            <span class="material-symbols-outlined text-[13px] opacity-60" aria-hidden="true">content_copy</span>
+                        </div>
+                        <div>Opened: ${acc.opened_date ? acc.opened_date.split(' ')[0] : 'N/A'}</div>
+                    </div>
+                `;
+            } else {
+                metaBottomHtml = `
+                    <div class="mt-4 pt-3 border-t border-border-subtle flex items-center justify-between text-[10px] font-mono text-text-secondary font-bold">
+                        <div class="flex items-center gap-1.5 cursor-pointer hover:text-primary transition-colors" onclick="navigator.clipboard.writeText('${acc.account_no}'); if(window.showToast) window.showToast('Account number copied!', 'success');" title="Click to copy">
+                            <span>${acc.account_no || 'Pending'}</span>
+                            <span class="material-symbols-outlined text-[13px] opacity-60" aria-hidden="true">content_copy</span>
+                        </div>
+                        <div>Interest: ${acc.interest_rate || '0'}%</div>
+                    </div>
+                    <div class="mt-2 flex items-center justify-between text-[10px] font-mono text-text-secondary opacity-75">
+                        <div>Daily Limit: ₹${parseFloat(acc.daily_limit || 0).toLocaleString('en-IN')}</div>
+                        <div>Opened: ${acc.opened_date ? acc.opened_date.split(' ')[0] : 'N/A'}</div>
+                    </div>
+                `;
+            }
 
             html += `
                 <div class="p-5 bg-background rounded-2xl border border-border-subtle hover:border-primary/40 transition-all shadow-sm group">
@@ -250,18 +301,7 @@
                     </div>
                     <div class="text-xs font-bold text-text-secondary uppercase tracking-widest">Available Balance</div>
                     <h4 class="font-headline text-2xl font-black text-text-primary tracking-tight mt-0.5 font-mono">${balanceFormatted}</h4>
-                    
-                    <div class="mt-4 pt-3 border-t border-border-subtle flex items-center justify-between text-[10px] font-mono text-text-secondary font-bold">
-                        <div class="flex items-center gap-1.5 cursor-pointer hover:text-primary transition-colors" onclick="navigator.clipboard.writeText('${acc.account_no}'); if(window.showToast) window.showToast('Account number copied!', 'success');" title="Click to copy">
-                            <span>${acc.account_no || 'Pending'}</span>
-                            <span class="material-symbols-outlined text-[13px] opacity-60" aria-hidden="true">content_copy</span>
-                        </div>
-                        <div>Interest: ${acc.interest_rate || '0'}%</div>
-                    </div>
-                    <div class="mt-2 flex items-center justify-between text-[10px] font-mono text-text-secondary opacity-75">
-                        <div>Daily Limit: ₹${parseFloat(acc.daily_limit || 0).toLocaleString('en-IN')}</div>
-                        <div>Opened: ${acc.opened_date ? acc.opened_date.split(' ')[0] : 'N/A'}</div>
-                    </div>
+                    ${metaBottomHtml}
                 </div>
             `;
         });

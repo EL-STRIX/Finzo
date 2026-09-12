@@ -24,8 +24,9 @@ try {
     $init_command_key = defined('Pdo\Mysql::ATTR_INIT_COMMAND')
         ? \Pdo\Mysql::ATTR_INIT_COMMAND
         : (defined('PDO::MYSQL_ATTR_INIT_COMMAND') ? PDO::MYSQL_ATTR_INIT_COMMAND : null);
+    $tzOffset = date('P');
     if ($init_command_key !== null) {
-        $options[$init_command_key] = "SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci";
+        $options[$init_command_key] = "SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci, time_zone = '{$tzOffset}'";
     }
 
     if (defined('FINZO_TESTING') && FINZO_TESTING && isset($GLOBALS['pdo'])) {
@@ -33,6 +34,7 @@ try {
     } else {
         $pdo = new PDO($dsn, DB_USER, DB_PASS, $options);
     }
+    $pdo->exec("SET time_zone = '{$tzOffset}'");
     $db_connected = true;
 } catch (PDOException $e) {
     $db_connected = false;

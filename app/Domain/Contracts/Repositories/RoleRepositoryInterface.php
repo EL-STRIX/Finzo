@@ -7,8 +7,8 @@ interface RoleRepositoryInterface
     public function getAllRoles(): array;
     public function getRoleById(int $id): ?array;
     public function getRoleByName(string $name): ?array;
-    public function createRole(string $name): int;
-    public function updateRole(int $id, string $name): bool;
+    public function createRole(string $name, ?string $description = null): int;
+    public function updateRole(int $id, string $name, ?string $description = null): bool;
     public function deleteRole(int $id): bool;
     
     public function getAllPermissions(): array;

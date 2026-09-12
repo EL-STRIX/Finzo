@@ -77,7 +77,7 @@ class AdminStaffBranchRepository extends BaseRepository implements \App\Domain\C
         
         $fields = [];
         $values = [];
-        $allowed = ['name', 'state', 'description', 'manager_id', 'cert_path', 'status'];
+        $allowed = ['name', 'branch_code', 'state', 'description', 'manager_id', 'cert_path', 'status'];
         foreach ($allowed as $col) {
             if (array_key_exists($col, $data)) {
                 $fields[] = "{$col} = ?";
@@ -106,7 +106,7 @@ class AdminStaffBranchRepository extends BaseRepository implements \App\Domain\C
             SELECT b.*,
                 s.id as manager_id, s.full_name as manager_name, s.staff_id as manager_staff_id, s.personal_email as manager_email, s.profile_photo as manager_avatar,
                 (SELECT COUNT(*) FROM staff st WHERE st.branch_id = b.id AND st.is_deleted = 0) as staff_count,
-                (SELECT COUNT(*) FROM transactions t JOIN staff st ON t.processed_by_staff_id = st.id WHERE st.branch_id = b.id AND t.created_at >= b.created_at) as txn_count
+                (SELECT COUNT(*) FROM transactions t JOIN staff st ON t.processed_by_staff_id = st.id WHERE st.branch_id = b.id AND st.is_deleted = 0 AND t.created_at >= b.created_at) as txn_count
             FROM branches b
             LEFT JOIN staff s ON b.manager_id = s.id
             WHERE b.id = ?
@@ -400,6 +400,13 @@ class AdminStaffBranchRepository extends BaseRepository implements \App\Domain\C
             $params[] = $endDate;
         }
 
+        // Reason filter must run in SQL (before pagination) so totals and
+        // page contents stay consistent with the filtered result set.
+        if (!empty($reason) && $reason !== 'all') {
+            $whereClauses[] = "(SELECT alr.details FROM audit_log alr WHERE (alr.entity_id = s.staff_id OR alr.entity_id = CAST(s.id AS CHAR)) AND alr.action_type = 'staff_suspended' ORDER BY alr.id DESC LIMIT 1) LIKE ?";
+            $params[] = "%{$reason}%";
+        }
+
         if (!empty($search)) {
             $whereClauses[] = "(s.full_name LIKE ? OR s.personal_email LIKE ? OR s.staff_id LIKE ? OR s.phone LIKE ? OR b.name LIKE ?)";
             $s = "%{$search}%";
@@ -522,13 +529,6 @@ class AdminStaffBranchRepository extends BaseRepository implements \App\Domain\C
                 }
             } else {
                 $s['duration'] = 'Indefinite';
-            }
-
-            // Reason filter in PHP if specified
-            if (!empty($reason) && $reason !== 'all') {
-                if (stripos($s['suspension_reason'], $reason) === false && stripos($details, $reason) === false) {
-                    unset($staffList[$k]);
-                }
             }
         }
         $staffList = array_values($staffList);

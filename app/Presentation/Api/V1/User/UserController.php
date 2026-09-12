@@ -88,6 +88,10 @@ class UserController
         }
         $userId = $_SESSION['user_id'];
         try {
+            $userStatus = $_SESSION['user_status'] ?? 'pending';
+            if ($userStatus !== 'active') {
+                json_response(['success' => true, 'account' => null, 'message' => 'No active account found']);
+            }
             $account = $this->service->fetchAccountDetails($userId);
             if (!$account) {
                 json_response(['success' => true, 'account' => null, 'message' => 'No account found']);
@@ -239,7 +243,11 @@ class UserController
             json_response(['success' => false, 'message' => 'Method not allowed'], 405);
         }
 
-        $userId = $_SESSION['user_id'];
+        if (empty($_SESSION['user_id'])) {
+            json_response(['success' => false, 'message' => 'Your session has expired. Please log in again.', 'redirect' => '/Finzo/public/views/auth/login.php'], 401);
+        }
+
+        $userId = (int)$_SESSION['user_id'];
         try {
             $dto = new \App\Application\DTOs\KycRequestDTO($userId, $_POST, $_FILES);
             $action = new \App\Application\Actions\CompleteUserProfileAction($this->service, $this->security);
@@ -270,27 +278,30 @@ class UserController
                 json_response(['success' => false, 'message' => 'User not found', 'redirect' => '/public/views/auth/login.html'], 404);
             }
             $_SESSION['user_status'] = $user['status'];
-            $account = $this->service->getActiveAccountByCustomerId($user['customer_id']);
+            $account = null;
             $recent_transactions = [];
-            if ($account && $account['status'] === \App\Domain\Enums\AccountStatusEnum::ACTIVE->value) {
-                $recent_transactions = $this->service->getRecentTransactions($account['id']);
-                foreach ($recent_transactions as &$txn) {
-                    if ($txn['type'] === \App\Domain\Enums\TransactionTypeEnum::TRANSFER->value) {
-                        $txn['direction'] = 'debit';
-                        $txn_data = $this->service->getTransactionToAccountId($txn['txn_id']);
-                        $txn['direction'] = ($txn_data && $txn_data['to_account_id'] == $account['id']) ? 'credit' : 'debit';
-                    } elseif (in_array($txn['type'], ['deposit', 'interest_credit'])) {
-                        $txn['direction'] = 'credit';
-                    } else {
-                        $txn['direction'] = 'debit';
-                    }
-                }
-                unset($txn);
-            }
             $monthly_stats = ['income_total' => 0, 'expense_total' => 0, 'month_label' => date('F Y')];
-            if ($account && $account['status'] === \App\Domain\Enums\AccountStatusEnum::ACTIVE->value) {
-                $monthly_stats['income_total'] = (float)$this->service->getMonthlyIncome($account['id']);
-                $monthly_stats['expense_total'] = (float)$this->service->getMonthlyExpenses($account['id']);
+
+            if ($user['status'] === 'active') {
+                $account = $this->service->getActiveAccountByCustomerId($user['customer_id']);
+                if ($account && $account['status'] === \App\Domain\Enums\AccountStatusEnum::ACTIVE->value) {
+                    $recent_transactions = $this->service->getRecentTransactions($account['id']);
+                    foreach ($recent_transactions as &$txn) {
+                        if ($txn['type'] === \App\Domain\Enums\TransactionTypeEnum::TRANSFER->value) {
+                            $txn['direction'] = 'debit';
+                            $txn_data = $this->service->getTransactionToAccountId($txn['txn_id']);
+                            $txn['direction'] = ($txn_data && $txn_data['to_account_id'] == $account['id']) ? 'credit' : 'debit';
+                        } elseif (in_array($txn['type'], ['deposit', 'interest_credit'])) {
+                            $txn['direction'] = 'credit';
+                        } else {
+                            $txn['direction'] = 'debit';
+                        }
+                    }
+                    unset($txn);
+
+                    $monthly_stats['income_total'] = (float)$this->service->getMonthlyIncome($account['id']);
+                    $monthly_stats['expense_total'] = (float)$this->service->getMonthlyExpenses($account['id']);
+                }
             }
             if (!\App\Shared\Core\Validation\Validator::isSet($_SESSION['user_customer_id'])) {
                 $_SESSION['user_customer_id'] = $this->service->getCustomerId($userId);
@@ -298,9 +309,23 @@ class UserController
             $customer_id = $_SESSION['user_customer_id'];
             $notification_count = (int)$this->service->getUnreadNotificationCount($customer_id);
             $greeting = get_greeting();
-            $avatar_url = !\App\Shared\Core\Validation\Validator::isEmpty($user['profile_picture'])
-                ? (str_starts_with($user['profile_picture'], 'http') ? $user['profile_picture'] : APP_URL . '/' . ltrim($user['profile_picture'], '/'))
-                : null;
+            $rawPic = $user['profile_picture'] ?? null;
+            if (!empty($rawPic)) {
+                if (str_starts_with($rawPic, 'http')) {
+                    $avatar_url = $rawPic;
+                } else {
+                    $cleanPic = ltrim($rawPic, '/');
+                    // Stored paths start with 'uploads/' or 'storage/' — files live under public/
+                    if (!str_starts_with($cleanPic, 'public/')) {
+                        $cleanPic = 'public/' . $cleanPic;
+                    }
+                    $avatar_url = APP_URL . '/' . $cleanPic;
+                }
+            } else {
+                $avatar_url = null;
+            }
+            // Keep session in sync so PHP sidebar renders photo immediately on next page load
+            $_SESSION['user_avatar'] = $avatar_url;
 
             $past_rejections_raw = $this->service->getPastRejections($user['customer_id']);
             $past_rejections = [];
@@ -386,7 +411,10 @@ class UserController
                 if (!$user) {
                     json_response(['success' => false, 'message' => 'User not found'], 404);
                 }
-                $account = $this->service->getActiveAccountByCustomerId($user['customer_id']);
+                $account = null;
+                if ($user['status'] === 'active') {
+                    $account = $this->service->getActiveAccountByCustomerId($user['customer_id']);
+                }
                 json_response(['success' => true, 'user' => $user, 'account' => $account]);
             } catch (PDOException $e) {
                 \App\Shared\Core\Logging\Logger::getInstance()->error('Profile API error (GET)', ['context' => $e->getMessage()]);

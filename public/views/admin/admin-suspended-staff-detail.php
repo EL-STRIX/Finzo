@@ -8,8 +8,8 @@ $pageHeader = '
       <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
     </a>
     <div>
-      <div class="text-[10px] font-black tracking-widest uppercase text-text-secondary">SUSPENDED STAFF</div>
-      <div class="text-xl sm:text-2xl font-black tracking-tight mt-0.5 text-text-primary force-black" id="header-staff-name">Loading...</div>
+      <h1 class="text-2xl font-headline font-black tracking-tight text-text-primary" id="header-staff-name">Loading...</h1>
+      <p class="text-xs font-bold text-text-secondary uppercase tracking-widest mt-1">Suspended Staff Personnel Incident Dossier</p>
     </div>
   </div>
   <div class="flex items-center gap-2 sm:gap-4">

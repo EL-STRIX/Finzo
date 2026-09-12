@@ -300,12 +300,12 @@
                 let avatarContent = senderInitials;
                 if (r.from_user_avatar) {
                     const src = (r.from_user_avatar.startsWith('http') ? r.from_user_avatar : (r.from_user_avatar.startsWith('/') ? r.from_user_avatar : `/Finzo/${r.from_user_avatar}`)) + '?v=' + new Date().getTime();
-                    avatarContent = `<img src="${src}" alt="${senderName}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.parentElement.textContent='${senderInitials}'">`;
+                    avatarContent = `<img src="${src}" alt="${senderName}" class="w-full h-full object-cover rounded-full block" onerror="this.parentElement.textContent='${senderInitials}'">`;
                 }
                 
                 fromAccountHtml = `
                 <div class="flex items-center gap-3">
-                    <div class="admin-avatar sm uppercase shrink-0">${avatarContent}</div>
+                    <div class="admin-avatar sm w-8 h-8 min-w-[32px] min-h-[32px] max-w-[32px] max-h-[32px] rounded-full overflow-hidden uppercase shrink-0 bg-surface-subtle border border-border-subtle flex items-center justify-center text-xs font-bold text-text-primary">${avatarContent}</div>
                     <div class="overflow-hidden">
                         <div class="font-bold text-xs text-text-primary truncate" title="${senderName}">${senderName}</div>
                         <div class="text-[11px] font-mono font-semibold text-text-secondary flex items-center gap-1">
@@ -332,12 +332,12 @@
                 if (r.from_user_avatar || r.to_user_avatar) {
                     const avatarUrl = r.from_user_avatar || r.to_user_avatar;
                     const src = (avatarUrl.startsWith('http') ? avatarUrl : (avatarUrl.startsWith('/') ? avatarUrl : `/Finzo/${avatarUrl}`)) + '?v=' + new Date().getTime();
-                    avatarContent = `<img src="${src}" alt="${custName}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.parentElement.textContent='${custInitials}'">`;
+                    avatarContent = `<img src="${src}" alt="${custName}" class="w-full h-full object-cover rounded-full block" onerror="this.parentElement.textContent='${custInitials}'">`;
                 }
 
                 toAccountHtml = `
                 <div class="flex items-center gap-3">
-                    <div class="admin-avatar sm uppercase shrink-0">${avatarContent}</div>
+                    <div class="admin-avatar sm w-8 h-8 min-w-[32px] min-h-[32px] max-w-[32px] max-h-[32px] rounded-full overflow-hidden uppercase shrink-0 bg-surface-subtle border border-border-subtle flex items-center justify-center text-xs font-bold text-text-primary">${avatarContent}</div>
                     <div class="overflow-hidden">
                         <div class="font-bold text-xs text-text-primary truncate" title="${custName}">${custName}</div>
                         <div class="text-[11px] font-mono font-semibold text-text-secondary flex items-center gap-1">
@@ -356,12 +356,12 @@
                 let receiverAvatarContent = receiverInitials;
                 if (r.to_user_avatar) {
                     const src = (r.to_user_avatar.startsWith('http') ? r.to_user_avatar : (r.to_user_avatar.startsWith('/') ? r.to_user_avatar : `/Finzo/${r.to_user_avatar}`)) + '?v=' + new Date().getTime();
-                    receiverAvatarContent = `<img src="${src}" alt="${receiverName}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.parentElement.textContent='${receiverInitials}'">`;
+                    receiverAvatarContent = `<img src="${src}" alt="${receiverName}" class="w-full h-full object-cover rounded-full block" onerror="this.parentElement.textContent='${receiverInitials}'">`;
                 }
                 
                 toAccountHtml = `
                 <div class="flex items-center gap-3">
-                    <div class="admin-avatar sm uppercase shrink-0">${receiverAvatarContent}</div>
+                    <div class="admin-avatar sm w-8 h-8 min-w-[32px] min-h-[32px] max-w-[32px] max-h-[32px] rounded-full overflow-hidden uppercase shrink-0 bg-surface-subtle border border-border-subtle flex items-center justify-center text-xs font-bold text-text-primary">${receiverAvatarContent}</div>
                     <div class="overflow-hidden">
                         <div class="font-bold text-xs text-text-primary truncate" title="${receiverName}">${receiverName}</div>
                         <div class="text-[11px] font-mono font-semibold text-text-secondary flex items-center gap-1">
@@ -510,6 +510,7 @@
         let statusBadge = `<span class="badge badge-success uppercase">${status}</span>`;
         if (status === 'pending') statusBadge = `<span class="badge badge-warning">PENDING</span>`;
         if (status === 'failed') statusBadge = `<span class="badge badge-error">FAILED</span>`;
+        if (status === 'reversed') statusBadge = `<span class="badge badge-neutral uppercase">REVERSED</span>`;
         document.getElementById('modal-status-badge').innerHTML = statusBadge;
 
         // Transfer / Flow Direction Banner
@@ -583,7 +584,7 @@
                 const initials = senderName.split(' ').filter(w => /^[a-zA-Z]/.test(w)).map(w => w[0]).join('').toUpperCase().substring(0, 2) || 'U';
                 if (txn.from_user_avatar) {
                     const src = txn.from_user_avatar.startsWith('http') ? txn.from_user_avatar : (txn.from_user_avatar.startsWith('/') ? txn.from_user_avatar : `/Finzo/${txn.from_user_avatar}`);
-                    fromAvatarEl.innerHTML = `<img src="${src}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.parentElement.textContent='${initials}'">`;
+                    fromAvatarEl.innerHTML = `<img src="${src}" class="w-full h-full object-cover rounded-full block" onerror="this.parentElement.textContent='${initials}'">`;
                 } else {
                     fromAvatarEl.textContent = initials;
                 }
@@ -609,7 +610,7 @@
                 const avatarUrl = txn.from_user_avatar || txn.to_user_avatar;
                 if (avatarUrl) {
                     const src = avatarUrl.startsWith('http') ? avatarUrl : (avatarUrl.startsWith('/') ? avatarUrl : `/Finzo/${avatarUrl}`);
-                    toAvatarEl.innerHTML = `<img src="${src}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.parentElement.textContent='${initials}'">`;
+                    toAvatarEl.innerHTML = `<img src="${src}" class="w-full h-full object-cover rounded-full block" onerror="this.parentElement.textContent='${initials}'">`;
                 } else {
                     toAvatarEl.textContent = initials;
                 }
@@ -630,7 +631,7 @@
                 const initials = receiverName.split(' ').filter(w => /^[a-zA-Z]/.test(w)).map(w => w[0]).join('').toUpperCase().substring(0, 2) || 'U';
                 if (txn.to_user_avatar) {
                     const src = txn.to_user_avatar.startsWith('http') ? txn.to_user_avatar : (txn.to_user_avatar.startsWith('/') ? txn.to_user_avatar : `/Finzo/${txn.to_user_avatar}`);
-                    toAvatarEl.innerHTML = `<img src="${src}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.parentElement.textContent='${initials}'">`;
+                    toAvatarEl.innerHTML = `<img src="${src}" class="w-full h-full object-cover rounded-full block" onerror="this.parentElement.textContent='${initials}'">`;
                 } else {
                     toAvatarEl.textContent = initials;
                 }
@@ -655,6 +656,14 @@
         const receiptBtn = document.getElementById('modal-receipt-btn');
         if (receiptBtn) {
             receiptBtn.onclick = () => window.openReceipt(txn.txn_id);
+        }
+
+        // Reverse Action — backend only supports completed deposit/withdrawal/transfer
+        const reverseBtn = document.getElementById('modal-reverse-btn');
+        if (reverseBtn) {
+            const isReversible = status === 'completed' && ['deposit', 'withdrawal', 'transfer'].includes(typeClass);
+            reverseBtn.classList.toggle('hidden', !isReversible);
+            reverseBtn.onclick = () => window.reverseCurrentTransaction(txn.txn_id, amountNum);
         }
 
         // Show Modal
@@ -687,6 +696,47 @@
      */
     window.openReceipt = function(txnId) {
         window.open(`/Finzo/api/v1/documents/receipt?id=${txnId}`, '_blank');
+    };
+
+    /**
+     * Reverse a completed transaction (Admin action, ACID-safe on backend)
+     */
+    window.reverseCurrentTransaction = function(txnId, amount) {
+        const amountStr = Number(amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        const reason = prompt(`Reversing transaction ${txnId} (${`₹${amountStr}`}).\nEnter an audit reason for this reversal:`);
+
+        if (reason === null) return; // User cancelled
+        if (!reason.trim()) {
+            if (window.showToast) window.showToast('A reversal reason is required for the audit log.', 'error');
+            return;
+        }
+
+        const reverseBtn = document.getElementById('modal-reverse-btn');
+        if (reverseBtn) {
+            reverseBtn.disabled = true;
+            reverseBtn.style.opacity = '0.6';
+        }
+
+        window.api.post(`/transactions/${encodeURIComponent(txnId)}/reverse`, { reason: reason.trim() })
+            .then(res => {
+                if (res && res.success) {
+                    if (window.showToast) window.showToast(res.message || 'Transaction reversed successfully.', 'success');
+                    window.closeTransactionDetails();
+                    currentPage = 1;
+                    loadTransactions();
+                } else {
+                    if (window.showToast) window.showToast((res && res.message) || 'Failed to reverse transaction.', 'error');
+                }
+            })
+            .catch(() => {
+                if (window.showToast) window.showToast('Failed to reverse transaction. Please try again.', 'error');
+            })
+            .finally(() => {
+                if (reverseBtn) {
+                    reverseBtn.disabled = false;
+                    reverseBtn.style.opacity = '1';
+                }
+            });
     };
 
     /**

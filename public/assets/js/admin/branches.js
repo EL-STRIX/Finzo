@@ -156,7 +156,7 @@
                             <span class="material-symbols-outlined text-[18px]" aria-hidden="true">edit</span>
                         </button>
                         ${!isSystem ? `
-                        <button type="button" class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-600 dark:text-slate-400 ${isActive ? 'hover:text-amber-600 dark:hover:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-500/15' : 'hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-500/15'} transition-colors action-toggle-status" data-id="${b.id}" data-status="${isActive ? 'inactive' : 'active'}" data-name="${b.name.replace(/"/g, '"')}" title="${isActive ? 'Suspend Branch' : 'Reactivate Branch'}">
+                        <button type="button" class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-600 dark:text-slate-400 ${isActive ? 'hover:text-amber-600 dark:hover:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-500/15' : 'hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-500/15'} transition-colors action-toggle-status" data-id="${b.id}" data-status="${isActive ? 'inactive' : 'active'}" data-name="${escapeHtml(b.name)}" title="${isActive ? 'Suspend Branch' : 'Reactivate Branch'}">
                             <span class="material-symbols-outlined text-[18px]" aria-hidden="true">${isActive ? 'pause_circle' : 'play_circle'}</span>
                         </button>
                         <button type="button" class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-600 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/15 transition-colors action-delete" data-id="${b.id}" data-name="${escapeHtml(b.name)}" data-code="${escapeHtml(b.branch_code)}" title="Delete Branch">
@@ -1045,6 +1045,10 @@
         }
 
         document.getElementById('view-staff-count').textContent = branch.staff_count || 0;
+        const usersCountEl = document.getElementById('view-users-count');
+        if (usersCountEl) {
+            usersCountEl.textContent = branch.total_accounts || branch.user_count || 0;
+        }
         document.getElementById('view-txn-count').textContent = branch.txn_count || 0;
 
         // 1. Branch Creation Document (Initial registration certificate)
@@ -1152,6 +1156,16 @@
             staffBtn.onclick = (e) => {
                 e.preventDefault();
                 window.showBranchStaff(branch.id, branch.name);
+            };
+        }
+
+        const usersBtn = document.getElementById('view-btn-users');
+        if (usersBtn) {
+            usersBtn.setAttribute('data-id', branch.id);
+            usersBtn.setAttribute('data-name', branch.name || '');
+            usersBtn.onclick = (e) => {
+                e.preventDefault();
+                window.showBranchUsers(branch.id, branch.name);
             };
         }
 
@@ -1326,6 +1340,80 @@
         }
     };
 
+    window.showBranchUsers = async function(branchId, branchName) {
+        document.getElementById('users-modal-title').textContent = (branchName || 'Branch') + ' — User Accounts';
+        document.getElementById('users-modal-subtitle').textContent = 'Loading customer accounts...';
+
+        closeModal('viewBranchModal');
+        openModal('branchUsersModal');
+
+        const tbody = document.getElementById('branch-users-table-body');
+        const noUsers = document.getElementById('no-branch-users-error');
+        if (tbody) {
+            tbody.innerHTML = '<tr><td colspan="5" class="py-12 text-center text-slate-700 dark:text-slate-400 font-bold"><div class="flex flex-col items-center"><span class="material-symbols-outlined text-4xl animate-spin mb-2">refresh</span>Loading registered customers...</div></td></tr>';
+        }
+        if (noUsers) noUsers.classList.add('hidden');
+
+        try {
+            const response = await window.api.get('/users', { branch_id: branchId, per_page: 100 });
+            if (response) {
+                const payload = response.data || response;
+                const users = payload.users || response.users || payload.data || (Array.isArray(payload) ? payload : []);
+                document.getElementById('users-modal-subtitle').textContent = `${users.length} REGISTERED CUSTOMER ${users.length === 1 ? 'ACCOUNT' : 'ACCOUNTS'} AT THIS BRANCH`;
+
+                if (users.length === 0) {
+                    if (tbody) tbody.innerHTML = '';
+                    if (noUsers) noUsers.classList.remove('hidden');
+                } else {
+                    if (noUsers) noUsers.classList.add('hidden');
+                    tbody.innerHTML = users.map(u => {
+                        const statusVal = (u.status || 'pending').toLowerCase();
+                        const statusClass = statusVal === 'active' ? 'bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-500/20 dark:text-emerald-300 dark:border-emerald-500/30' : (statusVal === 'suspended' ? 'bg-red-100 text-red-800 border-red-300 dark:bg-red-500/20 dark:text-red-300 dark:border-red-500/30' : 'bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-500/20 dark:text-amber-300 dark:border-amber-500/30');
+                        const statusDot = statusVal === 'active' ? 'bg-emerald-600 dark:bg-emerald-500 animate-pulse' : (statusVal === 'suspended' ? 'bg-red-600 dark:bg-red-500' : 'bg-amber-600 dark:bg-amber-500');
+                        
+                        const statusBadge = `<span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold border inline-flex items-center gap-1.5 ${statusClass}"><span class="w-1.5 h-1.5 rounded-full ${statusDot}"></span> ${statusVal.toUpperCase()}</span>`;
+                        
+                        const fullName = u.full_name || 'Customer';
+                        const initials = fullName.split(' ').filter(Boolean).map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'CU';
+                        const avatarUrl = u.profile_picture_url || u.avatar_url || (u.profile_picture ? (u.profile_picture.startsWith('http') ? u.profile_picture : `/Finzo/${u.profile_picture}`) : null);
+
+                        return `
+                        <tr class="hover:bg-slate-50 dark:hover:bg-white/5 transition-colors border-b border-slate-200 dark:border-white/5">
+                            <td class="px-6 py-4 font-mono text-xs font-bold text-blue-700 dark:text-blue-400 whitespace-nowrap">${escapeHtml(u.customer_id || 'FNZ-USR')}</td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-full bg-blue-500/15 text-blue-800 dark:text-blue-400 font-bold text-xs flex items-center justify-center overflow-hidden shrink-0 border border-blue-500/25">
+                                        ${avatarUrl ? `<img src="${avatarUrl}" class="w-full h-full object-cover" onerror="this.parentElement.innerHTML='${initials}'">` : initials}
+                                    </div>
+                                    <div class="min-w-0">
+                                        <div class="text-xs font-bold text-slate-900 dark:text-stone-100 truncate">${escapeHtml(fullName)}</div>
+                                        <div class="text-[10px] text-slate-500 dark:text-stone-400 font-bold uppercase tracking-widest">${escapeHtml(u.email || '—')}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="text-xs font-bold text-slate-900 dark:text-stone-100">${escapeHtml(u.phone || 'N/A')}</div>
+                            </td>
+                            <td class="px-6 py-4">
+                                ${statusBadge}
+                            </td>
+                            <td class="px-6 py-4 text-right">
+                                <a href="/Finzo/public/views/admin/admin-user-detail.php?id=${u.id}" class="btn btn-secondary btn-sm !px-3 !py-1 !text-[10px] font-bold text-slate-900 dark:text-stone-100 bg-slate-100 hover:bg-slate-200 dark:bg-[#292524] dark:hover:bg-[#383330] border border-slate-300 dark:border-white/10" target="_blank">
+                                    View Dossier
+                                </a>
+                            </td>
+                        </tr>`;
+                    }).join('');
+                }
+            } else {
+                if (tbody) tbody.innerHTML = '<tr><td colspan="5" class="py-12 text-center text-red-600 font-bold">Failed to load users list.</td></tr>';
+            }
+        } catch (e) {
+            console.error('Error fetching branch users:', e);
+            if (tbody) tbody.innerHTML = '<tr><td colspan="5" class="py-12 text-center text-red-600 font-bold">Error loading users list.</td></tr>';
+        }
+    };
+
     function openModal(modalId) {
         const modal = document.getElementById(modalId);
         if (modal) {
@@ -1352,6 +1440,7 @@
     window.showEditModal = showEditModal;
     window.showStatusModal = showStatusModal;
     window.showDeleteModal = showDeleteModal;
+    window.showBranchUsers = showBranchUsers;
 
     // Initialize
     document.addEventListener('DOMContentLoaded', () => {

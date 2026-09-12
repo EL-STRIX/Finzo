@@ -1,6 +1,16 @@
 <?php
 $portal = 'admin';
 $pageTitle = 'Finzo Admin — User Management';
+include __DIR__ . '/_guard.php';
+
+$branchesList = [];
+try {
+    $branchStmt = \App\Shared\Core\Database::getInstance()->query("SELECT id, name, branch_code FROM branches WHERE status = 'active' ORDER BY name ASC");
+    $branchesList = $branchStmt ? $branchStmt->fetchAll(PDO::FETCH_ASSOC) : [];
+} catch (\Throwable $e) {
+    $branchesList = [];
+}
+
 ob_start();
 ?>
             <!-- TOP PAGE HEADER & ACTION BAR -->
@@ -75,12 +85,28 @@ ob_start();
             <div class="ds-card overflow-hidden mt-6">
                 <!-- Header / Filters -->
                 <div class="p-6 border-b border-border-subtle bg-background">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="filtersContainer">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="filtersContainer">
                         <div>
                             <label for="user-search" class="fin-label">Search User</label>
                             <div class="fin-input-wrapper relative">
                                 <span class="material-symbols-outlined input-icon-left text-text-secondary pointer-events-none z-10 text-[20px]" aria-hidden="true">search</span>
                                 <input type="text" id="user-search" placeholder="Search by name, email or ID..." class="fin-input has-icon-left w-full !pl-11">
+                            </div>
+                        </div>
+                        <div>
+                            <label for="filter-branch" class="fin-label">Servicing Branch</label>
+                            <div class="finzo-dropdown w-full" id="branch-dropdown">
+                                <input type="hidden" id="filter-branch" value="all">
+                                <div class="finzo-dropdown-trigger fin-input !flex items-center justify-between cursor-pointer" id="branch-dropdown-trigger">
+                                    <span class="dropdown-label truncate" id="branch-dropdown-label">All Branches</span>
+                                    <span class="material-symbols-outlined chevron transition-transform duration-300 shrink-0" aria-hidden="true">expand_more</span>
+                                </div>
+                                <div class="finzo-dropdown-menu z-50 !max-h-60 overflow-y-auto" id="branch-dropdown-menu">
+                                    <div class="finzo-dropdown-option is-selected" data-value="all">All Branches</div>
+                                    <?php foreach ($branchesList as $b): ?>
+                                        <div class="finzo-dropdown-option" data-value="<?= htmlspecialchars((string)$b['id']) ?>"><?= htmlspecialchars($b['name']) ?> (<?= htmlspecialchars($b['branch_code'] ?? 'BR') ?>)</div>
+                                    <?php endforeach; ?>
+                                </div>
                             </div>
                         </div>
                         <div>
@@ -119,12 +145,13 @@ ob_start();
 
                 <!-- Table Content -->
                 <div class="ds-table-wrapper border-0 rounded-none shadow-none bg-transparent">
-                    <table id="users-table" class="ds-table w-full text-left min-w-[800px]">
+                    <table id="users-table" class="ds-table w-full text-left min-w-[950px]">
                         <thead scope="col">
                             <tr>
                                 <th scope="col">User Name</th>
                                 <th scope="col">Email</th>
                                 <th scope="col">Phone</th>
+                                <th scope="col">Branch</th>
                                 <th scope="col">Status</th>
                                 <th scope="col">Joined Date</th>
                                 <th scope="col">Last Active</th>
@@ -205,6 +232,23 @@ ob_start();
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="relative z-10">
+                                <label for="export-filter-branch" class="fin-label">Servicing Branch</label>
+                                <div class="finzo-dropdown w-full" id="export-branch-dropdown">
+                                    <input type="hidden" id="export-filter-branch" value="all">
+                                    <div class="finzo-dropdown-trigger fin-input !flex items-center justify-between">
+                                        <span class="dropdown-label">All Branches</span>
+                                        <span class="material-symbols-outlined chevron transition-transform duration-300" aria-hidden="true">expand_more</span>
+                                    </div>
+                                    <div class="finzo-dropdown-menu z-50 !max-h-52 overflow-y-auto" id="export-branch-menu">
+                                        <div class="finzo-dropdown-option is-selected" data-value="all">All Branches</div>
+                                        <?php foreach ($branchesList as $b): ?>
+                                            <div class="finzo-dropdown-option" data-value="<?= htmlspecialchars((string)$b['id']) ?>"><?= htmlspecialchars($b['name']) ?> (<?= htmlspecialchars($b['branch_code'] ?? 'BR') ?>)</div>
+                                        <?php endforeach; ?>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="pt-4 border-t border-border-subtle flex items-center justify-end gap-3 relative z-0">
@@ -219,7 +263,7 @@ ob_start();
             </div>
 
 <?php
-$extraScripts = '<script defer src="/Finzo/public/assets/js/admin/users.js"></script>';
+$extraScripts = '<script defer src="/Finzo/public/assets/js/admin/users.js?v=' . time() . '"></script>';
 $slot = ob_get_clean();
 include __DIR__ . '/../layouts/app.php';
 ?>

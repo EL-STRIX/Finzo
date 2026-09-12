@@ -1,60 +1,89 @@
-(async function() {
+(async function () {
   await fetchUserSession();
   const s = UserState.status;
-  if (s === 'active') { window.location.href = 'dashboard.php'; return; }
-  if (s === 'pending') { window.location.href = 'complete-profile.php'; return; }
+  if (s === 'active')   { window.location.href = 'dashboard.php'; return; }
+  if (s === 'pending')  { window.location.href = 'complete-profile.php'; return; }
   if (s === 'rejected') { window.location.href = 'account-rejected.php'; return; }
-  
-  // Status is under_review — reveal the page
+
+  // ─── Helpers ────────────────────────────────────────────────────────────────
+  function fmtDate(iso) {
+    if (!iso) return '—';
+    const d = new Date(iso);
+    if (isNaN(d)) return iso;
+    return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) +
+           ' · ' +
+           d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
+  }
+
+  // ─── Fill email ─────────────────────────────────────────────────────────────
   const emailEl = document.getElementById('user-email-show');
   if (emailEl && UserState.email) emailEl.textContent = UserState.email;
 
-  if (UserState.pastRejections && UserState.pastRejections.length > 0) {
-    const timeline = document.querySelector('.timeline');
-    let htmlToInsert = '';
-    
-    // Convert connector of step 2 to error
-    const connector = timeline.children[1].querySelector('.tl-connector');
-    if(connector) connector.className = 'w-0.5 flex-1 min-h-[2rem] bg-gradient-to-b from-success-base to-danger-base my-1 tl-connector error';
-    
-    UserState.pastRejections.forEach((rej, index) => {
-      const d = new Date(rej.rejected_at);
-      const formatted = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + ' at ' + d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
-      const isLast = index === UserState.pastRejections.length - 1;
-      const nextConnectorClass = isLast ? 'bg-gradient-to-b from-success-base to-info-base' : 'bg-gradient-to-b from-success-base to-danger-base';
-      
-      htmlToInsert += `
-        <div class="flex gap-4">
-          <div class="flex flex-col items-center">
-            <div class="w-9 h-9 rounded-full bg-danger-surface border-2 border-danger-base/30 flex items-center justify-center shrink-0">
-              <span class="material-symbols-outlined text-danger-base text-lg">cancel</span>
-            </div>
-            <div class="w-0.5 flex-1 min-h-[2rem] bg-success-base my-1"></div>
+  // ─── Fetch full profile for precise timestamps ────────────────────────────
+  let memberSince = UserState.memberSince || null;
+  let kycSubmittedAt = null;
+  try {
+    let res;
+    if (window.api && typeof window.api.get === 'function') {
+      res = await window.api.get('/user/profile');
+    } else {
+      const r = await fetch('/Finzo/public/api/v1/user/profile', { credentials: 'same-origin' });
+      res = await r.json();
+    }
+    if (res && res.success && res.user) {
+      memberSince    = res.user.created_at    || memberSince;
+      kycSubmittedAt = res.user.kyc_submitted_at || res.user.updated_at || null;
+    }
+  } catch (e) {
+    console.warn('Could not fetch profile timestamps:', e);
+  }
+
+  // ─── Populate static timestamps ──────────────────────────────────────────
+  const tsReg  = document.getElementById('ts-registered');
+  const tsKyc  = document.getElementById('ts-kyc-submitted');
+  const tsSub  = document.getElementById('kyc-submitted-display');
+
+  if (tsReg)  tsReg.textContent  = fmtDate(memberSince);
+  if (tsKyc)  tsKyc.textContent  = fmtDate(kycSubmittedAt);
+  if (tsSub)  tsSub.textContent  = fmtDate(kycSubmittedAt);
+
+  // ─── Inject past rejection history ───────────────────────────────────────
+  const rejectionSlot = document.getElementById('rejection-history');
+  const rejections = UserState.pastRejections || [];
+
+  if (rejections.length > 0 && rejectionSlot) {
+    let html = '';
+    rejections.forEach((rej) => {
+      const when = fmtDate(rej.rejected_at);
+      html += `
+        <div class="tl-entry flex gap-4 relative pb-6">
+          <div class="w-9 h-9 rounded-full bg-rose-500/10 border-2 border-rose-500/30 flex items-center justify-center shrink-0 z-10">
+            <span class="material-symbols-outlined text-rose-500 text-base">cancel</span>
           </div>
-          <div class="pb-6 flex-1">
-            <div class="text-sm font-bold text-danger-base">Application Rejected</div>
-            <div class="text-xs text-[var(--color-text-main)] mt-2 p-3 bg-danger-surface/40 border border-danger-base/20 rounded-lg leading-relaxed">${rej.reason}</div>
-            <div class="text-[10px] font-bold text-[var(--color-text-disabled)] uppercase tracking-widest mt-2">${formatted}</div>
+          <div class="flex-1 pt-1">
+            <div class="flex items-start justify-between gap-2">
+              <div>
+                <div class="text-sm font-bold text-rose-500">Application Rejected</div>
+                <div class="text-xs text-[var(--color-text-main)] mt-2 p-2.5 bg-rose-500/5 border border-rose-500/15 rounded-lg leading-relaxed">${rej.reason || 'No reason provided.'}</div>
+              </div>
+              <div class="text-[10px] font-bold text-text-disabled uppercase tracking-widest shrink-0 text-right mt-0.5">${when}</div>
+            </div>
           </div>
         </div>
-        <div class="flex gap-4">
-          <div class="flex flex-col items-center">
-            <div class="w-9 h-9 rounded-full bg-success-surface flex items-center justify-center shrink-0">
-              <span class="material-symbols-outlined text-success-base text-lg">refresh</span>
-            </div>
-            <div class="w-0.5 flex-1 min-h-[2rem] ${nextConnectorClass} my-1"></div>
+        <div class="tl-entry flex gap-4 relative pb-6">
+          <div class="w-9 h-9 rounded-full bg-emerald-500/10 border-2 border-emerald-500/30 flex items-center justify-center shrink-0 z-10">
+            <span class="material-symbols-outlined text-emerald-500 text-base">refresh</span>
           </div>
-          <div class="pb-6 flex-1">
-            <div class="text-sm font-bold text-[var(--color-text-main)]">Profile Resubmitted</div>
-            <div class="text-xs text-[var(--color-text-muted)] mt-0.5">Details updated successfully</div>
-            <div class="text-[10px] font-bold text-[var(--color-text-disabled)] uppercase tracking-widest mt-1.5">Recent</div>
+          <div class="flex-1 pt-1">
+            <div class="text-sm font-bold text-text-main">Profile Resubmitted</div>
+            <div class="text-xs text-text-muted mt-0.5">Updated details and documents submitted for re-review.</div>
+            <div class="text-[10px] font-bold text-text-disabled uppercase tracking-widest mt-1.5">${fmtDate(kycSubmittedAt)}</div>
           </div>
         </div>
       `;
     });
-    
-    timeline.children[1].insertAdjacentHTML('afterend', htmlToInsert);
+    rejectionSlot.innerHTML = html;
   }
 
-  document.querySelector('.page-wrap').classList.add('ready');
+  document.querySelector('.page-wrap')?.classList.add('ready');
 })();

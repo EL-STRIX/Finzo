@@ -138,14 +138,14 @@ ob_start();
     <div class="space-y-6 sm:space-y-8">
       
       <!-- TOP NAVIGATION & HEADER -->
-      <div class="flex items-center justify-between gap-4 relative z-10">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 relative z-10">
         <div class="flex items-center gap-4">
           <a href="/Finzo/public/views/admin/admin-staff.php" class="w-10 h-10 flex items-center justify-center rounded-xl bg-surface border border-border-subtle hover:bg-surface-hover transition-all text-text-secondary hover:text-text-primary shadow-sm shrink-0" aria-label="Back to Staff List">
             <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
           </a>
           <div>
-            <div class="text-[10px] font-black tracking-widest uppercase text-text-secondary">STAFF PROFILE &amp; DOSSIER</div>
-            <div class="text-xl sm:text-2xl font-black tracking-tight mt-0.5 text-text-primary" id="header-staff-name"><?= $fullName ?></div>
+            <h1 class="text-2xl font-headline font-black tracking-tight text-text-primary" id="header-staff-name"><?= $fullName ?></h1>
+            <p class="text-xs font-bold text-text-secondary uppercase tracking-widest mt-1">Staff Personnel Record &amp; Access Roles</p>
           </div>
         </div>
       </div>

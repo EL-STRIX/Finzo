@@ -1,6 +1,8 @@
 <?php
 $portal = 'admin';
 $pageTitle = 'Finzo Admin — Global Transactions';
+// Admin portal guard — server-side authentication & role check
+include __DIR__ . '/_guard.php';
 ob_start();
 ?>
 
@@ -306,6 +308,7 @@ ob_start();
                         <div class="finzo-dropdown-option text-xs" data-value="completed">Completed</div>
                         <div class="finzo-dropdown-option text-xs" data-value="pending">Pending</div>
                         <div class="finzo-dropdown-option text-xs" data-value="failed">Failed</div>
+                        <div class="finzo-dropdown-option text-xs" data-value="reversed">Reversed</div>
                     </div>
                     <input type="hidden" id="filter-status" value="all">
                 </div>
@@ -439,7 +442,7 @@ ob_start();
                         <span id="modal-from-title">Source / Sender</span>
                     </div>
                     <div class="flex items-center gap-3">
-                        <div id="modal-from-avatar" class="admin-avatar sm uppercase">U</div>
+                        <div id="modal-from-avatar" class="admin-avatar sm !w-9 !h-9 !min-w-[36px] !min-h-[36px] rounded-full overflow-hidden uppercase shrink-0">U</div>
                         <div class="overflow-hidden w-full">
                             <div id="modal-from-name" class="font-bold text-sm text-text-primary truncate">Customer Name</div>
                             <div id="modal-from-acc" class="text-xs font-mono font-semibold text-text-secondary mt-0.5 truncate">FNZ000000000</div>
@@ -455,7 +458,7 @@ ob_start();
                         <span id="modal-to-title">Destination / Beneficiary</span>
                     </div>
                     <div class="flex items-center gap-3">
-                        <div id="modal-to-avatar" class="admin-avatar sm uppercase">U</div>
+                        <div id="modal-to-avatar" class="admin-avatar sm !w-9 !h-9 !min-w-[36px] !min-h-[36px] rounded-full overflow-hidden uppercase shrink-0">U</div>
                         <div class="overflow-hidden w-full">
                             <div id="modal-to-name" class="font-bold text-sm text-text-primary truncate">Customer Name</div>
                             <div id="modal-to-acc" class="text-xs font-mono font-semibold text-text-secondary mt-0.5 truncate">FNZ000000000</div>
@@ -475,6 +478,10 @@ ob_start();
 
         <!-- Modal Footer Actions -->
         <div class="p-5 border-t border-border-subtle bg-surface-subtle/50 flex items-center justify-end gap-3">
+            <button id="modal-reverse-btn" class="hidden px-4 py-2 text-xs font-black uppercase tracking-wider rounded-xl flex items-center gap-1.5 bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/30 hover:bg-rose-500 hover:text-white hover:border-rose-500 transition-all active:scale-95">
+                <span class="material-symbols-outlined text-[16px]">undo</span>
+                <span>Reverse Transaction</span>
+            </button>
             <button id="modal-receipt-btn" class="btn btn-secondary px-4 py-2 text-xs font-bold uppercase tracking-wider rounded-xl flex items-center gap-1.5 hover:bg-primary hover:text-white transition-all">
                 <span class="material-symbols-outlined text-[16px]">receipt_long</span>
                 <span>Official Receipt PDF</span>

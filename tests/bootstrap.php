@@ -33,6 +33,9 @@ if (file_exists($envFile)) {
 $_SERVER['SCRIPT_NAME'] = '/index.php';
 $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
 
+// Load config constants and timezone early
+require_once FINZO_ROOT . '/config/config.php';
+
 // ── 2. Auto-provision the test database ─────────────────────────────────────
 class TestPDO extends PDO {
     protected int $transactionCount = 0;
@@ -72,6 +75,7 @@ try {
     // Create DB and switch context
     $provisionPdo->exec("CREATE DATABASE IF NOT EXISTS `{$dbName}` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
     $provisionPdo->exec("USE `{$dbName}`");
+    $provisionPdo->exec("SET time_zone = '" . date('P') . "'");
 
     // Always re-import if schema_version marker table is missing
     $versionCheck = $provisionPdo->query("SHOW TABLES LIKE '_test_schema_version'");

@@ -21,7 +21,7 @@
 
         const fetchOpts = {
             method,
-            credentials: 'same-origin',
+            credentials: 'include',
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',
                 'Accept': 'application/json'
@@ -76,7 +76,7 @@
             if (!res.ok) {
                 if (res.status === 401 && !endpoint.includes('/auth/')) {
                     if (data.redirect) {
-                        window.location.href = data.redirect;
+                        window.location.href = data.redirect.replace(/\/public\/public\//g, '/public/');
                         return data;
                     }
                     

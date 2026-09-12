@@ -12,6 +12,14 @@
   width: 100%;
 }
 
+.ds-card:has(.finzo-dropdown),
+.ds-card.has-dropdown,
+.ds-card.kyc-stepper-card,
+.ds-card.overflow-visible,
+.ds-card.\!overflow-visible {
+  overflow: visible !important;
+}
+
 [data-theme="dark"] .ds-card, .dark .ds-card {
   background-color: rgba(28, 25, 23, 0.65);
   border-color: rgba(255, 255, 255, 0.08);

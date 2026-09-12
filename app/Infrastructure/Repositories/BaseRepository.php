@@ -19,6 +19,11 @@ abstract class BaseRepository
         return $this->db;
     }
 
+    public function getDb(): PDO
+    {
+        return $this->db;
+    }
+
     /**
      * Helper for fetching a single row
      */

@@ -44,7 +44,15 @@
 
             if (response.status === 'success' || response.success) {
                 const data = response.data || response;
-                renderTable(data.users || [], data.total || 0, data.pages || 1);
+                const users = data.users || [];
+                // If the current page became empty (e.g. last row recovered on the
+                // final page), step back one page so earlier records stay visible.
+                if (!users.length && currentPage > 1) {
+                    currentPage -= 1;
+                    loadDeletedUsers();
+                    return;
+                }
+                renderTable(users, data.total || 0, data.pages || 1);
             } else {
                 if (tableContainer) tableContainer.style.display = 'none';
                 if (emptyState) {
@@ -85,15 +93,22 @@
 
         window.DeletedUsers.usersList = users;
 
+        function toast(msg, type = 'info') {
+            if (window.showToast) window.showToast(msg, type);
+            else if (window.portal && window.portal.showToast) window.portal.showToast(msg, type);
+            else if (window.FinzoUtils && window.FinzoUtils.showToast) window.FinzoUtils.showToast(msg, type);
+            else alert(msg);
+        }
+
         tableBody.innerHTML = users.map((u, i) => {
-            const initials = u.initials || u.full_name.charAt(0);
+            const initials = u.initials || (u.full_name ? u.full_name.split(' ').filter(Boolean).map(n => n[0]).join('').slice(0, 2).toUpperCase() : 'U');
             const isSavings = (u.account_type || '').toLowerCase() === 'savings';
-            const gradient = window.FinzoUtils.getAvatarGradient(initials);
+            const gradient = (window.FinzoUtils && window.FinzoUtils.getAvatarGradient) ? window.FinzoUtils.getAvatarGradient(initials) : 'linear-gradient(135deg, #10b981, #059669)';
             const rowNum = String((currentPage - 1) * 10 + i + 1).padStart(2, '0');
             
             const avatarHtml = u.avatar_url 
-                ? `<img src="${u.avatar_url}" class="w-10 h-10 rounded-xl object-cover border border-slate-200 dark:border-white/10" alt="DP">`
-                : `<div class="flex items-center justify-center w-10 h-10 rounded-xl text-white font-black text-xs uppercase" >${initials}</div>`;
+                ? `<img src="${u.avatar_url}" class="w-10 h-10 rounded-xl object-cover border border-border-subtle shrink-0" alt="${u.full_name}" onerror="this.outerHTML='<div class=\\'flex items-center justify-center w-10 h-10 rounded-xl text-white font-black text-xs uppercase shrink-0\\' style=\\'background:${gradient}\\'>${initials}</div>'">`
+                : `<div class="flex items-center justify-center w-10 h-10 rounded-xl text-white font-black text-xs uppercase shrink-0" style="background:${gradient}">${initials}</div>`;
 
             return `
             <tr class="hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors">
@@ -102,7 +117,7 @@
                     <div class="flex items-center gap-3">
                         ${avatarHtml}
                         <div style="display:flex; flex-direction:column;">
-                            <span class="user-name font-bold text-sm text-slate-800 dark:text-slate-200">${u.full_name}</span>
+                            <span class="user-name font-bold text-sm text-text-primary">${u.full_name}</span>
                             <span class="user-email text-[11px] opacity-60 font-mono">${u.customer_id || 'FNZ-USR-PENDING'}</span>
                         </div>
                     </div>
@@ -118,10 +133,10 @@
                 </td>
                 <td class="text-right">
                     <div class="flex justify-end gap-2">
-                        <button onclick="window.DeletedUsers.openRecoverModal(${u.id})" class="p-2 hover:bg-emerald-50 dark:hover:bg-emerald-500/10 text-emerald-500 rounded-lg transition-colors" title="Recover Account">
+                        <button onclick="window.DeletedUsers.openRecoverModal(${u.id})" class="p-2 hover:bg-emerald-50 dark:hover:bg-emerald-500/10 text-emerald-500 rounded-lg transition-colors cursor-pointer" title="Recover Account">
                             <span class="material-symbols-outlined" style="font-size:18px;" aria-hidden="true">restore</span>
                         </button>
-                        <button onclick="window.DeletedUsers.openDetailsModal(${u.id})" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 text-slate-400 rounded-lg transition-colors" title="View Details">
+                        <button onclick="window.DeletedUsers.openDetailsModal(${u.id})" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 text-slate-400 rounded-lg transition-colors cursor-pointer" title="View Details">
                             <span class="material-symbols-outlined" style="font-size:18px;" aria-hidden="true">visibility</span>
                         </button>
                     </div>
@@ -183,7 +198,7 @@
             const accEl = document.getElementById('recover-user-acc');
             const modal = document.getElementById('recoverModal');
 
-            if (nameEl && u) nameEl.textContent = u.full_name;
+            if (nameEl && u) nameEl.textContent = `${u.full_name} (${u.customer_id || 'FNZ-USR-PENDING'})`;
             if (accEl && u) accEl.textContent = u.account_no || 'N/A';
             if (modal) {
                 modal.classList.remove('hidden');
@@ -196,16 +211,24 @@
             const option = document.querySelector('input[name="restore-option"]:checked')?.value || 'full';
             try {
                 const response = await window.api.post('/users/' + pendingUserId + '/recover', { balance_option: option });
-                if (response.status === 'success' || response.success) {
-                    window.portal.showToast('User account recovered successfully', 'success');
+                if (response && (response.status === 'success' || response.success)) {
+                    if (window.showToast) window.showToast('User account recovered successfully', 'success');
+                    else if (window.portal && window.portal.showToast) window.portal.showToast('User account recovered successfully', 'success');
+                    else alert('User account recovered successfully');
                     window.DeletedUsers.closeModal('recoverModal');
                     loadDeletedUsers();
                 } else {
-                    window.portal.showToast(response.message || 'Failed to recover account', 'error');
+                    const msg = (response && response.message) ? response.message : 'Failed to recover account';
+                    if (window.showToast) window.showToast(msg, 'error');
+                    else if (window.portal && window.portal.showToast) window.portal.showToast(msg, 'error');
+                    else alert(msg);
                 }
             } catch (error) {
                 console.error('Recovery failed:', error);
-                window.portal.showToast('Server error during recovery', 'error');
+                const fallbackMsg = (error && error.message) ? error.message : 'Server error during recovery';
+                if (window.showToast) window.showToast(fallbackMsg, 'error');
+                else if (window.portal && window.portal.showToast) window.portal.showToast(fallbackMsg, 'error');
+                else alert(fallbackMsg);
             }
         },
 
@@ -219,28 +242,39 @@
             const emailEls = document.querySelectorAll('.details-email');
             const phoneEls = document.querySelectorAll('.details-phone');
             const typeEls = document.querySelectorAll('.details-type');
+            const typeBadgeEls = document.querySelectorAll('.details-type-badge');
+            const customerIdEls = document.querySelectorAll('.details-customer-id');
             const regEls = document.querySelectorAll('.details-reg');
             const balanceEls = document.querySelectorAll('.details-balance');
+            const reasonEls = document.querySelectorAll('.details-reason');
+            const deletedByEls = document.querySelectorAll('.details-deleted-by');
+            const deletedAtEls = document.querySelectorAll('.details-deleted-at');
             
             const avatarContainer = document.getElementById('details-avatar-container');
             if (avatarContainer) {
+                const initials = u.initials || (u.full_name ? u.full_name.split(' ').filter(Boolean).map(n => n[0]).join('').slice(0, 2).toUpperCase() : 'U');
+                const gradient = (window.FinzoUtils && window.FinzoUtils.getAvatarGradient) ? window.FinzoUtils.getAvatarGradient(initials) : 'linear-gradient(135deg, #10b981, #059669)';
                 if (u.avatar_url) {
-                    avatarContainer.innerHTML = `<img src="${u.avatar_url}" class="w-full h-full object-cover rounded-2xl">`;
+                    avatarContainer.innerHTML = `<img src="${u.avatar_url}" class="w-full h-full object-cover rounded-2xl" onerror="this.outerHTML='<div class=\\'w-full h-full flex items-center justify-center text-3xl font-black text-white rounded-2xl\\' style=\\'background:${gradient}\\'>${initials}</div>'">`;
                     avatarContainer.style.background = 'none';
                 } else {
-                    const initials = u.initials || u.full_name.charAt(0);
                     avatarContainer.innerHTML = initials;
-                    avatarContainer.style.background = window.FinzoUtils.getAvatarGradient(initials);
+                    avatarContainer.style.background = gradient;
                 }
             }
 
-            nameEls.forEach(el => el.textContent = u.full_name);
+            nameEls.forEach(el => el.textContent = u.full_name || 'N/A');
             accEls.forEach(el => el.textContent = u.account_no || 'N/A');
             emailEls.forEach(el => el.textContent = u.email || 'N/A');
             phoneEls.forEach(el => el.textContent = u.phone || 'N/A');
-            typeEls.forEach(el => el.textContent = u.account_type ? u.account_type.charAt(0).toUpperCase() + u.account_type.slice(1) : 'N/A');
-            regEls.forEach(el => el.textContent = u.created_at ? new Date(u.created_at).toLocaleDateString() : 'N/A');
-            balanceEls.forEach(el => el.textContent = window.FinzoUtils.formatINR(u.balance || 0));
+            typeEls.forEach(el => el.textContent = u.account_type ? (u.account_type.charAt(0).toUpperCase() + u.account_type.slice(1)) : 'N/A');
+            typeBadgeEls.forEach(el => el.textContent = (u.account_type || 'Savings').toUpperCase());
+            customerIdEls.forEach(el => el.textContent = u.customer_id || 'FNZ-USR-PENDING');
+            regEls.forEach(el => el.textContent = u.created_at ? new Date(u.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : 'N/A');
+            balanceEls.forEach(el => el.textContent = (window.FinzoUtils && window.FinzoUtils.formatINR) ? window.FinzoUtils.formatINR(u.balance || 0) : ('₹' + parseFloat(u.balance || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })));
+            reasonEls.forEach(el => el.textContent = u.deletion_reason || 'Admin Action');
+            deletedByEls.forEach(el => el.textContent = u.deleted_by || 'Admin');
+            deletedAtEls.forEach(el => el.textContent = u.deleted_at || 'N/A');
             
             const modal = document.getElementById('detailsModal');
             if (modal) {
@@ -260,42 +294,6 @@
         recoverFromDetails: () => {
             window.DeletedUsers.closeModal('detailsModal');
             window.DeletedUsers.openRecoverModal(pendingUserId);
-        },
-
-        deletePermanentlyFromDetails: async () => {
-            if (!pendingUserId) return;
-            if (!confirm('Are you sure you want to PERMANENTLY delete this user? This action cannot be undone and all data will be lost forever.')) return;
-            
-            try {
-                const response = await window.api.patch('/users/' + pendingUserId, { action: 'delete_permanent' });
-                if (response.status === 'success' || response.success) {
-                    window.portal.showToast('User account permanently deleted', 'success');
-                    window.DeletedUsers.closeModal('detailsModal');
-                    loadDeletedUsers();
-                } else {
-                    window.portal.showToast(response.message || 'Failed to delete account', 'error');
-                }
-            } catch (error) {
-                console.error('Delete failed:', error);
-                window.portal.showToast('Server error during deletion', 'error');
-            }
-        },
-
-        deleteAccountOnly: async (id) => {
-            if (!confirm('Are you sure you want to PERMANENTLY delete this account (but keep the user)? This action cannot be undone.')) return;
-            
-            try {
-                const response = await window.api.patch('/users/' + id, { action: 'delete_account_only' });
-                if (response.status === 'success' || response.success) {
-                    window.portal.showToast('Account permanently deleted', 'success');
-                    loadDeletedUsers();
-                } else {
-                    window.portal.showToast(response.message || 'Failed to delete account', 'error');
-                }
-            } catch (error) {
-                console.error('Delete failed:', error);
-                window.portal.showToast('Server error during deletion', 'error');
-            }
         }
     };
 

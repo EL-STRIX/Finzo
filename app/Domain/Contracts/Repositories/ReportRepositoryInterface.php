@@ -19,4 +19,29 @@ interface ReportRepositoryInterface
      * @return array
      */
     public function getUserDemographics(array $filters): array;
+
+    /**
+     * Get detailed financial transactions for export.
+     *
+     * @param array $filters
+     * @param int $limit
+     * @return array
+     */
+    public function getFinancialTransactionsDetailed(array $filters, int $limit = 1000): array;
+
+    /**
+     * Get detailed user demographics records for export.
+     *
+     * @param array $filters
+     * @param int $limit
+     * @return array
+     */
+    public function getUserDemographicsDetailed(array $filters, int $limit = 1000): array;
+
+    /**
+     * Get list of active branches.
+     *
+     * @return array
+     */
+    public function getBranchesList(): array;
 }

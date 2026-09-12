@@ -4,8 +4,8 @@ $pageTitle = 'Interest Rates';
 $pageHeader = '
 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
     <div>
-        <h1 class="text-xl font-headline font-black text-text-primary tracking-tight">Interest Rates</h1>
-        <p class="text-[10px] font-black text-text-secondary uppercase tracking-widest mt-0.5">Configure system-wide interest rates and policies</p>
+        <h1 class="text-2xl font-headline font-black text-text-primary tracking-tight">Interest Rates</h1>
+        <p class="text-xs font-bold text-text-secondary uppercase tracking-widest mt-1">Configure system-wide interest rates and policies</p>
     </div>
 </div>
 ';
@@ -74,7 +74,10 @@ ob_start();
                                     <input type="date" id="custom-apply-date" class="fin-input">
                                 </div>
                             </div>
-                            <button data-action="window.InterestManagement.applyRate()" class="btn btn-primary w-full justify-center !py-4 rounded-xl">Apply Rate Update</button>
+                            <button type="button" id="apply-rate-btn" onclick="window.InterestManagement.applyRate()" class="btn btn-primary w-full justify-center !py-4 rounded-xl cursor-pointer">
+                                <span class="material-symbols-outlined text-lg mr-2" aria-hidden="true">check_circle</span>
+                                Apply Rate Update
+                            </button>
                             <p class="text-[10px] text-center text-text-secondary font-bold uppercase tracking-widest leading-relaxed">Updating rates will trigger notifications to all affected savings account holders.</p>
                         </div>
                     </div>
@@ -105,7 +108,7 @@ ob_start();
                     <!-- Interest Chart -->
                     <div class="ds-card p-8">
                         <div class="text-[10px] font-black text-text-secondary uppercase tracking-widest mb-8">Credited Interest (12 Mo)</div>
-                        <div id="interest-chart-container" class="h-40 flex items-end gap-2 px-2">
+                        <div id="interest-chart-container" class="h-44 flex items-stretch gap-2 px-2 pt-4">
                             <!-- Bars injected by JS -->
                         </div>
                         <div class="flex justify-between mt-4 text-[10px] font-black text-text-secondary uppercase tracking-widest">
@@ -138,8 +141,42 @@ ob_start();
                     </div>
                 </div>
             </div>
+
+            <!-- CONFIRMATION MODAL -->
+            <div id="confirm-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden" role="dialog" aria-modal="true">
+                <div class="absolute inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-sm" onclick="window.InterestManagement.closeModal()"></div>
+                <div class="ds-card w-full max-w-md shadow-2xl overflow-hidden scale-95 transition-all duration-300 border border-border-subtle relative z-10 bg-surface">
+                    <div class="p-8 text-center text-text-primary">
+                        <div class="w-20 h-20 rounded-full bg-primary-50 flex items-center justify-center mx-auto mb-6 text-primary border border-primary/20">
+                            <span class="material-symbols-outlined text-4xl" aria-hidden="true">percent</span>
+                        </div>
+                        <h3 class="text-xl font-black font-headline mb-3 text-text-primary">Confirm Rate Adjustment</h3>
+                        <div id="modal-msg" class="text-sm text-text-secondary leading-relaxed mb-6">
+                            Are you sure you want to adjust the global savings interest rate?
+                        </div>
+                        
+                        <div class="p-3 bg-primary-50/50 dark:bg-primary-900/10 rounded-xl border border-primary/20 mb-6 text-left">
+                            <div class="flex items-start gap-2.5">
+                                <span class="material-symbols-outlined text-primary text-base mt-0.5" aria-hidden="true">info</span>
+                                <p class="text-[11px] text-text-secondary font-medium leading-normal">
+                                    Adjusting this policy affects all active savings accounts and is recorded in audit logs.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-3">
+                            <button type="button" onclick="window.InterestManagement.closeModal()" class="flex-1 btn btn-secondary py-3 justify-center text-xs font-bold uppercase tracking-wider cursor-pointer">
+                                Cancel
+                            </button>
+                            <button type="button" id="confirm-rate-btn" onclick="window.InterestManagement.confirmRate()" class="flex-1 btn btn-primary py-3 justify-center text-xs font-bold uppercase tracking-wider cursor-pointer">
+                                Confirm &amp; Apply
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 <?php
-$extraScripts = '<script defer src="/Finzo/public/assets/js/admin/interest.js"></script>';
+$extraScripts = '<script defer src="/Finzo/public/assets/js/admin/interest.js?v=' . time() . '"></script>';
 $slot = ob_get_clean();
 include __DIR__ . '/../layouts/app.php';
 ?>

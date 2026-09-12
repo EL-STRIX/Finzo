@@ -44,8 +44,11 @@ class AuthService implements \App\Domain\Contracts\Services\AuthServiceInterface
             throw new ApiException("Account locked due to too many failed attempts. Try again in {$remaining} minute(s).", 423);
         }
 
-        if ($user['status'] === \App\Domain\Enums\AccountStatusEnum::REJECTED->value) {
-            throw new ApiException('Your application has been rejected. Please contact support for assistance.', 403);
+        if (!empty($user['temp_pass_status']) && $user['temp_pass_status'] === 'pending') {
+            $updated_ts = !empty($user['updated_at']) ? strtotime($user['updated_at']) : 0;
+            if ($updated_ts > 0 && ($updated_ts + 3600) < time()) {
+                throw new ApiException('Your temporary password has expired (valid for 60 minutes). Please contact an administrator to generate a new one.', 401);
+            }
         }
 
         if ($user['status'] === \App\Domain\Enums\AccountStatusEnum::SUSPENDED->value) {
@@ -59,10 +62,14 @@ class AuthService implements \App\Domain\Contracts\Services\AuthServiceInterface
             $max_attempts = get_setting($pdo, 'max_failed_login_attempts', 5);
             $lockout_duration = get_setting($pdo, 'customer_lockout_duration', LOCKOUT_DURATION);
 
+            $ip_failed = get_client_ip();
             if ($new_attempts >= $max_attempts) {
                 $lock_until = date('Y-m-d H:i:s', time() + $lockout_duration);
                 $this->repository->lockUser($user['id'], $new_attempts, $lock_until);
 
+                \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
+    new \App\Application\Events\GenericAuditAction('login_failed', $user['id'], \App\Domain\Enums\RoleEnum::USER->value, $user['id'], \App\Domain\Enums\RoleEnum::USER->value, "Failed login attempt {$new_attempts} of {$max_attempts} from IP: {$ip_failed}")
+);
                 \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
     new \App\Application\Events\GenericAuditAction(\App\Domain\Enums\AuditActionEnum::ACCOUNT_LOCKED->value, $user['id'], \App\Domain\Enums\RoleEnum::USER->value, $user['id'], \App\Domain\Enums\RoleEnum::USER->value, "Account locked after {$new_attempts} failed login attempts")
 );
@@ -71,6 +78,10 @@ class AuthService implements \App\Domain\Contracts\Services\AuthServiceInterface
                 throw new ApiException("Account locked due to too many failed attempts. Try again in {$lockout_minutes} minutes.", 423);
             } else {
                 $this->repository->updateFailedAttempts($user['id'], $new_attempts);
+
+                \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
+    new \App\Application\Events\GenericAuditAction('login_failed', $user['id'], \App\Domain\Enums\RoleEnum::USER->value, $user['id'], \App\Domain\Enums\RoleEnum::USER->value, "Failed login attempt {$new_attempts} of {$max_attempts} from IP: {$ip_failed}")
+);
 
                 $remaining = $max_attempts - $new_attempts;
                 throw new ApiException("Invalid email or password. {$remaining} attempt(s) remaining.", 401);
@@ -241,33 +252,8 @@ class AuthService implements \App\Domain\Contracts\Services\AuthServiceInterface
      */
     public function forgotPassword(string $email): bool
     {
-        $user = $this->repository->findUserByEmail($email);
-
-        if (!$user) {
-            // Silently succeed to prevent email enumeration
-            return true;
-        }
-
-        try {
-            $this->repository->deletePasswordResets($user['customer_id']);
-
-            $token = bin2hex(random_bytes(32));
-            $expires_at = date('Y-m-d H:i:s', time() + 3600);
-
-            $this->repository->createPasswordReset($user['customer_id'], $token, $expires_at);
-
-            require_once FINZO_ROOT . '/config/mailer.php';
-            try {
-                send_password_reset_email($user['email'], $user['full_name'], $token);
-            } catch (\Throwable $mailError) {
-                \App\Shared\Core\Logging\Logger::getInstance()->warning('Failed to send password reset email', ['context' => $mailError->getMessage()]);
-            }
-
-            return true;
-        } catch (PDOException $e) {
-            \App\Shared\Core\Logging\Logger::getInstance()->error('Forgot password error: ', ['context' => $e->getMessage()]);
-            throw new ApiException('An error occurred. Please try again.', 500);
-        }
+        // Email password recovery is currently disabled (Coming Soon)
+        return false;
     }
     /**
      * Reset Password.
@@ -318,6 +304,8 @@ class AuthService implements \App\Domain\Contracts\Services\AuthServiceInterface
      */
     public function registerUser(string $fullName, string $email, string $phone, string $password): bool
     {
+        $phone = normalize_phone($phone);
+
         if ($this->repository->findUserByEmailAny($email)) {
             throw new ApiException('Validation failed', 409, ['errors' => ['email' => 'This email is already registered']]);
         }
@@ -338,19 +326,20 @@ class AuthService implements \App\Domain\Contracts\Services\AuthServiceInterface
             if (session_status() === PHP_SESSION_ACTIVE) {
                 \App\Shared\Security\SessionManager::regenerate(true);
             }
-            $_SESSION['user_id']     = (int)$userId;
-            $_SESSION['user_name']   = $fullName;
-            $_SESSION['user_email']  = $email;
-            $_SESSION['user_phone']  = $phone;
-            $_SESSION['user_status'] = 'pending';
-            $_SESSION['role']        = 'customer';
-            $_SESSION['last_activity'] = time();
+            $_SESSION['user_id']          = (int)$userId;
+            $_SESSION['user_customer_id'] = $customer_id;
+            $_SESSION['user_name']        = $fullName;
+            $_SESSION['user_email']       = $email;
+            $_SESSION['user_phone']       = $phone;
+            $_SESSION['user_status']      = 'pending';
+            $_SESSION['role']             = 'customer';
+            $_SESSION['last_activity']    = time();
 
-            $welcomeMsg = "Your account has been registered. Complete your profile to start banking.";
-            $this->repository->createNotification($customer_id, 'system', 'Welcome to Finzo!', $welcomeMsg);
+            $welcomeMsg = "Welcome to Finzo Digital Banking, {$fullName}! Your customer profile has been generated with Customer ID {$customer_id}. Complete your identity verification to unlock full banking and payment features.";
+            $this->repository->createNotification($customer_id, 'system', 'Welcome to Finzo Digital Banking', $welcomeMsg);
 
-            $profileMsg = "Please complete your identity verification to unlock full banking services.";
-            $this->repository->createNotification($customer_id, 'security', 'Profile Incomplete', $profileMsg);
+            $profileMsg = "Mandatory Compliance Alert: In accordance with regulatory requirements, please upload your government-issued identification and address documents to activate your account.";
+            $this->repository->createNotification($customer_id, 'security', 'Action Required: Complete KYC Verification', $profileMsg);
 
             $this->repository->commit();
 

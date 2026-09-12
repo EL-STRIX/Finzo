@@ -127,7 +127,8 @@ class AdminOperationsController
 
     public function interest(?string $id = null, ?string $extra = null): array
     {
-        $adminId = \App\Shared\Security\Auth::user()['id'];
+        $adminUser = \App\Shared\Security\Auth::user();
+        $adminId = $adminUser['id'] ?? ($_SESSION['admin_id'] ?? 1);
 
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $data = $this->service->getInterestData();
@@ -138,9 +139,18 @@ class AdminOperationsController
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->security->checkAdminPermission($adminId, 'change_interest_rate');
 
-            $new_rate       = floatval($_POST['new_rate'] ?? 0);
-            $apply_from     = $this->security->cleanInput($_POST['apply_from'] ?? 'Immediately');
-            $custom_date    = $this->security->cleanInput($_POST['custom_date'] ?? '');
+            $input = $_POST;
+            if (empty($input)) {
+                $raw = file_get_contents('php://input');
+                $json = json_decode($raw, true);
+                if (is_array($json)) {
+                    $input = $json;
+                }
+            }
+
+            $new_rate    = floatval($input['new_rate'] ?? 0);
+            $apply_from  = $this->security->cleanInput($input['apply_from'] ?? 'Immediately');
+            $custom_date = $this->security->cleanInput($input['custom_date'] ?? '');
 
             $result = $this->service->updateInterestRate($new_rate, $apply_from, $custom_date, $adminId);
             if (!$result['success']) {
@@ -161,7 +171,8 @@ class AdminOperationsController
         $filters = [
             'tab'    => $this->security->cleanInput($_GET['tab'] ?? 'locked'),
             'search' => $this->security->cleanInput($_GET['search'] ?? ''),
-            'status' => $this->security->cleanInput($_GET['status'] ?? '')
+            'status' => $this->security->cleanInput($_GET['status'] ?? ''),
+            'type'   => $this->security->cleanInput($_GET['type'] ?? '')
         ];
         $page     = max(1, intval($_GET['page'] ?? 1));
         $per_page = min(50, max(10, intval($_GET['per_page'] ?? 20)));
@@ -188,11 +199,14 @@ class AdminOperationsController
     public function pendingApprovals(?string $id = null, ?string $extra = null): array
     {
         $filters = [
-            'status' => $this->security->cleanInput($_GET['status'] ?? 'all'),
-            'search' => $this->security->cleanInput($_GET['search'] ?? '')
+            'status'       => $this->security->cleanInput($_GET['status'] ?? 'all'),
+            'search'       => $this->security->cleanInput($_GET['search'] ?? ''),
+            'account_type' => $this->security->cleanInput($_GET['account_type'] ?? 'all'),
+            'id_type'      => $this->security->cleanInput($_GET['id_type'] ?? 'all'),
+            'sort'         => $this->security->cleanInput($_GET['sort'] ?? 'newest'),
         ];
         $page     = max(1, intval($_GET['page'] ?? 1));
-        $per_page = min(50, max(10, intval($_GET['per_page'] ?? 10)));
+        $per_page = min(100, max(10, intval($_GET['per_page'] ?? 50)));
 
         $data = $this->service->getPendingApprovals($filters, $page, $per_page);
         $data['success'] = true;
@@ -207,7 +221,21 @@ class AdminOperationsController
             throw new ApiException('User ID is required', 422);
         }
 
-        $result = $this->service->recoverUser($userId, $adminId);
+        $input = $_POST;
+        if (empty($input)) {
+            $raw = file_get_contents('php://input');
+            $json = json_decode($raw, true);
+            if (is_array($json)) {
+                $input = $json;
+            }
+        }
+
+        $balanceOption = $this->security->cleanInput($input['balance_option'] ?? 'full');
+        if (!in_array($balanceOption, ['full', 'mandatory'], true)) {
+            $balanceOption = 'full';
+        }
+
+        $result = $this->service->recoverUser($userId, $adminId, $balanceOption);
         if (!$result['success']) {
             throw new ApiException($result['message'], $result['code'] ?? 500);
         }
@@ -232,7 +260,15 @@ class AdminOperationsController
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $userId = intval($_POST['user_id'] ?? 0);
+            $is_json = (isset($_SERVER['CONTENT_TYPE']) && strpos($_SERVER['CONTENT_TYPE'], 'application/json') !== false);
+            if ($is_json) {
+                $json_input = json_decode(file_get_contents('php://input'), true);
+                if ($json_input !== null) {
+                    $_POST = array_merge($_POST, $json_input);
+                }
+            }
+
+            $userId = intval($_POST['user_id'] ?? ($id ?? 0));
             $action  = $this->security->cleanInput($_POST['action'] ?? '');
             $reason  = $this->security->cleanInput($_POST['reason'] ?? '');
             $notes   = $this->security->cleanInput($_POST['notes'] ?? '');
@@ -376,10 +412,11 @@ class AdminOperationsController
     public function users(?string $id = null, ?string $extra = null): array
     {
         $filters = [
-            'search'   => $this->security->cleanInput($_GET['search'] ?? ''),
-            'status'   => $this->security->cleanInput($_GET['status'] ?? 'all'),
-            'sort'     => $this->security->cleanInput($_GET['sort'] ?? 'newest'),
-            'activity' => $this->security->cleanInput($_GET['activity'] ?? 'all')
+            'search'    => $this->security->cleanInput($_GET['search'] ?? ''),
+            'status'    => $this->security->cleanInput($_GET['status'] ?? 'all'),
+            'sort'      => $this->security->cleanInput($_GET['sort'] ?? 'newest'),
+            'activity'  => $this->security->cleanInput($_GET['activity'] ?? 'all'),
+            'branch_id' => $this->security->cleanInput($_GET['branch_id'] ?? $_GET['branch'] ?? 'all')
         ];
         $page     = max(1, intval($_GET['page'] ?? 1));
         $per_page = min(50, max(10, intval($_GET['per_page'] ?? 20)));
@@ -392,10 +429,11 @@ class AdminOperationsController
     public function exportUsers(): void
     {
         $filters = [
-            'search'   => $this->security->cleanInput($_GET['search'] ?? ''),
-            'status'   => $this->security->cleanInput($_GET['status'] ?? 'all'),
-            'sort'     => $this->security->cleanInput($_GET['sort'] ?? 'newest'),
-            'activity' => $this->security->cleanInput($_GET['activity'] ?? 'all')
+            'search'    => $this->security->cleanInput($_GET['search'] ?? ''),
+            'status'    => $this->security->cleanInput($_GET['status'] ?? 'all'),
+            'sort'      => $this->security->cleanInput($_GET['sort'] ?? 'newest'),
+            'activity'  => $this->security->cleanInput($_GET['activity'] ?? 'all'),
+            'branch_id' => $this->security->cleanInput($_GET['branch_id'] ?? $_GET['branch'] ?? 'all')
         ];
 
         $isAsync = filter_var($_GET['async'] ?? false, FILTER_VALIDATE_BOOLEAN);
@@ -478,8 +516,12 @@ class AdminOperationsController
 
     public function unlockAccount(?string $id = null, ?string $extra = null): array
     {
-        $userId  = intval($_POST['user_id'] ?? 0);
-        $adminId = \App\Shared\Security\Auth::user()['id'];
+        $raw = file_get_contents('php://input');
+        $json = json_decode($raw, true);
+        $userId = intval($id ?: ($_POST['user_id'] ?? ($json['user_id'] ?? 0)));
+        $adminUser = \App\Shared\Security\Auth::user();
+        $adminId = $adminUser['id'] ?? ($_SESSION['admin_id'] ?? 1);
+
         if (!$userId) {
             throw new ApiException('User ID is required', 422);
         }

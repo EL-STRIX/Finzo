@@ -684,10 +684,11 @@ Role restrictions and strict Gate evaluations are enforced at the Controller bou
 | Name | Type | Required | Description |
 |---|---|---|---|
 | `page` | integer | No | Default: 1. Target page for records. |
-| `per_page` | integer | No | Default: 20. Max: 100. |
-| `sort` | string | No | The field to sort results by. |
-| `order` | string | No | `asc` or `desc`. |
-| `search` | string | No | Partial string match execution. |
+| `per_page` | integer | No | Default: 20. Min: 10. Max: 50. |
+| `tab` | string | No | `locked` (default) or `flagged` (3+ failed attempts, not yet locked). |
+| `search` | string | No | Matches full name, email, phone or account number. |
+| `type` | string | No | `Savings` or `Current`. Filters by account type. |
+| `status` | string | No | `pending` (temporary password not yet generated) or `done` (generated). |
 
 #### Response Example (200 OK)
 ```json

@@ -1,11 +1,12 @@
 <?php
 $portal = 'admin';
 $pageTitle = 'Locked Accounts';
+include __DIR__ . '/_guard.php';
 $pageHeader = '
 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
     <div>
-        <h1 class="text-xl font-headline font-black text-text-primary tracking-tight">Locked Accounts</h1>
-        <p class="text-[10px] font-black text-text-secondary uppercase tracking-widest mt-0.5">Review and manage locked customer accounts</p>
+        <h1 class="text-2xl font-headline font-black text-text-primary tracking-tight">Locked Accounts</h1>
+        <p class="text-xs font-bold text-text-secondary uppercase tracking-widest mt-1">Review and manage locked customer accounts</p>
     </div>
 </div>
 ';
@@ -16,7 +17,7 @@ ob_start();
                 <span class="material-symbols-outlined text-warning" aria-hidden="true">info</span>
                 <div>
                     <h4 class="text-sm font-bold text-warning">How account locking works</h4>
-                    <p class="text-xs text-warning/80 mt-1">If a user enters the wrong password 5 times within 24 hours, their account is automatically locked. Administrators can generate a 24-hour temporary password to restore access.</p>
+                    <p class="text-xs text-warning/80 mt-1">If a user enters the wrong password 5 times, their account is automatically locked. Administrators can generate a 60-minute temporary password to restore access. Once generated, the account is unlocked and removed from the active locked queue.</p>
                 </div>
             </div>
 
@@ -25,8 +26,8 @@ ob_start();
                 <div class="absolute -right-20 -top-20 w-64 h-64 bg-primary/5 rounded-full blur-3xl -z-10 pointer-events-none"></div>
                 <div class="absolute -left-20 -bottom-20 w-64 h-64 bg-accent/5 rounded-full blur-3xl -z-10 pointer-events-none"></div>
                 <div class="p-4 sm:p-6 border-b border-border-subtle bg-background/40 backdrop-blur-xl relative z-10">
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 items-end">
-                    <div class="col-span-2">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+                    <div class="sm:col-span-2">
                         <label for="search-input" class="fin-label mb-2 block text-[10px] font-black text-text-secondary uppercase tracking-widest">Search Account</label>
                         <div class="relative">
                             <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-text-secondary" aria-hidden="true">search</span>
@@ -63,10 +64,6 @@ ob_start();
                             </div>
                         </div>
                     </div>
-                    <div>
-                        <label for="date-filter" class="fin-label mb-2 block text-[10px] font-black text-text-secondary uppercase tracking-widest">Locked On</label>
-                        <input type="date" id="date-filter" class="fin-input w-full">
-                    </div>
                 </div>
 
                 </div>
@@ -99,8 +96,54 @@ ob_start();
                     </div>
                 </div>
             </div>
+
+            <!-- UNLOCK & TEMPORARY PASSWORD MODAL -->
+            <div id="unlock-modal" class="fixed inset-0 z-[2000] hidden items-center justify-center p-4" role="dialog" aria-modal="true">
+                <div class="absolute inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-sm" onclick="window.LockedAccounts.closeUnlockModal()"></div>
+                <div class="ds-card w-full max-w-md relative z-10 p-6 sm:p-8 ds-animate-scale shadow-2xl border border-border-subtle bg-surface">
+                    <div class="text-center">
+                        <div id="unlock-modal-icon-box" class="w-16 h-16 rounded-2xl bg-amber-500/10 text-amber-500 mx-auto mb-4 flex items-center justify-center border border-amber-500/20 shadow-sm transition-all duration-300">
+                            <span id="unlock-modal-icon" class="material-symbols-outlined text-3xl" aria-hidden="true">key</span>
+                        </div>
+                        <h3 id="unlock-modal-title" class="font-headline text-2xl font-black text-text-primary tracking-tight mb-2">Generate Temporary Password</h3>
+                        <p id="unlock-modal-text" class="text-xs font-bold text-text-secondary mb-6 leading-relaxed"></p>
+
+                        <!-- Generated password display -->
+                        <div id="gen-pass-section" class="hidden mb-6 text-left">
+                            <label class="block text-[10px] font-black uppercase tracking-widest text-text-secondary mb-2">Temporary One-Time Password</label>
+                            <div class="flex items-center gap-3 bg-background p-3.5 rounded-xl border-2 border-amber-500/30 shadow-inner">
+                                <code id="gen-pass-value" class="flex-1 font-mono font-black text-xl tracking-wider text-primary text-center select-all"></code>
+                                <button type="button" id="copy-btn" onclick="window.LockedAccounts.copyPassword()" class="p-2 hover:bg-surface rounded-lg transition-colors text-amber-600 dark:text-amber-400 border border-border-subtle shrink-0 cursor-pointer" title="Copy to clipboard">
+                                    <span class="material-symbols-outlined text-lg" aria-hidden="true">content_copy</span>
+                                </button>
+                            </div>
+                            <div class="grid grid-cols-2 gap-3 mt-3">
+                                <div class="bg-amber-500/10 p-2.5 rounded-xl flex items-center gap-2 border border-amber-500/20">
+                                    <span class="material-symbols-outlined text-amber-600 dark:text-amber-400 text-sm" aria-hidden="true">schedule</span>
+                                    <span class="text-[10px] font-black text-amber-600 dark:text-amber-400 uppercase">60 Min Validity</span>
+                                </div>
+                                <div class="bg-primary/10 p-2.5 rounded-xl flex items-center gap-2 border border-primary/20">
+                                    <span class="material-symbols-outlined text-primary text-sm" aria-hidden="true">verified_user</span>
+                                    <span class="text-[10px] font-black text-primary uppercase">Single Use</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="unlock-modal-actions" class="flex gap-3">
+                            <button type="button" onclick="window.LockedAccounts.closeUnlockModal()" class="btn btn-secondary flex-1 justify-center py-3 text-xs font-bold uppercase tracking-wider cursor-pointer">Cancel</button>
+                            <button type="button" id="generate-btn" onclick="window.LockedAccounts.generatePassword()" class="btn btn-primary flex-1 justify-center py-3 text-xs font-bold uppercase tracking-wider bg-amber-600 hover:bg-amber-700 text-white border-none shadow-md shadow-amber-900/10 cursor-pointer inline-flex items-center gap-1.5">
+                                <span class="material-symbols-outlined text-base" aria-hidden="true">key</span>
+                                <span>Generate & Unlock</span>
+                            </button>
+                        </div>
+                        <div id="unlock-done-actions" class="hidden flex gap-3">
+                            <button type="button" onclick="window.LockedAccounts.closeUnlockModal()" class="btn btn-primary w-full justify-center py-3 text-xs font-bold uppercase tracking-wider bg-emerald-600 hover:bg-emerald-700 text-white border-none shadow-md shadow-emerald-900/10 cursor-pointer">Done</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 <?php
-$extraScripts = '<script defer src="/Finzo/public/assets/js/admin/locked-accounts.js"></script>';
+$extraScripts = '<script defer src="/Finzo/public/assets/js/admin/locked-accounts.js?v=' . time() . '"></script>';
 $slot = ob_get_clean();
 include __DIR__ . '/../layouts/app.php';
 ?>

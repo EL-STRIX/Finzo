@@ -4,6 +4,38 @@ if (!defined('FINZO_ROOT')) {
     require_once dirname(__DIR__, 3) . '/bootstrap/app.php';
 }
 \App\Shared\Security\SessionManager::start();
+
+// Centralized Access Control for User Portal
+if ($portal === 'user' && !empty($_SESSION['user_id'])) {
+    $currentFile = basename($_SERVER['PHP_SELF'], '.php');
+    $status = $_SESSION['user_status'] ?? 'pending';
+    
+    $activeOnly = [
+        'dashboard', 'accounts', 'account-detail', 'transfer', 'transactions', 
+        'statement', 'beneficiary', 'user-bill-payments', 'user-cards', 
+        'user-investments', 'user-loans', 'receipt'
+    ];
+    $pendingOnly = ['complete-profile', 'account-pending', 'account-rejected'];
+    
+    if ($status !== 'active' && in_array($currentFile, $activeOnly)) {
+        ob_end_clean();
+        if ($status === 'under_review') {
+            header('Location: account-pending.php');
+        } elseif ($status === 'rejected') {
+            header('Location: account-rejected.php');
+        } else {
+            header('Location: complete-profile.php');
+        }
+        exit;
+    }
+    
+    if ($status === 'active' && in_array($currentFile, $pendingOnly)) {
+        ob_end_clean();
+        header('Location: dashboard.php');
+        exit;
+    }
+}
+
 if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
@@ -30,9 +62,21 @@ $csrfToken = $_SESSION['csrf_token'];
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="/Finzo/public/assets/js/core/tailwind-config.js?v=<?= time() ?>"></script>
     <!-- Core JS: order matters — utils must load before api and ui-components -->
-    <script defer src="/Finzo/public/assets/js/core/utils.js"></script>
-    <script defer src="/Finzo/public/assets/js/core/api.js"></script>
-    <script defer src="/Finzo/public/assets/js/core/ui-components.js"></script>
+    <script defer src="/Finzo/public/assets/js/core/utils.js?v=<?= time() ?>"></script>
+    <script defer src="/Finzo/public/assets/js/core/api.js?v=<?= time() ?>"></script>
+    <script defer src="/Finzo/public/assets/js/core/ui-components.js?v=<?= time() ?>"></script>
+    <?php if ($portal === 'user' || !empty($_SESSION['user_id'])): ?>
+    <script>
+        window.__FINZO_USER__ = <?= json_encode([
+            'id'          => (int)($_SESSION['user_id'] ?? 0),
+            'customer_id' => $_SESSION['user_customer_id'] ?? '',
+            'name'        => $_SESSION['user_name'] ?? '',
+            'email'       => $_SESSION['user_email'] ?? '',
+            'phone'       => $_SESSION['user_phone'] ?? '',
+            'status'      => $_SESSION['user_status'] ?? 'pending',
+        ], JSON_UNESCAPED_UNICODE) ?>;
+    </script>
+    <?php endif; ?>
     <?php if ($portal === 'admin'): ?>
         <script defer src="/Finzo/public/assets/js/admin/admin-shared.js"></script>
     <?php elseif ($portal === 'user'): ?>
@@ -80,6 +124,11 @@ $csrfToken = $_SESSION['csrf_token'];
                 <?php endif; ?>
 
                 <main class="flex-1 p-4 sm:p-6 lg:p-8 max-w-[1600px] mx-auto w-full space-y-6">
+                    <?php if ($portal === 'admin' && !empty($pageHeader)): ?>
+                        <div class="mb-6 relative z-10">
+                            <?= $pageHeader ?>
+                        </div>
+                    <?php endif; ?>
                     <?= $slot ?? '' ?>
                 </main>
                 

@@ -78,44 +78,21 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
      */
     public function getDashboardData(int $adminId): array
     {
-        $stats = $this->repository->getDashboardStats();
-
-        $stats_cache = \App\Shared\Core\Cache\CacheManager::getInstance()->get('admin_dashboard_stats', function() {
-            return $this->repository->getCachedDashboardStats();
-        }, 15); // 15 seconds cache
-
-        $stats = array_merge($stats, $stats_cache);
+        $stats = \App\Shared\Core\Cache\CacheManager::getInstance()->get('admin_dashboard_stats', function() {
+            $baseStats = $this->repository->getDashboardStats();
+            $cachedStats = $this->repository->getCachedDashboardStats();
+            return array_merge($baseStats, $cachedStats);
+        }, 60);
 
         $recent_users = $this->repository->getDashboardRecentUsers();
         foreach ($recent_users as &$u) {
-            $profile_pic_url = $u['profile_picture'] ? APP_URL . '/' . $u['profile_picture'] : null;
-            if (!$profile_pic_url) {
-                $avatar_path = 'uploads/avatars/user_' . $u['id'] . '.jpg';
-                if (file_exists(FINZO_ROOT . '/' . $avatar_path)) {
-                    $profile_pic_url = APP_URL . '/' . $avatar_path;
-                }
-            }
-            $u['profile_picture_url'] = $profile_pic_url;
+            $u['profile_picture_url'] = !empty($u['profile_picture']) ? (APP_URL . '/' . ltrim($u['profile_picture'], '/')) : null;
         }
         unset($u);
 
         $monthly_chart_data = \App\Shared\Core\Cache\CacheManager::getInstance()->get('admin_dashboard_chart', function() {
-            $data = [];
-            for ($i = 5; $i >= 0; $i--) {
-                $month_date = date('Y-m', strtotime("-{$i} months"));
-                $month_label = date('M Y', strtotime("-{$i} months"));
-                $month_data = $this->repository->getMonthlyChartDataRow($month_date);
-
-                $data[] = [
-                    'month'       => $month_label,
-                    'deposits'    => (float)($month_data['deposits'] ?? 0),
-                    'withdrawals' => (float)($month_data['withdrawals'] ?? 0),
-                    'transfers'   => (float)($month_data['transfers'] ?? 0),
-                    'count'       => (int)($month_data['count'] ?? 0)
-                ];
-            }
-            return $data;
-        }, 30); // 30 seconds cache
+            return $this->repository->getMonthlyChartDataSixMonths();
+        }, 300);
 
         $admin_data = $this->repository->getAdminById($adminId);
 
@@ -168,10 +145,19 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
 
         $users = $this->repository->getDeletedUsers($where_sql, $params, $perPage, $offset);
 
-        $base_avatar_dir = FINZO_ROOT . '/uploads/avatars/';
         foreach ($users as &$u) {
-            $avatar_path = $base_avatar_dir . 'user_' . $u['id'] . '.jpg';
-            $u['avatar_url'] = file_exists($avatar_path) ? APP_URL . '/uploads/avatars/user_' . $u['id'] . '.jpg?t=' . filemtime($avatar_path) : null;
+            $avatar_url = null;
+            if (!empty($u['profile_picture'])) {
+                $avatar_url = str_starts_with($u['profile_picture'], 'http')
+                    ? $u['profile_picture']
+                    : APP_URL . '/' . ltrim($u['profile_picture'], '/');
+            } else {
+                $avatar_path = FINZO_ROOT . '/uploads/avatars/user_' . $u['id'] . '.jpg';
+                if (file_exists($avatar_path)) {
+                    $avatar_url = APP_URL . '/uploads/avatars/user_' . $u['id'] . '.jpg?t=' . filemtime($avatar_path);
+                }
+            }
+            $u['avatar_url'] = $avatar_url;
         }
         unset($u);
 
@@ -277,12 +263,12 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
         }
 
         $adminData = $this->repository->getAdminById($adminId);
-        if (!$adminData || !$adminData['admin_id']) {
-            return ['success' => false, 'message' => 'Admin account not found', 'code' => 404];
-        }
-        $admin_display_id = $adminData['admin_id'];
+        $admin_display_id = $adminData['admin_id'] ?? 'ADM001';
 
         $this->repository->insertInterestRate($new_rate, $apply_from, $apply_date, $admin_display_id);
+
+        // Invalidate analytics chart cache so latest figures reflect immediately
+        \App\Shared\Core\Cache\CacheManager::getInstance()->forget('admin_interest_chart');
 
         if ($apply_from === 'Immediately') {
             $this->repository->updateActiveSavingsInterestRate($new_rate);
@@ -332,12 +318,16 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
             }
         }
 
-        // Global function from config/functions.php
-        
-            \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('interest_rate_updated', null, \App\Domain\Enums\RoleEnum::SYSTEM->value, $adminId, \App\Domain\Enums\RoleEnum::ADMIN->value, "Interest rate changed to {$new_rate}%. Apply from: {$apply_from}" . ($apply_date ? " ({$apply_date})" : ''))
-);
-        
+        \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
+            new \App\Application\Events\GenericAuditAction(
+                'interest_rate_updated',
+                null,
+                \App\Domain\Enums\RoleEnum::SYSTEM->value,
+                $adminId,
+                \App\Domain\Enums\RoleEnum::ADMIN->value,
+                "Interest rate changed to {$new_rate}%. Apply from: {$apply_from}" . ($apply_date ? " ({$apply_date})" : '')
+            )
+        );
 
         return ['success' => true, 'message' => "Interest rate updated to {$new_rate}%"];
     }
@@ -345,7 +335,7 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
      * Export Users.
      *
      * @param array $filters
-     * @return array
+     * @return array|\Generator
      */
     public function exportUsers(array $filters): array|\Generator
     {
@@ -370,7 +360,22 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
 
         $where_sql = implode(' AND ', $where_clauses);
 
-        return $this->repository->exportUsersGenerator($where_sql, $params, $orderSql);
+        // Decrypt the PII ID Number for cleartext export (consistent with the
+        // administrative user detail services). Legacy plaintext rows are
+        // returned unchanged by EncryptionService::decrypt().
+        $crypto = new \App\Shared\Security\EncryptionService();
+        $rows = $this->repository->exportUsersGenerator($where_sql, $params, $orderSql);
+
+        foreach ($rows as $row) {
+            if (isset($row['ID Number']) && $row['ID Number'] !== '') {
+                try {
+                    $row['ID Number'] = $crypto->decrypt($row['ID Number']);
+                } catch (\Throwable $e) {
+                    // Ignore decryption failures and export the stored value.
+                }
+            }
+            yield $row;
+        }
     }
     /**
      * Get Locked Accounts.
@@ -382,26 +387,44 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
      */
     public function getLockedAccounts(array $filters, int $page, int $perPage): array
     {
+        // Keep the admin list in sync with the real login lock behaviour:
+        // AuthService locks accounts using the max_failed_login_attempts setting.
+        try {
+            $max_attempts = (int)get_setting(\App\Shared\Core\Database::getInstance(), 'max_failed_login_attempts', 5);
+        } catch (\Throwable $e) {
+            $max_attempts = 5; // Settings unavailable (e.g. unit tests without DB)
+        }
+
         $where_clauses = ["u.is_deleted = 0"];
         $params = [];
 
-        if ($filters['tab'] === 'locked') {
-            $where_clauses[] = "u.temp_pass_status IN ('pending', 'done')";
-        } elseif ($filters['tab'] === 'flagged') {
-            $where_clauses[] = "u.failed_attempts >= 3 AND u.temp_pass_status = 'none'";
+        // An account is listed in the active locked queue if it is currently locked
+        // or has exceeded max failed attempts. Once an account is unlocked with a 60-min
+        // temporary password, it is removed from the active locked accounts list.
+        if ($filters['tab'] === 'flagged') {
+            $where_clauses[] = "(u.failed_attempts >= 3 AND u.failed_attempts < {$max_attempts} AND (u.locked_until IS NULL OR u.locked_until <= NOW()) AND u.temp_pass_status = 'none')";
         } else {
-            $where_clauses[] = "(u.temp_pass_status IN ('pending', 'done') OR u.failed_attempts >= 3)";
+            if ($filters['status'] === 'done') {
+                // If explicitly filtering by "Done", show accounts unlocked with a temp password within the 60-minute window
+                $where_clauses[] = "(u.temp_pass_status = 'pending' AND u.updated_at >= DATE_SUB(NOW(), INTERVAL 60 MINUTE))";
+            } elseif ($filters['status'] === \App\Domain\Enums\AccountStatusEnum::PENDING->value) {
+                $where_clauses[] = "(u.locked_until > NOW() OR u.failed_attempts >= {$max_attempts})";
+            } else {
+                // Default: Locked accounts queue only contains accounts actively locked needing resolution.
+                // Accounts unlocked with a 60-minute temporary password are removed from the active list.
+                $where_clauses[] = "(u.locked_until > NOW() OR u.failed_attempts >= {$max_attempts})";
+            }
         }
 
-        if ($filters['status'] === \App\Domain\Enums\AccountStatusEnum::PENDING->value) {
-            $where_clauses[] = "u.temp_pass_status = 'pending'";
-        } elseif ($filters['status'] === 'done') {
-            $where_clauses[] = "u.temp_pass_status = 'done'";
+        if (!empty($filters['type'])) {
+            $where_clauses[] = "a.account_type = ?";
+            $params[] = strtolower($filters['type']);
         }
 
         if (!empty($filters['search'])) {
-            $where_clauses[] = "(u.full_name LIKE ? OR u.email LIKE ? OR u.phone LIKE ?)";
+            $where_clauses[] = "(u.full_name LIKE ? OR u.email LIKE ? OR u.phone LIKE ? OR a.account_no LIKE ?)";
             $s = "%{$filters['search']}%";
+            $params[] = $s;
             $params[] = $s;
             $params[] = $s;
             $params[] = $s;
@@ -417,19 +440,31 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
 
         $formatted_accounts = [];
         foreach ($accounts as $acc) {
-            $locked_timestamp = strtotime($acc['updated_at']);
+            $locked_timestamp = (!empty($acc['locked_until']) && strtotime($acc['locked_until']) > 0)
+                ? strtotime($acc['locked_until'])
+                : (!empty($acc['updated_at']) ? strtotime($acc['updated_at']) : time());
             $acc['locked_at'] = date('d M Y', $locked_timestamp);
             $acc['lock_time'] = date('h:i A', $locked_timestamp);
 
-            $acc['temp_pass_status'] = $acc['temp_pass_status'] ?? 'pending';
-
-            if ($acc['temp_pass_status'] === 'done') {
-                $acc['status_text'] = 'Done';
-                $acc['status_badge'] = 'badge-success';
-            } else {
-                $acc['status_text'] = 'Pending';
-                $acc['status_badge'] = 'badge-warn';
+            $avatar_url = null;
+            if (!empty($acc['profile_picture'])) {
+                $avatar_url = str_starts_with($acc['profile_picture'], 'http')
+                    ? $acc['profile_picture']
+                    : APP_URL . '/' . ltrim($acc['profile_picture'], '/');
+            } elseif (!empty($acc['id'])) {
+                $avatar_path = FINZO_ROOT . '/uploads/avatars/user_' . $acc['id'] . '.jpg';
+                if (file_exists($avatar_path)) {
+                    $avatar_url = APP_URL . '/uploads/avatars/user_' . $acc['id'] . '.jpg?t=' . filemtime($avatar_path);
+                }
             }
+            $acc['avatar_url'] = $avatar_url;
+
+            $acc['is_locked'] = (!empty($acc['locked_until']) && strtotime($acc['locked_until']) > time())
+                || (int)($acc['failed_attempts'] ?? 0) >= $max_attempts;
+
+            $is_done = (!empty($acc['temp_pass_status']) && $acc['temp_pass_status'] === 'pending');
+            $acc['status_text'] = $is_done ? 'Done' : 'Pending';
+            $acc['status_badge'] = $is_done ? 'badge-success' : 'badge-warn';
             $formatted_accounts[] = $acc;
         }
 
@@ -454,8 +489,26 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
             return ['success' => false, 'message' => 'User not found', 'code' => 404];
         }
 
-        $is_locked = ($user['failed_attempts'] >= 5) || ($user['locked_until'] && strtotime($user['locked_until']) > time());
+        try {
+            $max_attempts = (int)get_setting(\App\Shared\Core\Database::getInstance(), 'max_failed_login_attempts', 5);
+        } catch (\Throwable $e) {
+            $max_attempts = 5; // Settings unavailable (e.g. unit tests without DB)
+        }
+        $is_locked = ($user['failed_attempts'] >= $max_attempts) || ($user['locked_until'] && strtotime($user['locked_until']) > time());
         $lock_ts = $user['locked_until'] ? strtotime($user['locked_until']) : strtotime($user['updated_at']);
+
+        $avatar_url = null;
+        if (!empty($user['profile_picture'])) {
+            $avatar_url = str_starts_with($user['profile_picture'], 'http')
+                ? $user['profile_picture']
+                : APP_URL . '/' . ltrim($user['profile_picture'], '/');
+        } else {
+            $avatar_path = FINZO_ROOT . '/uploads/avatars/user_' . $userId . '.jpg';
+            if (file_exists($avatar_path)) {
+                $avatar_url = APP_URL . '/uploads/avatars/user_' . $userId . '.jpg?t=' . filemtime($avatar_path);
+            }
+        }
+        $user['avatar_url'] = $avatar_url;
 
         $user['is_locked']        = $is_locked;
         $user['initials']         = strtoupper(substr($user['full_name'], 0, 1));
@@ -475,7 +528,6 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
             if ($temp_data['expires'] > time()) {
                 $user['temp_password_active'] = true;
                 $user['temp_password'] = $temp_data['password'];
-                $user['is_locked'] = true;
             } else {
                 unset($_SESSION['temp_passwords'][$userId]);
             }
@@ -517,18 +569,36 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
         $params = [];
 
         if ($filters['status'] === \App\Domain\Enums\AccountStatusEnum::PENDING->value) {
-            $where_clauses[] = "u.status = 'pending'";
+            $where_clauses[] = "u.status = 'pending' AND u.kyc_submitted_at IS NOT NULL";
         } elseif ($filters['status'] === 'under_review') {
             $where_clauses[] = "u.status = 'under_review'";
+        } elseif ($filters['status'] === 'rejected') {
+            $where_clauses[] = "u.status = 'rejected'";
         } else {
-            $where_clauses[] = "u.status IN ('pending', 'under_review')";
+            // Default / All Pending: show only under_review, rejected, and pending with submitted KYC
+            $where_clauses[] = "(u.status = 'under_review' OR u.status = 'rejected' OR (u.status = 'pending' AND u.kyc_submitted_at IS NOT NULL))";
         }
 
+        // Search Filter (Full name, Customer ID, Email, Phone)
         if (!empty($filters['search'])) {
-            $where_clauses[] = "(u.full_name LIKE ? OR u.customer_id LIKE ?)";
+            $where_clauses[] = "(u.full_name LIKE ? OR u.customer_id LIKE ? OR u.email LIKE ? OR u.phone LIKE ?)";
             $s = "%{$filters['search']}%";
             $params[] = $s;
             $params[] = $s;
+            $params[] = $s;
+            $params[] = $s;
+        }
+
+        // Account Type Filter
+        if (!empty($filters['account_type']) && $filters['account_type'] !== 'all') {
+            $where_clauses[] = "LOWER(COALESCE(a.account_type, k.account_type, 'savings')) = ?";
+            $params[] = strtolower($filters['account_type']);
+        }
+
+        // ID Type Filter
+        if (!empty($filters['id_type']) && $filters['id_type'] !== 'all') {
+            $where_clauses[] = "LOWER(COALESCE(k.id_type, u.id_type, '')) = ?";
+            $params[] = strtolower($filters['id_type']);
         }
 
         $where_sql = implode(' AND ', $where_clauses);
@@ -537,7 +607,15 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
         $pages  = max(1, ceil($total / $perPage));
         $offset = ($page - 1) * $perPage;
 
-        $applications = $this->repository->getPendingApprovals($where_sql, $params, $perPage, $offset);
+        $sort = $filters['sort'] ?? 'newest';
+        $orderBy = match ($sort) {
+            'oldest'    => 'u.kyc_submitted_at ASC, u.created_at ASC',
+            'name_asc'  => 'u.full_name ASC',
+            'name_desc' => 'u.full_name DESC',
+            default     => 'u.kyc_submitted_at DESC, u.created_at DESC'
+        };
+
+        $applications = $this->repository->getPendingApprovals($where_sql, $params, $perPage, $offset, $orderBy);
 
         foreach ($applications as &$app) {
             $profile_pic_url = $app['profile_picture'] ? APP_URL . '/' . $app['profile_picture'] : null;
@@ -573,9 +651,16 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
 * @param int $adminId
      * @return array
      */
-    public function recoverUser(int $userId, int $adminId): array
+    public function recoverUser(int $userId, int $adminId, string $balanceOption = 'full'): array
     {
         $pdo = \App\Shared\Core\Database::getInstance();
+
+        // Parity with processUserAction('recover'): recovering a user requires
+        // the soft-delete management permission (super admins bypass via RBAC).
+        if ($this->security !== null) {
+            $this->security->checkAdminPermission($adminId, 'soft_delete_user');
+        }
+
         $user = $this->repository->getUserForRecovery($userId);
 
         if (!$user) {
@@ -588,16 +673,40 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
 
         $this->repository->recoverUser($userId, $user['customer_id']);
 
-        if (function_exists('send_notification') && isset($pdo)) {
-            send_notification($pdo, $userId, \App\Domain\Enums\NotificationTypeEnum::SYSTEM->value,
-                'Account Restored',
-                'Your account has been restored and is now active. You can log in and continue banking.'
-            );
+        // Apply the chosen balance restoration policy (mirrors processUserAction 'recover').
+        if ($balanceOption === 'mandatory') {
+            $account = $this->repository->getUserForActionByCustomer($user['customer_id']);
+            if ($account && (float) $account['balance'] > 500) {
+                $deduction_amount = (float) $account['balance'] - 500;
+                $transactionId = 'TXN' . strtoupper(uniqid());
+                $this->repository->addSystemChargeTransaction($transactionId, (int) $account['id'], $deduction_amount);
+                if (function_exists('send_notification') && isset($pdo)) {
+                    send_notification($pdo, $userId, \App\Domain\Enums\NotificationTypeEnum::SYSTEM->value,
+                        'Account Restored – Balance Adjusted',
+                        'Your account has been restored. As per the recovery policy, your balance has been adjusted to the mandatory minimum of ₹500.00. An amount of ₹' . number_format($deduction_amount, 2) . ' was cleared as part of the restore process. This adjustment does not count toward your daily transfer limit.'
+                    );
+                }
+            } else {
+                if (function_exists('send_notification') && isset($pdo)) {
+                    send_notification($pdo, $userId, \App\Domain\Enums\NotificationTypeEnum::SYSTEM->value,
+                        'Account Restored',
+                        'Your account has been restored and is now active with your mandatory minimum balance. You can log in and continue banking.'
+                    );
+                }
+            }
+            $this->repository->updateAccountBalanceLease500($user['customer_id']);
+        } else {
+            if (function_exists('send_notification') && isset($pdo)) {
+                send_notification($pdo, $userId, \App\Domain\Enums\NotificationTypeEnum::SYSTEM->value,
+                    'Account Restored',
+                    'Your account has been restored and is now active. Your full balance has been retained. You can log in and continue banking.'
+                );
+            }
         }
 
         
             \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('user_recovered', $userId, \App\Domain\Enums\RoleEnum::USER->value, $adminId, \App\Domain\Enums\RoleEnum::ADMIN->value, "Recovered deleted user: {$user['full_name']}")
+    new \App\Application\Events\GenericAuditAction('user_recovered', $userId, \App\Domain\Enums\RoleEnum::USER->value, $adminId, \App\Domain\Enums\RoleEnum::ADMIN->value, "Recovered deleted user: {$user['full_name']}" . ($balanceOption === 'mandatory' ? ' with mandatory balance of 500' : ''))
 );
         
 
@@ -615,6 +724,15 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
         $user = $this->repository->getApplicationUser($userId);
         if (!$user) {
             return ['success' => false, 'message' => 'Application not found', 'code' => 404];
+        }
+
+        if (!empty($user['id_number'])) {
+            try {
+                $crypto = new \App\Shared\Security\EncryptionService();
+                $user['id_number'] = $crypto->decrypt($user['id_number']);
+            } catch (\Throwable $e) {
+                // Ignore decryption errors (e.g. if plain text)
+            }
         }
 
         $account = $this->repository->getAccountPreferences($user['customer_id']);
@@ -713,9 +831,14 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
                 'type' => \App\Domain\Enums\AccountStatusEnum::PENDING->value
             ];
         } elseif ($user['status'] === \App\Domain\Enums\AccountStatusEnum::ACTIVE->value) {
+            // Prefer the real approval timestamp recorded on the KYC application;
+            // fall back to the legacy heuristic for rows approved before this column was used.
+            $approval_time = !empty($user['approval_reviewed_at'])
+                ? date('d M Y, h:i A', strtotime($user['approval_reviewed_at']))
+                : ($user['kyc_submitted_at'] ? date('d M Y, h:i A', strtotime($user['kyc_submitted_at'] . ' + 1 hour')) : 'Completed');
             $timeline[] = [
                 'status' => 'Approved & Activated',
-                'time' => $user['kyc_submitted_at'] ? date('d M Y, h:i A', strtotime($user['kyc_submitted_at'] . ' + 1 hour')) : 'Completed',
+                'time' => $approval_time,
                 'type' => \App\Domain\Enums\AccountStatusEnum::COMPLETED->value
             ];
         } elseif ($user['status'] === \App\Domain\Enums\AccountStatusEnum::REJECTED->value) {
@@ -734,6 +857,7 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
             'success' => true,
             'user'         => $user,
             'account'      => $account,
+            'admin_notes'  => $user['admin_notes'] ?? null,
             'id_documents' => [
                 'front_url' => $id_front_url,
                 'back_url'  => $id_back_url
@@ -763,6 +887,20 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
         $adminData = $this->repository->getAdminById($adminId);
         $admin_display_id = $adminData['admin_id'] ?? $adminId;
         $customer_id = $user['customer_id'];
+
+        // Server-side state guard: KYC decisions are only valid for applications
+        // that are still awaiting review. Prevents re-approving an already approved
+        // account (which would regenerate its account number and duplicate the
+        // initial-deposit ledger entry) and prevents rejecting an already active
+        // customer via direct API calls.
+        if (in_array($action, ['approve', 'reject'], true)
+            && !in_array($user['status'], ['pending', 'under_review'], true)) {
+            return [
+                'success' => false,
+                'message' => "This application has already been processed (current status: {$user['status']}).",
+                'code'    => 409
+            ];
+        }
 
         require_once FINZO_ROOT . '/config/functions.php';
         require_once FINZO_ROOT . '/config/mailer.php';
@@ -905,8 +1043,19 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
                 $u['suspended_at'] = 'N/A';
             }
 
-            $avatar_path = $base_avatar_dir . 'user_' . $u['id'] . '.jpg';
-            $u['avatar_url'] = file_exists($avatar_path) ? APP_URL . '/uploads/avatars/user_' . $u['id'] . '.jpg?t=' . filemtime($avatar_path) : null;
+            $avatar_url = null;
+            if (!empty($u['profile_picture'])) {
+                $avatar_url = str_starts_with($u['profile_picture'], 'http')
+                    ? $u['profile_picture']
+                    : APP_URL . '/' . ltrim($u['profile_picture'], '/');
+            } else {
+                $avatar_path = $base_avatar_dir . 'user_' . $u['id'] . '.jpg';
+                if (file_exists($avatar_path)) {
+                    $avatar_url = APP_URL . '/uploads/avatars/user_' . $u['id'] . '.jpg?t=' . filemtime($avatar_path);
+                }
+            }
+            $u['avatar_url'] = $avatar_url;
+            $u['profile_picture_url'] = $avatar_url;
 
             $u['duration'] = 'Permanent';
 
@@ -1044,6 +1193,11 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
             }
         }
 
+        // Branch Filter
+        if (!empty($filters['branch_id']) && $filters['branch_id'] !== 'all' && $filters['branch_id'] !== '0') {
+            $where_clauses[] = "u.branch_id = " . intval($filters['branch_id']);
+        }
+
         // Sorting
         if (!empty($filters['sort'])) {
             if ($filters['sort'] === 'newest') {
@@ -1131,6 +1285,15 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
             return ['success' => false, 'message' => 'Suspended user not found'];
         }
 
+        if (!empty($user['id_number'])) {
+            try {
+                $crypto = new \App\Shared\Security\EncryptionService();
+                $user['id_number'] = $crypto->decrypt($user['id_number']);
+            } catch (\Throwable $e) {
+                // Ignore if decryption fails
+            }
+        }
+
         $account = $this->repository->getSuspendedUserAccount($user['customer_id']);
         $audit = $this->repository->getUserSuspensionAudit($user['customer_id']);
 
@@ -1179,7 +1342,7 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
                 ? $user['profile_picture']
                 : APP_URL . '/' . ltrim($user['profile_picture'], '/');
         } else {
-            $base_avatar_dir = UPLOAD_AVATARS_PATH;
+            $base_avatar_dir = defined('UPLOAD_AVATARS_PATH') ? UPLOAD_AVATARS_PATH : (defined('FINZO_ROOT') ? FINZO_ROOT . '/uploads/avatars/' : dirname(__DIR__, 3) . '/public/uploads/avatars/');
             $avatar_path = $base_avatar_dir . 'user_' . $userId . '.jpg';
             if (file_exists($avatar_path)) {
                 $avatar_url = APP_URL . '/uploads/avatars/user_' . $userId . '.jpg?t=' . filemtime($avatar_path);
@@ -1196,6 +1359,12 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
                 return $n[0] ?? '';
             }, explode(' ', $user['full_name']))),
             'avatar_url' => $avatar_url,
+            'profile_picture_url' => $avatar_url,
+            'profile_picture' => $user['profile_picture'] ?? null,
+            'branch_id' => $user['branch_id'] ?? null,
+            'branch_name' => $user['branch_name'] ?? 'Unassigned',
+            'branch_code' => $user['branch_code'] ?? '',
+            'branch_state' => $user['branch_state'] ?? '',
             'account_no' => $account ? $account['account_no'] : 'N/A',
             'account_type' => $account ? ucfirst($account['account_type']) : 'N/A',
             'balance' => $account ? $account['balance'] : 0,
@@ -1231,15 +1400,21 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
         $symbols = '@#$%!';
         $chars = $lower . $upper . $digits . $symbols;
         
+        // Guarantee at least one character from each character class,
+        // generated with a cryptographically secure source.
         $temp_pass = '';
-        $temp_pass .= $lower[rand(0, strlen($lower) - 1)];
-        $temp_pass .= $upper[rand(0, strlen($upper) - 1)];
-        $temp_pass .= $digits[rand(0, strlen($digits) - 1)];
-        $temp_pass .= $symbols[rand(0, strlen($symbols) - 1)];
+        $temp_pass .= $lower[random_int(0, strlen($lower) - 1)];
+        $temp_pass .= $upper[random_int(0, strlen($upper) - 1)];
+        $temp_pass .= $digits[random_int(0, strlen($digits) - 1)];
+        $temp_pass .= $symbols[random_int(0, strlen($symbols) - 1)];
         for ($i = 4; $i < 12; $i++) {
-            $temp_pass .= $chars[rand(0, strlen($chars) - 1)];
+            $temp_pass .= $chars[random_int(0, strlen($chars) - 1)];
         }
-        $temp_pass = str_shuffle($temp_pass);
+        // Fisher-Yates shuffle (str_shuffle/rand are not CSPRNG-safe)
+        for ($i = strlen($temp_pass) - 1; $i > 0; $i--) {
+            $j = random_int(0, $i);
+            [$temp_pass[$i], $temp_pass[$j]] = [$temp_pass[$j], $temp_pass[$i]];
+        }
 
         $user = $this->repository->getUserForUnlock($userId);
         if (!$user) {
@@ -1252,28 +1427,27 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
         if (function_exists('send_notification') && isset($pdo)) {
             send_notification($pdo, $userId, \App\Domain\Enums\NotificationTypeEnum::SECURITY->value,
                 'Account Unlocked',
-                'Your account has been unlocked by an administrator. Your password has been reset to a temporary one. Please check with an admin if you did not request this.'
+                'Your account has been unlocked by an administrator. A temporary password valid for 60 minutes has been generated. Please log in and change your password immediately.'
             );
         }
 
-        
-            \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
-    new \App\Application\Events\GenericAuditAction('account_unlocked', $userId, \App\Domain\Enums\RoleEnum::USER->value, $adminId, \App\Domain\Enums\RoleEnum::ADMIN->value, "Manually unlocked account and reset password for {$user['full_name']} ({$user['email']}). Previous attempts: {$user['failed_attempts']}")
-);
-        
+        \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
+            new \App\Application\Events\GenericAuditAction('account_unlocked', $userId, \App\Domain\Enums\RoleEnum::USER->value, $adminId, \App\Domain\Enums\RoleEnum::ADMIN->value, "Manually unlocked account and issued 60-minute temporary password for {$user['full_name']} ({$user['email']}). Previous attempts: {$user['failed_attempts']}")
+        );
 
         if (!isset($_SESSION['temp_passwords'])) {
             $_SESSION['temp_passwords'] = [];
         }
         $_SESSION['temp_passwords'][$userId] = [
             'password' => $temp_pass,
-            'expires'  => time() + 300
+            'expires'  => time() + 3600
         ];
 
         return [
             'success' => true,
-            'message' => 'Account unlocked and temporary password generated.',
-            'temp_password' => $temp_pass
+            'message' => 'Account unlocked and temporary password generated (valid for 60 minutes).',
+            'temp_password' => $temp_pass,
+            'expires_in' => 3600
         ];
     }
     /**
@@ -1447,6 +1621,15 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
         $user = $this->repository->getUserProfile($userId);
         if (!$user) {
             return ['success' => false, 'message' => 'User not found'];
+        }
+
+        if (!empty($user['id_number'])) {
+            try {
+                $crypto = new \App\Shared\Security\EncryptionService();
+                $user['id_number'] = $crypto->decrypt($user['id_number']);
+            } catch (\Throwable $e) {
+                // Ignore if decryption fails
+            }
         }
 
         $accounts = $this->repository->getUserAccounts($user['customer_id']);

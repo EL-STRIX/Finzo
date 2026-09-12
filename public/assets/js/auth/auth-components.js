@@ -273,21 +273,25 @@ function initResendEmailAction() {
  * 4. Input Real-Time Micro-Interactions
  */
 function initInputInteractions() {
-    const inputs = document.querySelectorAll('.fin-input, .form-control');
+    const inputs = document.querySelectorAll('.fin-input, .form-control, .fin-checkbox-input, input[type="checkbox"]');
     
     inputs.forEach(input => {
-        // Clear invalid state on typing
-        input.addEventListener('input', () => {
+        const clearError = () => {
             if (input.classList.contains('is-invalid')) {
                 input.classList.remove('is-invalid');
                 input.removeAttribute('aria-invalid');
-                const errorText = input.closest('.fin-input-container')?.querySelector('.fin-error-text');
+                const container = input.closest('.fin-input-container') || input.closest('.my-6') || input.parentElement;
+                const errorText = container?.querySelector('.fin-error-text');
                 if (errorText) {
                     errorText.classList.remove('is-visible');
                     errorText.style.display = '';
                 }
             }
-        });
+        };
+
+        // Clear invalid state on typing / changing
+        input.addEventListener('input', clearError);
+        input.addEventListener('change', clearError);
     });
 }
 
@@ -303,14 +307,23 @@ function initFormValidation() {
             const requiredInputs = form.querySelectorAll('input[required], select[required]');
             
             requiredInputs.forEach(input => {
-                const errorText = input.closest('.fin-input-container')?.querySelector('.fin-error-text');
+                const container = input.closest('.fin-input-container') || input.closest('.my-6') || input.parentElement;
+                const errorText = container?.querySelector('.fin-error-text');
                 
-                if (!input.value.trim()) {
+                let isFieldEmpty = false;
+                if (input.type === 'checkbox') {
+                    isFieldEmpty = !input.checked;
+                } else {
+                    isFieldEmpty = !input.value.trim();
+                }
+
+                if (isFieldEmpty) {
                     isValid = false;
                     input.classList.add('is-invalid');
                     input.setAttribute('aria-invalid', 'true');
                     if (errorText) {
                         errorText.classList.add('is-visible');
+                        errorText.style.display = 'flex';
                     }
                 } else {
                     input.classList.remove('is-invalid');
@@ -321,6 +334,29 @@ function initFormValidation() {
                     }
                 }
             });
+
+            // Password strength validation for creation forms
+            const passwordInput = form.querySelector('input[name="password"][data-strength-meter="true"]');
+            if (passwordInput && passwordInput.value) {
+                const val = passwordInput.value;
+                const hasLength = val.length >= 8;
+                const hasUpper = /[A-Z]/.test(val);
+                const hasLower = /[a-z]/.test(val);
+                const hasNumber = /[0-9]/.test(val);
+                const hasSpecial = /[^A-Za-z0-9]/.test(val);
+
+                if (!hasLength || !hasUpper || !hasLower || !hasNumber || !hasSpecial) {
+                    isValid = false;
+                    passwordInput.classList.add('is-invalid');
+                    passwordInput.setAttribute('aria-invalid', 'true');
+                    const errorText = passwordInput.closest('.fin-input-container')?.querySelector('.fin-error-text');
+                    if (errorText) {
+                        errorText.innerHTML = '<span class="material-symbols-outlined">error</span> Password must be 8+ characters with uppercase, lowercase, number, and symbol.';
+                        errorText.classList.add('is-visible');
+                        errorText.style.display = 'flex';
+                    }
+                }
+            }
 
             // Password confirmation matching validation
             const newPassInput = form.querySelector('input[name="new_password"], input[name="password"]');
@@ -335,6 +371,7 @@ function initFormValidation() {
                     if (errorText) {
                         errorText.innerHTML = '<span class="material-symbols-outlined">error</span> Passwords do not match.';
                         errorText.classList.add('is-visible');
+                        errorText.style.display = 'flex';
                     }
                 }
             }
@@ -463,7 +500,6 @@ function initAuthFormSubmission() {
         { selector: 'form[data-action="admin-login"]',       endpoint: '/auth/admin-login' },
         { selector: 'form[data-action="staff-login"]',       endpoint: '/auth/staff-login' },
         { selector: 'form[data-action="register"]',         endpoint: '/auth/register' },
-        { selector: 'form[data-action="forgot-password"]',  endpoint: '/auth/forgot-password' },
         { selector: 'form[data-action="reset-password"]',   endpoint: '/auth/reset-password' },
     ];
 
@@ -494,8 +530,9 @@ function initAuthFormSubmission() {
 
                 if (data.success) {
                     if (data.redirect) {
+                        const targetUrl = data.redirect.replace(/\/public\/public\//g, '/public/');
                         showNotificationToast(data.message || 'Success!', 'success');
-                        setTimeout(() => { window.location.href = data.redirect; }, 600);
+                        setTimeout(() => { window.location.href = targetUrl; }, 600);
                     } else {
                         showNotificationToast(data.message || 'Done!', 'success');
                     }
@@ -509,7 +546,8 @@ function initAuthFormSubmission() {
 
                     // Handle locked account redirect
                     if (data.locked && data.redirect) {
-                        setTimeout(() => { window.location.href = data.redirect; }, 1500);
+                        const targetUrl = data.redirect.replace(/\/public\/public\//g, '/public/');
+                        setTimeout(() => { window.location.href = targetUrl; }, 1500);
                     }
                 }
             } catch (err) {
@@ -536,7 +574,7 @@ function displayFieldErrors(form, errors) {
         if (!input) return;
         input.classList.add('is-invalid');
         input.setAttribute('aria-invalid', 'true');
-        const container = input.closest('.fin-input-container');
+        const container = input.closest('.fin-input-container') || input.closest('.my-6') || input.parentElement;
         if (container) {
             let errorEl = container.querySelector('.fin-error-text');
             if (!errorEl) {
@@ -546,6 +584,7 @@ function displayFieldErrors(form, errors) {
             }
             errorEl.innerHTML = `<span class="material-symbols-outlined">error</span> ${message}`;
             errorEl.classList.add('is-visible');
+            errorEl.style.display = 'flex';
         }
     });
 }

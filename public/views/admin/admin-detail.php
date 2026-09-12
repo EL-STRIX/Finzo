@@ -100,17 +100,14 @@ ob_start();
     <!-- ═══════════════════════════════════════════ -->
     <!-- 1. BREADCRUMBS & TOP BAR                    -->
     <!-- ═══════════════════════════════════════════ -->
-    <div class="flex items-center justify-between gap-4">
-        <div class="flex items-center gap-3">
-            <a href="admin-profile.php" class="w-9 h-9 rounded-xl bg-surface border border-border-subtle hover:bg-surface-hover flex items-center justify-center text-text-secondary hover:text-text-primary transition-colors shadow-sm cursor-pointer" title="Back to Directory">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 relative z-10">
+        <div class="flex items-center gap-4">
+            <a href="admin-profile.php" class="w-10 h-10 rounded-xl bg-surface border border-border-subtle hover:bg-surface-hover flex items-center justify-center text-text-secondary hover:text-text-primary transition-colors shadow-sm cursor-pointer shrink-0" title="Back to Directory">
                 <span class="material-symbols-outlined text-[18px]" aria-hidden="true">arrow_back</span>
             </a>
             <div>
-                <div class="flex items-center gap-2 text-[11px] font-bold text-text-secondary uppercase tracking-wider">
-                    <a href="admin-profile.php" class="hover:text-text-primary transition-colors">Admin Directory</a>
-                    <span>/</span>
-                    <span class="text-text-primary font-black">Profile Dossier</span>
-                </div>
+                <h1 class="text-2xl font-headline font-black text-text-primary tracking-tight">Admin Dossier</h1>
+                <p class="text-xs font-bold text-text-secondary uppercase tracking-widest mt-1">Official platform administrator record and governance profile</p>
             </div>
         </div>
     </div>

@@ -23,11 +23,12 @@
       const accOpenedEl = document.getElementById('acc-opened');
       if (accOpenedEl) accOpenedEl.textContent = dateStr;
       
+      const isCurrent = (UserState.accountType || '').toLowerCase() === 'current';
       const accInterestEl = document.getElementById('acc-interest');
-      if (accInterestEl) accInterestEl.textContent = UserState.interestRate + '% p.a.';
+      if (accInterestEl) accInterestEl.textContent = isCurrent ? 'N/A' : (UserState.interestRate + '% p.a.');
       
       const accLimitEl = document.getElementById('acc-limit');
-      if (accLimitEl) accLimitEl.textContent = '₹' + parseInt(UserState.dailyLimit).toLocaleString('en-IN');
+      if (accLimitEl) accLimitEl.textContent = isCurrent ? 'Unlimited' : ('₹' + parseInt(UserState.dailyLimit).toLocaleString('en-IN'));
       
       const accTypeMap = { 'savings': 'Finzo Platinum Savings', 'current': 'Finzo Current Account' };
       const accNameEl = document.getElementById('acc-type-name');

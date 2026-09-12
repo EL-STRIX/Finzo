@@ -68,8 +68,7 @@ buildNavbar('Account Overview', 'Dashboard');
     });
 
     try {
-      const stRes = await fetch('/Finzo/api/user/dashboard.php', { credentials: 'same-origin' });
-      const stData = await stRes.json();
+      const stData = await window.api.get('/user/dashboard');
       
       const txEmpty = document.getElementById('tx-empty');
       const txList = document.getElementById('tx-list');

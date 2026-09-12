@@ -8,14 +8,13 @@
     let currentPage = 1;
     let pendingId = null;
     let generatedPass = '';
-    const ROWS_PP = 6;
+    const ROWS_PP = 10;
 
     // DOM Elements
     const searchInput = document.getElementById('search-input');
     const tableBody = document.getElementById('table-body');
     const pagInfo = document.getElementById('pag-info');
     const pagControls = document.getElementById('pag-controls');
-    const dateFilter = document.getElementById('date-filter');
     const typeFilter = document.getElementById('type-filter');
     
     // Modal Elements
@@ -31,25 +30,30 @@
     const unlockDoneActions = document.getElementById('unlock-done-actions');
     const copyBtn = document.getElementById('copy-btn');
 
+    function toast(msg, type = 'info') {
+        if (window.showToast) window.showToast(msg, type);
+        else if (window.portal && window.portal.showToast) window.portal.showToast(msg, type);
+        else if (window.FinzoUtils && window.FinzoUtils.showToast) window.FinzoUtils.showToast(msg, type);
+        else alert(msg);
+    }
+
     /**
      * Load locked accounts from API
      */
     async function loadData() {
         if (tableBody) {
-            tableBody.innerHTML = `<tr><td colspan="10" class="py-12 text-center"><div class="flex flex-col items-center justify-center"><span class="material-symbols-outlined text-4xl text-text-muted/30 mb-3" aria-hidden="true">inventory_2</span><div class="text-sm font-bold text-text-muted"></div></div></td></tr>`;
+            tableBody.innerHTML = `<tr><td colspan="10" class="py-12 text-center"><div class="flex flex-col items-center justify-center"><span class="material-symbols-outlined text-4xl text-text-muted/30 mb-3" aria-hidden="true">inventory_2</span><div class="text-sm font-bold text-text-muted">Loading locked accounts...</div></div></td></tr>`;
         }
         
         try {
             const search = document.getElementById('search-input')?.value || '';
             const typeFilter = document.getElementById('type-filter')?.value || '';
             const statusFilter = document.getElementById('status-filter')?.value || '';
-            const dateFilter = document.getElementById('date-filter')?.value || '';
 
             let url = `/users/locked?page=${currentPage}&per_page=${ROWS_PP}`;
             if (search) url += `&search=${encodeURIComponent(search)}`;
             if (typeFilter) url += `&type=${encodeURIComponent(typeFilter)}`;
             if (statusFilter) url += `&status=${encodeURIComponent(statusFilter)}`;
-            if (dateFilter) url += `&date=${encodeURIComponent(dateFilter)}`;
 
             const response = await window.api.get(url);
             
@@ -59,15 +63,16 @@
                     id: acc.id,
                     name: acc.full_name,
                     email: acc.email,
-                    initials: acc.initials || acc.full_name.charAt(0),
-                    profile_photo: acc.profile_picture || null,
+                    initials: acc.initials || (acc.full_name ? acc.full_name.charAt(0).toUpperCase() : 'U'),
+                    avatar_url: acc.avatar_url || (acc.profile_picture ? (acc.profile_picture.startsWith('http') ? acc.profile_picture : `/Finzo/${acc.profile_picture}`) : null),
                     accNo: acc.account_no || 'N/A',
-                    accType: acc.account_type === 'savings' ? 'Savings' : 'Current',
-                    attempts: acc.failed_attempts,
+                    accType: (acc.account_type || '').toLowerCase() === 'savings' ? 'Savings' : 'Current',
+                    attempts: acc.failed_attempts || 0,
+                    isLocked: acc.is_locked === true || acc.is_locked === 1,
                     lockedDate: acc.locked_at || 'N/A',
                     lockTime: acc.lock_time || 'N/A',
-                    tempSent: acc.status === 'unlocked' || acc.status === 'done', 
-                    statusBadge: acc.status_badge || 'badge-warning',
+                    tempSent: acc.temp_pass_status === 'pending' || acc.status_text === 'Done', 
+                    statusBadge: acc.status_badge || 'badge-warn',
                     statusText: acc.status_text || 'Pending'
                 }));
                 
@@ -109,21 +114,23 @@
         }
 
         tableBody.innerHTML = allData.map((r, i) => {
-            const gradient = window.FinzoUtils.getAvatarGradient(r.initials);
+            const initials = r.initials || (r.name ? r.name.charAt(0).toUpperCase() : 'U');
+            const gradient = (window.FinzoUtils && window.FinzoUtils.getAvatarGradient) ? window.FinzoUtils.getAvatarGradient(initials) : 'linear-gradient(135deg, #10b981, #059669)';
             const rowNum = String((currentPage - 1) * ROWS_PP + i + 1).padStart(2, '0');
             
+            const avatarHtml = r.avatar_url 
+                ? `<img src="${r.avatar_url}" class="w-10 h-10 rounded-full object-cover shadow-sm border border-border-subtle shrink-0" alt="${r.name}" onerror="this.outerHTML='<div class=\\'avatar uppercase flex items-center justify-center text-white font-bold w-10 h-10 rounded-full shadow-sm shrink-0\\' style=\\'background:${gradient}\\'>${initials}</div>'">` 
+                : `<div class="avatar uppercase flex items-center justify-center text-white font-bold w-10 h-10 rounded-full shadow-sm shrink-0" style="background:${gradient}">${initials}</div>`;
+
             return `
             <tr class="hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors" style="${r.tempSent ? 'opacity:0.8; ' : ''}">
                 <td style="font-size:11px;font-weight:800;color:var(--text-secondary);">${rowNum}</td>
                 <td>
                     <div class="user-cell flex items-center gap-3">
-                        ${r.profile_photo 
-                            ? `<img src="/Finzo/public/assets/${r.profile_photo}" class="w-10 h-10 rounded-full object-cover shadow-sm">` 
-                            : `<div class="avatar uppercase flex items-center justify-center text-white font-bold w-10 h-10 rounded-full shadow-sm" >${r.initials}</div>`
-                        }
+                        ${avatarHtml}
                         <div>
-                            <div class="user-name font-bold text-sm dark:text-slate-200">${r.name}</div>
-                            <div class="user-email text-xs opacity-60">${r.email}</div>
+                            <div class="user-name font-bold text-sm text-text-primary">${r.name}</div>
+                            <div class="user-email text-xs opacity-60 font-mono">${r.email}</div>
                         </div>
                     </div>
                 </td>
@@ -138,17 +145,17 @@
                 <td>${attemptsDisplay(r.attempts)}</td>
                 <td style="font-size:12px;font-weight:600;">${r.lockedDate}</td>
                 <td style="font-size:12px;color:var(--text-secondary);">${r.lockTime}</td>
-                <td>
-                    <div class="flex items-center justify-center gap-2">
-                        <a href="admin-locked-account-detail.php?id=${r.id}" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-colors text-slate-400 hover:text-primary">
+                <td class="text-right px-6">
+                    <div class="flex items-center justify-end gap-2">
+                        <a href="admin-locked-account-detail.php?id=${r.id}" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-colors text-slate-400 hover:text-primary" title="View Incident Investigation">
                             <span class="material-symbols-outlined" style="font-size:18px;" aria-hidden="true">visibility</span>
                         </a>
-                        ${!r.tempSent ? `
-                        <button class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-colors text-slate-400 hover:text-amber-500" onclick="window.LockedAccounts.openUnlock('${r.id}','${r.name}','${r.accNo}')">
+                        ${(r.isLocked || !r.tempSent) ? `
+                        <button class="p-2 hover:bg-amber-500/10 rounded-lg transition-colors text-amber-500 cursor-pointer" onclick="window.LockedAccounts.openUnlock('${r.id}','${r.name.replace(/'/g, "\\'")}','${r.accNo}')" title="Generate Temporary Password">
                             <span class="material-symbols-outlined" style="font-size:18px;" aria-hidden="true">key</span>
                         </button>
                         ` : `
-                        <div class="p-2 text-emerald-500"><span class="material-symbols-outlined" style="font-size:18px;" aria-hidden="true">check_circle</span></div>
+                        <div class="p-2 text-emerald-500" title="Password Generated"><span class="material-symbols-outlined" style="font-size:18px;" aria-hidden="true">check_circle</span></div>
                         `}
                     </div>
                 </td>
@@ -191,7 +198,6 @@
         
         resetFilters: () => {
             if (searchInput) searchInput.value = '';
-            if (dateFilter) dateFilter.value = '';
             
             const td = document.getElementById('type-dropdown');
             if (td) {
@@ -204,11 +210,20 @@
                 if (firstOpt) firstOpt.classList.add('is-selected');
             }
 
-
+            const sd = document.getElementById('status-dropdown');
+            if (sd) {
+                const hiddenInput = sd.querySelector('input[type="hidden"]');
+                if (hiddenInput) hiddenInput.value = '';
+                const label = sd.querySelector('.dropdown-label');
+                if (label) label.textContent = 'All Statuses';
+                sd.querySelectorAll('.finzo-dropdown-option').forEach(o => o.classList.remove('is-selected'));
+                const firstOpt = sd.querySelector('.finzo-dropdown-option');
+                if (firstOpt) firstOpt.classList.add('is-selected');
+            }
 
             currentPage = 1;
             loadData();
-            window.portal.showToast('Filters reset to default', 'info');
+            toast('Filters reset to default', 'info');
         },
 
         applyFilters: () => {
@@ -219,87 +234,101 @@
         openUnlock: (id, name, accNo) => {
             pendingId = id;
             
-            if (unlockModalIconBox) {
-                unlockModalIconBox.style.background = 'var(--amber-soft)';
-                unlockModalIconBox.classList.remove('success-pop');
+            const modalIconBox = document.getElementById('unlock-modal-icon-box') || unlockModalIconBox;
+            const modalIcon = document.getElementById('unlock-modal-icon') || unlockModalIcon;
+            const modalTitle = document.getElementById('unlock-modal-title') || unlockModalTitle;
+            const modalText = document.getElementById('unlock-modal-text') || unlockModalText;
+            const passSec = document.getElementById('gen-pass-section') || genPassSection;
+            const modalActions = document.getElementById('unlock-modal-actions') || unlockModalActions;
+            const doneActions = document.getElementById('unlock-done-actions') || unlockDoneActions;
+            const genBtn = document.getElementById('generate-btn') || generateBtn;
+            const modal = document.getElementById('unlock-modal') || unlockModal;
+
+            if (modalIconBox) {
+                modalIconBox.className = 'w-16 h-16 rounded-2xl bg-amber-500/10 text-amber-500 mx-auto mb-4 flex items-center justify-center border border-amber-500/20 shadow-sm transition-all duration-300';
             }
-            if (unlockModalIcon) {
-                unlockModalIcon.textContent = 'key';
-                unlockModalIcon.style.color = 'var(--amber)';
+            if (modalIcon) {
+                modalIcon.textContent = 'key';
             }
-            if (unlockModalTitle) {
-                unlockModalTitle.textContent = 'Generate Temporary Password';
-                unlockModalTitle.style.color = '';
+            if (modalTitle) {
+                modalTitle.textContent = 'Generate Temporary Password';
             }
-            if (unlockModalText) {
-                unlockModalText.innerHTML = `A secure 12-character temporary password will be generated for <strong>${name}</strong> (${accNo}). It will be valid for <strong>24 hours only</strong>. The customer must log in with this password and will be required to set a new password immediately.`;
+            if (modalText) {
+                modalText.innerHTML = `A secure 12-character temporary password will be generated for <strong>${name}</strong> (${accNo}). It will be valid for <strong>60 minutes only</strong>. Once generated, the account is unlocked and removed from the active locked accounts list.`;
             }
 
-            if (genPassSection) genPassSection.classList.add('hidden');
-            if (unlockModalActions) unlockModalActions.classList.remove('hidden');
-            if (unlockDoneActions) unlockDoneActions.classList.add('hidden');
+            if (passSec) passSec.classList.add('hidden');
+            if (modalActions) modalActions.classList.remove('hidden');
+            if (doneActions) doneActions.classList.add('hidden');
             
-            if (generateBtn) {
-                generateBtn.disabled = false;
-                generateBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size:15px; vertical-align:middle;" aria-hidden="true">key</span> Generate & Unlock';
+            if (genBtn) {
+                genBtn.disabled = false;
+                genBtn.innerHTML = '<span class="material-symbols-outlined text-base" aria-hidden="true">key</span> <span>Generate & Unlock</span>';
             }
             
-            if (unlockModal) {
-                unlockModal.classList.remove('hidden');
-                unlockModal.classList.add('flex');
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
             }
         },
 
         closeUnlockModal: () => {
-            if (unlockModal) {
-                unlockModal.classList.add('hidden');
-                unlockModal.classList.remove('flex');
+            const modal = document.getElementById('unlock-modal') || unlockModal;
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
             }
         },
 
         generatePassword: async () => {
-            const btn = generateBtn;
+            const btn = document.getElementById('generate-btn') || generateBtn;
             if (!btn) return;
             const originalHtml = btn.innerHTML;
             btn.disabled = true;
-            btn.innerHTML = '<span class="material-symbols-outlined animate-spin" style="font-size:15px; vertical-align:middle;" aria-hidden="true">autorenew</span> Generating...';
+            btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-base" aria-hidden="true">autorenew</span> <span>Generating...</span>';
 
             try {
-                const response = await window.api.post(`/users/locked/${pendingId}/unlock`, {});
+                const response = await window.api.post(`/users/locked/${pendingId}/unlock`, { user_id: pendingId });
 
                 if (response.status === 'success' || response.success) {
                     generatedPass = response.temp_password || (response.data && response.data.temp_password) || 'N/A';
 
-                    if (unlockModalIconBox) {
-                        unlockModalIconBox.style.background = 'var(--green-soft)';
-                        unlockModalIconBox.classList.add('success-pop');
+                    const modalIconBox = document.getElementById('unlock-modal-icon-box') || unlockModalIconBox;
+                    const modalIcon = document.getElementById('unlock-modal-icon') || unlockModalIcon;
+                    const modalTitle = document.getElementById('unlock-modal-title') || unlockModalTitle;
+                    const modalText = document.getElementById('unlock-modal-text') || unlockModalText;
+                    const passVal = document.getElementById('gen-pass-value') || genPassValue;
+                    const passSec = document.getElementById('gen-pass-section') || genPassSection;
+                    const modalActions = document.getElementById('unlock-modal-actions') || unlockModalActions;
+                    const doneActions = document.getElementById('unlock-done-actions') || unlockDoneActions;
+
+                    if (modalIconBox) {
+                        modalIconBox.className = 'w-16 h-16 rounded-2xl bg-emerald-500/10 text-emerald-500 mx-auto mb-4 flex items-center justify-center border border-emerald-500/20 shadow-sm transition-all duration-300';
                     }
-                    if (unlockModalIcon) {
-                        unlockModalIcon.textContent = 'task_alt';
-                        unlockModalIcon.style.color = 'var(--green)';
+                    if (modalIcon) {
+                        modalIcon.textContent = 'task_alt';
                     }
-                    if (unlockModalTitle) {
-                        unlockModalTitle.textContent = 'Account Unlocked';
-                        unlockModalTitle.style.color = 'var(--green)';
+                    if (modalTitle) {
+                        modalTitle.textContent = 'Account Unlocked';
                     }
-                    if (unlockModalText) {
-                        unlockModalText.innerHTML = `Access has been restored. A temporary password was generated and logged in the system.`;
+                    if (modalText) {
+                        modalText.innerHTML = `Access has been restored. A 60-minute temporary password was generated. The account has been removed from the active locked queue.`;
                     }
 
-                    if (genPassValue) genPassValue.textContent = generatedPass;
-                    if (genPassSection) genPassSection.classList.remove('hidden');
+                    if (passVal) passVal.textContent = generatedPass;
+                    if (passSec) passSec.classList.remove('hidden');
                     
-                    if (unlockModalActions) unlockModalActions.classList.add('hidden');
-                    if (unlockDoneActions) unlockDoneActions.classList.remove('hidden');
+                    if (modalActions) modalActions.classList.add('hidden');
+                    if (doneActions) doneActions.classList.remove('hidden');
 
                     loadData();
-                    window.portal.showToast('Account unlocked. Temporary password generated.', 'success');
+                    toast('Account unlocked. Temporary password generated.', 'success');
                 } else {
-                    window.portal.showToast(response.message || 'Failed to unlock account', 'error');
+                    toast(response.message || 'Failed to unlock account', 'error');
                 }
             } catch (error) {
                 console.error('Unlock error:', error);
-                window.portal.showToast('An error occurred during unlock.', 'error');
+                toast('An error occurred during unlock.', 'error');
             } finally {
                 btn.disabled = false;
                 btn.innerHTML = originalHtml;
@@ -309,13 +338,13 @@
         copyPassword: () => {
             if (!generatedPass) return;
             navigator.clipboard.writeText(generatedPass).then(() => {
-                const btn = copyBtn;
+                const btn = document.getElementById('copy-btn') || copyBtn;
                 if (btn) {
                     const originalIcon = btn.innerHTML;
-                    btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:20px;color:var(--green);" aria-hidden="true">check</span>';
+                    btn.innerHTML = '<span class="material-symbols-outlined text-lg text-emerald-500" aria-hidden="true">check</span>';
                     setTimeout(() => btn.innerHTML = originalIcon, 2000);
                 }
-                window.portal.showToast('Password copied to clipboard', 'success');
+                toast('Password copied to clipboard', 'success');
             });
         }
     };
@@ -330,14 +359,6 @@
                 currentPage = 1;
                 loadData();
             }, 500));
-        }
-
-        // Date Filter Listener
-        if (dateFilter) {
-            dateFilter.addEventListener('change', () => {
-                currentPage = 1;
-                loadData();
-            });
         }
 
         // Dropdown Filters change listeners

@@ -96,17 +96,19 @@ $isAdminRoute = strpos($_SERVER['REQUEST_URI'] ?? '', '/api/v1/admin/') !== fals
 
 if ($isApi && !$isAdminRoute) {
     try {
-        $settingsService = $container->get(\App\Domain\Contracts\Services\SettingsServiceInterface::class);
-        $maintenanceMode = $settingsService->getSetting('maintenance_mode');
-        
-        if ($maintenanceMode === true) {
-            header('Content-Type: application/json');
-            http_response_code(503);
-            echo json_encode([
-                'success' => false,
-                'message' => 'Service Unavailable. The system is currently undergoing scheduled maintenance.'
-            ]);
-            exit;
+        if ($container->has(\App\Domain\Contracts\Services\SettingsServiceInterface::class)) {
+            $settingsService = $container->get(\App\Domain\Contracts\Services\SettingsServiceInterface::class);
+            $maintenanceMode = $settingsService->getSetting('maintenance_mode');
+            
+            if ($maintenanceMode === true) {
+                header('Content-Type: application/json');
+                http_response_code(503);
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Service Unavailable. The system is currently undergoing scheduled maintenance.'
+                ]);
+                exit;
+            }
         }
     } catch (\Throwable $e) {
         // Fail open if settings cannot be loaded during boot (e.g., database not ready)

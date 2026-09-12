@@ -48,6 +48,21 @@ class BranchManagementTest extends TestCase {
         ], null, $adminId, null);
         $this->assertTrue($updateRes['success']);
 
+        // Branch code updates must be persisted (regression guard: repo allowed-columns)
+        $newCode = 'FNZ-TS-' . strtoupper(substr(uniqid(), -4));
+        $codeRes = $this->service->updateBranch($branchId, ['branch_code' => $newCode], null, $adminId, null);
+        $this->assertTrue($codeRes['success']);
+        $refetched = $this->service->getBranchById($branchId);
+        $this->assertEquals($newCode, $refetched['branch']['branch_code']);
+        $this->assertEquals('Pune', $refetched['branch']['city']);
+
+        // Explicitly clearing city/address/description must remove stored [Location: ...] meta
+        $clearRes = $this->service->updateBranch($branchId, ['city' => '', 'address' => '', 'description' => ''], null, $adminId, null);
+        $this->assertTrue($clearRes['success']);
+        $cleared = $this->service->getBranchById($branchId);
+        $this->assertEquals('', $cleared['branch']['city']);
+        $this->assertEquals('', $cleared['branch']['address']);
+
         $listRes = $this->service->getBranchesList($branchName, 'all', 'all');
         $this->assertTrue($listRes['success']);
         $this->assertNotEmpty($listRes['branches']);

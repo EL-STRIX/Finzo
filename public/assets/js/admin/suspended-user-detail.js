@@ -32,11 +32,13 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const avatar = document.getElementById('detail-avatar');
         if (avatar) {
-            if (user.avatar_url) {
-                avatar.innerHTML = `<img src="${user.avatar_url}" class="w-full h-full object-cover rounded-2xl">`;
+            const avatarUrl = user.avatar_url || user.profile_picture_url;
+            const initials = user.initials || (user.full_name ? user.full_name.charAt(0).toUpperCase() : '??');
+            if (avatarUrl) {
+                avatar.innerHTML = `<img src="${avatarUrl}" class="w-full h-full object-cover rounded-2xl" alt="${user.full_name || 'Customer'}" onerror="this.parentElement.innerHTML='${initials}'">`;
                 avatar.style.background = 'none';
             } else {
-                avatar.textContent = user.initials || '??';
+                avatar.textContent = initials;
                 avatar.style.background = '';
             }
         }
@@ -56,6 +58,15 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('detail-type').textContent = user.account_type ? (user.account_type + ' Account') : 'N/A';
         document.getElementById('detail-opened').textContent = user.opened_at || 'N/A';
         
+        const branchName = (user.branch_name && user.branch_name !== 'Unassigned') ? user.branch_name : 'Unassigned / Central';
+        const branchCode = user.branch_code ? ` (${user.branch_code})` : '';
+        const branchBadge = document.getElementById('detail-branch');
+        if (branchBadge) branchBadge.textContent = branchName;
+        const branchNameEl = document.getElementById('detail-branch-name');
+        if (branchNameEl) {
+            branchNameEl.innerHTML = `<span class="inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-sm text-primary">store</span><span>${branchName}</span><span class="font-mono text-xs opacity-60 font-semibold">${branchCode}</span></span>`;
+        }
+
         const balance = parseFloat(user.balance || 0).toLocaleString('en-IN', { style: 'currency', currency: 'INR' });
         document.getElementById('detail-balance').textContent = balance;
         

@@ -3,8 +3,6 @@ $portal = 'user';
 $pageTitle = 'Fund Transfer';
 ob_start();
 ?>
-<script defer src="/Finzo/public/assets/js/user/user-shared.js"></script>
-
 <div class="mb-8 ds-animate-fade text-center max-w-2xl mx-auto">
     <div class="w-16 h-16 bg-primary-surface text-primary-base-base rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-sm">
       <span class="material-symbols-outlined text-3xl" aria-hidden="true">send</span>
@@ -140,8 +138,6 @@ ob_start();
 </div>
 
 
-<script defer src="/Finzo/public/assets/js/core/utils.js"></script>
-  <script defer src="/Finzo/public/assets/js/core/api.js"></script>
 <script defer src="/Finzo/public/assets/js/user/transfer.js"></script>
 <?php
 $slot = ob_get_clean();

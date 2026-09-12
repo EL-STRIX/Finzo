@@ -330,6 +330,16 @@
     document.addEventListener('DOMContentLoaded', () => {
         initClock();
         initCharts();
+
+        // 1. Instant First-Paint Hydration from Preloaded Server Data
+        if (window.initialDashboardData && typeof window.initialDashboardData === 'object') {
+            const initial = window.initialDashboardData;
+            if (initial.stats) updateStats(initial.stats);
+            if (initial.recent_users) renderRecentUsers(initial.recent_users);
+            if (initial.monthly_chart_data || initial.stats) updateCharts(initial);
+        }
+
+        // 2. Silent Background Sync for real-time consistency
         loadDashboard();
     });
 })();

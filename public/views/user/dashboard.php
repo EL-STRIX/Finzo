@@ -3,8 +3,6 @@ $portal = 'user';
 $pageTitle = 'Dashboard';
 ob_start();
 ?>
-<script defer src="/Finzo/public/assets/js/user/user-shared.js?v=3"></script>
-
 <!-- STATUS BANNERS -->
     <div id="banner-pending" class="ds-card p-4 border-info-base bg-info-surface hidden ds-animate-fade mb-6">
       <div class="flex items-center gap-4">
@@ -214,8 +212,6 @@ ob_start();
 </div>
 
 
-<script defer src="/Finzo/public/assets/js/core/utils.js"></script>
-  <script defer src="/Finzo/public/assets/js/core/api.js"></script>
 <script defer src="/Finzo/public/assets/js/user/dashboard.js"></script>
 <?php
 $slot = ob_get_clean();

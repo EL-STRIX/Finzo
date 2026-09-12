@@ -114,6 +114,7 @@ CREATE TABLE IF NOT EXISTS users (
     nationality VARCHAR(100) NULL DEFAULT NULL,
     source_of_income VARCHAR(100) NULL DEFAULT NULL,
     profile_picture VARCHAR(500) NULL DEFAULT NULL,
+    branch_id INT UNSIGNED NULL DEFAULT NULL,
     temp_pass_status ENUM('none','pending') NOT NULL DEFAULT 'none',
 
     -- KYC Status
@@ -135,9 +136,11 @@ CREATE TABLE IF NOT EXISTS users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
-    -- Indexes
+    -- Indexes & Keys
+    FOREIGN KEY fk_users_branch (branch_id) REFERENCES branches(id) ON DELETE SET NULL,
     INDEX idx_status (status),
     INDEX idx_email (email),
+    INDEX idx_branch_id (branch_id),
     INDEX idx_is_deleted (is_deleted)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -369,14 +372,19 @@ CREATE TABLE IF NOT EXISTS system_settings (
 CREATE TABLE IF NOT EXISTS kyc_applications (
   id                INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   user_id           VARCHAR(20) NOT NULL,
+  profile_picture   VARCHAR(500) NULL,
   application_no    VARCHAR(30) NOT NULL UNIQUE,
   status            ENUM('draft','submitted','under_review','approved','rejected') NOT NULL DEFAULT 'draft',
   submission_count  TINYINT DEFAULT 1,
   dob               DATE NULL,
   gender            VARCHAR(30) NULL,
   father_name       VARCHAR(150) NULL,
+  mother_name       VARCHAR(150) NULL,
+  marital_status    VARCHAR(50) NULL,
+  nationality       VARCHAR(100) NULL,
   occupation        VARCHAR(100) NULL,
   annual_income     VARCHAR(50) NULL,
+  source_of_income  VARCHAR(100) NULL,
   street            VARCHAR(255) NULL,
   city              VARCHAR(100) NULL,
   state             VARCHAR(100) NULL,
@@ -387,6 +395,7 @@ CREATE TABLE IF NOT EXISTS kyc_applications (
   id_back_path      VARCHAR(500) NULL,
   account_type      ENUM('savings','current') NULL,
   initial_deposit   DECIMAL(15,2) NULL,
+  branch_id         INT UNSIGNED NULL,
   reviewed_by       VARCHAR(20) NULL,
   reviewed_at       TIMESTAMP NULL,
   rejection_reason  TEXT NULL,
@@ -396,10 +405,12 @@ CREATE TABLE IF NOT EXISTS kyc_applications (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   FOREIGN KEY (user_id) REFERENCES users(customer_id) ON DELETE RESTRICT,
   FOREIGN KEY (reviewed_by) REFERENCES admin_users(admin_id) ON DELETE SET NULL,
+  FOREIGN KEY (branch_id) REFERENCES branches(id) ON DELETE SET NULL,
   INDEX idx_user_id (user_id),
   INDEX idx_status (status),
   INDEX idx_application_no (application_no),
-  INDEX idx_submitted_at (submitted_at)
+  INDEX idx_submitted_at (submitted_at),
+  INDEX idx_kyc_branch_id (branch_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
@@ -654,10 +665,12 @@ CREATE OR REPLACE VIEW vw_branch_summary AS
 SELECT 
     b.id, b.branch_code, b.name as branch_name,
     COUNT(DISTINCT s.id) as total_staff,
-    0 as total_accounts,
-    0 as total_deposits
+    COUNT(DISTINCT u.id) as total_accounts,
+    COALESCE(SUM(a.balance), 0) as total_deposits
 FROM branches b
 LEFT JOIN staff s ON b.id = s.branch_id AND s.is_deleted = 0
+LEFT JOIN users u ON b.id = u.branch_id AND u.is_deleted = 0
+LEFT JOIN accounts a ON u.customer_id = a.user_id AND a.status = 'active'
 GROUP BY b.id, b.branch_code, b.name;
 
 -- 3. SCHEDULED EVENTS (AUTOMATION)

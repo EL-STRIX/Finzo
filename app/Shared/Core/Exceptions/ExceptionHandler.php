@@ -11,9 +11,9 @@ class ExceptionHandler
         $status = 500;
         $payload = ['message' => 'Internal Server Error'];
 
-        if ($e instanceof ValidationException) {
+        if ($e instanceof ValidationException || $e instanceof \App\Domain\Exceptions\ValidationException) {
             $status = 422;
-            $payload = ['message' => $e->getMessage(), 'errors' => $e->getPayload()['errors'] ?? []];
+            $payload = ['message' => $e->getMessage(), 'errors' => method_exists($e, 'getPayload') ? ($e->getPayload()['errors'] ?? []) : []];
         } elseif ($e instanceof AuthenticationException) {
             $status = 401;
             $payload = ['message' => $e->getMessage()];
@@ -30,6 +30,9 @@ class ExceptionHandler
             $status = 400;
             $payload = ['message' => $e->getMessage()];
         } elseif ($e instanceof ApiException) {
+            $status = $e->getStatusCode();
+            $payload = array_merge(['message' => $e->getMessage()], $e->getPayload());
+        } elseif ($e instanceof \App\Domain\Exceptions\DomainException) {
             $status = $e->getStatusCode();
             $payload = array_merge(['message' => $e->getMessage()], $e->getPayload());
         }
@@ -51,6 +54,10 @@ class ExceptionHandler
         }
 
         $formatted = ResponseBuilder::format($payload, $status);
+
+        if (defined('FINZO_TESTING') && FINZO_TESTING) {
+            throw new \App\Shared\Core\Exceptions\TestResponseException(json_encode($formatted));
+        }
 
         if (!headers_sent()) {
             http_response_code($status);

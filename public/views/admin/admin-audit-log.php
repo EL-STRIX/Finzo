@@ -1,6 +1,8 @@
 <?php
 $portal = 'admin';
 $pageTitle = 'Finzo Admin — Audit Trail & Compliance Log';
+// Admin portal guard — server-side authentication & role check
+include __DIR__ . '/_guard.php';
 ob_start();
 ?>
 
@@ -136,6 +138,11 @@ ob_start();
         </div>
 
         <div class="flex items-center gap-2">
+            <!-- Export CSV Button -->
+            <button id="export-csv-btn" class="btn btn-secondary px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider rounded-lg text-text-secondary hover:text-text-primary flex items-center gap-1 transition-all" title="Export current filtered audit trail as CSV">
+                <span class="material-symbols-outlined text-[14px]" aria-hidden="true">download</span>
+                <span>Export CSV</span>
+            </button>
             <!-- Active Filter Reset Button -->
             <button id="reset-filters-btn" class="btn btn-secondary px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider rounded-lg text-text-secondary hover:text-text-primary flex items-center gap-1 transition-all">
                 <span class="material-symbols-outlined text-[14px]" aria-hidden="true">filter_alt_off</span>

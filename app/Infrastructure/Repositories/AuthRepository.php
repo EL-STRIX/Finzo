@@ -10,13 +10,16 @@ class AuthRepository extends BaseRepository implements \App\Domain\Contracts\Rep
 
     public function findUserByIdentity(string $identity): array|false
     {
+        $cleanIdentity = trim($identity);
+        $normalizedPhone = normalize_phone($cleanIdentity);
+
         return $this->fetchOne("
-            SELECT u.id, u.customer_id, u.full_name, u.email, u.phone, u.password_hash, u.status, u.failed_attempts, u.locked_until
+            SELECT u.id, u.customer_id, u.full_name, u.email, u.phone, u.password_hash, u.status, u.failed_attempts, u.locked_until, u.temp_pass_status, u.updated_at
             FROM users u
             LEFT JOIN accounts a ON u.customer_id = a.user_id
-            WHERE (u.email = ? OR a.account_no = ?) AND u.is_deleted = 0
+            WHERE (u.email = ? OR u.customer_id = ? OR u.phone = ? OR u.phone = ? OR a.account_no = ?) AND u.is_deleted = 0
             LIMIT 1
-        ", [$identity, $identity]);
+        ", [$cleanIdentity, $cleanIdentity, $cleanIdentity, $normalizedPhone, $cleanIdentity]);
     }
 
     public function findUserByEmail(string $email): array|false
@@ -61,7 +64,7 @@ class AuthRepository extends BaseRepository implements \App\Domain\Contracts\Rep
     public function updateSuccessfulLogin(int $id, string $ip): bool
     {
         return $this->execute("
-            UPDATE users SET failed_attempts = 0, locked_until = NULL, last_login_at = NOW(), last_login_ip = ?
+            UPDATE users SET failed_attempts = 0, locked_until = NULL, temp_pass_status = 'none', last_login_at = NOW(), last_login_ip = ?
             WHERE id = ?
         ", [$ip, $id]);
     }

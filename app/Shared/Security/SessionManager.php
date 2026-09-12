@@ -21,7 +21,7 @@ class SessionManager
             ini_set('session.use_strict_mode', '1');
             ini_set('session.use_only_cookies', '1');
             ini_set('session.cookie_httponly', '1');
-            ini_set('session.cookie_samesite', 'Strict');
+            ini_set('session.cookie_samesite', 'Lax');
             ini_set('session.cookie_secure', (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? '1' : '0');
             
             // Set max lifetime for garbage collection
@@ -31,13 +31,19 @@ class SessionManager
                 ini_set('session.save_path', STORAGE_PATH . 'sessions');
             }
 
+            $rawHost = $_SERVER['HTTP_HOST'] ?? '';
+            $domain = preg_replace('/:\d+$/', '', $rawHost);
+            if (empty($domain) || in_array(strtolower($domain), ['localhost', '127.0.0.1', '::1']) || filter_var($domain, FILTER_VALIDATE_IP)) {
+                $domain = '';
+            }
+
             session_set_cookie_params([
                 'lifetime' => self::SESSION_LIFETIME,
                 'path' => '/',
-                'domain' => $_SERVER['HTTP_HOST'] ?? '',
+                'domain' => $domain,
                 'secure' => (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on'),
                 'httponly' => true,
-                'samesite' => 'Strict'
+                'samesite' => 'Lax'
             ]);
 
             session_start();
@@ -50,8 +56,8 @@ class SessionManager
      */
     public static function regenerate(bool $deleteOldSession = true): void
     {
-        if (session_status() === PHP_SESSION_ACTIVE) {
-            session_regenerate_id($deleteOldSession);
+        if (session_status() === PHP_SESSION_ACTIVE && !headers_sent()) {
+            @session_regenerate_id($deleteOldSession);
         }
     }
 
@@ -93,6 +99,8 @@ class SessionManager
             self::regenerate(true);
         }
 
+        $_SESSION = [];
+
         $_SESSION['user_id']          = (int)$user['id'];
         $_SESSION['user_customer_id'] = $user['customer_id'];
         $_SESSION['user_name']        = $user['full_name'];
@@ -103,6 +111,22 @@ class SessionManager
         $_SESSION['user_balance']     = $account ? $account['balance'] : null;
         $_SESSION['role']             = 'customer';
         $_SESSION['last_activity']    = time();
+
+        // Build sidebar avatar URL so sidebar-user.php can show the photo on first load
+        $rawPic = $user['profile_picture'] ?? null;
+        if (!empty($rawPic)) {
+            if (str_starts_with($rawPic, 'http')) {
+                $_SESSION['user_avatar'] = $rawPic;
+            } else {
+                $cleanPic = ltrim($rawPic, '/');
+                if (!str_starts_with($cleanPic, 'public/')) {
+                    $cleanPic = 'public/' . $cleanPic;
+                }
+                $_SESSION['user_avatar'] = APP_URL . '/' . $cleanPic;
+            }
+        } else {
+            $_SESSION['user_avatar'] = null;
+        }
     }
 
     /**
@@ -116,6 +140,8 @@ class SessionManager
             self::start();
             self::regenerate(true);
         }
+
+        $_SESSION = [];
 
         $_SESSION['admin_id']      = (int)$admin['id'];
         $_SESSION['admin_name']    = $admin['full_name'];
@@ -138,6 +164,8 @@ class SessionManager
             self::start();
             self::regenerate(true);
         }
+
+        $_SESSION = [];
 
         $_SESSION['staff_id']      = (int)$staff['id'];
         $_SESSION['staff_display_id'] = $staff['staff_id'];

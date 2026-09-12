@@ -1,20 +1,17 @@
 <?php
 $portal = 'admin';
 $pageTitle = 'Locked Account Detail';
+include __DIR__ . '/_guard.php';
 $pageHeader = '
 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-    <div>
-        <div class="flex items-center gap-2 mb-2">
-            <a href="admin-locked-accounts.php" class="w-8 h-8 flex items-center justify-center rounded-xl bg-surface-hover hover:bg-border-subtle transition-colors text-text-secondary">
-                <span class="material-symbols-outlined text-sm" aria-hidden="true">arrow_back</span>
-            </a>
-            <div class="flex items-center gap-1.5 text-[10px] font-black tracking-widest uppercase text-text-secondary">
-                <span>Locked Accounts</span>
-                <span class="material-symbols-outlined text-xs" aria-hidden="true">chevron_right</span>
-                <span class="text-primary whitespace-nowrap">Security Detail</span>
-            </div>
+    <div class="flex items-center gap-4">
+        <a href="admin-locked-accounts.php" class="w-10 h-10 flex items-center justify-center rounded-xl bg-surface border border-border-subtle hover:bg-surface-hover transition-colors text-text-secondary hover:text-text-primary shadow-xs shrink-0" title="Back to Locked Accounts">
+            <span class="material-symbols-outlined text-base" aria-hidden="true">arrow_back</span>
+        </a>
+        <div>
+            <h1 class="text-2xl font-headline font-black text-text-primary tracking-tight">Security Incident</h1>
+            <p class="text-xs font-bold text-text-secondary uppercase tracking-widest mt-1">Locked Account Investigation &amp; Remediation Dossier</p>
         </div>
-        <h1 class="text-xl font-headline font-black text-text-primary tracking-tight">Security Incident</h1>
     </div>
 </div>
 ';
@@ -116,12 +113,12 @@ ob_start();
                 <!-- ACCESS CONTROL -->
                 <div class="ds-card p-6" id="unlock-action-card">
                     <h3 class="text-[10px] font-black text-text-secondary uppercase tracking-widest mb-5">Access Control</h3>
-                    <button data-action="openUnlockModal()" class="btn btn-primary w-full justify-center !py-3.5 shadow-lg shadow-warning/20 mb-4 !bg-warning !text-white !border-warning" >
-                        <span class="material-symbols-outlined text-lg mr-1.5" aria-hidden="true">vpn_key</span> Generate & Unlock
+                    <button type="button" onclick="openUnlockModal()" class="btn btn-primary w-full justify-center !py-3.5 shadow-lg shadow-warning/20 mb-4 !bg-warning !text-white !border-warning cursor-pointer">
+                        <span class="material-symbols-outlined text-lg mr-1.5" aria-hidden="true">vpn_key</span> Generate &amp; Unlock
                     </button>
                     <div class="p-3 bg-warning-bg/30 rounded-xl border border-warning text-center">
                         <p class="text-[10px] font-black text-warning uppercase tracking-widest leading-relaxed">
-                            Unlocking will provide a temporary PIN valid for 24 hours only.
+                            Unlocking will provide a temporary password valid for 60 minutes only. Once generated, the account is removed from the active locked queue.
                         </p>
                     </div>
                 </div>
@@ -132,7 +129,7 @@ ob_start();
                     <div class="p-4 bg-surface rounded-xl mb-3 border border-success-bg shadow-sm">
                         <div class="text-[10px] font-black text-success uppercase tracking-widest mb-1 text-center">Temporary PIN</div>
                         <div id="display-pass" class="text-center font-code text-2xl font-black text-success py-2 border-b border-border-subtle mb-3"></div>
-                        <button data-action="copyDisplayPass()" class="w-full text-success text-[10px] font-black uppercase tracking-widest py-2 hover:bg-success-bg rounded transition-all">Copy to Clipboard</button>
+                        <button type="button" onclick="copyDisplayPass()" class="w-full text-success text-[10px] font-black uppercase tracking-widest py-2 hover:bg-success-bg rounded transition-all cursor-pointer">Copy to Clipboard</button>
                     </div>
                     <div class="text-[10px] text-text-secondary text-center uppercase font-bold tracking-widest">Must reset PIN on first login</div>
                 </div>
@@ -163,25 +160,26 @@ ob_start();
         </div>
 
     <!-- MODAL -->
-    <div id="unlock-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm hidden" role="dialog" aria-modal="true">
-        <div class="ds-card w-full max-w-md shadow-2xl overflow-hidden scale-95 transition-all duration-300 border border-border-subtle" id="modal-card" role="dialog" aria-modal="true">
+    <div id="unlock-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden" role="dialog" aria-modal="true">
+        <div class="absolute inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-sm" onclick="closeModal()"></div>
+        <div class="ds-card w-full max-w-md shadow-2xl overflow-hidden scale-95 transition-all duration-300 border border-border-subtle relative z-10 bg-surface" id="modal-card">
             <div class="p-8 text-center text-text-primary">
-                <div class="w-20 h-20 rounded-full bg-warning-bg flex items-center justify-center mx-auto mb-6 text-warning">
+                <div class="w-20 h-20 rounded-full bg-warning-bg flex items-center justify-center mx-auto mb-6 text-warning border border-warning/20">
                     <span class="material-symbols-outlined text-4xl" aria-hidden="true">vpn_key</span>
                 </div>
                 <h3 class="text-xl font-black font-headline mb-3">Restore Access?</h3>
-                <p class="text-sm text-text-secondary leading-relaxed mb-8">This will generate a 12-character one-time password for <strong id="modal-name" class="text-text-primary">-</strong>. User must reset their credentials immediately.</p>
+                <p class="text-sm text-text-secondary leading-relaxed mb-8">This will generate a 12-character one-time password valid for 60 minutes for <strong id="modal-name" class="text-text-primary">-</strong>. The account will be unlocked and removed from the active locked queue.</p>
                 
                 <div class="flex gap-3">
-                    <button data-action="closeModal()" class="flex-1 btn btn-secondary py-3 justify-center">Cancel</button>
-                    <button id="gen-btn" data-action="doGenerate()" class="flex-1 btn btn-primary !bg-warning !border-warning !text-white py-3 justify-center shadow-lg shadow-warning/20">Authorize</button>
+                    <button type="button" onclick="closeModal()" class="flex-1 btn btn-secondary py-3 justify-center text-xs font-bold uppercase tracking-wider cursor-pointer">Cancel</button>
+                    <button type="button" id="gen-btn" onclick="doGenerate()" class="flex-1 btn btn-primary !bg-warning !border-warning !text-white py-3 justify-center shadow-lg shadow-warning/20 text-xs font-bold uppercase tracking-wider cursor-pointer">Authorize</button>
                 </div>
             </div>
         </div>
     </div>
 
 <?php
-$extraScripts = '<script defer src="/Finzo/public/assets/js/admin/locked-account-detail.js"></script>';
+$extraScripts = '<script defer src="/Finzo/public/assets/js/admin/locked-account-detail.js?v=' . time() . '"></script>';
 $slot = ob_get_clean();
 include __DIR__ . '/../layouts/app.php';
 ?>

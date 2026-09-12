@@ -26,7 +26,7 @@ The `docs/06-Testing/` directory acts as the central hub for all QA-related docu
 * **[Test Environment](Test-Environment.md):** Technical specifications for Local and CI environments, including PHPUnit configs and database provisioning.
 * **[Test Data](Test-Data.md):** Guidelines for managing test users, mock data, and maintaining transactional isolation during testing.
 
-### Supplementary Documents (In Progress)
+### Supplementary Documents
 
 * **Unit Testing:** Guidelines for testing isolated domain services.
 * **Feature Testing:** Guidelines for HTTP request simulations and controller coverage.
@@ -50,6 +50,6 @@ For engineers newly onboarding to the Finzo project, we recommend consuming the 
 
 ## Cross References
 
-* **Architecture:** Review [System Architecture](../01-Architecture/README.md) for structural context.
-* **Security:** Review [Security Protocols](../05-Security/README.md) for our defensive boundaries.
-* **Database:** Review [Database Design](../03-Database/README.md) for schema definitions used during migrations.
+* **Architecture:** Review [System Architecture](../ARCHITECTURE.md) for structural context.
+* **Security:** Review [Security Overview](../05-Security/Security-Overview.md) for our defensive boundaries.
+* **Database:** Review [Database Architecture](../03-Database/Database-Architecture.md) for schema definitions used during migrations.

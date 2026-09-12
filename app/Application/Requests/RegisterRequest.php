@@ -18,8 +18,10 @@ class RegisterRequest extends FormRequest
     {
         parent::validate();
 
-        $errors = [];
-        if (!validate_phone($this->get('phone'))) {
+        $normalizedPhone = normalize_phone($this->get('phone'));
+        $this->data['phone'] = $normalizedPhone;
+
+        if (!validate_phone($normalizedPhone)) {
             $errors['phone'] = 'Please enter a valid 10-digit Indian mobile number';
         }
 

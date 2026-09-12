@@ -1,16 +1,23 @@
 <?php
 $portal = 'admin';
-$pageTitle = 'Finzo Admin — Card Products';
+$pageTitle = 'Finzo Admin — Card Products (Coming Soon)';
 $pageHeader = '
 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
     <div>
-        <h1 class="text-xl font-headline font-black text-text-primary tracking-tight">Card Products</h1>
-        <p class="text-xs font-bold text-text-secondary uppercase tracking-widest mt-0.5">Manage credit and debit card tiers</p>
+        <div class="flex items-center gap-2 mb-1">
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-accent/10 text-accent border border-accent/20">
+                <span class="w-1.5 h-1.5 rounded-full bg-accent animate-pulse"></span>
+                In Development
+            </span>
+            <span class="text-text-muted text-xs font-mono">Module: Card Engine 2.0</span>
+        </div>
+        <h1 class="text-2xl font-headline font-black text-text-primary tracking-tight">Card Products &amp; Schemes</h1>
+        <p class="text-xs font-bold text-text-secondary uppercase tracking-widest mt-1">Configure credit and debit card tiers, BIN routing, and daily transaction bounds</p>
     </div>
     <div class="flex items-center gap-3">
-        <button id="btn-create-product" class="btn btn-primary !px-5 flex items-center gap-2">
-            <span class="material-symbols-outlined text-[18px]" aria-hidden="true">add</span>
-            <span class="font-bold">Create Card Product</span>
+        <button id="btn-notify-card-products" class="btn btn-secondary !px-4 flex items-center gap-2">
+            <span class="material-symbols-outlined text-[18px]">notifications_active</span>
+            <span class="font-bold text-xs">Notify on Launch</span>
         </button>
     </div>
 </div>
@@ -19,96 +26,102 @@ $extraScripts = '<script defer src="/Finzo/public/assets/js/admin/admin-card-pro
 ob_start();
 ?>
 
-<!-- TABLE WRAPPER -->
-<div class="ds-card ds-card-dropdown-fix relative z-20 overflow-hidden shadow-2xl transition-all duration-300">
-    <div class="absolute -right-20 -top-20 w-64 h-64 bg-primary/5 rounded-full blur-3xl -z-10 pointer-events-none"></div>
-    <div class="absolute -left-20 -bottom-20 w-64 h-64 bg-accent/5 rounded-full blur-3xl -z-10 pointer-events-none"></div>
-    <!-- TABLE HEADER -->
-    <div class="p-4 sm:p-6 flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-border-subtle bg-background/40 backdrop-blur-xl relative z-10">
-        <div class="text-sm font-bold text-text-primary uppercase tracking-widest flex items-center gap-2">
-            <span class="material-symbols-outlined text-primary text-[20px]">featured_play_list</span> Active Card Products
-        </div>
-        <div class="relative w-full sm:w-64">
-            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <span class="material-symbols-outlined text-text-muted text-[18px]">search</span>
-            </div>
-            <input type="text" id="product-search" class="fin-input !pl-9 !py-2 !h-9 !text-sm w-full bg-white dark:bg-surface" placeholder="Search cards..." />
-        </div>
-    </div>
+<!-- COMING SOON HERO BANNER -->
+<div class="ds-card p-8 relative overflow-hidden shadow-2xl mb-8 border border-border-subtle bg-gradient-to-br from-surface via-surface to-accent/5">
+    <div class="absolute -right-24 -top-24 w-80 h-80 bg-accent/10 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute -left-20 -bottom-20 w-72 h-72 bg-primary/10 rounded-full blur-3xl pointer-events-none"></div>
 
-    <!-- TABLE AREA -->
-    <div class="ds-table-wrapper bg-white dark:bg-surface min-h-[300px]">
-        <table class="ds-table">
-            <thead>
-                <tr>
-                    <th class="w-16">ID</th>
-                    <th>Product Name</th>
-                    <th>Type</th>
-                    <th>Network</th>
-                    <th>Daily limits (Withdraw / POS)</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody id="products-tbody">
-                <tr><td colspan="6" class="py-12 text-center"><span class="loader"></span></td></tr>
-            </tbody>
-        </table>
+    <div class="relative z-10 max-w-3xl">
+        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-accent/20 to-accent/5 text-accent flex items-center justify-center mb-6 border border-accent/20 shadow-lg">
+            <span class="material-symbols-outlined text-3xl">featured_play_list</span>
+        </div>
+
+        <h2 class="text-3xl font-display font-black text-text-primary tracking-tight mb-3">
+            Card Portfolio & Tier Configuration
+        </h2>
+        <p class="text-text-secondary text-sm leading-relaxed mb-6">
+            The next-generation Card Products management console is undergoing active architectural development. Finzo administrators will be able to define debit and credit card tiers, assign BIN ranges across global networks (Visa, Mastercard, RuPay), configure daily ATM and POS limits, and establish interchange fees.
+        </p>
+
+        <div class="flex flex-wrap items-center gap-3">
+            <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-background/80 border border-border-subtle text-xs font-semibold text-text-secondary">
+                <span class="material-symbols-outlined text-emerald-500 text-sm">check_circle</span>
+                <span>Database Schemas & Tables Ready</span>
+            </div>
+            <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-background/80 border border-border-subtle text-xs font-semibold text-text-secondary">
+                <span class="material-symbols-outlined text-accent text-sm">credit_card</span>
+                <span>BIN Range & Network Integration in Architecture Review</span>
+            </div>
+            <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-background/80 border border-border-subtle text-xs font-semibold text-text-secondary">
+                <span class="material-symbols-outlined text-amber-500 text-sm">schedule</span>
+                <span>Target Release: Q4 2026</span>
+            </div>
+        </div>
     </div>
 </div>
 
-<!-- CREATE PRODUCT MODAL -->
-<div id="product-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
-    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm modal-backdrop" onclick="document.getElementById('product-modal').classList.add('hidden')"></div>
-    <div class="bg-surface border border-border-subtle rounded-2xl shadow-2xl w-full max-w-2xl relative z-10 max-h-[90vh] flex flex-col">
-        <div class="p-6 border-b border-border-subtle flex justify-between items-center bg-background rounded-t-2xl">
-            <h3 class="font-headline font-black tracking-tight text-lg">Create Card Product</h3>
-            <button class="w-8 h-8 flex items-center justify-center rounded-lg bg-surface-subtle text-text-muted hover:text-text-primary hover:bg-border-subtle transition-colors" onclick="document.getElementById('product-modal').classList.add('hidden')">
-                <span class="material-symbols-outlined text-[18px]">close</span>
-            </button>
+<!-- PLANNED CAPABILITIES GRID -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div class="ds-card p-6 border border-border-subtle hover:border-accent/40 transition-all group">
+        <div class="w-12 h-12 rounded-xl bg-accent/10 text-accent flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
+            <span class="material-symbols-outlined text-2xl">credit_card_gear</span>
         </div>
-        <div class="p-6 overflow-y-auto custom-scrollbar flex-1">
-            <form id="product-form" class="space-y-6">
-                
-                <div class="grid grid-cols-1 gap-6">
-                    <div>
-                        <label class="fin-label">Card Name</label>
-                        <input type="text" name="name" class="fin-input" placeholder="e.g. Platinum Visa" required />
-                    </div>
-                    
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="fin-label">Card Type</label>
-                            <select name="type" class="fin-input cursor-pointer" required>
-                                <option value="debit">Debit Card</option>
-                                <option value="credit">Credit Card</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="fin-label">Card Network</label>
-                            <select name="network" class="fin-input cursor-pointer" required>
-                                <option value="visa">Visa</option>
-                                <option value="mastercard">Mastercard</option>
-                                <option value="rupay">RuPay</option>
-                            </select>
-                        </div>
-                    </div>
+        <h3 class="font-headline font-bold text-base text-text-primary mb-2">Multi-Network & BIN Tiers</h3>
+        <p class="text-xs text-text-secondary leading-relaxed">
+            Support for Visa Infinite, Mastercard World Elite, and RuPay Select with automated Luhn algorithm validation and Bank Identification Number (BIN) mapping.
+        </p>
+    </div>
 
-                    <div class="grid grid-cols-2 gap-4 border-t border-border-subtle pt-6 mt-2">
-                        <div>
-                            <label class="fin-label">Daily ATM Withdrawal Limit (₹)</label>
-                            <input type="number" name="daily_withdrawal_limit" class="fin-input" placeholder="e.g. 50000" required />
-                        </div>
-                        <div>
-                            <label class="fin-label">Daily POS/Online Limit (₹)</label>
-                            <input type="number" name="daily_purchase_limit" class="fin-input" placeholder="e.g. 200000" required />
-                        </div>
-                    </div>
-                </div>
-            </form>
+    <div class="ds-card p-6 border border-border-subtle hover:border-accent/40 transition-all group">
+        <div class="w-12 h-12 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
+            <span class="material-symbols-outlined text-2xl">speed</span>
         </div>
-        <div class="p-6 border-t border-border-subtle bg-background rounded-b-2xl flex justify-end gap-3">
-            <button type="button" class="btn btn-secondary !px-5" onclick="document.getElementById('product-modal').classList.add('hidden')">Cancel</button>
-            <button type="button" class="btn btn-primary !px-5" id="btn-save-product">Save Product</button>
+        <h3 class="font-headline font-bold text-base text-text-primary mb-2">Dynamic Velocity Caps</h3>
+        <p class="text-xs text-text-secondary leading-relaxed">
+            Configurable daily and single-transaction ceilings across ATM withdrawals, physical Point-of-Sale (POS), contactless NFC, and international e-commerce.
+        </p>
+    </div>
+
+    <div class="ds-card p-6 border border-border-subtle hover:border-accent/40 transition-all group">
+        <div class="w-12 h-12 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
+            <span class="material-symbols-outlined text-2xl">loyalty</span>
+        </div>
+        <h3 class="font-headline font-bold text-base text-text-primary mb-2">Fee & Rewards Matrix</h3>
+        <p class="text-xs text-text-secondary leading-relaxed">
+            Automated billing of annual maintenance fees, joining bonuses, airport lounge eligibility thresholds, and merchant category code (MCC) cashback policies.
+        </p>
+    </div>
+</div>
+
+<!-- ARCHITECTURE BLUEPRINT FOR FUTURE IMPLEMENTATION -->
+<div class="ds-card p-6 border border-border-subtle bg-surface/90">
+    <div class="flex items-center gap-3 mb-4 pb-4 border-b border-border-subtle">
+        <div class="w-10 h-10 rounded-xl bg-accent/10 text-accent flex items-center justify-center">
+            <span class="material-symbols-outlined text-xl">developer_board</span>
+        </div>
+        <div>
+            <h3 class="font-headline font-bold text-base text-text-primary">Implementation Specification</h3>
+            <p class="text-xs text-text-secondary">Clean architecture blueprint for implementing this feature backend</p>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 text-xs">
+        <div class="space-y-3">
+            <div class="font-bold text-text-primary uppercase tracking-wider text-[11px]">Target API Contracts</div>
+            <div class="p-3 rounded-lg bg-background border border-border-subtle font-mono text-[11px] space-y-1.5">
+                <div class="text-emerald-500"><span class="font-bold">GET</span> /api/v1/admin/card-products <span class="text-text-muted">(List all card products)</span></div>
+                <div class="text-accent"><span class="font-bold">POST</span> /api/v1/admin/card-products <span class="text-text-muted">(Create new card tier)</span></div>
+                <div class="text-amber-500"><span class="font-bold">PATCH</span> /api/v1/admin/card-products/{id} <span class="text-text-muted">(Modify limits & status)</span></div>
+            </div>
+        </div>
+
+        <div class="space-y-3">
+            <div class="font-bold text-text-primary uppercase tracking-wider text-[11px]">Decoupled Components</div>
+            <ul class="space-y-1.5 text-text-secondary">
+                <li class="flex items-center gap-2"><span class="material-symbols-outlined text-text-muted text-[14px]">chevron_right</span> <strong>Controller:</strong> <code class="text-text-primary">AdminCardController</code></li>
+                <li class="flex items-center gap-2"><span class="material-symbols-outlined text-text-muted text-[14px]">chevron_right</span> <strong>Service:</strong> <code class="text-text-primary">CardService</code> implements <code class="text-text-primary">CardServiceInterface</code></li>
+                <li class="flex items-center gap-2"><span class="material-symbols-outlined text-text-muted text-[14px]">chevron_right</span> <strong>Repository:</strong> <code class="text-text-primary">CardRepository</code> (mapped to DB table: <code class="text-text-primary">card_products</code>)</li>
+            </ul>
         </div>
     </div>
 </div>

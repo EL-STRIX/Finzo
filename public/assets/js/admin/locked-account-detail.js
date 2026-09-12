@@ -14,6 +14,13 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
+    function toast(msg, type = 'info') {
+        if (window.showToast) window.showToast(msg, type);
+        else if (window.portal && window.portal.showToast) window.portal.showToast(msg, type);
+        else if (window.FinzoUtils && window.FinzoUtils.showToast) window.FinzoUtils.showToast(msg, type);
+        else alert(msg);
+    }
+
     // ── Load Detail ──
     async function loadDetail() {
         try {
@@ -24,11 +31,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 populateUI(user);
                 renderAuditLogs(logs);
             } else {
-                window.showToast(response.message || 'Failed to load details', 'error');
+                toast(response.message || 'Failed to load details', 'error');
             }
         } catch (error) {
             console.error('Error:', error);
-            window.showToast('Network error loading details', 'error');
+            toast('Network error loading details', 'error');
         }
     }
 
@@ -43,11 +50,15 @@ document.addEventListener('DOMContentLoaded', () => {
         // Avatar — show profile picture if available, otherwise initials
         const avatarEl = document.getElementById('d-avatar');
         if (avatarEl) {
-            if (user.profile_picture) {
-                const photoSrc = user.profile_picture.startsWith('http') ? user.profile_picture : (user.profile_picture.startsWith('/') ? user.profile_picture : `/Finzo/${user.profile_picture}`);
-                avatarEl.innerHTML = `<img src="${photoSrc}" class="w-full h-full object-cover rounded-2xl" alt="${user.full_name}" onerror="this.parentElement.textContent='${user.initials || '??'}'">`;
+            const avatarUrl = user.avatar_url || (user.profile_picture ? (user.profile_picture.startsWith('http') ? user.profile_picture : `/Finzo/${user.profile_picture}`) : null);
+            const initials = user.initials || (user.full_name ? user.full_name.charAt(0).toUpperCase() : 'U');
+            const gradient = (window.FinzoUtils && window.FinzoUtils.getAvatarGradient) ? window.FinzoUtils.getAvatarGradient(initials) : 'linear-gradient(135deg, #10b981, #059669)';
+
+            if (avatarUrl) {
+                avatarEl.innerHTML = `<img src="${avatarUrl}" class="w-full h-full object-cover rounded-2xl" alt="${user.full_name}" onerror="this.outerHTML='<span class=\\'text-2xl font-black text-white\\'>${initials}</span>'; this.parentElement.style.background='${gradient}';">`;
             } else {
-                avatarEl.textContent = user.initials || '??';
+                avatarEl.style.background = gradient;
+                avatarEl.innerHTML = `<span class="text-2xl font-black text-white">${initials}</span>`;
             }
         }
 
@@ -196,13 +207,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // ── Generate & Unlock ──
     window.doGenerate = async () => {
         const btn = document.getElementById('gen-btn');
-        if (!btn) return;
+        if (!btn || btn.disabled) return;
 
         const originalHTML = btn.innerHTML;
-        window.api.setButtonLoading(btn, true);
+        btn.disabled = true;
+        btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-base" aria-hidden="true">autorenew</span> <span>Processing...</span>';
 
         try {
-            const response = await window.api.post(`/users/locked/${userId}/unlock`, {});
+            const response = await window.api.post(`/users/locked/${userId}/unlock`, { user_id: userId });
             if (response.success || response.status === 'success') {
                 const pass = response.temp_password || response.data?.temp_password || 'N/A';
 
@@ -219,18 +231,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 const tempPassCard = document.getElementById('temp-pass-card');
                 if (tempPassCard) tempPassCard.classList.remove('hidden');
 
-                window.FinzoUtils?.showToast('Account unlocked successfully!', 'success');
+                toast('Account unlocked successfully! Temporary PIN generated.', 'success');
 
                 // Reload the detail to reflect new status
                 setTimeout(() => loadDetail(), 500);
             } else {
-                window.FinzoUtils?.showToast(response.message || 'Unlock failed', 'error');
-                window.api.setButtonLoading(btn, false, originalHTML);
+                toast(response.message || 'Unlock failed', 'error');
             }
         } catch (error) {
             console.error('Unlock error:', error);
-            window.FinzoUtils?.showToast('Action failed. Please try again.', 'error');
-            window.api.setButtonLoading(btn, false, originalHTML);
+            toast('Action failed. Please try again.', 'error');
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = originalHTML;
         }
     };
 
@@ -240,7 +253,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!displayPass) return;
 
         navigator.clipboard.writeText(displayPass.textContent).then(() => {
-            window.FinzoUtils?.showToast('PIN copied to clipboard', 'success');
+            toast('PIN copied to clipboard', 'success');
         }).catch(() => {
             // Fallback
             const range = document.createRange();
@@ -250,7 +263,7 @@ document.addEventListener('DOMContentLoaded', () => {
             sel.addRange(range);
             document.execCommand('copy');
             sel.removeAllRanges();
-            window.FinzoUtils?.showToast('PIN copied to clipboard', 'success');
+            toast('PIN copied to clipboard', 'success');
         });
     };
 

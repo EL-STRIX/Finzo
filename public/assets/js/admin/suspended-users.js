@@ -77,13 +77,14 @@
         }
 
         tableBody.innerHTML = users.map((u, i) => {
-            const initials = u.initials || (u.full_name ? u.full_name.charAt(0) : '?');
+            const fullName = u.full_name || 'Customer';
+            const initials = u.initials || (fullName ? fullName.charAt(0).toUpperCase() : '?');
             const rowNum = String((currentPage - 1) * 10 + i + 1).padStart(2, '0');
-            const gradient = window.FinzoUtils.getAvatarGradient(initials);
+            const avatarUrl = u.avatar_url || u.profile_picture_url;
             
-            const avatarHtml = u.avatar_url 
-                ? `<img src="${u.avatar_url}" class="avatar-circle object-cover w-10 h-10 rounded-full" alt="${u.full_name}">` 
-                : `<div class="avatar-circle premium-gradient-primary uppercase flex items-center justify-center text-white font-bold w-10 h-10 rounded-full" >${initials}</div>`;
+            const avatarHtml = avatarUrl 
+                ? `<img src="${avatarUrl}" class="avatar-circle object-cover w-10 h-10 rounded-full border border-slate-200 dark:border-white/10" alt="${fullName}" onerror="this.outerHTML='<div class=\\'avatar-circle premium-gradient-primary uppercase flex items-center justify-center text-white font-bold w-10 h-10 rounded-full border border-slate-200 dark:border-white/10\\'>${initials}</div>'">` 
+                : `<div class="avatar-circle premium-gradient-primary uppercase flex items-center justify-center text-white font-bold w-10 h-10 rounded-full border border-slate-200 dark:border-white/10">${initials}</div>`;
             
             return `
             <tr class="hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors">
@@ -92,7 +93,7 @@
                     <div class="user-cell flex items-center gap-3">
                         ${avatarHtml}
                         <div style="display:flex; flex-direction:column;">
-                            <span class="user-name font-bold text-sm text-slate-800 dark:text-slate-200">${u.full_name}</span>
+                            <span class="user-name font-bold text-sm text-slate-800 dark:text-slate-200">${fullName}</span>
                             <span class="user-email text-[11px] opacity-60 font-mono">${u.customer_id || 'FNZ-USR-PENDING'}</span>
                         </div>
                     </div>
@@ -105,10 +106,10 @@
                 <td class="py-4 px-6"><span class="status-badge badge-secondary">${u.duration || 'Eternal'}</span></td>
                 <td class="py-4 px-6 text-center min-w-[100px] w-28">
                     <div class="flex items-center justify-center gap-2 flex-nowrap">
-                        <a href="admin-user-detail.php?id=${u.id}" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-colors text-slate-400 hover:text-primary" title="View Details">
+                        <a href="admin-suspended-user-detail.php?id=${u.id}" class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-colors text-slate-400 hover:text-primary" title="View Details">
                             <span class="material-symbols-outlined" style="font-size:18px" aria-hidden="true">visibility</span>
                         </a>
-                        <button class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-colors text-slate-400 hover:text-emerald-500" onclick="window.SuspendedUsers.openReinstate('${u.id}','${u.full_name}')" title="Restore Account">
+                        <button class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-colors text-slate-400 hover:text-emerald-500 cursor-pointer" onclick="window.SuspendedUsers.openReinstate('${u.id}','${fullName.replace(/'/g, "\\'")}')" title="Restore Account">
                             <span class="material-symbols-outlined" style="font-size:18px" aria-hidden="true">lock_open</span>
                         </button>
                     </div>
@@ -201,7 +202,8 @@
 
                 if (response.status === 'success' || response.success) {
                     window.SuspendedUsers.closeReinstateModal();
-                    window.portal.showToast('Account reinstated successfully.', 'success');
+                    const toastFn = window.showToast || (window.FinzoUtils && window.FinzoUtils.showToast) || (window.portal && window.portal.showToast) || alert;
+                    toastFn('Account reinstated successfully.', 'success');
                     loadSuspendedUsers();
                 } else {
                     alert(response.message || 'Action failed.');

@@ -11,8 +11,37 @@ class RoleRepository extends BaseRepository implements RoleRepositoryInterface
 
     public function getAllRoles(): array
     {
-        $stmt = $this->db->query("SELECT * FROM roles ORDER BY name ASC");
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt = $this->db->query("SELECT * FROM roles ORDER BY id ASC");
+        $roles = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Fetch all assigned permissions in one batch query
+        $permStmt = $this->db->query("
+            SELECT rp.role_id, p.id, p.name, p.description, p.group_name
+            FROM role_permissions rp
+            JOIN permissions p ON rp.permission_id = p.id
+            ORDER BY p.id ASC
+        ");
+        $allPerms = $permStmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        $permsByRole = [];
+        foreach ($allPerms as $p) {
+            $permsByRole[$p['role_id']][] = [
+                'id' => (int)$p['id'],
+                'name' => $p['name'],
+                'description' => $p['description'],
+                'group_name' => $p['group_name'] ?? ''
+            ];
+        }
+
+        foreach ($roles as &$role) {
+            $role['id'] = (int)$role['id'];
+            $role['permissions'] = $permsByRole[$role['id']] ?? [];
+            $role['permissions_count'] = count($role['permissions']);
+            $role['is_system'] = in_array($role['name'], ['super_admin', 'admin', 'moderator', 'manager', 'supervisor', 'teller', 'customer'], true);
+        }
+        unset($role);
+
+        return $roles;
     }
 
     public function getRoleById(int $id): ?array
@@ -20,7 +49,14 @@ class RoleRepository extends BaseRepository implements RoleRepositoryInterface
         $stmt = $this->db->prepare("SELECT * FROM roles WHERE id = ?");
         $stmt->execute([$id]);
         $role = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $role ?: null;
+        if (!$role) {
+            return null;
+        }
+        $role['id'] = (int)$role['id'];
+        $role['permissions'] = $this->getRolePermissions($id);
+        $role['permissions_count'] = count($role['permissions']);
+        $role['is_system'] = in_array($role['name'], ['super_admin', 'admin', 'moderator', 'manager', 'supervisor', 'teller', 'customer'], true);
+        return $role;
     }
 
     public function getRoleByName(string $name): ?array
@@ -31,23 +67,38 @@ class RoleRepository extends BaseRepository implements RoleRepositoryInterface
         return $role ?: null;
     }
 
-    public function createRole(string $name): int
+    public function createRole(string $name, ?string $description = null): int
     {
-        $stmt = $this->db->prepare("INSERT INTO roles (name) VALUES (?)");
-        $stmt->execute([$name]);
+        $stmt = $this->db->prepare("INSERT INTO roles (name, description, created_at, updated_at) VALUES (?, ?, NOW(), NOW())");
+        $stmt->execute([$name, $description]);
         return (int)$this->db->lastInsertId();
     }
 
-    public function updateRole(int $id, string $name): bool
+    public function updateRole(int $id, string $name, ?string $description = null): bool
     {
-        $stmt = $this->db->prepare("UPDATE roles SET name = ? WHERE id = ?");
-        return $stmt->execute([$name, $id]);
+        $stmt = $this->db->prepare("UPDATE roles SET name = ?, description = ?, updated_at = NOW() WHERE id = ?");
+        return $stmt->execute([$name, $description, $id]);
     }
 
     public function deleteRole(int $id): bool
     {
-        $stmt = $this->db->prepare("DELETE FROM roles WHERE id = ?");
-        return $stmt->execute([$id]);
+        $this->db->beginTransaction();
+        try {
+            $stmt1 = $this->db->prepare("DELETE FROM role_permissions WHERE role_id = ?");
+            $stmt1->execute([$id]);
+
+            $stmt2 = $this->db->prepare("DELETE FROM model_has_roles WHERE role_id = ?");
+            $stmt2->execute([$id]);
+
+            $stmt3 = $this->db->prepare("DELETE FROM roles WHERE id = ?");
+            $res = $stmt3->execute([$id]);
+
+            $this->db->commit();
+            return $res;
+        } catch (\Exception $e) {
+            $this->db->rollBack();
+            throw $e;
+        }
     }
 
     public function getAllPermissions(): array

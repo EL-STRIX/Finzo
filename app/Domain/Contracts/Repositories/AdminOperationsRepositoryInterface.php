@@ -16,6 +16,7 @@ interface AdminOperationsRepositoryInterface
     public function getSingleStat(string $sql, array $params = []);
     public function getDashboardRecentUsers();
     public function getMonthlyChartDataRow(string $monthDate);
+    public function getMonthlyChartDataSixMonths(): array;
     public function getAdminById(int $adminId);
     public function countDeletedUsers(string $whereSql, array $params): int;
     public function getDeletedUsers(string $whereSql, array $params, int $perPage, int $offset);

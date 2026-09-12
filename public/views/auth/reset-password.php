@@ -11,7 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
 
-    <script defer src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script src="/Finzo/public/assets/js/core/tailwind-config.js"></script>
     
     <link rel="stylesheet" href="/Finzo/public/assets/css/base/variables.css" />
@@ -43,15 +43,15 @@
                             <span class="auth-brand-name">Finzo</span>
                         </a>
                         <h2 class="auth-hero-headline">Set a new password.</h2>
-                        <p class="auth-hero-subtitle">Choose a strong password to protect your account and keep your banking information secure.</p>
+                        <p class="auth-hero-subtitle">Your administrator has generated a temporary access password. Set a new strong password to secure your account going forward.</p>
                     </div>
                     
                     <div>
                         <div class="auth-hero-security-card">
                             <span class="material-symbols-outlined auth-hero-security-icon">published_with_changes</span>
                             <div>
-                                <h4 class="auth-hero-security-title">All other sessions will be signed out</h4>
-                                <p class="auth-hero-security-desc">When you change your password, any active sessions on other devices will be ended for your protection.</p>
+                                <h4 class="auth-hero-security-title">Change your temporary password</h4>
+                                <p class="auth-hero-security-desc">You have been provided a temporary password by your administrator. You must change it now. All other active sessions will be ended immediately upon completion.</p>
                             </div>
                         </div>
                         <div class="auth-hero-footer">

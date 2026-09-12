@@ -222,9 +222,12 @@ class UserRepository extends BaseRepository implements \App\Domain\Contracts\Rep
     public function getUserDashboardData(int $userId)
     {
         $stmt = $this->db->prepare("
-            SELECT id, customer_id, full_name, email, phone, status, rejection_reason, profile_picture, created_at, updated_at
-            FROM users
-            WHERE id = ? AND is_deleted = 0
+            SELECT u.id, u.customer_id, u.full_name, u.email, u.phone, u.status, u.rejection_reason,
+                   COALESCE(k.profile_picture, u.profile_picture) AS profile_picture,
+                   u.created_at, u.updated_at
+            FROM users u
+            LEFT JOIN kyc_applications k ON u.customer_id = k.user_id
+            WHERE u.id = ? AND u.is_deleted = 0
         ");
         $stmt->execute([$userId]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
@@ -368,12 +371,37 @@ class UserRepository extends BaseRepository implements \App\Domain\Contracts\Rep
     public function getFullProfile(int $userId)
     {
         $stmt = $this->db->prepare("
-            SELECT id, customer_id, full_name, email, phone, status, dob, gender, father_name,
-                   mother_name, marital_status, nationality, source_of_income, profile_picture,
-                   occupation, annual_income, street, city, state, pincode, country,
-                   id_type, id_number, created_at
-            FROM users
-            WHERE id = ? AND is_deleted = 0
+            SELECT u.id, u.customer_id, u.full_name, u.email, u.phone, u.status,
+                   u.branch_id,
+                   COALESCE(b.name, 'Unassigned') as branch_name,
+                   COALESCE(b.branch_code, '') as branch_code,
+                   COALESCE(b.state, '') as branch_state,
+                   COALESCE(k.dob, u.dob) as dob,
+                   COALESCE(k.gender, u.gender) as gender,
+                   COALESCE(k.father_name, u.father_name) as father_name,
+                   COALESCE(k.mother_name, u.mother_name) as mother_name,
+                   COALESCE(k.marital_status, u.marital_status) as marital_status,
+                   COALESCE(k.nationality, u.nationality) as nationality,
+                   COALESCE(k.source_of_income, u.source_of_income) as source_of_income,
+                   COALESCE(k.profile_picture, u.profile_picture) as profile_picture,
+                   COALESCE(k.occupation, u.occupation) as occupation,
+                   COALESCE(k.annual_income, u.annual_income) as annual_income,
+                   COALESCE(k.street, u.street) as street,
+                   COALESCE(k.city, u.city) as city,
+                   COALESCE(k.state, u.state) as state,
+                   COALESCE(k.pincode, u.pincode) as pincode,
+                   u.country,
+                   COALESCE(k.id_type, u.id_type) as id_type,
+                   COALESCE(k.id_number, u.id_number) as id_number,
+                   COALESCE(k.id_front_path, u.id_front_path) as id_front_path,
+                   COALESCE(k.id_back_path, u.id_back_path) as id_back_path,
+                   u.rejection_reason,
+                   u.kyc_submitted_at,
+                   u.created_at
+            FROM users u
+            LEFT JOIN kyc_applications k ON u.customer_id = k.user_id
+            LEFT JOIN branches b ON u.branch_id = b.id
+            WHERE u.id = ? AND u.is_deleted = 0
         ");
         $stmt->execute([$userId]);
         $row = $stmt->fetch(\PDO::FETCH_ASSOC);
