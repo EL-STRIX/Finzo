@@ -2,12 +2,43 @@
  * Finzo User Portal — Beneficiary Management
  */
 
-(async function() {
+function toast(message, type = 'info') {
+  if (typeof window.showToast === 'function') {
+    window.showToast(message, type);
+  } else if (typeof showToast === 'function') {
+    showToast(message, type);
+  } else if (window.FinzoUtils && typeof window.FinzoUtils.showToast === 'function') {
+    window.FinzoUtils.showToast(message, type);
+  } else {
+    alert(message);
+  }
+}
+
+let beneficiaries = [];
+let verifiedHolder = '';
+
+document.addEventListener('DOMContentLoaded', async function() {
   await fetchUserSession();
   buildSidebar('beneficiary');
   buildNavbar('Banking', 'Beneficiaries');
   handleStatusRedirect('beneficiary');
   loadBeneficiaries();
+
+  // Attach Enter key trigger on nickname input
+  const nickInput = document.getElementById('new-nick');
+  if (nickInput) {
+    nickInput.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        const accInput = document.getElementById('new-acc');
+        if (accInput && !accInput.value.trim()) {
+          accInput.focus();
+        } else {
+          addBeneficiary();
+        }
+      }
+    });
+  }
 
   // Attach Enter key trigger on account number input
   const accInput = document.getElementById('new-acc');
@@ -15,14 +46,28 @@
     accInput.addEventListener('keydown', function(e) {
       if (e.key === 'Enter') {
         e.preventDefault();
-        lookupBen();
+        addBeneficiary();
       }
     });
   }
-})();
 
-let beneficiaries = [];
-let verifiedHolder = '';
+  // Explicit click listeners
+  const saveBtn = document.getElementById('btn-save-ben') || document.querySelector('[data-action="addBeneficiary()"]');
+  if (saveBtn) {
+    saveBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      addBeneficiary();
+    });
+  }
+
+  const lookupBtn = document.getElementById('btn-lookup-ben') || document.querySelector('[data-action="lookupBen()"]');
+  if (lookupBtn) {
+    lookupBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      lookupBen();
+    });
+  }
+});
 
 async function loadBeneficiaries() {
   try {
@@ -57,7 +102,11 @@ async function lookupBen() {
   const acc = (accInput ? accInput.value : '').trim().toUpperCase();
   const resEl = document.getElementById('ben-result');
   const btn = document.getElementById('btn-lookup-ben') || document.querySelector('[data-action="lookupBen()"]');
-  if (!acc) return;
+  if (!acc) {
+    toast('Please enter an account number to verify', 'warning');
+    if (accInput) accInput.focus();
+    return false;
+  }
 
   // Prevent looking up own account
   const ownAcc = (window.UserState && window.UserState.accountNo) ? String(window.UserState.accountNo).trim().toUpperCase() : '';
@@ -68,8 +117,8 @@ async function lookupBen() {
       resEl.className = 'mt-3 p-3 rounded-lg text-xs font-bold flex items-center gap-2 animate-in fade-in slide-in-from-top-1 duration-200 bg-danger-surface border border-danger-base/20 text-danger-base';
       resEl.classList.remove('hidden');
     }
-    if (window.showToast) window.showToast('Cannot add your own account as a beneficiary', 'warning');
-    return;
+    toast('Cannot add your own account as a beneficiary', 'warning');
+    return false;
   }
 
   const originalBtnHtml = btn ? btn.innerHTML : '';
@@ -96,6 +145,8 @@ async function lookupBen() {
           resEl.innerHTML = '<span class="material-symbols-outlined text-base">warning</span> Cannot add your own account as a beneficiary';
           resEl.className = 'mt-3 p-3 rounded-lg text-xs font-bold flex items-center gap-2 animate-in fade-in slide-in-from-top-1 duration-200 bg-danger-surface border border-danger-base/20 text-danger-base';
         }
+        toast('Cannot add your own account as a beneficiary', 'warning');
+        return false;
       } else {
         verifiedHolder = data.account.holder_name;
         const accType = data.account.account_type ? ` (${data.account.account_type.toUpperCase()})` : '';
@@ -103,6 +154,7 @@ async function lookupBen() {
           resEl.innerHTML = `<span class="material-symbols-outlined text-base">check_circle</span> Verified: <span class="font-black">${verifiedHolder}</span>${accType}`;
           resEl.className = 'mt-3 p-3 rounded-lg text-xs font-bold flex items-center gap-2 animate-in fade-in slide-in-from-top-1 duration-200 bg-success-surface border border-success-base/20 text-success-base';
         }
+        return true;
       }
     } else {
       verifiedHolder = '';
@@ -111,6 +163,8 @@ async function lookupBen() {
         resEl.innerHTML = `<span class="material-symbols-outlined text-base">error</span> ${errMsg}`;
         resEl.className = 'mt-3 p-3 rounded-lg text-xs font-bold flex items-center gap-2 animate-in fade-in slide-in-from-top-1 duration-200 bg-danger-surface border border-danger-base/20 text-danger-base';
       }
+      toast(errMsg, 'error');
+      return false;
     }
   } catch (e) {
     verifiedHolder = '';
@@ -119,6 +173,8 @@ async function lookupBen() {
       resEl.className = 'mt-3 p-3 rounded-lg text-xs font-bold flex items-center gap-2 animate-in fade-in slide-in-from-top-1 duration-200 bg-danger-surface border border-danger-base/20 text-danger-base';
       resEl.classList.remove('hidden');
     }
+    toast('Lookup failed. Please try again.', 'error');
+    return false;
   } finally {
     if (btn) {
       btn.disabled = false;
@@ -128,10 +184,33 @@ async function lookupBen() {
 }
 
 async function addBeneficiary() {
-  const nick = document.getElementById('new-nick').value.trim();
-  const acc = document.getElementById('new-acc').value.trim().toUpperCase();
-  if (!nick || !acc) { showToast('Please fill in all fields', 'error'); return; }
-  if (!verifiedHolder) { showToast('Please verify the Finzo account number first', 'error'); return; }
+  const nickInput = document.getElementById('new-nick');
+  const accInput = document.getElementById('new-acc');
+  const nick = (nickInput ? nickInput.value : '').trim();
+  const acc = (accInput ? accInput.value : '').trim().toUpperCase();
+
+  if (!nick || !acc) {
+    toast('Please fill in both Nickname and Account Number', 'error');
+    if (!nick && nickInput) nickInput.focus();
+    else if (!acc && accInput) accInput.focus();
+    return;
+  }
+
+  const saveBtn = document.getElementById('btn-save-ben') || document.querySelector('[data-action="addBeneficiary()"]');
+  const originalSaveBtnHtml = saveBtn ? saveBtn.innerHTML : 'Save Beneficiary';
+
+  // If user hasn't explicitly clicked 'Verify Account' yet, auto-verify now
+  if (!verifiedHolder) {
+    const verifiedOk = await lookupBen();
+    if (!verifiedOk || !verifiedHolder) {
+      return;
+    }
+  }
+
+  if (saveBtn) {
+    saveBtn.disabled = true;
+    saveBtn.innerHTML = '<span class="material-symbols-outlined animate-spin text-sm">sync</span><span>Saving...</span>';
+  }
 
   try {
     let data;
@@ -153,16 +232,22 @@ async function addBeneficiary() {
     }
 
     if (data && data.success) {
-      document.getElementById('new-nick').value = '';
-      document.getElementById('new-acc').value = '';
+      if (nickInput) nickInput.value = '';
+      if (accInput) accInput.value = '';
       resetLookup();
-      showToast('Beneficiary saved successfully', 'success');
-      loadBeneficiaries();
+      toast('Beneficiary saved successfully', 'success');
+      await loadBeneficiaries();
     } else {
-      showToast(data.message || 'Failed to save beneficiary', 'error');
+      toast((data && data.message) ? data.message : 'Failed to save beneficiary', 'error');
     }
   } catch (e) {
-    showToast('Connection error', 'error');
+    console.error('Error saving beneficiary:', e);
+    toast('Connection error saving beneficiary', 'error');
+  } finally {
+    if (saveBtn) {
+      saveBtn.disabled = false;
+      saveBtn.innerHTML = originalSaveBtnHtml;
+    }
   }
 }
 
@@ -182,7 +267,7 @@ function deleteBen(id) {
     } catch (e) {}
     beneficiaries = beneficiaries.filter(b => b.id !== id);
     renderList();
-    showToast('Beneficiary removed', 'success');
+    toast('Beneficiary removed', 'success');
   }, true);
 }
 
@@ -203,7 +288,7 @@ function renderList() {
   }
   
   list.innerHTML = beneficiaries.map(b => {
-    const initials = b.nick.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase();
+    const initials = b.nick.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
     return `
     <div class="p-5 flex flex-col sm:flex-row sm:items-center gap-4 border-b border-[var(--color-border-main)] last:border-0 hover:bg-[var(--color-surface-hover)] transition-colors group">
       <div class="w-12 h-12 rounded-full bg-primary-surface text-primary-base flex items-center justify-center font-display font-bold text-lg shrink-0">

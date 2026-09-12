@@ -664,6 +664,7 @@ function showToast(message, type = 'success', duration = 3000) {
   container.appendChild(toast);
   setTimeout(() => { toast.style.opacity = '0'; toast.style.transform = 'translateX(20px)'; toast.style.transition = '0.3s'; setTimeout(() => toast.remove(), 300); }, duration);
 }
+window.showToast = showToast;
 
 // ── MODAL ──
 function openModal(id) { document.getElementById(id)?.classList.remove('hidden'); }

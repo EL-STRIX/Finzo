@@ -153,9 +153,13 @@ class UserController
             }
         }
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $action = $this->security->cleanInput($_POST['action'] ?? 'add');
+            $rawInput = file_get_contents('php://input');
+            $input = json_decode($rawInput, true) ?? [];
+            $postData = !empty($input) ? array_merge($_POST, $input) : $_POST;
+
+            $action = $this->security->cleanInput($postData['action'] ?? 'add');
             if ($action === 'delete') {
-                $beneficiary_id = intval($_POST['beneficiary_id'] ?? 0);
+                $beneficiary_id = intval($postData['beneficiary_id'] ?? 0);
                 if (!$beneficiary_id) {
                     json_response(['success' => false, 'message' => 'Beneficiary ID is required'], 422);
                 }
@@ -170,11 +174,19 @@ class UserController
                     json_response(['success' => false, 'message' => 'Failed to remove beneficiary'], 500);
                 }
             }
-            $validator = new \App\Presentation\Validators\UserValidator($this->service);
-            $validated = $validator->validateBeneficiary($_POST);
+
+            try {
+                $validator = new \App\Presentation\Validators\UserValidator($this->service);
+                $validated = $validator->validateBeneficiary($postData);
+            } catch (\App\Shared\Core\Exceptions\ValidationException $e) {
+                $errors = $e->getPayload()['errors'] ?? [];
+                $firstError = !empty($errors) ? current($errors) : $e->getMessage();
+                json_response(['success' => false, 'message' => $firstError, 'errors' => $errors], 422);
+            }
+
             $nickname = $validated['nickname'];
             $accountNumber = $validated['account_no'];
-            $bank_name = $this->security->cleanInput($_POST['bank_name'] ?? 'Finzo');
+            $bank_name = $this->security->cleanInput($postData['bank_name'] ?? 'Finzo Banking System');
 
             try {
                 $targetAccount = $this->service->fetchAccountLookup($accountNumber);
@@ -213,8 +225,12 @@ class UserController
             }
         }
         if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
-            parse_str(file_get_contents('php://input'), $delete_data);
-            $beneficiary_id = intval($delete_data['beneficiary_id'] ?? $_GET['id'] ?? 0);
+            $rawInput = file_get_contents('php://input');
+            $delete_data = json_decode($rawInput, true) ?? [];
+            if (empty($delete_data)) {
+                parse_str($rawInput, $delete_data);
+            }
+            $beneficiary_id = intval($delete_data['beneficiary_id'] ?? $_POST['beneficiary_id'] ?? $_GET['id'] ?? 0);
             if (!$beneficiary_id) {
                 json_response(['success' => false, 'message' => 'Beneficiary ID is required'], 422);
             }
@@ -555,8 +571,12 @@ class UserController
         }
 
         $userId = $_SESSION['user_id'];
+        $rawInput = file_get_contents('php://input');
+        $input = json_decode($rawInput, true) ?? [];
+        $postData = !empty($input) ? array_merge($_POST, $input) : $_POST;
+
         $validator = new \App\Presentation\Validators\UserValidator($this->service);
-        $validated = $validator->validateTransfer($_POST);
+        $validated = $validator->validateTransfer($postData);
         $to_account_no = $validated['to_account_no'];
         $amount = $validated['amount'];
         $description = $validated['description'];
