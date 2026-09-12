@@ -117,6 +117,14 @@ $router->get('/api/v1/admin/ledger/export', [LedgerController::class, 'exportJou
 $router->get('/api/v1/admin/ledger/periods/active', [LedgerController::class, 'getActivePeriod'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->post('/api/v1/admin/ledger/periods/open', [LedgerController::class, 'openPeriod'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
 $router->post('/api/v1/admin/ledger/periods/close', [LedgerController::class, 'closePeriod'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
+
+use App\Presentation\Api\V1\Admin\AdminSupportController;
+$router->get('/api/v1/admin/support/tickets', [AdminSupportController::class, 'index'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
+$router->get('/api/v1/admin/support/tickets/{id}', [AdminSupportController::class, 'show'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
+$router->post('/api/v1/admin/support/tickets/{id}/reply', [AdminSupportController::class, 'reply'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
+$router->post('/api/v1/admin/support/tickets/{id}/status', [AdminSupportController::class, 'updateStatus'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
+$router->patch('/api/v1/admin/support/tickets/{id}/status', [AdminSupportController::class, 'updateStatus'], [\App\Presentation\Middleware\AdminAuthMiddleware::class]);
+
 use App\Presentation\Middleware\UserAuthMiddleware;
 $router->get('/api/v1/user/dashboard', [UserController::class, 'dashboard'], [UserAuthMiddleware::class]);
 $router->get('/api/v1/user/accounts', [UserController::class, 'accounts'], [UserAuthMiddleware::class]);

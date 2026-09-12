@@ -145,12 +145,9 @@ function isActive($key, $current) {
                 </a>
             </li>
             <li>
-                <a href="admin-support.php" class="flex items-center justify-between px-4 py-2.5 rounded-lg font-bold transition-all <?= isActive('support', $currentPath) ?>">
-                    <div class="flex items-center gap-3">
-                        <span class="material-symbols-outlined text-[20px]" aria-hidden="true">support_agent</span>
-                        <span class="text-sm">Helpdesk &amp; Support</span>
-                    </div>
-                    <span class="text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded bg-primary/10 text-primary border border-primary/20">Soon</span>
+                <a href="admin-support.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg font-bold transition-all <?= isActive('support', $currentPath) ?>">
+                    <span class="material-symbols-outlined text-[20px]" aria-hidden="true">support_agent</span>
+                    <span class="text-sm">Helpdesk &amp; Support</span>
                 </a>
             </li>
         </ul>
