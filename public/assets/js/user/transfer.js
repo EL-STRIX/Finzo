@@ -10,10 +10,11 @@
 
   (async function loadBeneficiaries() {
     try {
-      const res = await fetch('/Finzo/api/user/beneficiary.php', { credentials: 'same-origin' });
-      const data = await res.json();
+      const data = window.api
+        ? await window.api.get('/user/beneficiaries')
+        : await fetch('/Finzo/api/user/beneficiary.php', { credentials: 'same-origin' }).then(r => r.json());
       const container = document.getElementById('beneficiary-chips');
-      if (data.success && data.beneficiaries && data.beneficiaries.length > 0) {
+      if (data && data.success && data.beneficiaries && data.beneficiaries.length > 0) {
         container.innerHTML = data.beneficiaries.map(b => 
           `<button class="px-4 py-2 rounded-full border-2 border-[var(--color-border-main)] bg-[var(--color-surface-subtle)] text-xs font-bold text-[var(--color-text-muted)] hover:border-primary-base hover:text-primary-base transition-colors flex items-center gap-2" onclick="useBeneficiary('${b.account_no}','${b.nickname}')">
             <span class="material-symbols-outlined text-[14px]">star</span> ${b.nickname}
@@ -51,11 +52,19 @@
     if (accNo === UserState.accountNo) { showToast('Cannot transfer to your own account', 'error'); return; }
     
     try {
-      const res = await fetch('/Finzo/api/user/account-lookup.php?account_no=' + encodeURIComponent(accNo), { credentials: 'same-origin' });
-      const data = await res.json();
+      const data = window.api
+        ? await window.api.get('/user/accounts/lookup', { account_no: accNo })
+        : await fetch('/Finzo/api/user/account-lookup.php?account_no=' + encodeURIComponent(accNo), { credentials: 'same-origin' }).then(r => r.json());
       document.getElementById('lookup-result').classList.remove('hidden');
       
-      if (data.success && data.account) {
+      if (data && data.success && data.account) {
+        if (data.account.is_self) {
+          recipientVerified = false;
+          document.getElementById('lookup-found').classList.add('hidden');
+          document.getElementById('lookup-not-found').classList.remove('hidden');
+          showToast('Cannot transfer to your own account', 'warning');
+          return;
+        }
         recipientVerified = true;
         recipientName = data.account.holder_name;
         recipientAccNo = accNo;
@@ -128,32 +137,47 @@
     btn.innerHTML = '<span class="material-symbols-outlined animate-spin">sync</span> Processing...';
 
     try {
-      let csrfToken = '';
-      try {
-        const tokenRes = await fetch('/Finzo/api/auth/get-csrf-token.php');
-        const tokenData = await tokenRes.json();
-        csrfToken = tokenData.csrf_token || '';
-      } catch (e) { }
-
-      const params = new URLSearchParams();
-      params.append('to_account', recipientAccNo);
-      params.append('amount', amount);
-      params.append('pin', pin);
-      params.append('description', desc);
-      params.append('csrf_token', csrfToken);
-
-      const res = await fetch('/Finzo/api/user/transfer.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        credentials: 'same-origin',
-        body: params.toString()
-      });
-      const data = await res.json();
-      
-      if (data.success) {
-        window.location.href = `receipt.php?id=${data.txn_id}&success=1`;
+      let data;
+      if (window.api) {
+        data = await window.api.post('/user/transactions/transfer', {
+          to_account: recipientAccNo,
+          to_account_no: recipientAccNo,
+          amount: amount,
+          pin: pin,
+          txn_pin: pin,
+          description: desc
+        });
       } else {
-        showToast(data.message || 'Transfer failed', 'error');
+        let csrfToken = '';
+        try {
+          const tokenRes = await fetch('/Finzo/api/auth/get-csrf-token.php');
+          const tokenData = await tokenRes.json();
+          csrfToken = tokenData.csrf_token || '';
+        } catch (e) { }
+
+        const params = new URLSearchParams();
+        params.append('to_account', recipientAccNo);
+        params.append('to_account_no', recipientAccNo);
+        params.append('amount', amount);
+        params.append('pin', pin);
+        params.append('txn_pin', pin);
+        params.append('description', desc);
+        params.append('csrf_token', csrfToken);
+
+        const res = await fetch('/Finzo/api/user/transfer.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          credentials: 'same-origin',
+          body: params.toString()
+        });
+        data = await res.json();
+      }
+      
+      if (data && data.success) {
+        const txnId = data.transaction_id || data.txn_id || '';
+        window.location.href = `receipt.php?id=${txnId}&success=1`;
+      } else {
+        showToast((data && data.message) ? data.message : 'Transfer failed', 'error');
         btn.disabled = false;
         btn.innerHTML = '<span class="material-symbols-outlined">done_all</span> Authorize & Send';
       }

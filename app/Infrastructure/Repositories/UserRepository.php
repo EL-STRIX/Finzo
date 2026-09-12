@@ -110,10 +110,14 @@ class UserRepository extends BaseRepository implements \App\Domain\Contracts\Rep
     public function fetchBeneficiaries($userId)
     {
         $stmt = $this->db->prepare("
-            SELECT id, nickname, account_no, bank_name, created_at
-            FROM beneficiaries
-            WHERE user_id = ?
-            ORDER BY created_at DESC
+            SELECT b.id, b.nickname, b.account_no, b.bank_name, b.created_at,
+                   COALESCE(u.full_name, b.nickname) AS name,
+                   u.full_name AS holder_name
+            FROM beneficiaries b
+            LEFT JOIN accounts a ON a.account_no = b.account_no
+            LEFT JOIN users u ON u.customer_id = a.user_id
+            WHERE b.user_id = ?
+            ORDER BY b.created_at DESC
         ");
         $stmt->execute([$userId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);

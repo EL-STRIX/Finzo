@@ -121,9 +121,18 @@ use App\Presentation\Middleware\UserAuthMiddleware;
 $router->get('/api/v1/user/dashboard', [UserController::class, 'dashboard'], [UserAuthMiddleware::class]);
 $router->get('/api/v1/user/accounts', [UserController::class, 'accounts'], [UserAuthMiddleware::class]);
 $router->get('/api/v1/user/accounts/lookup', [UserController::class, 'accountLookup'], [UserAuthMiddleware::class]);
+$router->get('/api/v1/user/account-lookup', [UserController::class, 'accountLookup'], [UserAuthMiddleware::class]);
+$router->get('/api/user/account-lookup.php', [UserController::class, 'accountLookup'], [UserAuthMiddleware::class]);
 $router->post('/api/v1/user/accounts/settings', [UserController::class, 'accountSettings'], [UserAuthMiddleware::class]);
 $router->get('/api/v1/user/beneficiaries', [UserController::class, 'beneficiary'], [UserAuthMiddleware::class]);
 $router->post('/api/v1/user/beneficiaries', [UserController::class, 'beneficiary'], [UserAuthMiddleware::class]);
+$router->delete('/api/v1/user/beneficiaries', [UserController::class, 'beneficiary'], [UserAuthMiddleware::class]);
+$router->delete('/api/v1/user/beneficiaries/{id}', [UserController::class, 'beneficiary'], [UserAuthMiddleware::class]);
+$router->get('/api/v1/user/beneficiary', [UserController::class, 'beneficiary'], [UserAuthMiddleware::class]);
+$router->post('/api/v1/user/beneficiary', [UserController::class, 'beneficiary'], [UserAuthMiddleware::class]);
+$router->get('/api/user/beneficiary.php', [UserController::class, 'beneficiary'], [UserAuthMiddleware::class]);
+$router->post('/api/user/beneficiary.php', [UserController::class, 'beneficiary'], [UserAuthMiddleware::class]);
+$router->delete('/api/user/beneficiary.php', [UserController::class, 'beneficiary'], [UserAuthMiddleware::class]);
 $router->get('/api/v1/user/profile', [UserController::class, 'profile'], [UserAuthMiddleware::class]);
 $router->post('/api/v1/user/profile', [UserController::class, 'profile'], [UserAuthMiddleware::class]);
 $router->post('/api/v1/user/profile/complete', [UserController::class, 'completeProfile'], [UserAuthMiddleware::class]);
@@ -132,6 +141,8 @@ $router->post('/api/v1/user/notifications', [UserController::class, 'notificatio
 $router->get('/api/v1/user/statement', [UserController::class, 'statement'], [UserAuthMiddleware::class]);
 $router->get('/api/v1/user/transactions', [UserController::class, 'transactions'], [UserAuthMiddleware::class]);
 $router->post('/api/v1/user/transactions/transfer', [UserController::class, 'transfer'], [UserAuthMiddleware::class]);
+$router->post('/api/v1/user/transfer', [UserController::class, 'transfer'], [UserAuthMiddleware::class]);
+$router->post('/api/user/transfer.php', [UserController::class, 'transfer'], [UserAuthMiddleware::class]);
 $router->post('/api/v1/user/security/change-password', [UserController::class, 'changePassword'], [UserAuthMiddleware::class]);
 $router->post('/api/v1/user/security/verify-pin', [UserController::class, 'verifyPin'], [UserAuthMiddleware::class]);
 
@@ -168,6 +179,8 @@ use App\Presentation\Middleware\StaffAuthMiddleware;
 // Staff Portal Routes
 $router->get('/api/v1/staff-portal/dashboard', [StaffController::class, 'dashboard'], [StaffAuthMiddleware::class]);
 $router->get('/api/v1/staff-portal/account-lookup', [StaffController::class, 'accountLookup'], [StaffAuthMiddleware::class]);
+$router->get('/api/v1/staff/account-lookup.php', [StaffController::class, 'accountLookup'], [StaffAuthMiddleware::class]);
+$router->get('/api/staff/account-lookup.php', [StaffController::class, 'accountLookup'], [StaffAuthMiddleware::class]);
 $router->post('/api/v1/staff-portal/deposit', [StaffController::class, 'deposit'], [StaffAuthMiddleware::class]);
 $router->post('/api/v1/staff-portal/withdrawal', [StaffController::class, 'withdrawal'], [StaffAuthMiddleware::class]);
 $router->get('/api/v1/staff-portal/history', [StaffController::class, 'history'], [StaffAuthMiddleware::class]);

@@ -37,11 +37,22 @@ class UserController
             if (!$result || $result['status'] !== \App\Domain\Enums\AccountStatusEnum::ACTIVE->value) {
                 json_response(['success' => false, 'message' => 'Finzo account not found'], 404);
             }
+            $userId = $_SESSION['user_id'] ?? null;
+            $isSelf = false;
+            if ($userId) {
+                try {
+                    $ownAccount = $this->service->fetchAccountDetails($userId);
+                    if ($ownAccount && strcasecmp($ownAccount['account_no'] ?? '', $accountNumber) === 0) {
+                        $isSelf = true;
+                    }
+                } catch (\Throwable $e) {}
+            }
             json_response([
                 'success' => true,
                 'account' => [
                     'holder_name'  => $result['full_name'],
-                    'account_type' => $result['account_type']
+                    'account_type' => $result['account_type'],
+                    'is_self'      => $isSelf
                 ]
             ]);
         } catch (PDOException $e) {
@@ -166,6 +177,21 @@ class UserController
             $bank_name = $this->security->cleanInput($_POST['bank_name'] ?? 'Finzo');
 
             try {
+                $targetAccount = $this->service->fetchAccountLookup($accountNumber);
+                if (!$targetAccount || $targetAccount['status'] !== \App\Domain\Enums\AccountStatusEnum::ACTIVE->value) {
+                    json_response(['success' => false, 'message' => 'Recipient account not found or is inactive'], 404);
+                }
+
+                $rawSessionUserId = $_SESSION['user_id'] ?? 0;
+                if ($rawSessionUserId) {
+                    try {
+                        $ownAcc = $this->service->fetchAccountDetails($rawSessionUserId);
+                        if ($ownAcc && strcasecmp($ownAcc['account_no'] ?? '', $accountNumber) === 0) {
+                            json_response(['success' => false, 'message' => 'Cannot add your own account as a beneficiary'], 422);
+                        }
+                    } catch (\Throwable $e) {}
+                }
+
                 $max_beneficiaries = get_setting($this->service->getDb(), 'max_beneficiaries', 10);
                 $count = $this->service->countBeneficiaries($userId);
                 if ($count >= $max_beneficiaries) {

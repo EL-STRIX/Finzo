@@ -110,10 +110,10 @@ class UserValidator extends Validator
     public function validateTransfer(array $data): array
     {
         $errors = [];
-        $toAccountNo = self::sanitize(['to_account_no' => $data['to_account_no'] ?? ''])['to_account_no'];
+        $toAccountNo = self::sanitize(['to_account_no' => $data['to_account_no'] ?? $data['to_account'] ?? ''])['to_account_no'];
         $amount      = floatval($data['amount'] ?? 0);
         $description = self::sanitize(['description' => $data['description'] ?? ''])['description'];
-        $txnPin      = self::sanitize(['txn_pin' => $data['txn_pin'] ?? ''])['txn_pin'];
+        $txnPin      = self::sanitize(['txn_pin' => $data['txn_pin'] ?? $data['pin'] ?? ''])['txn_pin'];
 
         if (empty($toAccountNo)) {
             $errors['to_account_no'] = 'Recipient account number is required';
