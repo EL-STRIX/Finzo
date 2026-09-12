@@ -24,6 +24,9 @@ function isActive($key, $current) {
         case 'audit':
             $active = str_contains($current, 'audit');
             break;
+        case 'support':
+            $active = str_contains($current, 'support');
+            break;
         case 'loan-products':
             $active = str_contains($current, 'loan-product');
             break;
@@ -139,6 +142,15 @@ function isActive($key, $current) {
                 <a href="admin-audit-log.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg font-bold transition-all <?= isActive('audit', $currentPath) ?>">
                     <span class="material-symbols-outlined text-[20px]" aria-hidden="true">manage_search</span>
                     <span class="text-sm">System Audit Log</span>
+                </a>
+            </li>
+            <li>
+                <a href="admin-support.php" class="flex items-center justify-between px-4 py-2.5 rounded-lg font-bold transition-all <?= isActive('support', $currentPath) ?>">
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-[20px]" aria-hidden="true">support_agent</span>
+                        <span class="text-sm">Helpdesk &amp; Support</span>
+                    </div>
+                    <span class="text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded bg-primary/10 text-primary border border-primary/20">Soon</span>
                 </a>
             </li>
         </ul>
