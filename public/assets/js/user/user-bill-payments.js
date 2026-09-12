@@ -1,108 +1,109 @@
 /**
- * Finzo User Portal — Bill Payments & Utility Services Handler
+ * Finzo User Portal — Bill Payments & Utilities Interactive Explorer
+ * 
+ * Clean Architecture Reference:
+ * This view runs 100% client-side while the backend Bharat BillPay (BBPS) integration
+ * is developed per the specification in docs/04-API/Future-Financial-Products-Spec.md.
  */
+(function() {
+    'use strict';
 
-document.addEventListener('DOMContentLoaded', async () => {
-    buildSidebar('bill-payments');
-    buildNavbar('Services & Payments', 'Bill Payments & Utilities');
-    await fetchUserSession();
-    await loadPaymentHistory();
-});
+    window.setCategory = function(categoryName, icon, billers) {
+        // Update active card styling
+        const cards = document.querySelectorAll('.category-card');
+        cards.forEach(c => {
+            c.classList.remove('border-primary', 'bg-primary/5', 'border-primary/40');
+            c.classList.add('border-border-subtle', 'bg-surface/80');
+        });
 
-function formatINR(val) {
-    const num = parseFloat(val) || 0;
-    return '₹ ' + num.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-}
-
-function selectBillerCategory(category, icon) {
-    document.getElementById('bill-category').value = category;
-    document.getElementById('form-category-title').textContent = category + ' Payment';
-    const iconEl = document.getElementById('form-category-icon');
-    if (iconEl) iconEl.textContent = icon;
-    showToast(`Category selected: ${category}`, 'info');
-}
-
-async function loadPaymentHistory() {
-    const container = document.getElementById('bill-history-container');
-    try {
-        const res = await window.api.get('/user/billers/history');
-        if (res.success) {
-            renderPaymentHistory(res.history || []);
-        } else {
-            container.innerHTML = `<div class="py-12 text-center text-text-secondary text-xs font-bold uppercase tracking-wider">${res.message || 'No payment history.'}</div>`;
+        if (event && event.currentTarget) {
+            event.currentTarget.classList.remove('border-border-subtle', 'bg-surface/80');
+            event.currentTarget.classList.add('border-primary/40', 'bg-primary/5');
         }
-    } catch (e) {
-        console.error('Failed to load bill history:', e);
-        container.innerHTML = `<div class="py-12 text-center text-text-secondary text-xs font-bold uppercase tracking-wider">Error connecting to server.</div>`;
-    }
-}
 
-function renderPaymentHistory(history) {
-    const container = document.getElementById('bill-history-container');
-    if (!container) return;
+        // Update active category badge
+        const pill = document.getElementById('active-category-pill');
+        if (pill) pill.textContent = categoryName + ' Selected';
 
-    if (!history || !history.length) {
-        container.innerHTML = '<div class="py-12 text-center text-text-secondary text-xs font-bold uppercase tracking-wider">No bill payments made yet.</div>';
-        return;
-    }
+        // Update sandbox title & icon
+        const title = document.getElementById('sandbox-title');
+        if (title) title.textContent = categoryName + ' Bill Sandbox';
 
-    container.innerHTML = history.map(h => {
-        const paidDate = h.created_at ? new Date(h.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—';
+        const iconEl = document.getElementById('sandbox-category-icon');
+        if (iconEl) iconEl.textContent = icon;
 
-        return `
-        <div class="p-4 rounded-xl border border-border-subtle bg-surface/50 hover:bg-surface transition-all flex items-center justify-between gap-4">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
-                    <span class="material-symbols-outlined text-xl">receipt</span>
-                </div>
-                <div>
-                    <div class="font-bold text-sm text-text-primary">${h.biller_name}</div>
-                    <div class="text-xs text-text-secondary font-mono">${h.category} • Ref: ${h.reference_no}</div>
-                    <div class="text-[10px] text-text-secondary mt-0.5">${paidDate}</div>
-                </div>
-            </div>
-
-            <div class="text-right">
-                <div class="font-display font-extrabold text-base text-text-primary">${formatINR(h.amount)}</div>
-                <span class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold uppercase text-[9px]">PAID</span>
-            </div>
-        </div>
-        `;
-    }).join('');
-}
-
-async function submitBillPayment(e) {
-    e.preventDefault();
-    const category = document.getElementById('bill-category').value;
-    const billerName = document.getElementById('bill-biller-name').value;
-    const consumerNumber = document.getElementById('bill-consumer-number').value;
-    const amount = document.getElementById('bill-amount').value;
-
-    if (!billerName || !consumerNumber || !amount || amount <= 0) {
-        showToast('Please provide valid bill details and amount.', 'error');
-        return;
-    }
-
-    if (!confirm(`Confirm bill payment of ₹${parseFloat(amount).toLocaleString('en-IN')} for ${billerName}?`)) return;
-
-    try {
-        const formData = new FormData();
-        formData.append('category', category);
-        formData.append('biller_name', billerName);
-        formData.append('consumer_number', consumerNumber);
-        formData.append('amount', amount);
-
-        const res = await window.api.post('/user/billers/pay', formData, true);
-        if (res.success) {
-            showToast(res.message || 'Bill payment successful!', 'success');
-            document.getElementById('bill-pay-form').reset();
-            await loadPaymentHistory();
-            await fetchUserSession(); // refresh balance
-        } else {
-            showToast(res.message || 'Bill payment failed.', 'error');
+        // Populate Sandbox Select
+        const select = document.getElementById('sandbox-biller-select');
+        if (select && billers && billers.length) {
+            select.innerHTML = billers.map(b => `<option value="${b}">${b}</option>`).join('');
         }
-    } catch (e) {
-        console.error('Bill payment error:', e);
-        showToast('Connection failed.', 'error');
+
+        // Hide prior simulation results
+        const resCard = document.getElementById('sandbox-result');
+        if (resCard) resCard.classList.add('hidden');
+
+        if (window.showToast) {
+            window.showToast(`Selected category: ${categoryName}`, 'info');
+        }
+    };
+
+    window.simulateBillFetch = function(e) {
+        e.preventDefault();
+        const btn = document.getElementById('btn-fetch-bill');
+        const resCard = document.getElementById('sandbox-result');
+        const biller = document.getElementById('sandbox-biller-select')?.value || 'Provider';
+        const consumerNo = document.getElementById('sandbox-consumer-no')?.value || '1029384756';
+
+        if (btn) {
+            btn.disabled = true;
+            btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-sm">sync</span><span>Contacting BBPS Gateway...</span>';
+        }
+
+        setTimeout(() => {
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = '<span class="material-symbols-outlined text-[18px]">search</span><span>Fetch Live Bill (Demo Simulation)</span>';
+            }
+
+            if (resCard) {
+                resCard.classList.remove('hidden');
+                const nameEl = document.getElementById('demo-consumer-name');
+                if (nameEl) {
+                    nameEl.textContent = (window.UserState && window.UserState.name) ? window.UserState.name : 'Sujay Paul';
+                }
+            }
+
+            if (window.showToast) {
+                window.showToast(`Simulated bill discovered for ${biller} (${consumerNo})`, 'success');
+            }
+        }, 600);
+    };
+
+    function init() {
+        // Waitlist CTA
+        const waitlistBtn = document.getElementById('btn-bill-waitlist');
+        if (waitlistBtn) {
+            waitlistBtn.addEventListener('click', function() {
+                if (window.showToast) {
+                    window.showToast('You are on the Bharat BillPay early access list! 0 convenience fees on launch.', 'success');
+                }
+            });
+        }
+
+        // Pre-register Biller CTA
+        const preRegisterBtn = document.getElementById('btn-pre-register-biller');
+        if (preRegisterBtn) {
+            preRegisterBtn.addEventListener('click', function() {
+                if (window.showToast) {
+                    window.showToast('Pre-registered for zero convenience fees and early auto-debit rollout!', 'success');
+                }
+            });
+        }
     }
-}
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+})();
