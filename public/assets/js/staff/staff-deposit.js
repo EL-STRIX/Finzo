@@ -336,6 +336,11 @@
 
         if (sumAfter) {
             sumAfter.textContent = typeof formatINR === 'function' ? formatINR(newBalance) : '₹' + newBalance.toFixed(2);
+            if (newBalance < 0) {
+                sumAfter.className = 'font-black text-sm text-danger-base animate-pulse';
+            } else {
+                sumAfter.className = 'font-black text-sm text-text-main dark:text-white';
+            }
         }
 
         // Convert to words

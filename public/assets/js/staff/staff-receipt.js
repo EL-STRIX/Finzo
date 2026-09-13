@@ -1,52 +1,112 @@
-$(document).ready(async function() {
-            const params = new URLSearchParams(window.location.search);
-            const txnId = params.get('id') || params.get('txn_id');
+/**
+ * Finzo Staff — Receipt Controller
+ * Pure Vanilla JavaScript — Clean Architecture & Real-Time Data Binding
+ */
 
-            if (!txnId) {
-                alert('Transaction ID not found.');
+(function () {
+    'use strict';
+
+    function init() {
+        const params = new URLSearchParams(window.location.search);
+        const txnId = params.get('id') || params.get('txn_id');
+
+        if (!txnId) {
+            if (typeof showToast === 'function') {
+                showToast('Transaction ID not found.', 'error');
+            }
+            setTimeout(() => {
                 window.location.href = 'staff-dashboard.php';
-                return;
+            }, 1000);
+            return;
+        }
+
+        loadReceipt(txnId);
+    }
+
+    async function loadReceipt(txnId) {
+        try {
+            let res = null;
+            if (window.api && typeof window.api.get === 'function') {
+                res = await window.api.get('/staff-portal/receipt', { id: txnId });
+            } else {
+                const response = await fetch('/Finzo/api/v1/staff-portal/receipt?id=' + encodeURIComponent(txnId), {
+                    credentials: 'same-origin'
+                });
+                res = await response.json();
             }
 
-            try {
-                const res = await api.get('/staff/receipt.php?id=' + txnId);
-                if (res.success) {
-                    const t = res.transaction;
-                    
-                    $('#receipt-ref-id').text(t.txn_id);
-                    
+            if (res && res.success && res.transaction) {
+                const t = res.transaction;
+
+                const setElText = (id, text) => {
+                    const el = document.getElementById(id);
+                    if (el) el.textContent = text;
+                };
+
+                setElText('receipt-ref-id', t.txn_id || txnId);
+
+                if (t.date) {
                     const dateObj = new Date(t.date);
-                    $('#r-date').text(dateObj.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) + ' ' + dateObj.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true }));
-                    
-                    $('#r-staff').text(t.staff_name);
-                    $('#r-staff-id').text(t.staff_id);
-                    $('#r-branch').text(t.branch_name || 'Finzo Main Branch');
-
-                    $('#r-cust-name').text(t.customer_name);
-                    $('#r-cust-account').text(t.account_no);
-
-                    const isDeposit = t.type === 'deposit';
-                    $('#r-txn-type').text(`Cash ${t.type}`);
-                    $('#r-amount').text(formatINR(t.amount));
-                    
-                    if(isDeposit) {
-                        $('#r-amount').addClass('text-emerald-600 dark:text-emerald-500').text('+' + formatINR(t.amount));
-                    } else {
-                        $('#r-amount').addClass('text-red-600 dark:text-red-500').text('-' + formatINR(t.amount));
-                    }
-
-                    const balance = parseFloat(t.balance_after);
-                    const amount = parseFloat(t.amount);
-                    const prevBalance = isDeposit ? (balance - amount) : (balance + amount);
-                    
-                    $('#r-prev-balance').text(formatINR(prevBalance));
-                    $('#r-avail-balance').text(formatINR(balance));
-
-                } else {
-                    alert('Error: ' + res.message);
+                    const formattedDate = dateObj.toLocaleDateString('en-IN', {
+                        day: '2-digit',
+                        month: 'short',
+                        year: 'numeric'
+                    }) + ' ' + dateObj.toLocaleTimeString('en-IN', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: true
+                    });
+                    setElText('r-date', formattedDate);
                 }
-            } catch (err) {
-                console.error('Receipt Error:', err);
+
+                setElText('r-staff', t.staff_name || 'Finzo Staff');
+                setElText('r-staff-id', t.staff_id || '---');
+                setElText('r-branch', t.branch_name || 'Finzo Main Branch');
+
+                setElText('r-cust-name', t.customer_name || 'Account Holder');
+                setElText('r-cust-account', t.account_no || '---');
+
+                const isDeposit = (t.type || '').toLowerCase() === 'deposit';
+                setElText('r-txn-type', isDeposit ? 'Cash Deposit' : 'Cash Withdrawal');
+
+                const amtVal = parseFloat(t.amount) || 0;
+                const balance = parseFloat(t.balance_after) || 0;
+                const prevBalance = isDeposit ? (balance - amtVal) : (balance + amtVal);
+
+                const amtEl = document.getElementById('r-amount');
+                if (amtEl) {
+                    if (isDeposit) {
+                        amtEl.className = 'text-3xl font-black text-emerald-600 dark:text-emerald-400 font-mono tracking-tight';
+                        amtEl.textContent = '+' + (typeof formatINR === 'function' ? formatINR(amtVal) : '₹' + amtVal.toFixed(2));
+                    } else {
+                        amtEl.className = 'text-3xl font-black text-rose-600 dark:text-rose-400 font-mono tracking-tight';
+                        amtEl.textContent = '-' + (typeof formatINR === 'function' ? formatINR(amtVal) : '₹' + amtVal.toFixed(2));
+                    }
+                }
+
+                setElText('r-prev-balance', typeof formatINR === 'function' ? formatINR(prevBalance) : '₹' + prevBalance.toFixed(2));
+                setElText('r-avail-balance', typeof formatINR === 'function' ? formatINR(balance) : '₹' + balance.toFixed(2));
+            } else {
+                const msg = res && res.message ? res.message : 'Receipt not found.';
+                if (typeof showToast === 'function') {
+                    showToast(msg, 'error');
+                } else {
+                    alert('Receipt Error: ' + msg);
+                }
+            }
+        } catch (err) {
+            console.error('Receipt Error:', err);
+            if (typeof showToast === 'function') {
+                showToast('Failed to load receipt details.', 'error');
+            } else {
                 alert('Failed to load receipt details.');
             }
-        });
+        }
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+})();

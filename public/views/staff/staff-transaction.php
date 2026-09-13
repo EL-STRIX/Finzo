@@ -73,10 +73,10 @@ ob_start();
 
     <!-- SUCCESS BANNER -->
     <div id="account-success" class="hidden animate-in fade-in duration-300" aria-live="polite">
-        <div class="ds-card border-l-4 border-l-emerald-500 p-6">
+        <div class="ds-card border-l-4 <?= $isWithdraw ? 'border-l-rose-500' : 'border-l-emerald-500' ?> p-6">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-6 pb-6 border-b border-surface-border dark:border-white/5">
                 <div class="flex items-center gap-4">
-                    <div class="w-14 h-14 rounded-full bg-success-surface dark:bg-success-surface/10 text-success-base dark:text-success-base flex items-center justify-center text-xl font-black shadow-inner" id="res-initials">--</div>
+                    <div class="w-14 h-14 rounded-full <?= $isWithdraw ? 'bg-rose-500/10 text-rose-600 dark:text-rose-400' : 'bg-success-surface dark:bg-success-surface/10 text-success-base dark:text-success-base' ?> flex items-center justify-center text-xl font-black shadow-inner" id="res-initials">--</div>
                     <div>
                         <h4 class="text-xl font-black font-headline text-text-main dark:text-white leading-tight" id="res-name">Loading...</h4>
                         <div class="text-text-muted font-mono text-sm mt-1" id="res-acc">FNZ---</div>
@@ -192,7 +192,7 @@ ob_start();
                         <div class="h-px bg-surface-border dark:bg-white/10"></div>
                         <div class="flex justify-between items-center">
                             <span class="text-text-muted font-sans text-xs" id="sum-amt-label"><?= $isWithdraw ? 'Debit Amount' : 'Credit Amount' ?></span>
-                            <span class="text-lg font-black text-success-base dark:text-success-base" id="sum-amt">₹0.00</span>
+                            <span class="text-lg font-black <?= $isWithdraw ? 'text-danger-base dark:text-danger-base' : 'text-success-base dark:text-success-base' ?>" id="sum-amt">₹0.00</span>
                         </div>
                         <div class="flex justify-between items-center opacity-70">
                             <span class="text-text-muted font-sans text-xs">Bal Before</span>
@@ -219,7 +219,7 @@ ob_start();
 <!-- STEP 3: CONFIRMATION -->
 <div id="section-3" class="hidden space-y-6 animate-in fade-in duration-300">
     <div class="ds-card overflow-hidden">
-        <div class="bg-warning-surface p-8 text-center text-white relative">
+        <div class="<?= $isWithdraw ? 'bg-gradient-to-r from-rose-600 to-rose-700' : 'bg-gradient-to-r from-emerald-600 to-teal-700' ?> p-8 text-center text-white relative">
             <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjIiIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIi8+PC9zdmc+')] opacity-30"></div>
             <div class="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center mx-auto mb-4 relative z-10 shadow-inner">
                 <span class="material-symbols-outlined text-3xl" aria-hidden="true">fact_check</span>
@@ -227,7 +227,7 @@ ob_start();
             <h3 class="text-2xl font-black font-headline relative z-10" id="confirm-card-title">
                 <?= $isWithdraw ? 'Verify Withdrawal Transaction' : 'Verify Deposit Transaction' ?>
             </h3>
-            <p class="text-warning-base font-bold text-xs mt-2 uppercase tracking-widest relative z-10">Final Operational Review</p>
+            <p class="text-white/80 font-bold text-xs mt-2 uppercase tracking-widest relative z-10">Final Operational Review</p>
         </div>
 
         <div class="p-6 sm:p-8 space-y-6">
