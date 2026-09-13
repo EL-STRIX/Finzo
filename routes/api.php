@@ -212,6 +212,9 @@ $router->post('/api/staff/withdraw.php', [StaffController::class, 'withdrawal'],
 $router->get('/api/v1/staff/receipt', [StaffController::class, 'receipt'], [StaffAuthMiddleware::class]);
 $router->get('/api/v1/staff/receipt.php', [StaffController::class, 'receipt'], [StaffAuthMiddleware::class]);
 $router->get('/api/staff/receipt.php', [StaffController::class, 'receipt'], [StaffAuthMiddleware::class]);
+$router->get('/api/v1/staff/history', [StaffController::class, 'history'], [StaffAuthMiddleware::class]);
+$router->get('/api/v1/staff/history.php', [StaffController::class, 'history'], [StaffAuthMiddleware::class]);
+$router->get('/api/staff/history.php', [StaffController::class, 'history'], [StaffAuthMiddleware::class]);
 $router->get('/api/staff/staff-profile.php', [StaffController::class, 'profile'], [StaffAuthMiddleware::class]);
 $router->post('/api/staff/staff-profile.php', [StaffController::class, 'profile'], [StaffAuthMiddleware::class]);
 $router->post('/api/staff/update-profile.php', [StaffController::class, 'profile'], [StaffAuthMiddleware::class]);

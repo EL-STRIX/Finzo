@@ -164,7 +164,8 @@ class StaffController
                 'total'        => $data['total'],
                 'pages'        => $data['pages'],
                 'current_page' => $filters['page'],
-                'per_page'     => $filters['per_page']
+                'per_page'     => $filters['per_page'],
+                'stats'        => $data['stats'] ?? null
             ]);
         } catch (\Exception $e) {
             throw $e;

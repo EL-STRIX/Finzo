@@ -316,11 +316,13 @@ class StaffService implements \App\Domain\Contracts\Services\StaffServiceInterfa
         $offset = ($filters['page'] - 1) * $filters['per_page'];
 
         $transactions = $this->repository->getTransactionsByStaff($staffId, $where_clauses, $params, $filters['per_page'], $offset);
+        $stats = $this->repository->getStaffHistoricalStats($staffId);
 
         return [
             'transactions' => $transactions,
             'total'        => $total,
-            'pages'        => $pages
+            'pages'        => $pages,
+            'stats'        => $stats
         ];
     }
     /**

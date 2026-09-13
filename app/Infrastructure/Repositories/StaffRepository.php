@@ -310,4 +310,47 @@ class StaffRepository extends BaseRepository implements \App\Domain\Contracts\Re
         $row = $stmt->fetch(\PDO::FETCH_ASSOC);
         return $row ?: null;
     }
+
+    public function getStaffHistoricalStats(int $staffId): array
+    {
+        $deposit = \App\Domain\Enums\TransactionTypeEnum::DEPOSIT->value;
+        $withdrawal = \App\Domain\Enums\TransactionTypeEnum::WITHDRAWAL->value;
+        $completed = \App\Domain\Enums\AccountStatusEnum::COMPLETED->value;
+
+        $dep = $this->fetchOne("
+            SELECT COUNT(*) as count, COALESCE(SUM(amount), 0) as total
+            FROM transactions
+            WHERE processed_by_staff_id = ? AND type = '{$deposit}' AND status = '{$completed}'
+        ", [$staffId]);
+
+        $with = $this->fetchOne("
+            SELECT COUNT(*) as count, COALESCE(SUM(amount), 0) as total
+            FROM transactions
+            WHERE processed_by_staff_id = ? AND type = '{$withdrawal}' AND status = '{$completed}'
+        ", [$staffId]);
+
+        $stmtTotal = $this->db->prepare("
+            SELECT COUNT(*) FROM transactions
+            WHERE processed_by_staff_id = ? AND status = '{$completed}'
+        ");
+        $stmtTotal->execute([$staffId]);
+        $totalAllTime = (int)$stmtTotal->fetchColumn();
+
+        $stmtMonth = $this->db->prepare("
+            SELECT COUNT(*) FROM transactions
+            WHERE processed_by_staff_id = ? AND status = '{$completed}'
+                AND MONTH(created_at) = MONTH(CURDATE()) AND YEAR(created_at) = YEAR(CURDATE())
+        ");
+        $stmtMonth->execute([$staffId]);
+        $totalMonth = (int)$stmtMonth->fetchColumn();
+
+        return [
+            'deposits_count'    => (int)($dep['count'] ?? 0),
+            'deposits_total'    => (float)($dep['total'] ?? 0),
+            'withdrawals_count' => (int)($with['count'] ?? 0),
+            'withdrawals_total' => (float)($with['total'] ?? 0),
+            'total_all_time'    => $totalAllTime,
+            'total_this_month'  => $totalMonth
+        ];
+    }
 }

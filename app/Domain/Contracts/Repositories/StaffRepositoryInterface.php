@@ -29,4 +29,5 @@ interface StaffRepositoryInterface
     public function clockIn(int $staffId, string $staffIdentifier): bool;
     public function clockOut(int $staffId, string $staffIdentifier, string $notes): bool;
     public function getCurrentShift(string $staffIdentifier): ?array;
+    public function getStaffHistoricalStats(int $staffId): array;
 }
