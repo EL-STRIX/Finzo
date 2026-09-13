@@ -21,6 +21,38 @@ $extraScripts = '<script defer src="/Finzo/public/assets/js/admin/admin-roles.js
 ob_start();
 ?>
 
+<!-- High-contrast capability badge styles for both light and dark modes -->
+<style>
+.role-capability-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 9999px;
+    font-size: 11px;
+    font-weight: 800;
+    line-height: 1;
+    background-color: #f1f5f9;
+    color: #0f172a;
+    border: 1px solid #cbd5e1;
+    transition: all var(--transition-fast, 0.15s ease);
+}
+.role-capability-badge .material-symbols-outlined {
+    font-size: 13px;
+    color: #475569;
+}
+[data-theme="dark"] .role-capability-badge,
+.dark .role-capability-badge {
+    background-color: rgba(255, 255, 255, 0.08);
+    color: #f8fafc;
+    border-color: rgba(255, 255, 255, 0.15);
+}
+[data-theme="dark"] .role-capability-badge .material-symbols-outlined,
+.dark .role-capability-badge .material-symbols-outlined {
+    color: #94a3b8;
+}
+</style>
+
 <!-- KPI STATS SUMMARY GRID -->
 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
     <div class="ds-card p-5 relative overflow-hidden">

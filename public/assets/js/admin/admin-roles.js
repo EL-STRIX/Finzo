@@ -185,7 +185,7 @@
                     ${role.description ? safeDescription : '<span class="italic text-text-muted">No description provided</span>'}
                 </td>
                 <td class="py-4 px-4">
-                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-black bg-primary-50 dark:bg-primary-900/20 text-primary border border-primary/20">
+                    <span class="role-capability-badge inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-black bg-slate-100 dark:bg-white/10 text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-white/15 shadow-2xs">
                         <span class="material-symbols-outlined text-xs" aria-hidden="true">key</span>
                         ${permCount} Permissions
                     </span>
