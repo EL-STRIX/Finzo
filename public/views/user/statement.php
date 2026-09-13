@@ -66,6 +66,35 @@ ob_start();
         display: table-header-group !important;
     }
 }
+
+/* Statement Period Presets - High Contrast on both Light and Dark modes */
+.stmt-preset-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 14px;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-radius: 8px;
+    border: 1px solid var(--color-border-main);
+    background-color: var(--color-surface);
+    color: var(--color-text-muted);
+    transition: all var(--transition-fast);
+    cursor: pointer;
+}
+.stmt-preset-btn:hover {
+    color: var(--color-text-main);
+    border-color: var(--color-border-strong);
+    background-color: var(--color-surface-hover, var(--color-surface));
+}
+.stmt-preset-btn.active {
+    background-color: var(--color-primary) !important;
+    color: var(--color-text-inverse) !important;
+    border-color: var(--color-primary) !important;
+    box-shadow: var(--shadow-sm);
+}
 </style>
 
 <div class="mb-8 ds-animate-fade print:hidden">
@@ -109,10 +138,10 @@ ob_start();
   <div class="mt-4 pt-4 border-t border-border-main flex flex-wrap items-center justify-between gap-2">
     <span class="text-xs font-bold text-text-muted uppercase tracking-wider">Statement Period Presets:</span>
     <div class="flex flex-wrap items-center gap-1.5">
-      <button type="button" class="stmt-preset-btn px-3 py-1 rounded-lg bg-primary text-white border border-primary font-bold text-[11px] uppercase transition-all cursor-pointer" onclick="setPeriodPreset('30', this)">Last 30 Days</button>
-      <button type="button" class="stmt-preset-btn px-3 py-1 rounded-lg bg-surface border border-border-main text-text-muted hover:text-text-main font-bold text-[11px] uppercase transition-all cursor-pointer" onclick="setPeriodPreset('month', this)">This Month</button>
-      <button type="button" class="stmt-preset-btn px-3 py-1 rounded-lg bg-surface border border-border-main text-text-muted hover:text-text-main font-bold text-[11px] uppercase transition-all cursor-pointer" onclick="setPeriodPreset('90', this)">Last 90 Days</button>
-      <button type="button" class="stmt-preset-btn px-3 py-1 rounded-lg bg-surface border border-border-main text-text-muted hover:text-text-main font-bold text-[11px] uppercase transition-all cursor-pointer" onclick="setPeriodPreset('all', this)">All Time</button>
+      <button type="button" class="stmt-preset-btn active" onclick="setPeriodPreset('30', this)">Last 30 Days</button>
+      <button type="button" class="stmt-preset-btn" onclick="setPeriodPreset('month', this)">This Month</button>
+      <button type="button" class="stmt-preset-btn" onclick="setPeriodPreset('90', this)">Last 90 Days</button>
+      <button type="button" class="stmt-preset-btn" onclick="setPeriodPreset('all', this)">All Time</button>
     </div>
   </div>
 </div>

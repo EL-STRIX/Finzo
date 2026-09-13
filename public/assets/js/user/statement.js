@@ -77,12 +77,10 @@ function setPeriodPreset(preset, btnEl) {
   const today = new Date();
 
   document.querySelectorAll('.stmt-preset-btn').forEach(b => {
-    b.classList.remove('bg-primary', 'text-white', 'border-primary');
-    b.classList.add('bg-surface', 'text-text-muted');
+    b.classList.remove('active', 'bg-primary', 'text-white', 'border-primary', 'bg-surface', 'text-text-muted');
   });
   if (btnEl) {
-    btnEl.classList.remove('bg-surface', 'text-text-muted');
-    btnEl.classList.add('bg-primary', 'text-white', 'border-primary');
+    btnEl.classList.add('active');
   }
 
   if (preset === 'all') {
