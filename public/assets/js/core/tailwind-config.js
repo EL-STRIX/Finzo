@@ -14,13 +14,49 @@ tailwind.config = {
           subtle: 'var(--color-surface-elevated)',
           dark: '#141211'
         },
-        text: { primary: 'var(--color-text-primary)', secondary: 'var(--color-text-secondary)', muted: 'var(--color-text-muted)', inverse: 'var(--color-text-inverse)' },
-        border: { DEFAULT: 'var(--color-border)', subtle: 'var(--color-border-subtle)', strong: 'var(--color-border-strong)' },
-        success: { DEFAULT: 'var(--color-success)', bg: 'var(--color-success-bg)' },
-        warning: { DEFAULT: 'var(--color-warning)', bg: 'var(--color-warning-bg)' },
-        error: { DEFAULT: 'var(--color-error)', bg: 'var(--color-error-bg)' },
-        danger: { DEFAULT: 'var(--color-error)', bg: 'var(--color-error-bg)' }, /* Alias for backward compatibility */
-        info: { DEFAULT: 'var(--color-info)', bg: 'var(--color-info-bg)' },
+        text: { 
+          main: 'var(--color-text-main, var(--color-text-primary))',
+          primary: 'var(--color-text-primary)', 
+          secondary: 'var(--color-text-secondary)', 
+          muted: 'var(--color-text-muted)', 
+          inverse: 'var(--color-text-inverse)' 
+        },
+        border: { 
+          main: 'var(--color-border-main, var(--color-border-subtle))',
+          DEFAULT: 'var(--color-border)', 
+          subtle: 'var(--color-border-subtle)', 
+          strong: 'var(--color-border-strong)' 
+        },
+        success: { 
+          DEFAULT: 'var(--color-success)', 
+          bg: 'var(--color-success-bg)',
+          base: 'var(--color-success)',
+          surface: 'var(--color-success-bg)'
+        },
+        warning: { 
+          DEFAULT: 'var(--color-warning)', 
+          bg: 'var(--color-warning-bg)',
+          base: 'var(--color-warning)',
+          surface: 'var(--color-warning-bg)'
+        },
+        error: { 
+          DEFAULT: 'var(--color-error)', 
+          bg: 'var(--color-error-bg)',
+          base: 'var(--color-error)',
+          surface: 'var(--color-error-bg)'
+        },
+        danger: { 
+          DEFAULT: 'var(--color-error)', 
+          bg: 'var(--color-error-bg)',
+          base: 'var(--color-error)',
+          surface: 'var(--color-error-bg)'
+        },
+        info: { 
+          DEFAULT: 'var(--color-info)', 
+          bg: 'var(--color-info-bg)',
+          base: 'var(--color-info)',
+          surface: 'var(--color-info-bg)'
+        },
         focus: 'var(--color-focus)',
         disabled: { DEFAULT: 'var(--color-disabled)', bg: 'var(--color-disabled-bg)' },
         overlay: 'var(--color-overlay)'
