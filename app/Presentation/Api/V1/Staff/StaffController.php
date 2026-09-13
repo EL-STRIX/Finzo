@@ -87,12 +87,13 @@ class StaffController
             $data = $this->service->getDashboardData($staffId);
 
             json_response([
-                'success' => true,
-                'staff' => $data['staff'],
-                'shift_stats' => $data['shift_stats'],
+                'success'         => true,
+                'staff'           => $data['staff'],
+                'current_shift'   => $data['current_shift'],
+                'shift_stats'     => $data['shift_stats'],
                 'recent_activity' => $data['recent_activity'],
-                'greeting' => get_greeting(),
-                'csrf_token' => $_SESSION['csrf_token'] ?? ''
+                'greeting'        => get_greeting(),
+                'csrf_token'      => $_SESSION['csrf_token'] ?? ''
             ]);
         } catch (Exception $e) {
             \App\Shared\Core\Logging\Logger::getInstance()->error('Staff dashboard error: ', ['context' => $e->getMessage()]);
