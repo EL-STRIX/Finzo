@@ -63,26 +63,37 @@ class UserController
 
     public function accountSettings()
     {
-        $userId = $_SESSION['user_id'];
+        if (empty($_SESSION['user_id'])) {
+            json_response(['success' => false, 'message' => 'Unauthorized'], 401);
+        }
+        $userId = (int)$_SESSION['user_id'];
         try {
             $account = $this->service->fetchAccountSettings($userId);
             if (!$account) {
                 json_response(['success' => false, 'message' => 'No active account found'], 404);
             }
             if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-                $used_today = $this->service->fetchUsedToday($account['id']);
+                $used_today = (float)$this->service->fetchUsedToday($account['id']);
+                $daily_limit = (float)$account['daily_limit'];
                 json_response([
                     'success' => true,
-                    'daily_limit' => (float)$account['daily_limit'],
-                    'used_today' => (float)$used_today
+                    'daily_limit' => $daily_limit,
+                    'used_today' => $used_today,
+                    'remaining_limit' => max(0, $daily_limit - $used_today)
                 ]);
             } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                $daily_limit = $this->security->cleanInput($_POST['daily_limit'] ?? '');
+                $input = json_decode(file_get_contents('php://input'), true) ?? [];
+                $daily_limit = $input['daily_limit'] ?? $_POST['daily_limit'] ?? '';
+                $daily_limit = $this->security->cleanInput($daily_limit);
                 if (!is_numeric($daily_limit) || $daily_limit < 1000 || $daily_limit > 100000) {
-                    json_response(['success' => false, 'message' => 'Invalid limit value. Must be between 1,000 and 1,00,000'], 422);
+                    json_response(['success' => false, 'message' => 'Invalid limit value. Must be between ₹1,000 and ₹1,00,000'], 422);
                 }
-                $this->service->updateDailyLimit($account['id'], $daily_limit);
-                json_response(['success' => true, 'message' => 'Daily limit updated']);
+                $this->service->updateDailyLimit($account['id'], (float)$daily_limit);
+                json_response([
+                    'success' => true, 
+                    'message' => 'Daily limit updated successfully',
+                    'daily_limit' => (float)$daily_limit
+                ]);
             } else {
                 json_response(['success' => false, 'message' => 'Method not allowed'], 405);
             }
@@ -97,7 +108,10 @@ class UserController
         if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
             json_response(['success' => false, 'message' => 'Method not allowed'], 405);
         }
-        $userId = $_SESSION['user_id'];
+        if (empty($_SESSION['user_id'])) {
+            json_response(['success' => false, 'message' => 'Unauthorized'], 401);
+        }
+        $userId = (int)$_SESSION['user_id'];
         try {
             $userStatus = $_SESSION['user_status'] ?? 'pending';
             if ($userStatus !== 'active') {
@@ -110,6 +124,10 @@ class UserController
             $mini_statement = [];
             if ($account['status'] === \App\Domain\Enums\AccountStatusEnum::ACTIVE->value) {
                 $mini_statement = $this->service->fetchMiniStatement($account['id']);
+                foreach ($mini_statement as &$tx) {
+                    $tx['direction'] = ((int)($tx['to_account_id'] ?? 0) === (int)$account['id']) ? 'credit' : 'debit';
+                }
+                unset($tx);
             }
             $today_transfer_total = (float)$this->service->fetchTodayTransferTotal($account['id']);
             json_response([

@@ -77,7 +77,7 @@ class UserRepository extends BaseRepository implements \App\Domain\Contracts\Rep
     public function fetchMiniStatement(int $account_id)
     {
         $stmt = $this->db->prepare("
-            SELECT txn_id, type, amount, balance_after, description, status, created_at
+            SELECT txn_id, from_account_id, to_account_id, type, amount, balance_after, description, status, created_at
             FROM transactions
             WHERE (from_account_id = ? OR to_account_id = ?) AND status = 'completed'
             ORDER BY created_at DESC

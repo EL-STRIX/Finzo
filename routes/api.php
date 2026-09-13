@@ -128,10 +128,14 @@ $router->patch('/api/v1/admin/support/tickets/{id}/status', [AdminSupportControl
 use App\Presentation\Middleware\UserAuthMiddleware;
 $router->get('/api/v1/user/dashboard', [UserController::class, 'dashboard'], [UserAuthMiddleware::class]);
 $router->get('/api/v1/user/accounts', [UserController::class, 'accounts'], [UserAuthMiddleware::class]);
+$router->get('/api/v1/user/accounts/settings', [UserController::class, 'accountSettings'], [UserAuthMiddleware::class]);
+$router->post('/api/v1/user/accounts/settings', [UserController::class, 'accountSettings'], [UserAuthMiddleware::class]);
+$router->get('/api/user/account-settings.php', [UserController::class, 'accountSettings'], [UserAuthMiddleware::class]);
+$router->post('/api/user/account-settings.php', [UserController::class, 'accountSettings'], [UserAuthMiddleware::class]);
+$router->get('/api/user/transactions.php', [UserController::class, 'transactions'], [UserAuthMiddleware::class]);
 $router->get('/api/v1/user/accounts/lookup', [UserController::class, 'accountLookup'], [UserAuthMiddleware::class]);
 $router->get('/api/v1/user/account-lookup', [UserController::class, 'accountLookup'], [UserAuthMiddleware::class]);
 $router->get('/api/user/account-lookup.php', [UserController::class, 'accountLookup'], [UserAuthMiddleware::class]);
-$router->post('/api/v1/user/accounts/settings', [UserController::class, 'accountSettings'], [UserAuthMiddleware::class]);
 $router->get('/api/v1/user/beneficiaries', [UserController::class, 'beneficiary'], [UserAuthMiddleware::class]);
 $router->post('/api/v1/user/beneficiaries', [UserController::class, 'beneficiary'], [UserAuthMiddleware::class]);
 $router->delete('/api/v1/user/beneficiaries', [UserController::class, 'beneficiary'], [UserAuthMiddleware::class]);
