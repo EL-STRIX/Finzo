@@ -282,12 +282,18 @@ class StaffRepository extends BaseRepository implements \App\Domain\Contracts\Re
 
     public function clockIn(int $staffId, string $staffIdentifier): bool
     {
+        // INSERT a new shift or reset an existing completed/absent shift back to active.
+        // This allows staff to clock back in after clocking out on the same day.
         $stmt = $this->db->prepare("
             INSERT INTO staff_shifts (staff_id, shift_date, clock_in, status)
             VALUES (?, CURDATE(), NOW(), 'active')
-            ON DUPLICATE KEY UPDATE clock_in = IF(clock_in IS NULL, NOW(), clock_in)
+            ON DUPLICATE KEY UPDATE
+                clock_in  = IF(status = 'active', clock_in, NOW()),
+                clock_out = IF(status = 'active', clock_out, NULL),
+                status    = 'active'
         ");
-        return $stmt->execute([$staffIdentifier]);
+        $stmt->execute([$staffIdentifier]);
+        return $stmt->rowCount() > 0;
     }
 
     public function clockOut(int $staffId, string $staffIdentifier, string $notes): bool
@@ -297,7 +303,8 @@ class StaffRepository extends BaseRepository implements \App\Domain\Contracts\Re
             SET clock_out = NOW(), status = 'completed', notes = ?
             WHERE staff_id = ? AND shift_date = CURDATE() AND status = 'active'
         ");
-        return $stmt->execute([$notes, $staffIdentifier]);
+        $stmt->execute([$notes, $staffIdentifier]);
+        return $stmt->rowCount() > 0;
     }
 
     public function getCurrentShift(string $staffIdentifier): ?array

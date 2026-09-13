@@ -491,7 +491,7 @@ class StaffService implements \App\Domain\Contracts\Services\StaffServiceInterfa
             throw new \App\Shared\Core\Exceptions\ResourceNotFoundException('Staff not found');
         }
         if (!$this->repository->clockIn($staffId, $staff['staff_id'])) {
-            throw new \App\Shared\Core\Exceptions\BusinessRuleException('Failed to clock in');
+            throw new \App\Shared\Core\Exceptions\BusinessRuleException('You are already clocked in for today. Please clock out before starting a new shift.');
         }
         \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
             new \App\Application\Events\GenericAuditAction(\App\Domain\Enums\AuditActionEnum::STAFF_CLOCK_IN->value ?? 'STAFF_CLOCK_IN', $staffId, \App\Domain\Enums\RoleEnum::STAFF->value, $staffId, \App\Domain\Enums\RoleEnum::STAFF->value, 'Staff clocked in for shift')
