@@ -13,7 +13,7 @@ class StaffRepository extends BaseRepository implements \App\Domain\Contracts\Re
             FROM accounts a
             JOIN users u ON a.user_id = u.customer_id
             WHERE a.account_no = ?
-        ", [$accountNumber], \App\Domain\Models\Staff::class);
+        ", [$accountNumber]);
     }
 
     public function getUsedDailyLimit(string $accountNumber)
@@ -54,7 +54,7 @@ class StaffRepository extends BaseRepository implements \App\Domain\Contracts\Re
             FROM transactions
             WHERE processed_by_staff_id = ? AND type = '{$deposit}'
                 AND status = '{$completed}' AND DATE(created_at) = CURDATE()
-        ", [$staffId], \App\Domain\Models\Staff::class);
+        ", [$staffId]);
     }
 
     public function getStaffShiftWithdrawals(int $staffId)
@@ -66,7 +66,7 @@ class StaffRepository extends BaseRepository implements \App\Domain\Contracts\Re
             FROM transactions
             WHERE processed_by_staff_id = ? AND type = '{$withdrawal}'
                 AND status = '{$completed}' AND DATE(created_at) = CURDATE()
-        ", [$staffId], \App\Domain\Models\Staff::class);
+        ", [$staffId]);
     }
 
     public function getStaffTotalTransactionsToday(int $staffId)
@@ -103,7 +103,7 @@ class StaffRepository extends BaseRepository implements \App\Domain\Contracts\Re
             WHERE t.processed_by_staff_id = ?
             ORDER BY t.created_at DESC
             LIMIT 10
-        ", [$staffId], \App\Domain\Models\Staff::class);
+        ", [$staffId]);
     }
 
     public function getStaffInfoWithBranch(int $staffId)
@@ -139,7 +139,7 @@ class StaffRepository extends BaseRepository implements \App\Domain\Contracts\Re
             JOIN users u ON a.user_id = u.customer_id
             WHERE a.account_no = ?
             FOR UPDATE
-        ", [$accountNumber], \App\Domain\Models\Staff::class);
+        ", [$accountNumber]);
     }
 
     public function creditAccount(int $account_id, float $amount)
@@ -245,7 +245,7 @@ class StaffRepository extends BaseRepository implements \App\Domain\Contracts\Re
             LEFT JOIN staff s ON t.processed_by_staff_id = s.id
             LEFT JOIN branches b ON s.branch_id = b.id
             WHERE t.txn_id = ?
-        ", [$transactionId], \App\Domain\Models\Staff::class);
+        ", [$transactionId]);
     }
 
     public function getFullStaffProfile(int $staffId)
