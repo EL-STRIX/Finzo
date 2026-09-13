@@ -164,24 +164,29 @@ const StaffState = {
 
 async function fetchStaffSession() {
     try {
-        const data = await window.api.get('/staff-portal/dashboard');
-        if (data.status === 401 || data.status === 403) {
+        const res = await window.api.get('/staff-portal/dashboard');
+        if (res && (res.status === 401 || res.status === 403)) {
             window.location.href = '/Finzo/public/views/auth/staff-login.php';
             return null;
         }
-        if (data.success && data.staff) {
-            StaffState.staff_id = data.staff.staff_id;
-            StaffState.name = data.staff.name;
-            StaffState.role = data.staff.role;
-            StaffState.branch_name = data.staff.branch_name;
-            StaffState.profile_photo = data.staff.profile_photo_url || data.staff.profile_photo || data.staff.profile_picture || '';
+        const data = res || {};
+        const payload = (data.data && typeof data.data === 'object' && data.data.staff) ? data.data : data;
+        const staff = payload.staff || data.staff;
+
+        if (data.success && staff) {
+            StaffState.staff_id = staff.staff_id || staff.id || '';
+            StaffState.name = staff.name || staff.full_name || 'Staff Member';
+            StaffState.role = staff.role || staff.designation || 'Teller';
+            StaffState.branch_name = staff.branch_name || 'Unassigned';
+            StaffState.profile_photo = staff.profile_photo_url || staff.profile_photo || staff.profile_picture || '';
             StaffState.loaded = true;
 
             // Store CSRF token globally so api.js POST requests can attach it
-            if (data.csrf_token) {
-                window.csrfToken = data.csrf_token;
+            const csrf = data.csrf_token || payload.csrf_token;
+            if (csrf) {
+                window.csrfToken = csrf;
                 const meta = document.querySelector('meta[name="csrf-token"]');
-                if (meta) meta.setAttribute('content', data.csrf_token);
+                if (meta) meta.setAttribute('content', csrf);
             }
             
             // Populate basic DOM if present
