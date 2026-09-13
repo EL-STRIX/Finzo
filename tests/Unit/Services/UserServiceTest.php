@@ -118,4 +118,47 @@ class UserServiceTest extends TestCase
         // Assert true to pass the test if no exceptions occurred
         $this->assertTrue(true);
     }
+
+    public function testGetTransactionsWithDirectionFilters(): void
+    {
+        $resAll = $this->userService->getTransactions(1, [
+            'type' => 'all',
+            'direction' => 'all',
+            'status' => 'all',
+            'from_date' => '',
+            'to_date' => '',
+            'search' => '',
+            'page' => 1,
+            'per_page' => 10
+        ]);
+        $this->assertIsArray($resAll);
+        $this->assertArrayHasKey('transactions', $resAll);
+        $this->assertArrayHasKey('total', $resAll);
+
+        $resCredit = $this->userService->getTransactions(1, [
+            'type' => 'all',
+            'direction' => 'credit',
+            'status' => 'all',
+            'from_date' => '',
+            'to_date' => '',
+            'search' => '',
+            'page' => 1,
+            'per_page' => 10
+        ]);
+        $this->assertIsArray($resCredit);
+        $this->assertArrayHasKey('transactions', $resCredit);
+
+        $resDebit = $this->userService->getTransactions(1, [
+            'type' => 'all',
+            'direction' => 'debit',
+            'status' => 'all',
+            'from_date' => '',
+            'to_date' => '',
+            'search' => '',
+            'page' => 1,
+            'per_page' => 10
+        ]);
+        $this->assertIsArray($resDebit);
+        $this->assertArrayHasKey('transactions', $resDebit);
+    }
 }

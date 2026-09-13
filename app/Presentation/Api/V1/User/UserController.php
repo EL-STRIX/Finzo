@@ -508,7 +508,10 @@ class UserController
         if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
             json_response(['success' => false, 'message' => 'Method not allowed'], 405);
         }
-        $userId = $_SESSION['user_id'];
+        if (empty($_SESSION['user_id'])) {
+            json_response(['success' => false, 'message' => 'Unauthorized'], 401);
+        }
+        $userId = (int)$_SESSION['user_id'];
         try {
             $account = $this->service->getActiveAccount($userId);
             if (!$account) {
@@ -546,21 +549,29 @@ class UserController
         if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
             json_response(['success' => false, 'message' => 'Method not allowed'], 405);
         }
-        $userId = $_SESSION['user_id'];
+        if (empty($_SESSION['user_id'])) {
+            json_response(['success' => false, 'message' => 'Unauthorized'], 401);
+        }
+        $userId = (int)$_SESSION['user_id'];
         try {
-            $account = $this->service->fetchAccountSettings($userId);
+            $account = $this->service->getActiveAccount($userId);
+            if (!$account) {
+                $account = $this->service->fetchAccountSettings($userId);
+            }
             if (!$account) {
                 json_response(['success' => true, 'transactions' => [], 'total' => 0, 'pages' => 0, 'current_page' => 1, 'message' => 'No active account found']);
             }
-            $account_id = $account['id'];
+            $account_id = (int)$account['id'];
+            $perPage = intval($_GET['per_page'] ?? $_GET['limit'] ?? 15);
             $filters = [
                 'type' => $this->security->cleanInput($_GET['type'] ?? 'all'),
+                'direction' => $this->security->cleanInput($_GET['direction'] ?? 'all'),
                 'status' => $this->security->cleanInput($_GET['status'] ?? 'all'),
                 'from_date' => $this->security->cleanInput($_GET['from_date'] ?? ''),
                 'to_date' => $this->security->cleanInput($_GET['to_date'] ?? ''),
                 'search' => $this->security->cleanInput($_GET['search'] ?? ''),
                 'page' => max(1, intval($_GET['page'] ?? 1)),
-                'per_page' => min(50, max(10, intval($_GET['per_page'] ?? 20)))
+                'per_page' => min(100, max(5, $perPage))
             ];
 
             $data = $this->service->getTransactions($account_id, $filters);

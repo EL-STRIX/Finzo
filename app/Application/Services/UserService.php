@@ -614,11 +614,21 @@ class UserService implements \App\Domain\Contracts\Services\UserServiceInterface
         $where_clauses = ["(t.from_account_id = ? OR t.to_account_id = ?)"];
         $params = [$accountId, $accountId];
 
-        if ($filters['type'] !== 'all' && in_array($filters['type'], ['deposit', 'withdrawal', 'transfer', 'interest_credit'])) {
+        if (!empty($filters['direction']) && $filters['direction'] !== 'all') {
+            if ($filters['direction'] === 'credit') {
+                $where_clauses[] = "(t.type IN ('deposit', 'interest_credit') OR (t.type = 'transfer' AND t.to_account_id = ?))";
+                $params[] = $accountId;
+            } elseif ($filters['direction'] === 'debit') {
+                $where_clauses[] = "(t.type = 'withdrawal' OR (t.type = 'transfer' AND t.from_account_id = ?))";
+                $params[] = $accountId;
+            }
+        }
+
+        if (!empty($filters['type']) && $filters['type'] !== 'all' && in_array($filters['type'], ['deposit', 'withdrawal', 'transfer', 'interest_credit'])) {
             $where_clauses[] = "t.type = ?";
             $params[] = $filters['type'];
         }
-        if ($filters['status'] !== 'all' && in_array($filters['status'], ['completed', 'pending', 'failed', 'reversed'])) {
+        if (!empty($filters['status']) && $filters['status'] !== 'all' && in_array($filters['status'], ['completed', 'pending', 'failed', 'reversed'])) {
             $where_clauses[] = "t.status = ?";
             $params[] = $filters['status'];
         }
