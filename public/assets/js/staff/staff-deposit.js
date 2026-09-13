@@ -478,13 +478,16 @@
                     showToast(res.message || 'Transaction processed successfully!', 'success');
                 }
 
-                // Redirect to receipt
+                // Redirect to receipt with automatic print trigger
                 const txnId = res.transaction_id || (res.data ? res.data.transaction_id : '');
-                const redirectUrl = res.redirect || (`staff-receipt.php?id=${encodeURIComponent(txnId)}`);
+                let redirectUrl = res.redirect || (`staff-receipt.php?id=${encodeURIComponent(txnId)}`);
+                if (!redirectUrl.includes('print=')) {
+                    redirectUrl += (redirectUrl.includes('?') ? '&print=1' : '?print=1');
+                }
                 
                 setTimeout(() => {
                     window.location.href = redirectUrl;
-                }, 400);
+                }, 350);
             } else {
                 const errMsg = res ? res.message : 'Transaction was rejected by the banking core.';
                 if (errAlert) {

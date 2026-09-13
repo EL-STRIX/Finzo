@@ -584,7 +584,7 @@
         }
     }
 
-    // ── Print Report Functionality ──
+    // ── Dedicated Pure Black & White Vintage Bank Statement Printing via Isolated Frame ──
     async function printHistoryReport() {
         const btn = document.getElementById('print-all-btn');
         if (!btn) return;
@@ -661,11 +661,7 @@
                 }
             });
 
-            const fmt = (n) => {
-                if (typeof formatINR === 'function') return formatINR(n);
-                if (window.FinzoUtils && typeof window.FinzoUtils.formatINR === 'function') return window.FinzoUtils.formatINR(n);
-                return '₹' + parseFloat(n || 0).toFixed(2);
-            };
+            const totalVolume = totalDeposits + totalWithdrawals;
             const now = new Date();
             const printDate = now.toLocaleString('en-IN', {
                 day: '2-digit',
@@ -676,107 +672,282 @@
                 hour12: true
             });
 
-            const staffName = (window.StaffState && window.StaffState.name) || 'Finzo Staff';
-            const staffId = (window.StaffState && window.StaffState.staff_id) || 'STF001';
+            const staff = window.StaffState || window.StaffSession || {};
+            const staffName = (staff.name || staff.full_name || 'Finzo Staff').toUpperCase();
+            const staffId = staff.staff_id || 'STF001';
+            const branchName = (staff.branch_name || 'Finzo Main Branch').toUpperCase();
+            const designation = (staff.role || staff.designation || 'TELLER / CASHIER').toUpperCase();
+
+            let periodFormatted = 'ALL RECORDED TRANSACTIONS';
+            if (currentFilters.range === 'Today') periodFormatted = 'TODAY (' + today + ')';
+            else if (currentFilters.range === 'This Week') periodFormatted = 'PAST 7 DAYS (' + getNDaysAgoYmd(7) + ' TO ' + today + ')';
+            else if (currentFilters.range === 'This Month') periodFormatted = 'THIS MONTH (' + getMonthStartYmd() + ' TO ' + today + ')';
+            else if (from_date && to_date) periodFormatted = from_date + ' TO ' + to_date;
+
+            const filterTypeFormatted = currentFilters.type === 'all' ? 'ALL TYPES' : currentFilters.type.toUpperCase();
+            const filterStatusFormatted = currentFilters.status === 'all' ? 'ALL STATUSES' : currentFilters.status.toUpperCase();
 
             let rowsHtml = '';
             txns.forEach((item, idx) => {
                 const rawDate = item.created_at || item.date || '';
                 const dateObj = new Date(rawDate ? rawDate.replace(' ', 'T') : Date.now());
                 const dateStr = !isNaN(dateObj.getTime())
-                    ? dateObj.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
-                    : (rawDate.split(' ')[0] || '—');
+                    ? dateObj.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })
+                    : (rawDate.split(' ')[0] || 'N/A');
                 const isDeposit = (item.type || '').toLowerCase() === 'deposit';
-                const amtColor = isDeposit ? '#059669' : '#e11d48';
+                const amt = parseFloat(item.amount) || 0;
+
+                const debitDisplay = !isDeposit ? amt.toLocaleString('en-IN', { minimumFractionDigits: 2 }) : '-';
+                const creditDisplay = isDeposit ? amt.toLocaleString('en-IN', { minimumFractionDigits: 2 }) : '-';
+                const particulars = (escapeHtml(item.customer_name || 'Customer').toUpperCase()) + ' / ' + escapeHtml(item.txn_id || '');
 
                 rowsHtml += `
-                    <tr style="border-bottom: 1px solid #e2e8f0;">
-                        <td style="padding: 6px 8px; font-size: 11px; text-align: center; color: #64748b;">${idx + 1}</td>
-                        <td style="padding: 6px 8px; font-size: 11px; white-space: nowrap;">${escapeHtml(dateStr)}</td>
-                        <td style="padding: 6px 8px; font-size: 11px;">
-                            <strong>${escapeHtml(item.customer_name || 'Customer')}</strong><br>
-                            <span style="font-family: monospace; font-size: 9px; color: #64748b;">${escapeHtml(item.txn_id)}</span>
-                        </td>
-                        <td style="padding: 6px 8px; font-size: 11px; font-family: monospace;">${escapeHtml(item.account_no || 'N/A')}</td>
-                        <td style="padding: 6px 8px; font-size: 10px; text-transform: uppercase; font-weight: bold;">${escapeHtml(item.type)}</td>
-                        <td style="padding: 6px 8px; font-size: 11px; font-family: monospace; font-weight: bold; color: ${amtColor}; text-align: right;">
-                            ${isDeposit ? '+' : '-'}${fmt(item.amount)}
-                        </td>
-                        <td style="padding: 6px 8px; font-size: 10px; text-transform: uppercase; text-align: center;">${escapeHtml(item.status)}</td>
+                    <tr>
+                        <td style="text-align: center;">${idx + 1}</td>
+                        <td style="text-align: center; white-space: nowrap;">${dateStr}</td>
+                        <td style="text-transform: uppercase;">${particulars}</td>
+                        <td style="text-align: center; font-family: monospace;">${escapeHtml(item.account_no || 'N/A')}</td>
+                        <td style="text-align: right;">${debitDisplay}</td>
+                        <td style="text-align: right;">${creditDisplay}</td>
+                        <td style="text-align: center; text-transform: uppercase; font-size: 9.5px; font-weight: bold;">${escapeHtml(item.status || 'COMPLETED')}</td>
+                        <td style="text-align: center;">TLR</td>
                     </tr>
                 `;
             });
 
             const printHtml = `<!DOCTYPE html>
-            <html lang="en">
-            <head>
-                <meta charset="UTF-8">
-                <title>Finzo — Transaction Report</title>
-                <style>
-                    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 24px; color: #0f172a; font-size: 12px; }
-                    .header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #0f172a; padding-bottom: 12px; margin-bottom: 16px; }
-                    .logo { font-size: 24px; font-weight: 900; letter-spacing: -0.5px; }
-                    .subtitle { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #d97706; }
-                    .stats-box { display: flex; gap: 24px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; font-size: 12px; }
-                    .stats-box strong { font-size: 14px; }
-                    table { width: 100%; border-collapse: collapse; text-align: left; }
-                    th { background: #f1f5f9; padding: 8px; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #cbd5e1; }
-                    @media print {
-                        body { margin: 0; }
-                    }
-                </style>
-            </head>
-            <body>
-                <div class="header">
-                    <div>
-                        <div class="logo">Finzo</div>
-                        <div class="subtitle">Enterprise Branch Operations</div>
-                    </div>
-                    <div style="text-align: right;">
-                        <h3 style="margin: 0; font-size: 16px;">Teller Transaction Audit Report</h3>
-                        <div style="font-size: 11px; color: #64748b; margin-top: 4px;">Teller: ${escapeHtml(staffName)} (${escapeHtml(staffId)})</div>
-                        <div style="font-size: 11px; color: #64748b;">Generated on: ${escapeHtml(printDate)}</div>
-                    </div>
-                </div>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Staff Statement - ${escapeHtml(staffName)} - ${escapeHtml(staffId)}</title>
+    <style>
+        @page {
+            size: A4 portrait;
+            margin: 12mm;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: "Courier New", Courier, "Lucida Console", Monaco, monospace;
+            color: #000000;
+            background: #ffffff;
+            padding: 0;
+            font-size: 11px;
+            line-height: 1.3;
+        }
+        .passbook-container {
+            width: 100%;
+            border: 2px solid #000000;
+            padding: 14px 16px;
+        }
+        .bank-header {
+            text-align: center;
+            border-bottom: 2px solid #000000;
+            padding-bottom: 8px;
+            margin-bottom: 10px;
+        }
+        .bank-title {
+            font-size: 20px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-family: Georgia, serif;
+        }
+        .bank-sub {
+            font-size: 11px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            margin-top: 2px;
+        }
+        .bank-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 10px;
+            font-weight: bold;
+            border-top: 1px solid #000000;
+            padding-top: 6px;
+            margin-top: 6px;
+        }
+        .table-grid {
+            width: 100%;
+            border-collapse: collapse;
+            border: 1px solid #000000;
+            margin-bottom: 10px;
+            font-size: 10.5px;
+        }
+        .table-grid td, .table-grid th {
+            border: 1px solid #000000;
+            padding: 4px 6px;
+        }
+        .table-grid th {
+            background-color: #f2f2f2;
+            font-weight: 900;
+            text-transform: uppercase;
+            font-size: 10px;
+        }
+        .lbl {
+            font-weight: bold;
+            background-color: #f8f8f8;
+            width: 25%;
+        }
+        .val {
+            font-weight: bold;
+            width: 25%;
+        }
+        .summary-box {
+            width: 100%;
+            border-collapse: collapse;
+            border: 2px solid #000000;
+            margin-bottom: 10px;
+            font-size: 10.5px;
+            text-align: center;
+        }
+        .summary-box td {
+            border: 1px solid #000000;
+            padding: 6px 8px;
+        }
+        .summary-title {
+            font-size: 9.5px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .summary-amt {
+            font-size: 13px;
+            font-weight: 900;
+            margin-top: 2px;
+        }
+        .footer-notice {
+            border-top: 1px solid #000000;
+            padding-top: 6px;
+            font-size: 9.5px;
+            line-height: 1.35;
+        }
+    </style>
+</head>
+<body>
+    <div class="passbook-container">
+        <div class="bank-header">
+            <div class="bank-title">FINZO BANK</div>
+            <div class="bank-sub">TELLER OPERATION &amp; TRANSACTION AUDIT STATEMENT</div>
+            <div class="bank-meta">
+                <div>BRANCH: ${escapeHtml(branchName)}</div>
+                <div>IFSC: FINZ0002026</div>
+                <div>MICR: 400026002</div>
+            </div>
+        </div>
 
-                <div class="stats-box">
-                    <div>Total Transactions: <strong>${txns.length}</strong></div>
-                    <div>Total Deposits: <strong style="color: #059669;">${fmt(totalDeposits)}</strong></div>
-                    <div>Total Withdrawals: <strong style="color: #e11d48;">${fmt(totalWithdrawals)}</strong></div>
-                    <div>Net Flow: <strong>${fmt(totalDeposits - totalWithdrawals)}</strong></div>
-                </div>
+        <table class="table-grid">
+            <tr>
+                <td class="lbl">STAFF MEMBER</td>
+                <td class="val" style="font-size: 12px; font-weight: 900;">${escapeHtml(staffName)}</td>
+                <td class="lbl">STAFF ID</td>
+                <td class="val" style="font-size: 12px;">${escapeHtml(staffId)}</td>
+            </tr>
+            <tr>
+                <td class="lbl">DESIGNATION</td>
+                <td class="val">${escapeHtml(designation)}</td>
+                <td class="lbl">BRANCH</td>
+                <td class="val">${escapeHtml(branchName)}</td>
+            </tr>
+            <tr>
+                <td class="lbl">STATEMENT PERIOD</td>
+                <td class="val">${escapeHtml(periodFormatted)}</td>
+                <td class="lbl">GENERATED ON</td>
+                <td class="val">${escapeHtml(printDate)}</td>
+            </tr>
+            <tr>
+                <td class="lbl">FILTER APPLIED</td>
+                <td class="val" colspan="3">TYPE: ${escapeHtml(filterTypeFormatted)} | STATUS: ${escapeHtml(filterStatusFormatted)}</td>
+            </tr>
+        </table>
 
-                <table>
-                    <thead>
-                        <tr>
-                            <th style="width: 30px; text-align: center;">#</th>
-                            <th>Date</th>
-                            <th>Customer & Ref</th>
-                            <th>Account No</th>
-                            <th>Type</th>
-                            <th style="text-align: right;">Amount</th>
-                            <th style="text-align: center;">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${rowsHtml}
-                    </tbody>
-                </table>
-            </body>
-            </html>`;
+        <table class="table-grid">
+            <thead>
+                <tr>
+                    <th style="width: 32px; text-align: center;">LINE</th>
+                    <th style="width: 75px; text-align: center;">DATE</th>
+                    <th style="text-align: left;">PARTICULARS / DETAILS</th>
+                    <th style="width: 105px; text-align: center;">ACCOUNT NO</th>
+                    <th style="width: 95px; text-align: right;">WITHDRAWAL (DR) ₹</th>
+                    <th style="width: 95px; text-align: right;">DEPOSIT (CR) ₹</th>
+                    <th style="width: 70px; text-align: center;">STATUS</th>
+                    <th style="width: 35px; text-align: center;">INIT</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${rowsHtml}
+            </tbody>
+        </table>
 
-            const printWin = window.open('', '_blank');
-            if (printWin) {
-                printWin.document.write(printHtml);
-                printWin.document.close();
-                printWin.focus();
-                setTimeout(() => {
-                    printWin.print();
-                    printWin.close();
-                }, 400);
-            } else {
-                window.print();
+        <table class="summary-box">
+            <tr>
+                <td style="width: 25%;">
+                    <div class="summary-title">TOTAL WITHDRAWALS (DR)</div>
+                    <div class="summary-amt">₹ ${totalWithdrawals.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</div>
+                </td>
+                <td style="width: 25%;">
+                    <div class="summary-title">TOTAL DEPOSITS (CR)</div>
+                    <div class="summary-amt">₹ ${totalDeposits.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</div>
+                </td>
+                <td style="width: 25%; background-color: #f2f2f2;">
+                    <div class="summary-title">TOTAL PROCESSED VOLUME</div>
+                    <div class="summary-amt">₹ ${totalVolume.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</div>
+                </td>
+                <td style="width: 25%;">
+                    <div class="summary-title">TOTAL TRANSACTIONS</div>
+                    <div class="summary-amt">${txns.length}</div>
+                </td>
+            </tr>
+        </table>
+
+        <div style="margin-top: 24px; margin-bottom: 10px; display: flex; justify-content: space-between; text-align: center; font-size: 10px; font-weight: bold; text-transform: uppercase;">
+            <div style="width: 40%;">
+                <div style="border-bottom: 1px solid #000000; margin-bottom: 4px; height: 25px;"></div>
+                <div>TELLER / CASHIER SIGNATURE</div>
+            </div>
+            <div style="width: 40%;">
+                <div style="border-bottom: 1px solid #000000; margin-bottom: 4px; height: 25px;"></div>
+                <div>BRANCH MANAGER / AUDITOR</div>
+            </div>
+        </div>
+
+        <div class="footer-notice">
+            <div>* Please examine this statement immediately. Discrepancies, if any, should be reported within 15 days.</div>
+            <div style="display: flex; justify-content: space-between; margin-top: 4px; font-weight: bold;">
+                <span>* COMPUTER GENERATED STATEMENT — NO PHYSICAL SIGNATURE REQUIRED | OFFICIAL BANK AUDIT RECORD</span>
+                <span>PAGE 1 OF 1</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>`;
+
+            let printFrame = document.getElementById('finzo-staff-print-iframe');
+            if (!printFrame) {
+                printFrame = document.createElement('iframe');
+                printFrame.id = 'finzo-staff-print-iframe';
+                printFrame.style.position = 'fixed';
+                printFrame.style.right = '0';
+                printFrame.style.bottom = '0';
+                printFrame.style.width = '0';
+                printFrame.style.height = '0';
+                printFrame.style.border = '0';
+                document.body.appendChild(printFrame);
             }
+
+            const frameDoc = printFrame.contentWindow || printFrame.contentDocument.document || printFrame.contentDocument;
+            const doc = frameDoc.document || frameDoc;
+            doc.open();
+            doc.write(printHtml);
+            doc.close();
+
+            setTimeout(() => {
+                printFrame.contentWindow.focus();
+                printFrame.contentWindow.print();
+            }, 300);
         } catch (err) {
             console.error('Print error:', err);
             btn.disabled = false;

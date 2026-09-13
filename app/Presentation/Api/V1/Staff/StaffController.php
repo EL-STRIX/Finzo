@@ -127,7 +127,7 @@ class StaffController
                 'account_no'     => $data['account_no'],
                 'amount'         => $data['amount'],
                 'new_balance'    => $data['new_balance'],
-                'redirect'       => '/Finzo/public/views/staff/staff-receipt.php?id=' . $data['transaction_id']
+                'redirect'       => '/Finzo/public/views/staff/staff-receipt.php?id=' . $data['transaction_id'] . '&print=1'
             ]);
         } catch (\Exception $e) {
             throw $e;
@@ -187,13 +187,16 @@ class StaffController
             $transaction = $this->service->getReceipt($transactionId);
 
             $customer_name = '';
-            $accountNumber    = '';
+            $accountNumber = '';
+            $accountType   = 'Savings Account';
             if ($transaction['type'] === \App\Domain\Enums\TransactionTypeEnum::DEPOSIT->value) {
                 $customer_name = $transaction['to_name'];
-                $accountNumber    = $transaction['to_account_no'];
+                $accountNumber = $transaction['to_account_no'];
+                $accountType   = !empty($transaction['to_account_type']) ? ucwords(str_replace('_', ' ', $transaction['to_account_type'])) . ' Account' : 'Savings Account';
             } elseif ($transaction['type'] === \App\Domain\Enums\TransactionTypeEnum::WITHDRAWAL->value) {
                 $customer_name = $transaction['from_name'];
-                $accountNumber    = $transaction['from_account_no'];
+                $accountNumber = $transaction['from_account_no'];
+                $accountType   = !empty($transaction['from_account_type']) ? ucwords(str_replace('_', ' ', $transaction['from_account_type'])) . ' Account' : 'Savings Account';
             }
 
             json_response([
@@ -209,13 +212,15 @@ class StaffController
                     'date'           => $transaction['created_at'],
                     'customer_name'  => $customer_name,
                     'account_no'     => $accountNumber,
+                    'account_type'   => $accountType,
                     'from_account'   => $transaction['from_account_no'],
                     'from_name'      => $transaction['from_name'],
                     'to_account'     => $transaction['to_account_no'],
                     'to_name'        => $transaction['to_name'],
                     'staff_id'       => $transaction['staff_display_id'],
                     'staff_name'     => $transaction['staff_name'],
-                    'branch_name'    => $transaction['branch_name']
+                    'branch_name'    => $transaction['branch_name'] ?? 'Finzo Main Branch',
+                    'branch_code'    => $transaction['branch_code'] ?? 'FNZ-HQ'
                 ]
             ]);
         } catch (\Exception $e) {
@@ -300,7 +305,7 @@ class StaffController
                 'account_no'     => $data['account_no'],
                 'amount'         => $data['amount'],
                 'new_balance'    => $data['new_balance'],
-                'redirect'       => '/Finzo/public/views/staff/staff-receipt.php?id=' . $data['transaction_id']
+                'redirect'       => '/Finzo/public/views/staff/staff-receipt.php?id=' . $data['transaction_id'] . '&print=1'
             ]);
         } catch (\Exception $e) {
             throw $e;

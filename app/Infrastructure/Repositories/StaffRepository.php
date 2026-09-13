@@ -231,12 +231,15 @@ class StaffRepository extends BaseRepository implements \App\Domain\Contracts\Re
                 t.created_at,
                 t.processed_by_staff_id,
                 fa.account_no as from_account_no,
+                fa.account_type as from_account_type,
                 COALESCE(fu.full_name, '') as from_name,
                 ta.account_no as to_account_no,
+                ta.account_type as to_account_type,
                 COALESCE(tu.full_name, '') as to_name,
                 s.staff_id as staff_display_id,
                 s.full_name as staff_name,
-                b.name as branch_name
+                b.name as branch_name,
+                b.branch_code as branch_code
             FROM transactions t
             LEFT JOIN accounts fa ON t.from_account_id = fa.id
             LEFT JOIN users fu ON fa.user_id = fu.customer_id
