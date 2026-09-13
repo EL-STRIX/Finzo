@@ -1,301 +1,569 @@
+/* ═══════════════════════════════════════════
+   FINZO — Staff Profile Management
+   Clean Architecture & Vanilla JavaScript
+   ═══════════════════════════════════════════ */
+
 let profileData = null;
-        let csrfToken = '';
+let csrfToken = '';
 
-        $(document).ready(async function () {
-            const session = await fetchStaffSession();
-            if (!session) return;
-            csrfToken = session.csrf_token || '';
-            loadProfile();
-        });
+document.addEventListener('DOMContentLoaded', async function () {
+    if (typeof fetchStaffSession === 'function') {
+        const session = await fetchStaffSession();
+        if (session && session.csrf_token) {
+            csrfToken = session.csrf_token;
+        }
+    }
 
-        function showToast(msg, type = 'success') {
-            const bgClass = type === 'success' ? 'bg-emerald-500' : 'bg-red-500';
-            const icon = type === 'success' ? 'check_circle' : 'error';
-            const toast = $(`<div class="${bgClass} text-white px-4 py-3 rounded-lg shadow-lg flex items-center gap-2 text-sm font-bold animate-in slide-in-from-right"><span class="material-symbols-outlined text-[20px]">${icon}</span> ${msg}</div>`);
-            $('#toast-container').append(toast);
-            setTimeout(() => { toast.fadeOut(300, function() { $(this).remove(); }); }, 3000);
+    if (!csrfToken) {
+        csrfToken = window.csrfToken || (document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')) || '';
+    }
+
+    await loadProfile();
+    initEventListeners();
+});
+
+function displayToast(msg, type = 'success') {
+    if (typeof window.showToast === 'function') {
+        window.showToast(msg, type);
+    } else {
+        alert(msg);
+    }
+}
+
+function formatDate(dateStr) {
+    if (!dateStr || dateStr === '0000-00-00') return 'Not set';
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return dateStr;
+    return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+function maskIdNumber(num) {
+    if (!num) return '—';
+    const str = String(num).trim();
+    if (str.length <= 4) return str;
+    return '•'.repeat(Math.max(0, str.length - 4)) + str.slice(-4);
+}
+
+function resolveAssetUrl(path, subDir = 'staff-photos') {
+    if (!path) return null;
+    if (path.startsWith('http://') || path.startsWith('https://')) return path;
+    const clean = path.replace(/^\/+/, '');
+    if (clean.startsWith('Finzo/')) return '/' + clean;
+    if (clean.startsWith('uploads/')) return '/Finzo/' + clean;
+    return '/Finzo/uploads/' + subDir + '/' + clean;
+}
+
+async function loadProfile() {
+    try {
+        let data = null;
+        if (window.api && typeof window.api.get === 'function') {
+            data = await window.api.get('/staff-portal/profile');
+        } else {
+            const res = await fetch('/Finzo/api/v1/staff-portal/profile', {
+                credentials: 'same-origin',
+                headers: { 'Accept': 'application/json' }
+            });
+            data = await res.json();
         }
 
-        async function loadProfile() {
-            try {
-                const res = await fetch('/Finzo/api/staff/staff-profile.php', { credentials: 'same-origin' });
-                const data = await res.json();
-                if (!data.success) throw new Error(data.message);
-                profileData = data;
-                renderProfile(data);
-            } catch (err) {
-                console.error('Profile load error:', err);
-            }
+        if (!data || !data.success) {
+            throw new Error(data?.message || 'Failed to load staff profile data');
         }
 
-        function renderProfile(data) {
-            const s = data.staff;
-            const addr = data.address || {};
-            const docs = data.documents || [];
+        profileData = data;
+        renderProfile(data);
+    } catch (err) {
+        console.error('Profile load error:', err);
+        displayToast('Failed to load profile: ' + (err.message || 'Server error'), 'error');
+    }
+}
 
-            // Hero
-            document.getElementById('profile-name').textContent = s.full_name;
-            document.getElementById('profile-designation').textContent = s.designation || 'Staff';
-            document.getElementById('profile-department').textContent = s.department || 'Operations';
-            document.getElementById('profile-staff-id').textContent = s.staff_id;
-            document.getElementById('profile-branch').textContent = s.branch_name || 'Unassigned';
-            document.getElementById('profile-joined').textContent = s.date_of_joining ? new Date(s.date_of_joining).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : '—';
+function renderProfile(data) {
+    const s = data.staff || {};
+    const addr = data.address || {};
+    const docs = data.documents || [];
 
-            // Avatar
-            const avatarEl = document.getElementById('profile-avatar');
-            const avatarText = document.getElementById('profile-avatar-text');
-            if (s.profile_photo) {
-                const src = s.profile_photo.startsWith('http') ? s.profile_photo : '/Finzo/' + s.profile_photo;
-                avatarEl.innerHTML = `<img src="${src}?v=${Date.now()}" alt="${s.full_name}">`;
-            } else {
-                const initials = s.full_name.split(' ').filter(w => /^[a-zA-Z]/.test(w)).map(w => w[0]).join('').toUpperCase();
-                avatarEl.innerHTML = `<span id="profile-avatar-text">${initials}</span>`;
-            }
+    // Header Hero
+    const nameEl = document.getElementById('profile-name');
+    if (nameEl) nameEl.textContent = s.full_name || 'Staff Member';
 
-            // Personal Info
-            document.getElementById('info-name').textContent = s.full_name;
-            document.getElementById('info-dob').textContent = s.date_of_birth ? new Date(s.date_of_birth).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Not set';
-            document.getElementById('info-gender').textContent = s.gender || 'Not set';
-            document.getElementById('info-email').textContent = s.personal_email;
-            document.getElementById('info-phone').textContent = s.phone || 'Not set';
+    const desigEl = document.getElementById('profile-designation');
+    if (desigEl) desigEl.textContent = s.designation || 'Staff';
 
-            // Emergency
-            document.getElementById('info-emergency-name').textContent = s.emergency_contact_name || 'Not set';
-            document.getElementById('info-emergency-phone').textContent = s.emergency_contact_phone || 'Not set';
+    const deptEl = document.getElementById('profile-department');
+    if (deptEl) deptEl.textContent = s.department || 'Teller Operations';
 
-            // Address
-            document.getElementById('info-street').textContent = addr.street || 'Not set';
-            document.getElementById('info-city').textContent = addr.city || 'Not set';
-            document.getElementById('info-state').textContent = addr.state || 'Not set';
-            document.getElementById('info-pincode').textContent = addr.pincode || 'Not set';
-            document.getElementById('info-country').textContent = addr.country || 'India';
+    const staffIdEl = document.getElementById('profile-staff-id');
+    if (staffIdEl) staffIdEl.textContent = s.staff_id || '—';
 
-            // Documents
-            const docsContainer = document.getElementById('documents-container');
-            if (docs.length > 0) {
-                docsContainer.innerHTML = docs.map(doc => `
-                    <div class="bg-white dark:bg-[#161b22] border border-slate-200 dark:border-white/10 rounded-xl p-4 mb-4">
-                        <div class="flex items-center gap-3 mb-4">
-                            <span class="material-symbols-outlined text-purple-500">credit_card</span>
-                            <div class="flex-1">
-                                <div class="font-bold text-sm text-slate-900 dark:text-white">${doc.id_type}</div>
-                                <div class="text-[10px] text-slate-400 font-mono tracking-widest">${maskIdNumber(doc.id_number)}</div>
+    const branchEl = document.getElementById('profile-branch');
+    if (branchEl) {
+        let branchText = s.branch_name || 'Unassigned';
+        if (s.branch_code) branchText += ` (${s.branch_code})`;
+        branchEl.textContent = branchText;
+    }
+
+    const joinedEl = document.getElementById('profile-joined');
+    if (joinedEl) joinedEl.textContent = formatDate(s.date_of_joining);
+
+    // Avatar
+    const avatarEl = document.getElementById('profile-avatar');
+    if (avatarEl) {
+        const photoUrl = s.profile_photo_url || resolveAssetUrl(s.profile_photo, 'staff-photos');
+        if (photoUrl) {
+            avatarEl.innerHTML = `<img src="${photoUrl}?v=${Date.now()}" alt="${s.full_name || 'Staff'}" class="w-full h-full object-cover rounded-full">`;
+        } else {
+            const initials = (s.full_name || 'ST')
+                .split(' ')
+                .filter(w => /^[a-zA-Z]/.test(w))
+                .map(w => w[0])
+                .join('')
+                .substring(0, 2)
+                .toUpperCase() || 'ST';
+            avatarEl.innerHTML = `<span id="profile-avatar-text" class="text-xl sm:text-2xl font-black text-amber-600 dark:text-amber-400 tracking-wider">${initials}</span>`;
+        }
+    }
+
+    // Personal Info
+    const setText = (id, val) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = val || 'Not set';
+    };
+
+    setText('info-name', s.full_name);
+    setText('info-dob', formatDate(s.date_of_birth));
+    setText('info-gender', s.gender);
+    setText('info-email', s.personal_email);
+    setText('info-phone', s.phone);
+
+    // Emergency Contact
+    setText('info-emergency-name', s.emergency_contact_name);
+    setText('info-emergency-phone', s.emergency_contact_phone);
+
+    // Address Info
+    setText('info-street', addr.street || s.street);
+    setText('info-city', addr.city || s.city);
+    setText('info-state', addr.state || s.state);
+    setText('info-pincode', addr.pincode || s.pincode);
+    setText('info-country', addr.country || s.country || 'India');
+
+    // ID Documents
+    const docsContainer = document.getElementById('documents-container');
+    if (docsContainer) {
+        if (docs.length > 0) {
+            docsContainer.innerHTML = docs.map(doc => {
+                const frontUrl = doc.front_image_url || resolveAssetUrl(doc.front_image, 'staff-documents');
+                const backUrl = doc.back_image_url || resolveAssetUrl(doc.back_image, 'staff-documents');
+                const maskedId = maskIdNumber(doc.id_number);
+
+                return `
+                    <div class="bg-white dark:bg-surface-main border border-surface-border dark:border-white/10 rounded-2xl p-4 sm:p-5 mb-4 shadow-sm">
+                        <div class="flex items-center justify-between gap-3 mb-4 pb-3 border-b border-surface-border dark:border-white/5">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center border border-purple-500/20">
+                                    <span class="material-symbols-outlined text-xl">badge</span>
+                                </div>
+                                <div>
+                                    <div class="font-bold text-sm text-text-main dark:text-white">${doc.id_type || 'ID Card'}</div>
+                                    <div class="text-xs text-text-muted font-mono tracking-widest">${maskedId}</div>
+                                </div>
                             </div>
-                            <span class="px-2 py-1 rounded bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 text-[9px] font-black uppercase tracking-widest border border-emerald-200 dark:border-emerald-500/20">Verified</span>
+                            <span class="px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-black uppercase tracking-widest border border-emerald-200 dark:border-emerald-500/20">
+                                Verified
+                            </span>
                         </div>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            ${doc.front_image ? `<div class="rounded-lg overflow-hidden border border-slate-100 dark:border-white/5 bg-slate-50 dark:bg-[#0d1117] flex items-center justify-center p-2 h-32">
-                                <img src="/Finzo/${doc.front_image}" class="max-w-full max-h-full object-contain" alt="Front">
-                            </div>` : ''}
-                            ${doc.back_image ? `<div class="rounded-lg overflow-hidden border border-slate-100 dark:border-white/5 bg-slate-50 dark:bg-[#0d1117] flex items-center justify-center p-2 h-32">
-                                <img src="/Finzo/${doc.back_image}" class="max-w-full max-h-full object-contain" alt="Back">
-                            </div>` : ''}
+                            <div class="rounded-xl overflow-hidden border border-surface-border dark:border-white/5 bg-surface-subtle dark:bg-black/20 flex flex-col items-center justify-center p-3 min-h-[140px]">
+                                <div class="text-[10px] font-black text-text-muted uppercase tracking-wider mb-2 self-start">Front View</div>
+                                ${frontUrl ? `
+                                    <a href="${frontUrl}" target="_blank" rel="noopener noreferrer" class="group block relative w-full h-28 overflow-hidden rounded-lg">
+                                        <img src="${frontUrl}" class="w-full h-full object-contain group-hover:scale-105 transition-transform" alt="Front ID">
+                                    </a>
+                                ` : `
+                                    <div class="text-text-muted text-xs flex flex-col items-center gap-1 py-4">
+                                        <span class="material-symbols-outlined text-2xl opacity-40">image_not_supported</span>
+                                        <span>No front photo</span>
+                                    </div>
+                                `}
+                            </div>
+                            <div class="rounded-xl overflow-hidden border border-surface-border dark:border-white/5 bg-surface-subtle dark:bg-black/20 flex flex-col items-center justify-center p-3 min-h-[140px]">
+                                <div class="text-[10px] font-black text-text-muted uppercase tracking-wider mb-2 self-start">Back View</div>
+                                ${backUrl ? `
+                                    <a href="${backUrl}" target="_blank" rel="noopener noreferrer" class="group block relative w-full h-28 overflow-hidden rounded-lg">
+                                        <img src="${backUrl}" class="w-full h-full object-contain group-hover:scale-105 transition-transform" alt="Back ID">
+                                    </a>
+                                ` : `
+                                    <div class="text-text-muted text-xs flex flex-col items-center gap-1 py-4">
+                                        <span class="material-symbols-outlined text-2xl opacity-40">image_not_supported</span>
+                                        <span>No back photo</span>
+                                    </div>
+                                `}
+                            </div>
                         </div>
                     </div>
-                `).join('');
-            } else {
-                docsContainer.innerHTML = '<div class="text-center py-6 text-slate-400 font-bold text-xs uppercase tracking-widest">No documents on file</div>';
-            }
-
-            // Session Info
-            const dtStr = s.last_login_at ? new Date(s.last_login_at) : null;
-            document.getElementById('info-last-login').innerHTML = dtStr ? `${dtStr.toLocaleDateString('en-IN')}<br><span class="text-[10px] text-slate-400">${dtStr.toLocaleTimeString('en-IN')}</span>` : 'First login';
-            document.getElementById('info-last-ip').textContent = s.last_login_ip || 'N/A';
-
-            const statusEl = document.getElementById('info-status');
-            if (s.status === 'active') {
-                statusEl.innerHTML = '<span class="px-2 py-1 rounded bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 text-[10px] font-black uppercase tracking-widest border border-emerald-200 dark:border-emerald-500/20">Active</span>';
-            } else {
-                statusEl.innerHTML = '<span class="px-2 py-1 rounded bg-red-50 dark:bg-red-500/10 text-red-600 text-[10px] font-black uppercase tracking-widest border border-red-200 dark:border-red-500/20">Suspended</span>';
-            }
+                `;
+            }).join('');
+        } else {
+            docsContainer.innerHTML = '<div class="text-center py-8 text-text-muted font-bold text-xs uppercase tracking-widest">No identity documents on file</div>';
         }
+    }
 
-        function maskIdNumber(num) {
-            if (!num || num.length < 4) return num || '—';
-            return '•'.repeat(num.length - 4) + num.slice(-4);
+    // Session Status
+    const dtStr = s.last_login_at ? new Date(s.last_login_at) : null;
+    const loginEl = document.getElementById('info-last-login');
+    if (loginEl) {
+        loginEl.innerHTML = dtStr && !isNaN(dtStr.getTime())
+            ? `${dtStr.toLocaleDateString('en-IN')}<br><span class="text-[10px] text-text-muted">${dtStr.toLocaleTimeString('en-IN')}</span>`
+            : 'First login';
+    }
+
+    const ipEl = document.getElementById('info-last-ip');
+    if (ipEl) ipEl.textContent = s.last_login_ip || '127.0.0.1';
+
+    const statusEl = document.getElementById('info-status');
+    if (statusEl) {
+        if (s.status === 'active') {
+            statusEl.innerHTML = '<span class="px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-black uppercase tracking-widest border border-emerald-200 dark:border-emerald-500/20">Active</span>';
+        } else {
+            statusEl.innerHTML = '<span class="px-2.5 py-1 rounded-full bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 text-[10px] font-black uppercase tracking-widest border border-red-200 dark:border-red-500/20">Suspended</span>';
         }
+    }
+}
 
-        // Photo Upload
-        document.getElementById('photo-upload').addEventListener('change', async function () {
-            const file = this.files[0];
+// ── EDIT MODAL LOGIC ──
+let currentEditType = '';
+
+function openEditModal(type) {
+    currentEditType = type;
+    const modal = document.getElementById('edit-modal');
+    const fieldsContainer = document.getElementById('edit-fields');
+    const title = document.getElementById('edit-modal-title');
+    const errDiv = document.getElementById('edit-error');
+
+    if (!modal || !fieldsContainer) return;
+
+    if (errDiv) errDiv.classList.add('hidden');
+    fieldsContainer.innerHTML = '';
+
+    const s = profileData?.staff || {};
+    const addr = profileData?.address || {};
+
+    if (type === 'phone') {
+        if (title) title.textContent = 'Edit Phone Number';
+        fieldsContainer.innerHTML = `
+            <div>
+                <label for="edit-val-phone" class="block text-xs font-black text-text-muted uppercase tracking-widest mb-1.5">Mobile Phone Number *</label>
+                <div class="fin-input-wrapper">
+                    <span class="material-symbols-outlined input-icon-left">call</span>
+                    <input type="tel" id="edit-val-phone" required pattern="[0-9]{10}" maxlength="10" class="w-full fin-input has-icon-left" value="${s.phone || ''}" placeholder="10-digit number">
+                </div>
+                <p class="text-[11px] text-text-muted mt-1">Enter a valid 10-digit Indian mobile number.</p>
+            </div>
+        `;
+    } else if (type === 'emergency') {
+        if (title) title.textContent = 'Edit Emergency Contact';
+        fieldsContainer.innerHTML = `
+            <div>
+                <label for="edit-val-ename" class="block text-xs font-black text-text-muted uppercase tracking-widest mb-1.5">Contact Full Name *</label>
+                <div class="fin-input-wrapper">
+                    <span class="material-symbols-outlined input-icon-left">person</span>
+                    <input type="text" id="edit-val-ename" required class="w-full fin-input has-icon-left" value="${s.emergency_contact_name || ''}" placeholder="Contact person name">
+                </div>
+            </div>
+            <div>
+                <label for="edit-val-ephone" class="block text-xs font-black text-text-muted uppercase tracking-widest mb-1.5">Contact Phone Number *</label>
+                <div class="fin-input-wrapper">
+                    <span class="material-symbols-outlined input-icon-left">phone_in_talk</span>
+                    <input type="tel" id="edit-val-ephone" required pattern="[0-9]{10}" maxlength="10" class="w-full fin-input has-icon-left" value="${s.emergency_contact_phone || ''}" placeholder="10-digit emergency contact">
+                </div>
+            </div>
+        `;
+    } else if (type === 'address') {
+        if (title) title.textContent = 'Edit Address Information';
+        fieldsContainer.innerHTML = `
+            <div>
+                <label for="edit-val-street" class="block text-xs font-black text-text-muted uppercase tracking-widest mb-1.5">Street Address</label>
+                <input type="text" id="edit-val-street" class="w-full fin-input" value="${addr.street || s.street || ''}" placeholder="House / Flat / Street">
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label for="edit-val-city" class="block text-xs font-black text-text-muted uppercase tracking-widest mb-1.5">City</label>
+                    <input type="text" id="edit-val-city" class="w-full fin-input" value="${addr.city || s.city || ''}" placeholder="City">
+                </div>
+                <div>
+                    <label for="edit-val-state" class="block text-xs font-black text-text-muted uppercase tracking-widest mb-1.5">State</label>
+                    <input type="text" id="edit-val-state" class="w-full fin-input" value="${addr.state || s.state || ''}" placeholder="State">
+                </div>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label for="edit-val-pincode" class="block text-xs font-black text-text-muted uppercase tracking-widest mb-1.5">Pincode</label>
+                    <input type="text" id="edit-val-pincode" pattern="[0-9]{6}" maxlength="6" class="w-full fin-input font-mono" value="${addr.pincode || s.pincode || ''}" placeholder="6-digit code">
+                </div>
+                <div>
+                    <label for="edit-val-country" class="block text-xs font-black text-text-muted uppercase tracking-widest mb-1.5">Country</label>
+                    <input type="text" id="edit-val-country" class="w-full fin-input" value="${addr.country || s.country || 'India'}" placeholder="Country">
+                </div>
+            </div>
+        `;
+    }
+
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+}
+
+function closeEditModal() {
+    const modal = document.getElementById('edit-modal');
+    if (modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+    }
+}
+
+window.openEditModal = openEditModal;
+window.closeEditModal = closeEditModal;
+
+function checkPasswordStrength() {
+    const pw = document.getElementById('pw-new')?.value || '';
+    const bar = document.getElementById('pw-strength-bar');
+    const txt = document.getElementById('pw-strength-text');
+
+    if (!bar || !txt) return;
+
+    let score = 0;
+    if (pw.length >= 8) score++;
+    if (/[A-Z]/.test(pw)) score++;
+    if (/[0-9]/.test(pw)) score++;
+    if (/[^A-Za-z0-9]/.test(pw)) score++;
+
+    if (pw.length === 0) {
+        bar.style.width = '0%';
+        bar.className = 'password-strength-fill';
+        txt.textContent = '';
+    } else if (score < 2) {
+        bar.style.width = '33%';
+        bar.className = 'password-strength-fill bg-rose-500';
+        txt.textContent = 'Weak (Needs min 8 chars with uppercase, numbers)';
+        txt.className = 'text-[10px] font-bold mt-1 text-rose-500 uppercase tracking-wider';
+    } else if (score === 2 || score === 3) {
+        bar.style.width = '66%';
+        bar.className = 'password-strength-fill bg-amber-500';
+        txt.textContent = 'Good';
+        txt.className = 'text-[10px] font-bold mt-1 text-amber-500 uppercase tracking-wider';
+    } else {
+        bar.style.width = '100%';
+        bar.className = 'password-strength-fill bg-emerald-500';
+        txt.textContent = 'Strong Enterprise Grade';
+        txt.className = 'text-[10px] font-bold mt-1 text-emerald-500 uppercase tracking-wider';
+    }
+}
+
+window.checkPasswordStrength = checkPasswordStrength;
+
+function initEventListeners() {
+    // 1. Photo Upload
+    const photoInput = document.getElementById('photo-upload');
+    if (photoInput) {
+        photoInput.addEventListener('change', async function () {
+            const file = this.files?.[0];
             if (!file) return;
 
-            const formData = new FormData();
-            formData.append('photo', file);
-            formData.append('csrf_token', csrfToken);
-
-            try {
-                const res = await fetch('/Finzo/api/staff/upload-photo.php', { method: 'POST', body: formData, credentials: 'same-origin' });
-                const data = await res.json();
-                if (data.success) {
-                    showToast('Profile photo updated successfully');
-                    loadProfile();
-                } else {
-                    showToast(data.message, 'error');
-                }
-            } catch (err) {
-                showToast('Error uploading photo', 'error');
-            }
-        });
-
-        // Edit Modal Logic
-        let currentEditType = '';
-        function openEditModal(type) {
-            currentEditType = type;
-            const fieldsContainer = document.getElementById('edit-fields');
-            const title = document.getElementById('edit-modal-title');
-            document.getElementById('edit-error').classList.add('hidden');
-            fieldsContainer.innerHTML = '';
-
-            const s = profileData.staff;
-
-            if (type === 'phone') {
-                title.textContent = 'Edit Phone Number';
-                fieldsContainer.innerHTML = `
-                    <div>
-                        <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Phone Number</label>
-                        <input type="text" id="edit-val-phone" class="w-full ds-input" value="${s.phone || ''}" placeholder="e.g. 9876543210" pattern="[0-9]{10}">
-                    </div>`;
-            } else if (type === 'emergency') {
-                title.textContent = 'Edit Emergency Contact';
-                fieldsContainer.innerHTML = `
-                    <div>
-                        <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Contact Name</label>
-                        <input type="text" id="edit-val-ename" class="w-full ds-input" value="${s.emergency_contact_name || ''}">
-                    </div>
-                    <div class="mt-4">
-                        <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Contact Phone</label>
-                        <input type="text" id="edit-val-ephone" class="w-full ds-input" value="${s.emergency_contact_phone || ''}" pattern="[0-9]{10}">
-                    </div>`;
-            }
-
-            document.getElementById('edit-modal').classList.remove('hidden');
-            document.getElementById('edit-modal').classList.add('flex');
-        }
-
-        function closeEditModal() {
-            document.getElementById('edit-modal').classList.add('hidden');
-            document.getElementById('edit-modal').classList.remove('flex');
-        }
-
-        document.getElementById('edit-form').addEventListener('submit', async function (e) {
-            e.preventDefault();
-            const btn = document.getElementById('edit-submit-btn');
-            const errDiv = document.getElementById('edit-error');
-            btn.disabled = true;
-            btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-[16px]">sync</span> Saving...';
-            errDiv.classList.add('hidden');
-
-            const payload = { csrf_token: csrfToken };
-
-            if (currentEditType === 'phone') {
-                payload.phone = document.getElementById('edit-val-phone').value.trim();
-            } else if (currentEditType === 'emergency') {
-                payload.emergency_contact_name = document.getElementById('edit-val-ename').value.trim();
-                payload.emergency_contact_phone = document.getElementById('edit-val-ephone').value.trim();
-            }
-
-            try {
-                const res = await fetch('/Finzo/api/staff/update-profile.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload),
-                    credentials: 'same-origin'
-                });
-                const data = await res.json();
-                if (data.success) {
-                    showToast('Profile updated successfully');
-                    closeEditModal();
-                    loadProfile();
-                } else {
-                    errDiv.textContent = data.message;
-                    errDiv.classList.remove('hidden');
-                }
-            } catch (err) {
-                errDiv.textContent = 'Network error. Try again.';
-                errDiv.classList.remove('hidden');
-            }
-            btn.disabled = false;
-            btn.innerHTML = 'Save';
-        });
-
-        // Password Update Logic
-        function checkPasswordStrength() {
-            const pw = document.getElementById('pw-new').value;
-            const bar = document.getElementById('pw-strength-bar');
-            const txt = document.getElementById('pw-strength-text');
-
-            let score = 0;
-            if (pw.length >= 8) score++;
-            if (pw.match(/[A-Z]/)) score++;
-            if (pw.match(/[0-9]/)) score++;
-            if (pw.match(/[^A-Za-z0-9]/)) score++;
-
-            if (pw.length === 0) {
-                bar.style.width = '0%';
-                txt.textContent = '';
-            } else if (score < 2) {
-                bar.style.width = '33%';
-                bar.className = 'password-strength-fill bg-red-500';
-                txt.textContent = 'Weak';
-                txt.className = 'text-[9px] font-bold mt-1 text-red-500 uppercase tracking-widest';
-            } else if (score === 2 || score === 3) {
-                bar.style.width = '66%';
-                bar.className = 'password-strength-fill bg-amber-500';
-                txt.textContent = 'Good';
-                txt.className = 'text-[9px] font-bold mt-1 text-amber-500 uppercase tracking-widest';
-            } else {
-                bar.style.width = '100%';
-                bar.className = 'password-strength-fill bg-emerald-500';
-                txt.textContent = 'Strong';
-                txt.className = 'text-[9px] font-bold mt-1 text-emerald-500 uppercase tracking-widest';
-            }
-        }
-
-        document.getElementById('password-form').addEventListener('submit', async function (e) {
-            e.preventDefault();
-            const current = document.getElementById('pw-current').value;
-            const nw = document.getElementById('pw-new').value;
-            const confirm = document.getElementById('pw-confirm').value;
-            const errDiv = document.getElementById('pw-error');
-            const btn = document.getElementById('pw-submit-btn');
-
-            errDiv.classList.add('hidden');
-
-            if (nw !== confirm) {
-                errDiv.textContent = 'New passwords do not match';
-                errDiv.classList.remove('hidden');
+            if (!file.type.match('image.*')) {
+                displayToast('Please select a valid image file (JPEG or PNG)', 'error');
                 return;
             }
 
-            btn.disabled = true;
-            btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-[16px]">sync</span> Updating...';
+            if (file.size > 5 * 1024 * 1024) {
+                displayToast('Photo must be smaller than 5 MB', 'error');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('profile_photo', file);
+            formData.append('photo', file);
+            if (csrfToken) formData.append('csrf_token', csrfToken);
+
+            displayToast('Uploading photo...', 'info');
 
             try {
-                const res = await fetch('/Finzo/api/staff/change-password.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        current_password: current,
-                        new_password: nw,
-                        csrf_token: csrfToken
-                    }),
-                    credentials: 'same-origin'
-                });
-                const data = await res.json();
-                if (data.success) {
-                    showToast('Password changed successfully');
-                    document.getElementById('password-form').reset();
-                    document.getElementById('pw-strength-bar').style.width = '0%';
-                    document.getElementById('pw-strength-text').textContent = '';
+                let data = null;
+                if (window.api && typeof window.api.upload === 'function') {
+                    data = await window.api.upload('/staff-portal/profile', formData);
                 } else {
-                    errDiv.textContent = data.message;
-                    errDiv.classList.remove('hidden');
+                    const res = await fetch('/Finzo/api/v1/staff-portal/profile', {
+                        method: 'POST',
+                        body: formData,
+                        credentials: 'same-origin',
+                        headers: { 'X-CSRF-Token': csrfToken }
+                    });
+                    data = await res.json();
+                }
+
+                if (data && data.success) {
+                    displayToast('Profile photo updated successfully', 'success');
+                    await loadProfile();
+                } else {
+                    displayToast(data?.message || 'Failed to upload photo', 'error');
                 }
             } catch (err) {
-                errDiv.textContent = 'Network error. Try again.';
-                errDiv.classList.remove('hidden');
+                console.error('Photo upload error:', err);
+                displayToast('Error uploading photo. Please try again.', 'error');
             }
-            btn.disabled = false;
-            btn.innerHTML = 'Update Password';
         });
+    }
+
+    // 2. Edit Details Form
+    const editForm = document.getElementById('edit-form');
+    if (editForm) {
+        editForm.addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const btn = document.getElementById('edit-submit-btn');
+            const errDiv = document.getElementById('edit-error');
+
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-[16px]">sync</span> Saving...';
+            }
+            if (errDiv) errDiv.classList.add('hidden');
+
+            const payload = {};
+
+            if (currentEditType === 'phone') {
+                payload.phone = document.getElementById('edit-val-phone')?.value.trim();
+            } else if (currentEditType === 'emergency') {
+                payload.emergency_contact_name = document.getElementById('edit-val-ename')?.value.trim();
+                payload.emergency_contact_phone = document.getElementById('edit-val-ephone')?.value.trim();
+            } else if (currentEditType === 'address') {
+                payload.street = document.getElementById('edit-val-street')?.value.trim();
+                payload.city = document.getElementById('edit-val-city')?.value.trim();
+                payload.state = document.getElementById('edit-val-state')?.value.trim();
+                payload.pincode = document.getElementById('edit-val-pincode')?.value.trim();
+                payload.country = document.getElementById('edit-val-country')?.value.trim();
+            }
+
+            try {
+                let data = null;
+                if (window.api && typeof window.api.post === 'function') {
+                    data = await window.api.post('/staff-portal/profile', payload);
+                } else {
+                    const res = await fetch('/Finzo/api/v1/staff-portal/profile', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-Token': csrfToken
+                        },
+                        body: JSON.stringify(payload),
+                        credentials: 'same-origin'
+                    });
+                    data = await res.json();
+                }
+
+                if (data && data.success) {
+                    displayToast('Profile updated successfully', 'success');
+                    closeEditModal();
+                    await loadProfile();
+                } else {
+                    const errorMsg = data?.message || (data?.errors ? Object.values(data.errors).join(', ') : 'Failed to update profile');
+                    if (errDiv) {
+                        errDiv.textContent = errorMsg;
+                        errDiv.classList.remove('hidden');
+                    }
+                }
+            } catch (err) {
+                console.error('Update error:', err);
+                if (errDiv) {
+                    errDiv.textContent = 'Network or server error. Please try again.';
+                    errDiv.classList.remove('hidden');
+                }
+            }
+
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = 'Save Changes';
+            }
+        });
+    }
+
+    // 3. Password Form
+    const pwForm = document.getElementById('password-form');
+    if (pwForm) {
+        pwForm.addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const current = document.getElementById('pw-current')?.value || '';
+            const nw = document.getElementById('pw-new')?.value || '';
+            const confirm = document.getElementById('pw-confirm')?.value || '';
+            const errDiv = document.getElementById('pw-error');
+            const btn = document.getElementById('pw-submit-btn');
+
+            if (errDiv) errDiv.classList.add('hidden');
+
+            if (nw !== confirm) {
+                if (errDiv) {
+                    errDiv.textContent = 'New passwords do not match';
+                    errDiv.classList.remove('hidden');
+                }
+                return;
+            }
+
+            if (nw.length < 8) {
+                if (errDiv) {
+                    errDiv.textContent = 'Password must be at least 8 characters long';
+                    errDiv.classList.remove('hidden');
+                }
+                return;
+            }
+
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-[16px]">sync</span> Updating...';
+            }
+
+            try {
+                let data = null;
+                const payload = {
+                    current_password: current,
+                    new_password: nw,
+                    confirm_password: confirm
+                };
+
+                if (window.api && typeof window.api.post === 'function') {
+                    data = await window.api.post('/staff-portal/change-password', payload);
+                } else {
+                    const res = await fetch('/Finzo/api/v1/staff-portal/change-password', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-Token': csrfToken
+                        },
+                        body: JSON.stringify(payload),
+                        credentials: 'same-origin'
+                    });
+                    data = await res.json();
+                }
+
+                if (data && data.success) {
+                    displayToast('Password changed successfully', 'success');
+                    pwForm.reset();
+                    checkPasswordStrength();
+                } else {
+                    const errorMsg = data?.message || (data?.errors ? Object.values(data.errors).join(', ') : 'Password update failed');
+                    if (errDiv) {
+                        errDiv.textContent = errorMsg;
+                        errDiv.classList.remove('hidden');
+                    }
+                }
+            } catch (err) {
+                console.error('Password change error:', err);
+                if (errDiv) {
+                    errDiv.textContent = 'Network or server error. Please try again.';
+                    errDiv.classList.remove('hidden');
+                }
+            }
+
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = 'Update Password';
+            }
+        });
+    }
+}

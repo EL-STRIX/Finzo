@@ -112,6 +112,9 @@ ob_start();
                                 <span class="material-symbols-outlined text-primary-base" aria-hidden="true">location_on</span>
                                 Address Information
                             </h3>
+                            <button onclick="openEditModal('address')" data-action="openEditModal('address')" class="px-3 py-1.5 rounded-lg bg-primary-surface dark:bg-primary-surface/10 text-primary-base dark:text-primary-base text-xs font-black uppercase tracking-widest border border-primary-base dark:border-primary-base/20 hover:bg-primary-surface transition-all flex items-center gap-1">
+                                <span class="material-symbols-outlined text-sm" aria-hidden="true">edit</span> Edit
+                            </button>
                         </div>
                         <div class="p-6">
                             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -180,7 +183,7 @@ ob_start();
                                 </div>
                             </div>
                             <div id="pw-error" class="hidden text-xs font-bold text-danger-base bg-danger-surface dark:bg-danger-surface/10 p-2 rounded" aria-live="polite"></div>
-                            <button type="submit" id="pw-submit-btn" class="w-full h-10 bg-warning-surface text-white font-bold rounded-lg shadow-md shadow-amber-500/20 hover:bg-warning-surface transition-all text-xs uppercase tracking-widest mt-2">
+                            <button type="submit" id="pw-submit-btn" class="w-full h-11 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl shadow-md shadow-amber-500/20 transition-all text-xs uppercase tracking-widest mt-2 flex items-center justify-center gap-2">
                                 Update Password
                             </button>
                         </form>
@@ -217,6 +220,33 @@ ob_start();
                 </div>
 
             </div>
+
+<!-- EDIT DETAILS MODAL -->
+<div id="edit-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 transition-all">
+    <div class="bg-white dark:bg-surface-main border border-surface-border dark:border-white/10 rounded-2xl w-full max-w-md shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+        <div class="p-5 border-b border-surface-border dark:border-white/5 flex items-center justify-between">
+            <h3 class="font-headline font-bold text-lg text-text-main dark:text-white flex items-center gap-2" id="edit-modal-title">
+                Edit Profile
+            </h3>
+            <button type="button" onclick="closeEditModal()" class="p-1.5 rounded-lg text-text-muted hover:text-text-main hover:bg-surface-hover transition-colors" aria-label="Close modal">
+                <span class="material-symbols-outlined text-xl leading-none">close</span>
+            </button>
+        </div>
+        <form id="edit-form" class="p-6 space-y-4">
+            <div id="edit-fields" class="space-y-4"></div>
+            <div id="edit-error" class="hidden text-xs font-bold text-danger-base bg-danger-surface dark:bg-danger-surface/10 p-3 rounded-xl border border-danger-base/20" aria-live="polite"></div>
+            <div class="flex items-center justify-end gap-3 pt-4 border-t border-surface-border dark:border-white/5">
+                <button type="button" onclick="closeEditModal()" class="px-4 py-2.5 rounded-xl border border-surface-border text-text-muted hover:text-text-main text-xs font-bold uppercase tracking-wider transition-colors">
+                    Cancel
+                </button>
+                <button type="submit" id="edit-submit-btn" class="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-black uppercase tracking-wider shadow-md shadow-amber-500/20 transition-all flex items-center gap-1.5">
+                    Save Changes
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <script defer src="/Finzo/public/assets/js/staff/staff-profile.js"></script>
 <?php
 $slot = ob_get_clean();
