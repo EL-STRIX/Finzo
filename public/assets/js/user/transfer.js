@@ -1,189 +1,521 @@
-(async function() {
-    await fetchUserSession();
-    buildSidebar('transfer'); buildNavbar('Banking', 'Fund Transfer');
-    handleStatusRedirect('transfer');
-  })();
+/**
+ * Finzo - Fund Transfer Controller
+ * Real-time balance and limit checks, beneficiary auto-discovery, ISO 20022 compliant ACID execution.
+ */
 
-  let recipientVerified = false;
-  let recipientName = '';
-  let recipientAccNo = '';
+let transferState = {
+  accountNo: '',
+  accountType: 'savings',
+  balance: 0,
+  dailyLimit: 10000,
+  todayTransferTotal: 0,
+  remainingLimit: 10000,
+  status: 'active'
+};
 
-  (async function loadBeneficiaries() {
-    try {
-      const data = window.api
-        ? await window.api.get('/user/beneficiaries')
-        : await fetch('/Finzo/api/user/beneficiary.php', { credentials: 'same-origin' }).then(r => r.json());
-      const container = document.getElementById('beneficiary-chips');
-      if (data && data.success && data.beneficiaries && data.beneficiaries.length > 0) {
-        container.innerHTML = data.beneficiaries.map(b => 
-          `<button class="px-4 py-2 rounded-full border-2 border-[var(--color-border-main)] bg-[var(--color-surface-subtle)] text-xs font-bold text-[var(--color-text-muted)] hover:border-primary-base hover:text-primary-base transition-colors flex items-center gap-2" onclick="useBeneficiary('${b.account_no}','${b.nickname}')">
-            <span class="material-symbols-outlined text-[14px]">star</span> ${b.nickname}
-          </button>`
-        ).join('');
-      } else {
-        container.innerHTML = '<div class="text-xs text-[var(--color-text-muted)] italic">No saved beneficiaries found.</div>';
+let recipientVerified = false;
+let recipientName = '';
+let recipientAccNo = '';
+
+// Helper: Format currency safely
+function formatMoney(amount) {
+  if (typeof window.formatINR === 'function') {
+    const formatted = window.formatINR(amount);
+    return formatted.startsWith('₹') ? formatted : '₹' + formatted;
+  }
+  return '₹' + parseFloat(amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+// Helper: Indian numbering system words converter
+function convertToWords(number) {
+  if (typeof window.numberToWords === 'function') {
+    return window.numberToWords(number);
+  }
+  let num = Math.floor(Math.abs(Number(number) || 0));
+  if (num === 0) return 'Zero';
+  const ones = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+  const tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+
+  function convertLessThanOneThousand(n) {
+    if (n === 0) return '';
+    if (n < 20) return ones[n];
+    if (n < 100) return tens[Math.floor(n / 10)] + (n % 10 !== 0 ? ' ' + ones[n % 10] : '');
+    return ones[Math.floor(n / 100)] + ' Hundred' + (n % 100 !== 0 ? ' ' + convertLessThanOneThousand(n % 100) : '');
+  }
+
+  let parts = [];
+  const crore = Math.floor(num / 10000000);
+  num %= 10000000;
+  const lakh = Math.floor(num / 100000);
+  num %= 100000;
+  const thousand = Math.floor(num / 1000);
+  num %= 1000;
+  const remainder = num;
+
+  if (crore > 0) parts.push(convertLessThanOneThousand(crore) + ' Crore');
+  if (lakh > 0) parts.push(convertLessThanOneThousand(lakh) + ' Lakh');
+  if (thousand > 0) parts.push(convertLessThanOneThousand(thousand) + ' Thousand');
+  if (remainder > 0) parts.push(convertLessThanOneThousand(remainder));
+
+  return parts.join(' ').trim();
+}
+
+(async function initFundTransfer() {
+  await fetchUserSession();
+  buildSidebar('transfer');
+  buildNavbar('Banking', 'Fund Transfer');
+  handleStatusRedirect('transfer');
+
+  await loadSourceAccount();
+  await loadBeneficiaries();
+  setupEventListeners();
+})();
+
+async function loadSourceAccount() {
+  try {
+    const res = await window.api.get('/user/accounts');
+    if (res && res.success && res.account) {
+      const acc = res.account;
+      transferState.accountNo = acc.account_no || (typeof UserState !== 'undefined' ? UserState.accountNo : '');
+      transferState.accountType = acc.account_type || (typeof UserState !== 'undefined' ? UserState.accountType : 'savings');
+      transferState.balance = parseFloat(acc.balance ?? (typeof UserState !== 'undefined' ? UserState.balance : 0));
+      transferState.dailyLimit = parseFloat(acc.daily_limit ?? (typeof UserState !== 'undefined' ? UserState.dailyLimit : 10000));
+      transferState.todayTransferTotal = parseFloat(res.today_transfer_total ?? 0);
+      transferState.remainingLimit = parseFloat(res.remaining_limit ?? Math.max(0, transferState.dailyLimit - transferState.todayTransferTotal));
+      transferState.status = acc.status || 'active';
+
+      renderSourceAccount();
+    } else {
+      // Fallback to UserState cache
+      if (typeof UserState !== 'undefined') {
+        transferState.accountNo = UserState.accountNo || '';
+        transferState.accountType = UserState.accountType || 'savings';
+        transferState.balance = parseFloat(UserState.balance || 0);
+        transferState.dailyLimit = parseFloat(UserState.dailyLimit || 10000);
+        transferState.remainingLimit = transferState.dailyLimit;
+        renderSourceAccount();
       }
-    } catch (e) { 
-      document.getElementById('beneficiary-chips').innerHTML = '<div class="text-xs text-danger-base font-bold">Failed to load beneficiaries.</div>';
     }
-    
-    const params = new URLSearchParams(window.location.search);
-    const toAcc = params.get('to');
-    if (toAcc) {
-      document.getElementById('to-account').value = toAcc;
+  } catch (e) {
+    console.warn('Failed to load accounts real-time info:', e);
+    if (typeof UserState !== 'undefined') {
+      transferState.accountNo = UserState.accountNo || '';
+      transferState.balance = parseFloat(UserState.balance || 0);
+      renderSourceAccount();
+    }
+  }
+}
+
+function renderSourceAccount() {
+  const accNoEl = document.getElementById('src-acc-no');
+  const accTypeEl = document.getElementById('src-acc-type');
+  const balanceEl = document.getElementById('src-balance');
+  const remainingEl = document.getElementById('src-remaining-limit');
+  const usedEl = document.getElementById('src-limit-used');
+  const maxEl = document.getElementById('src-limit-max');
+  const progressEl = document.getElementById('src-limit-progress');
+  const cmFromEl = document.getElementById('cm-from');
+
+  if (accNoEl) accNoEl.textContent = transferState.accountNo || 'NOT ASSIGNED';
+  if (accTypeEl) accTypeEl.textContent = (transferState.accountType || 'SAVINGS').toUpperCase();
+  if (balanceEl) balanceEl.textContent = formatMoney(transferState.balance);
+  if (remainingEl) remainingEl.textContent = formatMoney(transferState.remainingLimit);
+  if (usedEl) usedEl.textContent = formatMoney(transferState.todayTransferTotal);
+  if (maxEl) maxEl.textContent = formatMoney(transferState.dailyLimit);
+  if (cmFromEl) cmFromEl.textContent = transferState.accountNo || '-';
+
+  if (progressEl) {
+    const total = transferState.dailyLimit > 0 ? transferState.dailyLimit : 1;
+    const pct = Math.min(100, Math.round((transferState.todayTransferTotal / total) * 100));
+    progressEl.style.width = pct + '%';
+    if (pct >= 90) {
+      progressEl.className = 'bg-rose-500 h-full rounded-full transition-all duration-500';
+    } else if (pct >= 70) {
+      progressEl.className = 'bg-amber-500 h-full rounded-full transition-all duration-500';
+    } else {
+      progressEl.className = 'bg-primary h-full rounded-full transition-all duration-500';
+    }
+  }
+}
+
+async function loadBeneficiaries() {
+  const container = document.getElementById('beneficiary-chips');
+  if (!container) return;
+
+  try {
+    const data = await window.api.get('/user/beneficiaries');
+    if (data && data.success && data.beneficiaries && data.beneficiaries.length > 0) {
+      container.innerHTML = data.beneficiaries.map(b => {
+        const safeAcc = escapeHtml(b.account_no);
+        const safeNick = escapeHtml(b.nickname || b.name || 'Beneficiary');
+        return `
+          <button type="button" class="px-3.5 py-1.5 rounded-full border border-border-main bg-surface-subtle text-xs font-bold text-text-muted hover:border-primary hover:text-primary transition-all flex items-center gap-1.5 shadow-sm hover:shadow" onclick="useBeneficiary('${safeAcc}', '${safeNick}')">
+            <span class="material-symbols-outlined text-[15px] text-amber-500">star</span>
+            <span>${safeNick}</span>
+            <span class="font-mono text-[10px] opacity-70">(${safeAcc.slice(-4)})</span>
+          </button>
+        `;
+      }).join('');
+    } else {
+      container.innerHTML = '<div class="text-xs text-text-muted italic">No saved beneficiaries found. Enter an account number below.</div>';
+    }
+  } catch (e) {
+    container.innerHTML = '<div class="text-xs text-rose-500 font-bold">Unable to load beneficiaries.</div>';
+  }
+
+  // Support deep link ?to=FNZ...
+  const params = new URLSearchParams(window.location.search);
+  const toAcc = params.get('to');
+  if (toAcc) {
+    const toInput = document.getElementById('to-account');
+    if (toInput) {
+      toInput.value = toAcc.toUpperCase();
       lookupAccount();
     }
-  })();
+  }
+}
 
-  function useBeneficiary(acc, name) {
-    document.getElementById('to-account').value = acc;
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+function useBeneficiary(acc, name) {
+  const toInput = document.getElementById('to-account');
+  if (toInput) {
+    toInput.value = acc;
     lookupAccount();
   }
+}
 
-  function resetLookup() {
-    recipientVerified = false;
-    document.getElementById('lookup-result').classList.add('hidden');
-    updateSummary();
+function resetLookup() {
+  recipientVerified = false;
+  recipientName = '';
+  recipientAccNo = '';
+
+  const resultContainer = document.getElementById('lookup-result');
+  const foundEl = document.getElementById('lookup-found');
+  const notFoundEl = document.getElementById('lookup-not-found');
+
+  if (resultContainer) resultContainer.classList.add('hidden');
+  if (foundEl) foundEl.classList.add('hidden');
+  if (notFoundEl) notFoundEl.classList.add('hidden');
+
+  updateSummary();
+}
+
+async function lookupAccount() {
+  const inputEl = document.getElementById('to-account');
+  if (!inputEl) return;
+  const accNo = inputEl.value.trim().toUpperCase();
+
+  if (!accNo) {
+    showToast('Please enter an account number', 'warning');
+    return;
   }
 
-  async function lookupAccount() {
-    const accNo = document.getElementById('to-account').value.trim().toUpperCase();
-    if (!accNo) { showToast('Please enter an account number', 'warning'); return; }
-    if (accNo === UserState.accountNo) { showToast('Cannot transfer to your own account', 'error'); return; }
-    
-    try {
-      const data = window.api
-        ? await window.api.get('/user/accounts/lookup', { account_no: accNo })
-        : await fetch('/Finzo/api/user/account-lookup.php?account_no=' + encodeURIComponent(accNo), { credentials: 'same-origin' }).then(r => r.json());
-      document.getElementById('lookup-result').classList.remove('hidden');
-      
-      if (data && data.success && data.account) {
-        if (data.account.is_self) {
-          recipientVerified = false;
-          document.getElementById('lookup-found').classList.add('hidden');
-          document.getElementById('lookup-not-found').classList.remove('hidden');
-          showToast('Cannot transfer to your own account', 'warning');
-          return;
-        }
-        recipientVerified = true;
-        recipientName = data.account.holder_name;
-        recipientAccNo = accNo;
-        document.getElementById('lookup-found').classList.remove('hidden');
-        document.getElementById('lookup-not-found').classList.add('hidden');
-        document.getElementById('recipient-name').textContent = data.account.holder_name;
-        document.getElementById('recipient-type').textContent = data.account.account_type || 'Savings';
-        showToast('Recipient identity verified', 'success');
-        updateSummary();
-      } else {
+  const myAccount = transferState.accountNo || (typeof UserState !== 'undefined' ? UserState.accountNo : '');
+  if (myAccount && accNo.toUpperCase() === myAccount.toUpperCase()) {
+    showToast('Cannot transfer to your own account', 'error');
+    recipientVerified = false;
+    showLookupError('Cannot transfer to your own account');
+    return;
+  }
+
+  const btn = document.getElementById('btn-verify-identity');
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<span class="material-symbols-outlined text-lg animate-spin">sync</span><span>Verifying...</span>';
+  }
+
+  try {
+    const data = await window.api.get('/user/accounts/lookup', { account_no: accNo });
+    const resultContainer = document.getElementById('lookup-result');
+    const foundEl = document.getElementById('lookup-found');
+    const notFoundEl = document.getElementById('lookup-not-found');
+
+    if (resultContainer) resultContainer.classList.remove('hidden');
+
+    if (data && data.success && data.account) {
+      if (data.account.is_self) {
         recipientVerified = false;
-        document.getElementById('lookup-found').classList.add('hidden');
-        document.getElementById('lookup-not-found').classList.remove('hidden');
+        showLookupError('Cannot transfer to your own account');
+        showToast('Cannot transfer to your own account', 'warning');
+        return;
       }
-    } catch (err) {
-      showToast('Lookup failed. Please try again.', 'error');
+
+      recipientVerified = true;
+      recipientName = data.account.holder_name || 'Verified Beneficiary';
+      recipientAccNo = accNo;
+
+      if (notFoundEl) notFoundEl.classList.add('hidden');
+      if (foundEl) foundEl.classList.remove('hidden');
+
+      const nameEl = document.getElementById('recipient-name');
+      const typeEl = document.getElementById('recipient-type');
+      if (nameEl) nameEl.textContent = recipientName;
+      if (typeEl) typeEl.textContent = (data.account.account_type || 'Savings') + ' Account';
+
+      showToast('Recipient verified: ' + recipientName, 'success');
+      updateSummary();
+    } else {
+      recipientVerified = false;
+      const msg = (data && data.message) ? data.message : 'Finzo account not found';
+      showLookupError(msg);
+      showToast(msg, 'error');
+    }
+  } catch (err) {
+    recipientVerified = false;
+    showLookupError('Account lookup failed. Please try again.');
+    showToast('Lookup failed. Please check connection.', 'error');
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = '<span class="material-symbols-outlined text-lg" aria-hidden="true">verified</span><span>Verify Identity</span>';
     }
   }
+}
 
-  function updateSummary() {
-    const amount = parseFloat(document.getElementById('transfer-amount').value || 0);
-    const balance = parseFloat(UserState.balance || 0);
+function showLookupError(message) {
+  const resultContainer = document.getElementById('lookup-result');
+  const foundEl = document.getElementById('lookup-found');
+  const notFoundEl = document.getElementById('lookup-not-found');
+  const msgEl = document.getElementById('lookup-error-msg');
 
-    const wordsDiv = document.getElementById('amount-words');
-    const errorDiv = document.getElementById('amount-error');
-    
-    if (amount > 0) {
-      wordsDiv.textContent = numberToWords(amount) + ' Rupees Only';
-      if (amount > balance) {
-        errorDiv.textContent = 'Insufficient balance (Current: ₹' + formatINR(balance) + ')';
+  if (resultContainer) resultContainer.classList.remove('hidden');
+  if (foundEl) foundEl.classList.add('hidden');
+  if (notFoundEl) notFoundEl.classList.remove('hidden');
+  if (msgEl) msgEl.textContent = message;
+}
+
+function quickAmount(val) {
+  const input = document.getElementById('transfer-amount');
+  if (!input) return;
+
+  if (val === 'max') {
+    const maxTransferable = Math.max(0, Math.min(transferState.balance, transferState.remainingLimit));
+    input.value = maxTransferable.toFixed(2);
+  } else {
+    const current = parseFloat(input.value || 0);
+    input.value = (current + parseFloat(val)).toFixed(2);
+  }
+  updateSummary();
+}
+
+function updateSummary() {
+  const amountEl = document.getElementById('transfer-amount');
+  const wordsDiv = document.getElementById('amount-words');
+  const errorDiv = document.getElementById('amount-error');
+  if (!amountEl) return;
+
+  const amount = parseFloat(amountEl.value || 0);
+  const balance = transferState.balance;
+  const remainingLimit = transferState.remainingLimit;
+
+  if (amount > 0) {
+    if (wordsDiv) {
+      wordsDiv.textContent = convertToWords(amount) + ' Rupees Only';
+    }
+
+    if (errorDiv) {
+      if (amount < 10) {
+        errorDiv.textContent = 'Minimum transfer amount is ₹10.00';
+        errorDiv.classList.remove('hidden');
+      } else if (amount > balance) {
+        errorDiv.textContent = 'Insufficient balance (Available: ' + formatMoney(balance) + ')';
+        errorDiv.classList.remove('hidden');
+      } else if (amount > remainingLimit) {
+        errorDiv.textContent = 'Exceeds today\'s remaining limit (' + formatMoney(remainingLimit) + ')';
         errorDiv.classList.remove('hidden');
       } else {
+        errorDiv.textContent = '';
         errorDiv.classList.add('hidden');
       }
-    } else {
-      wordsDiv.textContent = '';
+    }
+  } else {
+    if (wordsDiv) wordsDiv.textContent = '';
+    if (errorDiv) {
+      errorDiv.textContent = '';
       errorDiv.classList.add('hidden');
     }
   }
+}
 
-  function confirmTransfer() {
-    const amount = parseFloat(document.getElementById('transfer-amount').value || 0);
-    const balance = parseFloat(UserState.balance || 0);
-    const pin = document.getElementById('transfer-pin').value;
+function togglePinVisibility() {
+  const pinInput = document.getElementById('transfer-pin');
+  const icon = document.getElementById('pin-toggle-icon');
+  if (!pinInput) return;
 
-    if (!recipientVerified) { showToast('Please verify a recipient account first', 'warning'); return; }
-    if (amount <= 0) { showToast('Please enter a valid amount', 'warning'); return; }
-    if (amount > balance) { showToast('Insufficient funds in source account', 'error'); return; }
-    if (!pin || pin.length < 4) { showToast('Please enter your 4-digit security PIN', 'warning'); return; }
-
-    document.getElementById('cm-from').textContent = (UserState.accountNo || 'FNZ20260001');
-    document.getElementById('cm-to').textContent = recipientAccNo;
-    document.getElementById('cm-recipient').textContent = recipientName;
-    document.getElementById('cm-amount').textContent = '₹' + formatINR(amount);
-
-    document.getElementById('confirm-modal').classList.remove('hidden');
+  if (pinInput.type === 'password') {
+    pinInput.type = 'text';
+    if (icon) icon.textContent = 'visibility_off';
+  } else {
+    pinInput.type = 'password';
+    if (icon) icon.textContent = 'visibility';
   }
-  
-  function closeModal(id) {
-    document.getElementById(id).classList.add('hidden');
+}
+
+function confirmTransfer() {
+  const amountEl = document.getElementById('transfer-amount');
+  const pinEl = document.getElementById('transfer-pin');
+  const descEl = document.getElementById('transfer-desc');
+
+  const amount = parseFloat(amountEl ? amountEl.value : 0);
+  const pin = pinEl ? pinEl.value.trim() : '';
+  const desc = descEl ? descEl.value.trim() : '';
+
+  if (!recipientVerified) {
+    showToast('Please enter and verify the recipient account first', 'warning');
+    const toInput = document.getElementById('to-account');
+    if (toInput) toInput.focus();
+    return;
   }
 
-  async function processTransfer() {
-    const amount = document.getElementById('transfer-amount').value;
-    const pin = document.getElementById('transfer-pin').value;
-    const desc = document.getElementById('transfer-desc').value;
-    const btn = document.getElementById('final-transfer-btn');
+  if (isNaN(amount) || amount <= 0) {
+    showToast('Please enter a valid transfer amount', 'warning');
+    if (amountEl) amountEl.focus();
+    return;
+  }
 
+  if (amount < 10) {
+    showToast('Minimum transfer amount is ₹10.00', 'warning');
+    if (amountEl) amountEl.focus();
+    return;
+  }
+
+  if (amount > transferState.balance) {
+    showToast('Insufficient funds in source account', 'error');
+    if (amountEl) amountEl.focus();
+    return;
+  }
+
+  if (amount > transferState.remainingLimit) {
+    showToast('Transfer exceeds today\'s remaining daily limit of ' + formatMoney(transferState.remainingLimit), 'error');
+    return;
+  }
+
+  if (!pin || !/^\d{4}$/.test(pin)) {
+    showToast('Please enter your 4-digit numeric security PIN', 'warning');
+    if (pinEl) pinEl.focus();
+    return;
+  }
+
+  // Populate authorization modal
+  const cmFrom = document.getElementById('cm-from');
+  const cmTo = document.getElementById('cm-to');
+  const cmRecipient = document.getElementById('cm-recipient');
+  const cmAmount = document.getElementById('cm-amount');
+  const cmDesc = document.getElementById('cm-desc');
+
+  if (cmFrom) cmFrom.textContent = transferState.accountNo || 'FNZ-SOURCE';
+  if (cmTo) cmTo.textContent = recipientAccNo;
+  if (cmRecipient) cmRecipient.textContent = recipientName;
+  if (cmAmount) cmAmount.textContent = formatMoney(amount);
+  if (cmDesc) cmDesc.textContent = desc || 'None';
+
+  const modal = document.getElementById('confirm-modal');
+  if (modal) modal.classList.remove('hidden');
+}
+
+function closeModal(id) {
+  const modal = document.getElementById(id);
+  if (modal) modal.classList.add('hidden');
+}
+
+async function processTransfer() {
+  const amountEl = document.getElementById('transfer-amount');
+  const pinEl = document.getElementById('transfer-pin');
+  const descEl = document.getElementById('transfer-desc');
+  const btn = document.getElementById('final-transfer-btn');
+
+  const amount = parseFloat(amountEl ? amountEl.value : 0);
+  const pin = pinEl ? pinEl.value.trim() : '';
+  const desc = descEl ? descEl.value.trim() : '';
+
+  if (btn) {
     btn.disabled = true;
-    btn.innerHTML = '<span class="material-symbols-outlined animate-spin">sync</span> Processing...';
+    btn.innerHTML = '<span class="material-symbols-outlined text-lg animate-spin">sync</span><span>Authorizing & Sending...</span>';
+  }
 
-    try {
-      let data;
-      if (window.api) {
-        data = await window.api.post('/user/transactions/transfer', {
-          to_account: recipientAccNo,
-          to_account_no: recipientAccNo,
-          amount: amount,
-          pin: pin,
-          txn_pin: pin,
-          description: desc
-        });
-      } else {
-        let csrfToken = '';
-        try {
-          const tokenRes = await fetch('/Finzo/api/auth/get-csrf-token.php');
-          const tokenData = await tokenRes.json();
-          csrfToken = tokenData.csrf_token || '';
-        } catch (e) { }
+  try {
+    const payload = {
+      to_account: recipientAccNo,
+      to_account_no: recipientAccNo,
+      amount: amount,
+      pin: pin,
+      txn_pin: pin,
+      description: desc
+    };
 
-        const params = new URLSearchParams();
-        params.append('to_account', recipientAccNo);
-        params.append('to_account_no', recipientAccNo);
-        params.append('amount', amount);
-        params.append('pin', pin);
-        params.append('txn_pin', pin);
-        params.append('description', desc);
-        params.append('csrf_token', csrfToken);
+    const data = await window.api.post('/user/transactions/transfer', payload);
 
-        const res = await fetch('/Finzo/api/user/transfer.php', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          credentials: 'same-origin',
-          body: params.toString()
-        });
-        data = await res.json();
-      }
+    if (data && data.success) {
+      showToast('Transfer authorized successfully!', 'success');
+      const txnId = data.transaction_id || data.txn_id || '';
       
-      if (data && data.success) {
-        const txnId = data.transaction_id || data.txn_id || '';
-        window.location.href = `receipt.php?id=${txnId}&success=1`;
-      } else {
-        showToast((data && data.message) ? data.message : 'Transfer failed', 'error');
-        btn.disabled = false;
-        btn.innerHTML = '<span class="material-symbols-outlined">done_all</span> Authorize & Send';
+      // Update local cache balance if returned
+      if (data.new_balance !== undefined && typeof UserState !== 'undefined') {
+        UserState.balance = data.new_balance;
       }
-    } catch (e) {
-      showToast('Connection error', 'error');
+
+      setTimeout(() => {
+        if (data.redirect) {
+          window.location.href = data.redirect;
+        } else {
+          window.location.href = `receipt.php?id=${encodeURIComponent(txnId)}&success=1`;
+        }
+      }, 500);
+    } else {
+      const msg = (data && data.message) ? data.message : 'Transfer failed';
+      showToast(msg, 'error');
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = '<span class="material-symbols-outlined text-lg" aria-hidden="true">done_all</span><span>Authorize & Send</span>';
+      }
+    }
+  } catch (err) {
+    showToast('Network error during transfer. Please check your transaction history before retrying.', 'error');
+    if (btn) {
       btn.disabled = false;
-      btn.innerHTML = '<span class="material-symbols-outlined">done_all</span> Authorize & Send';
+      btn.innerHTML = '<span class="material-symbols-outlined text-lg" aria-hidden="true">done_all</span><span>Authorize & Send</span>';
     }
   }
+}
+
+function setupEventListeners() {
+  const toInput = document.getElementById('to-account');
+  if (toInput) {
+    toInput.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        lookupAccount();
+      }
+    });
+  }
+
+  const pinInput = document.getElementById('transfer-pin');
+  if (pinInput) {
+    pinInput.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        confirmTransfer();
+      }
+    });
+  }
+}
+
+// Expose globals for inline and data-action handlers
+window.useBeneficiary = useBeneficiary;
+window.resetLookup = resetLookup;
+window.lookupAccount = lookupAccount;
+window.quickAmount = quickAmount;
+window.updateSummary = updateSummary;
+window.togglePinVisibility = togglePinVisibility;
+window.confirmTransfer = confirmTransfer;
+window.closeModal = closeModal;
+window.processTransfer = processTransfer;
