@@ -22,8 +22,13 @@ async function loadTransactions() {
     if (toDate) params.set('to_date', toDate);
     params.set('limit', '200');
 
-    const res = await fetch('/Finzo/api/user/transactions.php?' + params.toString(), { credentials: 'same-origin' });
-    const data = await res.json();
+    let data;
+    if (window.api && typeof window.api.get === 'function') {
+      data = await window.api.get('/user/transactions', Object.fromEntries(params.entries()));
+    } else {
+      const res = await fetch('/Finzo/api/v1/user/transactions?' + params.toString(), { credentials: 'same-origin' });
+      data = await res.json();
+    }
     if (data.success && data.transactions) {
       allTxns = data.transactions.map(tx => ({
         id: tx.txn_id || tx.reference_id || '-',
