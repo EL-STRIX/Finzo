@@ -710,6 +710,8 @@ class UserController
                 'success' => true,
                 'message' => 'Transaction PIN changed successfully! You can now use your new PIN to authorize money transfers.'
             ]);
+        } catch (\App\Shared\Core\Exceptions\TestResponseException $e) {
+            throw $e;
         } catch (\App\Shared\Core\Exceptions\ValidationException $e) {
             $payload = $e->getPayload();
             $errors = $payload['errors'] ?? ['general' => $e->getMessage()];
