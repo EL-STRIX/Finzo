@@ -7,9 +7,14 @@
 
   if (txnId) {
     try {
-      const res = await fetch('/Finzo/api/user/transactions.php?search=' + encodeURIComponent(txnId), { credentials: 'same-origin' });
-      const data = await res.json();
-      if (data.success && data.transactions && data.transactions.length > 0) {
+      let data;
+      if (window.api && typeof window.api.get === 'function') {
+        data = await window.api.get('/user/transactions', { search: txnId });
+      } else {
+        const res = await fetch('/Finzo/api/user/transactions.php?search=' + encodeURIComponent(txnId), { credentials: 'same-origin' });
+        data = await res.json();
+      }
+      if (data && data.success && data.transactions && data.transactions.length > 0) {
         const tx = data.transactions.find(t => t.txn_id === txnId) || data.transactions[0];
         
         const date = new Date(tx.created_at);
