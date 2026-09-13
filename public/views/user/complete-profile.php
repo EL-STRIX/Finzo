@@ -385,7 +385,7 @@ ob_start();
     <div class="step-content" id="step4">
         <div class="mb-6 border-b border-border-subtle pb-3">
             <h3 class="font-display text-lg font-bold text-text-main">4. Banking Information & Preferences</h3>
-            <p class="text-xs text-text-muted mt-0.5">Choose your primary account type and servicing branch.</p>
+            <p class="text-xs text-text-muted mt-0.5">Choose your primary account type, servicing branch, and 4-digit transaction PIN.</p>
         </div>
 
         <!-- Account Tier Selection -->
@@ -443,6 +443,48 @@ ob_start();
                     <?php endif; ?>
                 </div>
                 <input type="hidden" id="branch" name="branch" />
+            </div>
+        </div>
+
+        <!-- Transaction Security PIN -->
+        <div class="mb-6 p-4 bg-surface-elevated rounded-xl border border-border-subtle">
+            <div class="flex items-center gap-2 mb-3">
+                <span class="material-symbols-outlined text-primary text-xl">pin</span>
+                <div>
+                    <h4 class="text-sm font-bold text-text-main">Set Transaction PIN (4-Digit)</h4>
+                    <p class="text-xs text-text-muted">Create a secure 4-digit numeric PIN for authorizing future money transfers and withdrawals.</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="fin-input-container mb-0">
+                    <label for="txn-pin" class="fin-label fin-label-required">4-Digit Security PIN</label>
+                    <div class="relative">
+                        <span class="material-symbols-outlined input-icon-left">pin</span>
+                        <input type="password" id="txn-pin" name="txn_pin" maxlength="4" inputmode="numeric" pattern="[0-9]{4}" autocomplete="new-password" class="fin-input has-icon-left font-mono tracking-widest text-base pr-10" placeholder="••••" required oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 4)" />
+                        <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-main transition-colors p-1" onclick="togglePinVisibility('txn-pin', 'toggle-pin-icon')" title="Toggle PIN visibility">
+                            <span class="material-symbols-outlined text-lg" id="toggle-pin-icon">visibility</span>
+                        </button>
+                    </div>
+                    <span class="text-[11px] text-text-muted mt-1 block">Enter exactly 4 numeric digits</span>
+                </div>
+
+                <div class="fin-input-container mb-0">
+                    <label for="confirm-txn-pin" class="fin-label fin-label-required">Confirm Security PIN</label>
+                    <div class="relative">
+                        <span class="material-symbols-outlined input-icon-left">pin</span>
+                        <input type="password" id="confirm-txn-pin" name="confirm_txn_pin" maxlength="4" inputmode="numeric" pattern="[0-9]{4}" autocomplete="new-password" class="fin-input has-icon-left font-mono tracking-widest text-base pr-10" placeholder="••••" required oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 4)" />
+                        <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-main transition-colors p-1" onclick="togglePinVisibility('confirm-txn-pin', 'toggle-confirm-pin-icon')" title="Toggle PIN visibility">
+                            <span class="material-symbols-outlined text-lg" id="toggle-confirm-pin-icon">visibility</span>
+                        </button>
+                    </div>
+                    <span class="text-[11px] text-text-muted mt-1 block">Re-enter your 4-digit PIN to confirm</span>
+                </div>
+            </div>
+
+            <div class="mt-3 p-2.5 bg-warning-surface/30 border border-warning/20 rounded-lg flex items-start gap-2 text-xs text-text-secondary">
+                <span class="material-symbols-outlined text-warning text-base shrink-0 mt-0.5">lock</span>
+                <span>Keep this PIN confidential. Once an admin approves your KYC, this PIN will be activated on your account to authenticate all transfers and payments.</span>
             </div>
         </div>
 
