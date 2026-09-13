@@ -26,4 +26,6 @@ enum AuditActionEnum: string
     case KYC_SUBMITTED = 'kyc_submitted';
     case ADMIN_ACTION = 'admin_action';
     case TRANSACTION_REVERSED = 'transaction_reversed';
+    case STAFF_CLOCK_IN = 'staff_clock_in';
+    case STAFF_CLOCK_OUT = 'staff_clock_out';
 }

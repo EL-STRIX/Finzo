@@ -326,7 +326,9 @@ class StaffController
         }
 
         $staffId = $_SESSION['staff_id'];
-        $notes = $this->security->cleanInput($_POST['notes'] ?? '');
+        $raw = file_get_contents('php://input');
+        $input = json_decode($raw, true);
+        $notes = $this->security->cleanInput((is_array($input) && isset($input['notes'])) ? $input['notes'] : ($_POST['notes'] ?? ''));
         
         try {
             $this->service->clockOut($staffId, $notes);

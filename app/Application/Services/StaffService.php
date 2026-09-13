@@ -92,27 +92,55 @@ class StaffService implements \App\Domain\Contracts\Services\StaffServiceInterfa
      */
     public function getDashboardData(int $staffId)
     {
-        $deposits = $this->repository->getStaffShiftDeposits($staffId);
-        $withdrawals = $this->repository->getStaffShiftWithdrawals($staffId);
-        $total_today = $this->repository->getStaffTotalTransactionsToday($staffId);
+        $deposits        = $this->repository->getStaffShiftDeposits($staffId);
+        $withdrawals     = $this->repository->getStaffShiftWithdrawals($staffId);
+        $total_today     = $this->repository->getStaffTotalTransactionsToday($staffId);
         $recent_activity = $this->repository->getStaffRecentActivity($staffId);
-        $staff_info = $this->repository->getStaffInfoWithBranch($staffId);
+        $staff_info      = $this->repository->getStaffInfoWithBranch($staffId);
+
+        $staffIdentifier = $staff_info['staff_id'] ?? ($_SESSION['staff_display_id'] ?? ('STF' . str_pad((string)$staffId, 3, '0', STR_PAD_LEFT)));
+        $current_shift   = $this->repository->getCurrentShift($staffIdentifier);
+
+        $resolveUrl = function (?string $path, string $subDir): ?string {
+            if (empty($path)) {
+                return null;
+            }
+            if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+                return $path;
+            }
+            $cleanPath = ltrim($path, '/');
+            if (str_starts_with($cleanPath, 'Finzo/')) {
+                return '/' . $cleanPath;
+            }
+            if (str_starts_with($cleanPath, 'uploads/')) {
+                return '/Finzo/' . $cleanPath;
+            }
+            return '/Finzo/uploads/' . $subDir . '/' . $cleanPath;
+        };
+
+        $profilePhotoUrl = $resolveUrl($staff_info['profile_photo'] ?? null, 'staff-photos');
 
         return [
             'staff' => [
-                'staff_id'      => $staff_info['staff_id'] ?? ($_SESSION['staff_display_id'] ?? null),
-                'name'          => $staff_info['full_name'] ?? ($_SESSION['staff_name'] ?? 'Unknown Staff'),
-                'role'          => $staff_info['designation'] ?? 'Teller',
-                'profile_photo' => $staff_info['profile_photo'] ?? null,
-                'branch_name'   => $staff_info['branch_name'] ?? 'Unassigned'
+                'staff_id'          => $staffIdentifier,
+                'name'              => $staff_info['full_name'] ?? ($_SESSION['staff_name'] ?? 'Staff Member'),
+                'role'              => $staff_info['designation'] ?? 'Teller',
+                'profile_photo'     => $staff_info['profile_photo'] ?? null,
+                'profile_photo_url' => $profilePhotoUrl,
+                'branch_name'       => $staff_info['branch_name'] ?? 'Unassigned'
+            ],
+            'current_shift' => $current_shift ?: [
+                'status'    => 'not_clocked_in',
+                'clock_in'  => null,
+                'clock_out' => null
             ],
             'shift_stats' => [
-                'deposits_count'     => (int)$deposits['count'],
-                'deposits_total'     => (float)$deposits['total'],
-                'withdrawals_count'  => (int)$withdrawals['count'],
-                'withdrawals_total'  => (float)$withdrawals['total'],
+                'deposits_count'     => (int)($deposits['count'] ?? 0),
+                'deposits_total'     => (float)($deposits['total'] ?? 0),
+                'withdrawals_count'  => (int)($withdrawals['count'] ?? 0),
+                'withdrawals_total'  => (float)($withdrawals['total'] ?? 0),
                 'total_transactions' => $total_today,
-                'net_cash_flow'      => (float)$deposits['total'] - (float)$withdrawals['total']
+                'net_cash_flow'      => (float)($deposits['total'] ?? 0) - (float)($withdrawals['total'] ?? 0)
             ],
             'recent_activity' => $recent_activity
         ];
@@ -454,7 +482,7 @@ class StaffService implements \App\Domain\Contracts\Services\StaffServiceInterfa
         if (!$this->repository->clockIn($staffId, $staff['staff_id'])) {
             throw new \App\Shared\Core\Exceptions\BusinessRuleException('Failed to clock in');
         }
-        $this->dispatcher->dispatch(
+        \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
             new \App\Application\Events\GenericAuditAction(\App\Domain\Enums\AuditActionEnum::STAFF_CLOCK_IN->value ?? 'STAFF_CLOCK_IN', $staffId, \App\Domain\Enums\RoleEnum::STAFF->value, $staffId, \App\Domain\Enums\RoleEnum::STAFF->value, 'Staff clocked in for shift')
         );
     }
@@ -468,7 +496,7 @@ class StaffService implements \App\Domain\Contracts\Services\StaffServiceInterfa
         if (!$this->repository->clockOut($staffId, $staff['staff_id'], $notes)) {
             throw new \App\Shared\Core\Exceptions\BusinessRuleException('Failed to clock out. Ensure you are clocked in first.');
         }
-        $this->dispatcher->dispatch(
+        \App\Shared\Core\Events\EventDispatcher::getInstance()->dispatch(
             new \App\Application\Events\GenericAuditAction(\App\Domain\Enums\AuditActionEnum::STAFF_CLOCK_OUT->value ?? 'STAFF_CLOCK_OUT', $staffId, \App\Domain\Enums\RoleEnum::STAFF->value, $staffId, \App\Domain\Enums\RoleEnum::STAFF->value, 'Staff clocked out of shift')
         );
     }

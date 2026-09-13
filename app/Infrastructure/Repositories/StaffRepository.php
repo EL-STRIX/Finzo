@@ -296,4 +296,18 @@ class StaffRepository extends BaseRepository implements \App\Domain\Contracts\Re
         ");
         return $stmt->execute([$notes, $staffIdentifier]);
     }
+
+    public function getCurrentShift(string $staffIdentifier): ?array
+    {
+        $stmt = $this->db->prepare("
+            SELECT id, staff_id, shift_date, clock_in, clock_out, status, notes
+            FROM staff_shifts
+            WHERE staff_id = ? AND shift_date = CURDATE()
+            ORDER BY id DESC
+            LIMIT 1
+        ");
+        $stmt->execute([$staffIdentifier]);
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return $row ?: null;
+    }
 }
