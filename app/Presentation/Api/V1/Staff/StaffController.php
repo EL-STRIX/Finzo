@@ -54,8 +54,12 @@ class StaffController
         }
 
         $staffId = $_SESSION['staff_id'];
+        $raw = file_get_contents('php://input');
+        $input = json_decode($raw, true);
+        $data = (is_array($input) && !empty($input)) ? $input : $_POST;
+
         $validator = new \App\Presentation\Validators\StaffValidator();
-        $validated = $validator->validatePasswordUpdate($_POST);
+        $validated = $validator->validatePasswordUpdate($data);
         $currentPassword = $validated['current_password'];
         $newPassword = $validated['new_password'];
 
@@ -237,23 +241,22 @@ class StaffController
         }
 
         if ($method === 'POST') {
+            $raw = file_get_contents('php://input');
+            $input = json_decode($raw, true);
+            $data = (is_array($input) && !empty($input)) ? $input : $_POST;
 
+            $file = null;
+            if (\App\Shared\Core\Validation\Validator::isSet($_FILES['profile_photo']) && $_FILES['profile_photo']['error'] === UPLOAD_ERR_OK) {
+                $file = $_FILES['profile_photo'];
+            } elseif (\App\Shared\Core\Validation\Validator::isSet($_FILES['photo']) && $_FILES['photo']['error'] === UPLOAD_ERR_OK) {
+                $file = $_FILES['photo'];
+            }
 
-            $file = (\App\Shared\Core\Validation\Validator::isSet($_FILES['profile_photo']) && $_FILES['profile_photo']['error'] === UPLOAD_ERR_OK) ? $_FILES['profile_photo'] : null;
-            
             $validator = new \App\Presentation\Validators\StaffValidator();
-            $validated = $validator->validateProfileUpdate($_POST, $file);
-            $phone = $validated['phone'];
-            $emergency_contact_name = $validated['emergency_contact_name'];
-            $emergency_contact_phone = $validated['emergency_contact_phone'];
-
+            $validated = $validator->validateProfileUpdate($data, $file);
 
             try {
-                $updated = $this->service->updateProfile($staffId, [
-                    'phone' => $phone,
-                    'emergency_contact_name' => $emergency_contact_name,
-                    'emergency_contact_phone' => $emergency_contact_phone
-                ], $file);
+                $updated = $this->service->updateProfile($staffId, $validated, $file);
 
                 json_response([
                     'success' => true,

@@ -313,11 +313,46 @@ class StaffService implements \App\Domain\Contracts\Services\StaffServiceInterfa
             throw new ResourceNotFoundException("Staff profile not found");
         }
 
+        $resolveUrl = function (?string $path, string $subDir): ?string {
+            if (empty($path)) {
+                return null;
+            }
+            if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+                return $path;
+            }
+            $cleanPath = ltrim($path, '/');
+            if (str_starts_with($cleanPath, 'Finzo/')) {
+                return '/' . $cleanPath;
+            }
+            if (str_starts_with($cleanPath, 'uploads/')) {
+                return '/Finzo/' . $cleanPath;
+            }
+            return '/Finzo/uploads/' . $subDir . '/' . $cleanPath;
+        };
+
+        $staff['profile_photo_url'] = $resolveUrl($staff['profile_photo'] ?? null, 'staff-photos');
+        $staff['front_image_url']   = $resolveUrl($staff['front_image'] ?? null, 'staff-documents');
+        $staff['back_image_url']    = $resolveUrl($staff['back_image'] ?? null, 'staff-documents');
+
+        $idNumber = $staff['id_number'] ?? '';
+        if (!empty($idNumber)) {
+            try {
+                $crypto = \App\Shared\Security\EncryptionService::getInstance();
+                $decrypted = $crypto->decrypt($idNumber);
+                if (!empty($decrypted)) {
+                    $idNumber = $decrypted;
+                    $staff['id_number'] = $decrypted;
+                }
+            } catch (\Throwable $e) {
+                // Fallback to stored string if unencrypted or on failure
+            }
+        }
+
         $address = [
-            'id' => $staff['id'],
-            'street' => $staff['street'],
-            'city' => $staff['city'],
-            'state' => $staff['state'],
+            'id'      => $staff['id'],
+            'street'  => $staff['street'],
+            'city'    => $staff['city'],
+            'state'   => $staff['state'],
             'pincode' => $staff['pincode'],
             'country' => $staff['country']
         ];
@@ -325,11 +360,13 @@ class StaffService implements \App\Domain\Contracts\Services\StaffServiceInterfa
         $documents = [];
         if (!empty($staff['id_type'])) {
             $documents[] = [
-                'id' => $staff['id'],
-                'id_type' => $staff['id_type'],
-                'id_number' => $staff['id_number'],
-                'front_image' => $staff['front_image'],
-                'back_image' => $staff['back_image']
+                'id'              => $staff['id'],
+                'id_type'         => $staff['id_type'],
+                'id_number'       => $idNumber,
+                'front_image'     => $staff['front_image'],
+                'front_image_url' => $staff['front_image_url'],
+                'back_image'      => $staff['back_image'],
+                'back_image_url'  => $staff['back_image_url']
             ];
         }
 
@@ -352,17 +389,15 @@ class StaffService implements \App\Domain\Contracts\Services\StaffServiceInterfa
         $fields = [];
         $params = [];
 
-        if (isset($data['phone']) && $data['phone'] !== '') {
-            $fields[] = 'phone = ?';
-            $params[] = $data['phone'];
-        }
-        if (isset($data['emergency_contact_name']) && $data['emergency_contact_name'] !== '') {
-            $fields[] = 'emergency_contact_name = ?';
-            $params[] = $data['emergency_contact_name'];
-        }
-        if (isset($data['emergency_contact_phone']) && $data['emergency_contact_phone'] !== '') {
-            $fields[] = 'emergency_contact_phone = ?';
-            $params[] = $data['emergency_contact_phone'];
+        $updatable = [
+            'phone', 'emergency_contact_name', 'emergency_contact_phone',
+            'street', 'city', 'state', 'pincode', 'country'
+        ];
+        foreach ($updatable as $col) {
+            if (isset($data[$col]) && $data[$col] !== '') {
+                $fields[] = "{$col} = ?";
+                $params[] = $data[$col];
+            }
         }
 
         if ($file && $file['error'] === UPLOAD_ERR_OK) {

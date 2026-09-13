@@ -197,5 +197,12 @@ $router->get('/api/v1/staff-portal/profile', [StaffController::class, 'profile']
 $router->post('/api/v1/staff-portal/profile', [StaffController::class, 'profile'], [StaffAuthMiddleware::class]);
 $router->post('/api/v1/staff-portal/change-password', [StaffController::class, 'changePassword'], [StaffAuthMiddleware::class]);
 
+// Staff Legacy & Direct Route Aliases
+$router->get('/api/staff/staff-profile.php', [StaffController::class, 'profile'], [StaffAuthMiddleware::class]);
+$router->post('/api/staff/staff-profile.php', [StaffController::class, 'profile'], [StaffAuthMiddleware::class]);
+$router->post('/api/staff/update-profile.php', [StaffController::class, 'profile'], [StaffAuthMiddleware::class]);
+$router->post('/api/staff/upload-photo.php', [StaffController::class, 'profile'], [StaffAuthMiddleware::class]);
+$router->post('/api/staff/change-password.php', [StaffController::class, 'changePassword'], [StaffAuthMiddleware::class]);
+
 return $router;
 

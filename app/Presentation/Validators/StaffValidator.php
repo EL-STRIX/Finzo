@@ -96,11 +96,20 @@ class StaffValidator extends Validator
         $emergency_contact_name  = self::sanitize(['emergency_contact_name' => $data['emergency_contact_name'] ?? ''])['emergency_contact_name'];
         $emergency_contact_phone = self::sanitize(['emergency_contact_phone' => $data['emergency_contact_phone'] ?? ''])['emergency_contact_phone'];
 
+        $street                  = self::sanitize(['street' => $data['street'] ?? ''])['street'];
+        $city                    = self::sanitize(['city' => $data['city'] ?? ''])['city'];
+        $state                   = self::sanitize(['state' => $data['state'] ?? ''])['state'];
+        $pincode                 = self::sanitize(['pincode' => $data['pincode'] ?? ''])['pincode'];
+        $country                 = self::sanitize(['country' => $data['country'] ?? ''])['country'];
+
         if ($phone !== '' && !validate_phone($phone)) {
             $errors['phone'] = 'Enter a valid 10-digit mobile number';
         }
         if ($emergency_contact_phone !== '' && !validate_phone($emergency_contact_phone)) {
             $errors['emergency_contact_phone'] = 'Enter a valid 10-digit emergency contact number';
+        }
+        if ($pincode !== '' && !preg_match('/^[0-9]{6}$/', $pincode)) {
+            $errors['pincode'] = 'Enter a valid 6-digit pincode';
         }
 
         if (is_array($file) && isset($file['error']) && $file['error'] === UPLOAD_ERR_OK) {
@@ -121,7 +130,12 @@ class StaffValidator extends Validator
         return [
             'phone'                   => $phone,
             'emergency_contact_name'  => $emergency_contact_name,
-            'emergency_contact_phone' => $emergency_contact_phone
+            'emergency_contact_phone' => $emergency_contact_phone,
+            'street'                  => $street,
+            'city'                    => $city,
+            'state'                   => $state,
+            'pincode'                 => $pincode,
+            'country'                 => $country
         ];
     }
 }
