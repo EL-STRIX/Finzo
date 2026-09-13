@@ -192,9 +192,5 @@ $router->get('/api/v1/staff-portal/profile', [StaffController::class, 'profile']
 $router->post('/api/v1/staff-portal/profile', [StaffController::class, 'profile'], [StaffAuthMiddleware::class]);
 $router->post('/api/v1/staff-portal/change-password', [StaffController::class, 'changePassword'], [StaffAuthMiddleware::class]);
 
-use App\Presentation\Api\V1\Docs\SwaggerController;
-$router->get('/api/docs', [SwaggerController::class, 'index']);
-$router->get('/api/docs/openapi.json', [SwaggerController::class, 'json']);
-
 return $router;
 

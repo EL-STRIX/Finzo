@@ -316,12 +316,15 @@ class UserController
         header("Cache-Control: post-check=0, pre-check=0", false);
         header("Pragma: no-cache");
 
-        $userId = $_SESSION['user_id'];
+        if (empty($_SESSION['user_id'])) {
+            json_response(['success' => false, 'message' => 'Unauthorized'], 401);
+        }
+        $userId = (int)$_SESSION['user_id'];
         try {
             $user = $this->service->getUserDashboardData($userId);
             if (!$user) {
                 destroy_session();
-                json_response(['success' => false, 'message' => 'User not found', 'redirect' => '/public/views/auth/login.html'], 404);
+                json_response(['success' => false, 'message' => 'User not found', 'redirect' => '/Finzo/public/views/auth/login.php'], 404);
             }
             $_SESSION['user_status'] = $user['status'];
             $account = null;
@@ -333,15 +336,8 @@ class UserController
                 if ($account && $account['status'] === \App\Domain\Enums\AccountStatusEnum::ACTIVE->value) {
                     $recent_transactions = $this->service->getRecentTransactions($account['id']);
                     foreach ($recent_transactions as &$txn) {
-                        if ($txn['type'] === \App\Domain\Enums\TransactionTypeEnum::TRANSFER->value) {
-                            $txn['direction'] = 'debit';
-                            $txn_data = $this->service->getTransactionToAccountId($txn['txn_id']);
-                            $txn['direction'] = ($txn_data && $txn_data['to_account_id'] == $account['id']) ? 'credit' : 'debit';
-                        } elseif (in_array($txn['type'], ['deposit', 'interest_credit'])) {
-                            $txn['direction'] = 'credit';
-                        } else {
-                            $txn['direction'] = 'debit';
-                        }
+                        $isIncoming = ((int)($txn['to_account_id'] ?? 0) === (int)$account['id']);
+                        $txn['direction'] = $isIncoming ? 'credit' : 'debit';
                     }
                     unset($txn);
 

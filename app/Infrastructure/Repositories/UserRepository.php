@@ -230,7 +230,7 @@ class UserRepository extends BaseRepository implements \App\Domain\Contracts\Rep
                    COALESCE(k.profile_picture, u.profile_picture) AS profile_picture,
                    u.created_at, u.updated_at
             FROM users u
-            LEFT JOIN kyc_applications k ON u.customer_id = k.user_id
+            LEFT JOIN kyc_applications k ON k.id = (SELECT MAX(id) FROM kyc_applications WHERE user_id = u.customer_id)
             WHERE u.id = ? AND u.is_deleted = 0
         ");
         $stmt->execute([$userId]);
@@ -243,7 +243,7 @@ class UserRepository extends BaseRepository implements \App\Domain\Contracts\Rep
             SELECT id, account_no, account_type, balance, interest_rate, daily_limit, status, opened_date
             FROM accounts
             WHERE user_id = ?
-            ORDER BY status = 'active' DESC, created_at DESC
+            ORDER BY (status = 'active') DESC, created_at DESC
             LIMIT 1
         ");
         $stmt->execute([$customer_id]);
@@ -254,7 +254,7 @@ class UserRepository extends BaseRepository implements \App\Domain\Contracts\Rep
     {
         $stmt = $this->db->prepare("
             SELECT
-                t.txn_id, t.type, t.amount, t.description, t.status, t.created_at,
+                t.txn_id, t.from_account_id, t.to_account_id, t.type, t.amount, t.description, t.status, t.created_at,
                 CASE 
                     WHEN t.type = ? AND t.from_account_id = ? THEN (SELECT u.full_name FROM accounts a JOIN users u ON a.user_id = u.customer_id WHERE a.id = t.to_account_id) 
                     WHEN t.type = ? AND t.to_account_id = ? THEN (SELECT u.full_name FROM accounts a JOIN users u ON a.user_id = u.customer_id WHERE a.id = t.from_account_id) 
