@@ -106,8 +106,14 @@ async function fetchUserSession() {
 
       document.querySelectorAll('.user-name, .sidebar-user-name').forEach(el => el.textContent = _userCache.name);
       document.querySelectorAll('.user-id, .sidebar-user-id').forEach(el => el.textContent = _userCache.customerId ? 'ID: ' + _userCache.customerId : '');
+      const _initials = _userCache.name
+        .split(' ')
+        .filter(Boolean)
+        .slice(0, 2)
+        .map(w => w[0].toUpperCase())
+        .join('');
       document.querySelectorAll('.user-initials, .sidebar-avatar').forEach(el => {
-        if (!_userCache.avatarUrl) el.textContent = UserState.initials;
+        if (!_userCache.avatarUrl) el.textContent = _initials;
       });
 
       // Sync status badge in sidebar
@@ -147,6 +153,9 @@ async function fetchUserSession() {
           el.innerHTML = imgTag;
         });
       }
+
+      // Expose raw API response for page-specific scripts (avoids duplicate API calls)
+      window.__FINZO_DASH__ = res;
 
       // Sync metadata back to localStorage
       localStorage.setItem(STATE_KEYS.STATUS, _userCache.status);
@@ -428,10 +437,10 @@ function buildSidebar(activePage) {
   const isRejected = status === 'rejected';
 
   // Pages locked when not active
-  const lockedWhenInactive = ['dashboard', 'accounts', 'transfer', 'loans', 'cards', 'investments', 'bill-payments', 'transactions', 'statement', 'beneficiary'];
+  const lockedWhenInactive = ['accounts', 'transfer', 'loans', 'cards', 'investments', 'bill-payments', 'transactions', 'statement', 'beneficiary'];
   
   const mainLinks = [
-    { id: 'dashboard', icon: 'dashboard', label: 'Dashboard', href: 'dashboard.php', lockedWhenInactive: true },
+    { id: 'dashboard', icon: 'dashboard', label: 'Dashboard', href: 'dashboard.php' },
     { id: 'accounts', icon: 'account_balance', label: 'My Accounts', href: 'accounts.php', lockedWhenInactive: true },
     { id: 'transfer', icon: 'swap_horiz', label: 'Fund Transfer', href: 'transfer.php', lockedWhenInactive: true },
     { id: 'loans', icon: 'account_balance_wallet', label: 'Loans & Credit', href: 'user-loans.php', lockedWhenInactive: true, badge: 'Soon' },

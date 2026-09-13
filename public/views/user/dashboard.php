@@ -75,7 +75,12 @@ ob_start();
           
           <div class="relative z-10">
             <div class="text-xs font-extrabold tracking-widest text-white/60 uppercase mb-2">Total Available Balance</div>
-            <div class="font-display text-5xl font-black tracking-tighter" id="dash-balance">₹ — — —</div>
+            <div class="flex items-center gap-3">
+              <div class="font-display text-5xl font-black tracking-tighter" id="dash-balance">₹ — — —</div>
+              <button id="toggle-balance-btn" type="button" class="hidden text-white/60 hover:text-white transition-colors p-1.5 rounded-lg hover:bg-white/10" title="Toggle balance visibility" aria-label="Toggle balance visibility">
+                <span class="material-symbols-outlined text-2xl" id="balance-eye-icon">visibility</span>
+              </button>
+            </div>
           </div>
 
           <div class="relative z-10 mt-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
@@ -83,6 +88,9 @@ ob_start();
               <div class="text-xs font-extrabold tracking-widest text-white/50 uppercase mb-1">Account Number</div>
               <div class="flex items-center gap-2">
                 <div id="dash-account" class="font-mono text-lg font-bold text-white/90">NOT YET ASSIGNED</div>
+                <button id="copy-account-btn" type="button" class="hidden text-white/60 hover:text-white transition-colors p-1 rounded hover:bg-white/10" title="Copy Account Number" aria-label="Copy Account Number">
+                  <span class="material-symbols-outlined text-base" id="copy-account-icon">content_copy</span>
+                </button>
                 <span class="material-symbols-outlined text-white/40 text-sm" id="lock-icon" aria-hidden="true">lock</span>
               </div>
             </div>
@@ -98,7 +106,7 @@ ob_start();
 
       <!-- ACTIVITY CARD (STRIPE STYLE) -->
       <div class="w-full lg:w-1/3 ds-animate-slide-up delay-100">
-        <div id="activity-card" class="ds-card h-full p-6 flex flex-col justify-center bg-white border border-border-main">
+        <div id="activity-card" class="ds-card h-full p-6 flex flex-col justify-center border border-border-main">
           <div class="mb-6">
             <div class="text-sm font-bold text-text-muted uppercase tracking-wider mb-1">Monthly Activity</div>
             <div class="font-display text-3xl font-extrabold text-text-main mb-1" id="activity-total"><span class="skeleton w-[100px] h-[32px]"></span></div>
@@ -189,7 +197,7 @@ ob_start();
         </div>
         
         <!-- Active transactions / Skeletons -->
-        <div id="tx-list" class="hidden flex flex-col">
+        <div id="tx-list" class="hidden divide-y divide-[var(--color-border-main)]">
           <!-- Skeleton items (visible while loading) -->
           <div class="p-4 border-b border-border-main flex items-center justify-between">
             <div class="flex items-center gap-3">
@@ -207,10 +215,6 @@ ob_start();
         </div>
       </div>
     </div>
-
-  </div>
-</div>
-
 
 <script defer src="/Finzo/public/assets/js/user/dashboard.js"></script>
 <?php
