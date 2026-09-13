@@ -115,7 +115,10 @@ ob_start();
   <div class="flex flex-col sm:flex-row gap-3 mt-6 print:hidden ds-animate-slide-up delay-200">
     <a href="dashboard.php" class="btn btn-secondary flex-1 h-12">Return to Dashboard</a>
     <a href="transfer.php" class="btn btn-primary flex-1 h-12">New Transfer</a>
-  <script defer src="/Finzo/public/assets/js/user/receipt.js"></script>
+  </div>
+</div>
+
+<script defer src="/Finzo/public/assets/js/user/receipt.js"></script>
 <?php
 $slot = ob_get_clean();
 include __DIR__ . '/../layouts/app.php';
