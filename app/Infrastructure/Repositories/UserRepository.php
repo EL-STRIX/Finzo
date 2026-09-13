@@ -185,7 +185,7 @@ class UserRepository extends BaseRepository implements \App\Domain\Contracts\Rep
             $uStmt->execute([$customerId]);
             $numUserId = $uStmt->fetchColumn();
             if ($numUserId) {
-                $checkStmt = $this->db->prepare("SELECT id FROM user_security_settings WHERE user_id = ?");
+                $checkStmt = $this->db->prepare("SELECT user_id FROM user_security_settings WHERE user_id = ?");
                 $checkStmt->execute([$numUserId]);
                 if ($checkStmt->fetchColumn()) {
                     $updSec = $this->db->prepare("UPDATE user_security_settings SET transaction_pin_hash = ?, updated_at = NOW() WHERE user_id = ?");
