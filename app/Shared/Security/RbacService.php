@@ -86,14 +86,51 @@ class RbacService
             return true;
         }
 
-        // 4. Standard admin role fallback on admin_users table
-        if ($modelType === 'admin' && isset($adminRole) && $adminRole === 'admin') {
+        // 4. Admin role mapping on admin_users table (matches whatever role name is in admin_users.admin_role)
+        if ($modelType === 'admin' && !empty($adminRole)) {
             $stmt = $this->db->prepare("
                 SELECT 1 
                 FROM permissions p
                 JOIN role_permissions rp ON p.id = rp.permission_id
                 JOIN roles r ON rp.role_id = r.id
-                WHERE r.name = 'admin' AND p.name = ?
+                WHERE (r.name = ? OR LOWER(r.name) = LOWER(?)) AND p.name = ?
+                LIMIT 1
+            ");
+            $stmt->execute([$adminRole, $adminRole, $permissionName]);
+            if ((bool)$stmt->fetchColumn()) {
+                return true;
+            }
+        }
+
+        // 5. Staff role mapping on staff table (matches staff.designation)
+        if ($modelType === 'staff') {
+            $stmt = $this->db->prepare("SELECT designation FROM staff WHERE id = ?");
+            $stmt->execute([$modelId]);
+            $designation = $stmt->fetchColumn();
+            if (!empty($designation)) {
+                $stmt = $this->db->prepare("
+                    SELECT 1 
+                    FROM permissions p
+                    JOIN role_permissions rp ON p.id = rp.permission_id
+                    JOIN roles r ON rp.role_id = r.id
+                    WHERE (r.name = ? OR LOWER(r.name) = LOWER(?)) AND p.name = ?
+                    LIMIT 1
+                ");
+                $stmt->execute([$designation, $designation, $permissionName]);
+                if ((bool)$stmt->fetchColumn()) {
+                    return true;
+                }
+            }
+        }
+
+        // 6. Customer role mapping on users table
+        if ($modelType === 'user') {
+            $stmt = $this->db->prepare("
+                SELECT 1 
+                FROM permissions p
+                JOIN role_permissions rp ON p.id = rp.permission_id
+                JOIN roles r ON rp.role_id = r.id
+                WHERE (r.name = 'customer' OR LOWER(r.name) = 'customer') AND p.name = ?
                 LIMIT 1
             ");
             $stmt->execute([$permissionName]);
@@ -114,19 +151,32 @@ class RbacService
             $stmt = $this->db->prepare("SELECT admin_role FROM admin_users WHERE id = ?");
             $stmt->execute([$modelId]);
             $adminRole = $stmt->fetchColumn();
-            if ($adminRole === $roleName) {
+            if ($adminRole && strtolower((string)$adminRole) === strtolower($roleName)) {
                 return true;
             }
+        }
+
+        if ($modelType === 'staff') {
+            $stmt = $this->db->prepare("SELECT designation FROM staff WHERE id = ?");
+            $stmt->execute([$modelId]);
+            $designation = $stmt->fetchColumn();
+            if ($designation && strtolower((string)$designation) === strtolower($roleName)) {
+                return true;
+            }
+        }
+
+        if ($modelType === 'user' && strtolower($roleName) === 'customer') {
+            return true;
         }
 
         $stmt = $this->db->prepare("
             SELECT 1 
             FROM roles r
             JOIN model_has_roles mhr ON r.id = mhr.role_id
-            WHERE mhr.model_type = ? AND mhr.model_id = ? AND r.name = ?
+            WHERE mhr.model_type = ? AND mhr.model_id = ? AND (r.name = ? OR LOWER(r.name) = LOWER(?))
             LIMIT 1
         ");
-        $stmt->execute([$modelType, $modelId, $roleName]);
+        $stmt->execute([$modelType, $modelId, $roleName, $roleName]);
         return (bool)$stmt->fetchColumn();
     }
 }
