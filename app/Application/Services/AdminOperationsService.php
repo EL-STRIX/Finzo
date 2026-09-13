@@ -78,11 +78,9 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
      */
     public function getDashboardData(int $adminId): array
     {
-        $stats = \App\Shared\Core\Cache\CacheManager::getInstance()->get('admin_dashboard_stats', function() {
-            $baseStats = $this->repository->getDashboardStats();
-            $cachedStats = $this->repository->getCachedDashboardStats();
-            return array_merge($baseStats, $cachedStats);
-        }, 60);
+        $baseStats = $this->repository->getDashboardStats();
+        $cachedStats = $this->repository->getCachedDashboardStats();
+        $stats = array_merge($baseStats, $cachedStats);
 
         $recent_users = $this->repository->getDashboardRecentUsers();
         foreach ($recent_users as &$u) {
@@ -90,10 +88,7 @@ class AdminOperationsService implements \App\Domain\Contracts\Services\AdminOper
         }
         unset($u);
 
-        $monthly_chart_data = \App\Shared\Core\Cache\CacheManager::getInstance()->get('admin_dashboard_chart', function() {
-            return $this->repository->getMonthlyChartDataSixMonths();
-        }, 300);
-
+        $monthly_chart_data = $this->repository->getMonthlyChartDataSixMonths();
         $admin_data = $this->repository->getAdminById($adminId);
 
         return [
