@@ -99,6 +99,7 @@ try {
 
         ob_start();
         $migrator->migrate();
+        $migrator->seed('system');
         ob_end_clean();
 
         // Mark schema as complete
@@ -111,6 +112,7 @@ try {
         );
         ob_start();
         $migrator->migrate();
+        $migrator->seed('system');
         ob_end_clean();
     }
 
