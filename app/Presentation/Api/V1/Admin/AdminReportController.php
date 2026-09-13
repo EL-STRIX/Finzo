@@ -26,12 +26,9 @@ class AdminReportController
 
         try {
             $this->security->enforcePermission('view_audit_logs');
+            return;
         } catch (\Throwable $e) {
-            try {
-                $this->security->enforcePermission('manage_users');
-            } catch (\Throwable $ex) {
-                // Fallback allow for general active admin
-            }
+            $this->security->enforcePermission('manage_users');
         }
     }
 

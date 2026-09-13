@@ -17,7 +17,7 @@ class AdminStaffController
 
     public function __construct(\App\Domain\Contracts\Services\AdminStaffBranchServiceInterface $service, ?\App\Domain\Contracts\Security\SecurityServiceInterface $security = null)
     {
-        $this->security = $security;
+        $this->security = $security ?? new SecurityService();
         $this->service = $service;
     }
 
@@ -103,7 +103,9 @@ class AdminStaffController
 
     public function resetStaffPassword(?string $id = null, ?string $extra = null): array
     {
-        $adminId = \App\Shared\Security\Auth::user()['id'];
+        $adminId = \App\Shared\Security\Auth::user()['id'] ?? ($_SESSION['admin_id'] ?? 0);
+        $this->security->checkAdminPermission((int)$adminId, 'add_staff');
+
         $input = json_decode(file_get_contents('php://input'), true) ?? [];
         $staffId = intval($input['staff_id'] ?? ($id ?? $_POST['staff_id'] ?? null) ?? 0);
         $newPassword = $input['new_password'] ?? $_POST['new_password'] ?? '';

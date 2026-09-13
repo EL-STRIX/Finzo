@@ -16,7 +16,7 @@ class AdminManagementController
 
     public function __construct(\App\Domain\Contracts\Services\AdminManagementServiceInterface $service, ?\App\Domain\Contracts\Security\SecurityServiceInterface $security = null)
     {
-        $this->security = $security;
+        $this->security = $security ?? new SecurityService();
         $this->service = $service;
     }
 
@@ -130,6 +130,8 @@ class AdminManagementController
 
     public function unlockAdmin(?string $id = null, ?string $extra = null): array
     {
+        $this->security->enforcePermission('manage_admins');
+
         $is_json = (isset($_SERVER['CONTENT_TYPE']) && strpos($_SERVER['CONTENT_TYPE'], 'application/json') !== false);
         if ($is_json) {
             $json_input = json_decode(file_get_contents('php://input'), true);

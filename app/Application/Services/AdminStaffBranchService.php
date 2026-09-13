@@ -985,11 +985,7 @@ class AdminStaffBranchService implements \App\Domain\Contracts\Services\AdminSta
                 'delete' => 'delete_staff',
                 default => 'add_staff'
             };
-            try {
-                $this->security->checkAdminPermission($adminId, $perm);
-            } catch (\Throwable $e) {
-                $this->security->checkAdminPermission($adminId, 'add_staff');
-            }
+            $this->security->checkAdminPermission($adminId, $perm);
         }
 
         $staff = $this->repo->findStaffRecord($staffId);
