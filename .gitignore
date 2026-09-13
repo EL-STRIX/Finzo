@@ -35,20 +35,52 @@ error_log
 php_errors.log
 tmp/
 temp/
-/storage/
 
 # ------------------------------------------------------------------------------
-# User Uploads
+# Storage (runtime-generated, never committed)
+# ------------------------------------------------------------------------------
+storage/logs/*
+storage/sessions/*
+storage/cache/*
+storage/exports/*
+storage/backups/*
+storage/framework/*
+!storage/logs/.gitignore
+!storage/sessions/.gitignore
+!storage/cache/.gitignore
+!storage/exports/.gitignore
+!storage/backups/.gitignore
+!storage/framework/.gitignore
+
+# ------------------------------------------------------------------------------
+# User Uploads (public/uploads — runtime files, keep directory structure only)
 # ------------------------------------------------------------------------------
 /public/uploads/*
 !/public/uploads/.gitkeep
 !/public/uploads/index.html
+!/public/uploads/.htaccess
 /public/uploads/avatars/*
 !/public/uploads/avatars/.gitkeep
-!/public/uploads/avatars/index.html
+!/public/uploads/avatars/.htaccess
+/public/uploads/admin-photos/*
+!/public/uploads/admin-photos/.htaccess
+/public/uploads/profiles/*
+!/public/uploads/profiles/.htaccess
+/public/uploads/staff-photos/*
+!/public/uploads/staff-photos/.htaccess
+/public/uploads/staff-documents/*
+!/public/uploads/staff-documents/.htaccess
+/public/uploads/branch-certs/*
+!/public/uploads/branch-certs/.htaccess
+/public/uploads/id-documents/*
+!/public/uploads/id-documents/.htaccess
+
+# Root-level uploads directory (staff photos, KYC docs, branch certs)
+/uploads/*
+!/uploads/.gitkeep
 
 # ------------------------------------------------------------------------------
-# Environment Variables & Local Configs
+# Environment Variables & Local Configs  ← CRITICAL: never commit secrets
 # ------------------------------------------------------------------------------
 .env
 .env.backup
@@ -56,23 +88,30 @@ temp/
 .env.staging
 .env.local
 .env.*.local
+.env.testing
 config/local.php
 *.key
 *.pem
 *.p12
 
 # ------------------------------------------------------------------------------
+# AI Agent Config (local workspace meta, not project source)
+# ------------------------------------------------------------------------------
+.agents/
+
+# ------------------------------------------------------------------------------
 # Package Managers & Build Artifacts
+# NOTE: composer.lock, package-lock.json, and yarn.lock are INTENTIONALLY
+# committed for reproducible builds. Only composer.phar itself is excluded.
 # ------------------------------------------------------------------------------
 vendor/
 composer.phar
 node_modules/
 npm-debug.log
 yarn-error.log
-package-lock.json
-yarn.lock
 phpunit.phar
 build/
+dist/
 
 # ------------------------------------------------------------------------------
 # Testing & Coverage Artifacts
