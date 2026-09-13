@@ -137,19 +137,31 @@ function updateSidebarShiftPill(shift) {
     const pill = document.getElementById('sidebar-shift-pill');
     const dot = document.getElementById('sidebar-shift-dot');
     const text = document.getElementById('sidebar-shift-text');
-    if (!pill || !dot || !text) return;
+    const endShiftBtn = document.getElementById('sidebar-end-shift-btn');
 
     const isActive = shift && shift.status === 'active';
-    if (isActive) {
-        pill.className = 'inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-amber-500/10 dark:bg-amber-500/15 border border-amber-500/20';
-        dot.className = 'w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse';
-        text.className = 'text-[10px] font-black text-amber-600 dark:text-amber-400 uppercase tracking-widest';
-        text.textContent = 'Active Shift';
-    } else {
-        pill.className = 'inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-slate-500/10 dark:bg-slate-500/15 border border-slate-500/20';
-        dot.className = 'w-1.5 h-1.5 rounded-full bg-slate-400';
-        text.className = 'text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest';
-        text.textContent = 'Off Duty';
+
+    if (pill && dot && text) {
+        if (isActive) {
+            pill.className = 'inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/10 dark:bg-emerald-500/15 border border-emerald-500/20';
+            dot.className = 'w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse';
+            text.className = 'text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-widest';
+            text.textContent = 'Active Shift';
+        } else {
+            pill.className = 'inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-slate-500/10 dark:bg-slate-500/15 border border-slate-500/20';
+            dot.className = 'w-1.5 h-1.5 rounded-full bg-slate-400';
+            text.className = 'text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest';
+            text.textContent = 'Off Duty';
+        }
+    }
+
+    // Show/hide "End Shift" button in sidebar footer based on shift state
+    if (endShiftBtn) {
+        if (isActive) {
+            endShiftBtn.classList.remove('hidden');
+        } else {
+            endShiftBtn.classList.add('hidden');
+        }
     }
 }
 window.updateSidebarShiftPill = updateSidebarShiftPill;
@@ -199,10 +211,8 @@ async function fetchStaffSession() {
             document.querySelectorAll('.staff-id-display').forEach(el => el.textContent = StaffState.staff_id);
             document.querySelectorAll('.staff-branch-display, .badge.badge-neutral').forEach(el => el.textContent = StaffState.branch_name);
 
-            // Update shift indicator in sidebar
-            if (shift) {
-                updateSidebarShiftPill(shift);
-            }
+            // Update shift indicator in sidebar — always update, even when off-duty
+            updateSidebarShiftPill(shift || { status: 'not_clocked_in' });
 
             // Avatar / initials
             const rawPhoto = StaffState.profile_photo;

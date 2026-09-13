@@ -233,6 +233,11 @@
             if (btnClockIn) btnClockIn.classList.remove('hidden');
             if (btnClockOut) btnClockOut.classList.add('hidden');
         }
+
+        // Keep sidebar shift indicator and End Shift button in immediate sync
+        if (typeof window.updateSidebarShiftPill === 'function') {
+            window.updateSidebarShiftPill(shift);
+        }
     }
 
     // ── Render: Summary Grid ──

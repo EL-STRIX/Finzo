@@ -66,9 +66,9 @@ function isActiveStaff($path, $current, $type = null) {
             </div>
         </div>
         <div class="flex items-center gap-2 flex-wrap">
-            <div id="sidebar-shift-pill" class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-amber-500/10 dark:bg-amber-500/15 border border-amber-500/20">
-                <div id="sidebar-shift-dot" class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></div>
-                <span id="sidebar-shift-text" class="text-[10px] font-black text-amber-600 dark:text-amber-400 uppercase tracking-widest">Active Shift</span>
+            <div id="sidebar-shift-pill" class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-slate-500/10 dark:bg-slate-500/15 border border-slate-500/20">
+                <div id="sidebar-shift-dot" class="w-1.5 h-1.5 rounded-full bg-slate-400"></div>
+                <span id="sidebar-shift-text" class="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest">Off Duty</span>
             </div>
             <div class="text-[10px] font-bold text-text-muted uppercase tracking-wider px-2 py-0.5 rounded bg-surface-subtle dark:bg-white/5 border border-border-subtle staff-branch-display"><?= htmlspecialchars($staffBranch) ?></div>
         </div>
@@ -128,7 +128,7 @@ function isActiveStaff($path, $current, $type = null) {
             </li>
         </ul>
         <div class="pt-2 mt-2 border-t border-border-subtle flex flex-col gap-1">
-            <button type="button" id="sidebar-end-shift-btn" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-amber-600 dark:text-amber-400 hover:bg-amber-500/10 font-bold transition-all text-left end-shift-trigger cursor-pointer" title="End Current Shift">
+            <button type="button" id="sidebar-end-shift-btn" class="hidden w-full flex items-center gap-3 px-3 py-2 rounded-lg text-amber-600 dark:text-amber-400 hover:bg-amber-500/10 font-bold transition-all text-left end-shift-trigger cursor-pointer" title="End Current Shift">
                 <span class="material-symbols-outlined text-[20px]" aria-hidden="true">timer_off</span>
                 <span class="text-sm">End Shift</span>
             </button>
