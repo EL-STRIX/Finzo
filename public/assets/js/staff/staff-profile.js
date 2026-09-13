@@ -111,7 +111,7 @@ function renderProfile(data) {
     if (avatarEl) {
         const photoUrl = s.profile_photo_url || resolveAssetUrl(s.profile_photo, 'staff-photos');
         if (photoUrl) {
-            avatarEl.innerHTML = `<img src="${photoUrl}?v=${Date.now()}" alt="${s.full_name || 'Staff'}" class="w-full h-full object-cover rounded-full">`;
+            avatarEl.innerHTML = `<img src="${photoUrl}?v=${Date.now()}" alt="${s.full_name || 'Staff'}" class="w-full h-full object-cover rounded-2xl">`;
         } else {
             const initials = (s.full_name || 'ST')
                 .split(' ')
@@ -120,7 +120,7 @@ function renderProfile(data) {
                 .join('')
                 .substring(0, 2)
                 .toUpperCase() || 'ST';
-            avatarEl.innerHTML = `<span id="profile-avatar-text" class="text-xl sm:text-2xl font-black text-amber-600 dark:text-amber-400 tracking-wider">${initials}</span>`;
+            avatarEl.innerHTML = `<span id="profile-avatar-text" class="text-2xl sm:text-3xl font-black text-amber-600 dark:text-amber-400 tracking-wider font-mono select-none">${initials}</span>`;
         }
     }
 
@@ -157,43 +157,43 @@ function renderProfile(data) {
                 const maskedId = maskIdNumber(doc.id_number);
 
                 return `
-                    <div class="bg-white dark:bg-surface-main border border-surface-border dark:border-white/10 rounded-2xl p-4 sm:p-5 mb-4 shadow-sm">
-                        <div class="flex items-center justify-between gap-3 mb-4 pb-3 border-b border-surface-border dark:border-white/5">
+                    <div class="bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl p-4 sm:p-5 mb-4 shadow-sm">
+                        <div class="flex items-center justify-between gap-3 mb-4 pb-3 border-b border-slate-100 dark:border-white/5">
                             <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center border border-purple-500/20">
+                                <div class="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center border border-purple-500/20 shrink-0">
                                     <span class="material-symbols-outlined text-xl">badge</span>
                                 </div>
-                                <div>
-                                    <div class="font-bold text-sm text-text-main dark:text-white">${doc.id_type || 'ID Card'}</div>
-                                    <div class="text-xs text-text-muted font-mono tracking-widest">${maskedId}</div>
+                                <div class="min-w-0">
+                                    <div class="font-bold text-sm text-slate-900 dark:text-white truncate">${doc.id_type || 'Identity Card'}</div>
+                                    <div class="text-xs text-slate-500 dark:text-slate-400 font-mono tracking-widest">${maskedId}</div>
                                 </div>
                             </div>
-                            <span class="px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-black uppercase tracking-widest border border-emerald-200 dark:border-emerald-500/20">
+                            <span class="px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-black uppercase tracking-widest border border-emerald-500/20 shrink-0">
                                 Verified
                             </span>
                         </div>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div class="rounded-xl overflow-hidden border border-surface-border dark:border-white/5 bg-surface-subtle dark:bg-black/20 flex flex-col items-center justify-center p-3 min-h-[140px]">
-                                <div class="text-[10px] font-black text-text-muted uppercase tracking-wider mb-2 self-start">Front View</div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div class="rounded-xl overflow-hidden border border-slate-200 dark:border-white/10 bg-slate-100/70 dark:bg-black/30 flex flex-col items-center justify-center p-3 min-h-[140px]">
+                                <div class="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2 self-start">Front Photo</div>
                                 ${frontUrl ? `
-                                    <a href="${frontUrl}" target="_blank" rel="noopener noreferrer" class="group block relative w-full h-28 overflow-hidden rounded-lg">
+                                    <a href="${frontUrl}" target="_blank" rel="noopener noreferrer" class="group block relative w-full h-28 overflow-hidden rounded-lg bg-black/5 dark:bg-white/5">
                                         <img src="${frontUrl}" class="w-full h-full object-contain group-hover:scale-105 transition-transform" alt="Front ID">
                                     </a>
                                 ` : `
-                                    <div class="text-text-muted text-xs flex flex-col items-center gap-1 py-4">
+                                    <div class="text-slate-400 dark:text-slate-500 text-xs flex flex-col items-center gap-1 py-4">
                                         <span class="material-symbols-outlined text-2xl opacity-40">image_not_supported</span>
                                         <span>No front photo</span>
                                     </div>
                                 `}
                             </div>
-                            <div class="rounded-xl overflow-hidden border border-surface-border dark:border-white/5 bg-surface-subtle dark:bg-black/20 flex flex-col items-center justify-center p-3 min-h-[140px]">
-                                <div class="text-[10px] font-black text-text-muted uppercase tracking-wider mb-2 self-start">Back View</div>
+                            <div class="rounded-xl overflow-hidden border border-slate-200 dark:border-white/10 bg-slate-100/70 dark:bg-black/30 flex flex-col items-center justify-center p-3 min-h-[140px]">
+                                <div class="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2 self-start">Back Photo</div>
                                 ${backUrl ? `
-                                    <a href="${backUrl}" target="_blank" rel="noopener noreferrer" class="group block relative w-full h-28 overflow-hidden rounded-lg">
+                                    <a href="${backUrl}" target="_blank" rel="noopener noreferrer" class="group block relative w-full h-28 overflow-hidden rounded-lg bg-black/5 dark:bg-white/5">
                                         <img src="${backUrl}" class="w-full h-full object-contain group-hover:scale-105 transition-transform" alt="Back ID">
                                     </a>
                                 ` : `
-                                    <div class="text-text-muted text-xs flex flex-col items-center gap-1 py-4">
+                                    <div class="text-slate-400 dark:text-slate-500 text-xs flex flex-col items-center gap-1 py-4">
                                         <span class="material-symbols-outlined text-2xl opacity-40">image_not_supported</span>
                                         <span>No back photo</span>
                                     </div>
@@ -204,16 +204,16 @@ function renderProfile(data) {
                 `;
             }).join('');
         } else {
-            docsContainer.innerHTML = '<div class="text-center py-8 text-text-muted font-bold text-xs uppercase tracking-widest">No identity documents on file</div>';
+            docsContainer.innerHTML = '<div class="text-center py-8 text-slate-400 dark:text-slate-500 font-bold text-xs uppercase tracking-widest">No identity documents on file</div>';
         }
     }
 
     // Session Status
-    const dtStr = s.last_login_at ? new Date(s.last_login_at) : null;
+    const dtStr = s.last_login_at ? new Date(s.last_login_at.replace(' ', 'T')) : null;
     const loginEl = document.getElementById('info-last-login');
     if (loginEl) {
         loginEl.innerHTML = dtStr && !isNaN(dtStr.getTime())
-            ? `${dtStr.toLocaleDateString('en-IN')}<br><span class="text-[10px] text-text-muted">${dtStr.toLocaleTimeString('en-IN')}</span>`
+            ? `${dtStr.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })} <span class="text-[10px] text-slate-400 dark:text-slate-500 font-mono">(${dtStr.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true })})</span>`
             : 'First login';
     }
 
@@ -223,9 +223,9 @@ function renderProfile(data) {
     const statusEl = document.getElementById('info-status');
     if (statusEl) {
         if (s.status === 'active') {
-            statusEl.innerHTML = '<span class="px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-black uppercase tracking-widest border border-emerald-200 dark:border-emerald-500/20">Active</span>';
+            statusEl.innerHTML = '<span class="px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-black uppercase tracking-widest border border-emerald-500/20 flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>Active</span>';
         } else {
-            statusEl.innerHTML = '<span class="px-2.5 py-1 rounded-full bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 text-[10px] font-black uppercase tracking-widest border border-red-200 dark:border-red-500/20">Suspended</span>';
+            statusEl.innerHTML = '<span class="px-2.5 py-1 rounded-full bg-rose-500/10 text-rose-600 dark:text-rose-400 text-[10px] font-black uppercase tracking-widest border border-rose-500/20">Suspended</span>';
         }
     }
 }
@@ -252,57 +252,61 @@ function openEditModal(type) {
         if (title) title.textContent = 'Edit Phone Number';
         fieldsContainer.innerHTML = `
             <div>
-                <label for="edit-val-phone" class="block text-xs font-black text-text-muted uppercase tracking-widest mb-1.5">Mobile Phone Number *</label>
-                <div class="fin-input-wrapper">
-                    <span class="material-symbols-outlined input-icon-left">call</span>
-                    <input type="tel" id="edit-val-phone" required pattern="[0-9]{10}" maxlength="10" class="w-full fin-input has-icon-left" value="${s.phone || ''}" placeholder="10-digit number">
+                <label for="edit-val-phone" class="block text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1.5">Mobile Phone Number *</label>
+                <div class="fin-input-wrapper relative">
+                    <span class="material-symbols-outlined input-icon-left text-slate-400">call</span>
+                    <input type="tel" id="edit-val-phone" required pattern="[0-9]{10}" maxlength="10" class="w-full fin-input has-icon-left text-sm bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl text-slate-900 dark:text-white placeholder:text-slate-400 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20" value="${s.phone || ''}" placeholder="10-digit number">
                 </div>
-                <p class="text-[11px] text-text-muted mt-1">Enter a valid 10-digit Indian mobile number.</p>
+                <p class="text-[11px] text-slate-400 dark:text-slate-500 mt-1">Enter a valid 10-digit Indian mobile number.</p>
             </div>
         `;
     } else if (type === 'emergency') {
         if (title) title.textContent = 'Edit Emergency Contact';
         fieldsContainer.innerHTML = `
-            <div>
-                <label for="edit-val-ename" class="block text-xs font-black text-text-muted uppercase tracking-widest mb-1.5">Contact Full Name *</label>
-                <div class="fin-input-wrapper">
-                    <span class="material-symbols-outlined input-icon-left">person</span>
-                    <input type="text" id="edit-val-ename" required class="w-full fin-input has-icon-left" value="${s.emergency_contact_name || ''}" placeholder="Contact person name">
+            <div class="space-y-4">
+                <div>
+                    <label for="edit-val-ename" class="block text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1.5">Contact Full Name *</label>
+                    <div class="fin-input-wrapper relative">
+                        <span class="material-symbols-outlined input-icon-left text-slate-400">person</span>
+                        <input type="text" id="edit-val-ename" required class="w-full fin-input has-icon-left text-sm bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl text-slate-900 dark:text-white placeholder:text-slate-400 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20" value="${s.emergency_contact_name || ''}" placeholder="Contact person name">
+                    </div>
                 </div>
-            </div>
-            <div>
-                <label for="edit-val-ephone" class="block text-xs font-black text-text-muted uppercase tracking-widest mb-1.5">Contact Phone Number *</label>
-                <div class="fin-input-wrapper">
-                    <span class="material-symbols-outlined input-icon-left">phone_in_talk</span>
-                    <input type="tel" id="edit-val-ephone" required pattern="[0-9]{10}" maxlength="10" class="w-full fin-input has-icon-left" value="${s.emergency_contact_phone || ''}" placeholder="10-digit emergency contact">
+                <div>
+                    <label for="edit-val-ephone" class="block text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1.5">Contact Phone Number *</label>
+                    <div class="fin-input-wrapper relative">
+                        <span class="material-symbols-outlined input-icon-left text-slate-400">phone_in_talk</span>
+                        <input type="tel" id="edit-val-ephone" required pattern="[0-9]{10}" maxlength="10" class="w-full fin-input has-icon-left text-sm bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl text-slate-900 dark:text-white placeholder:text-slate-400 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20" value="${s.emergency_contact_phone || ''}" placeholder="10-digit emergency contact">
+                    </div>
                 </div>
             </div>
         `;
     } else if (type === 'address') {
         if (title) title.textContent = 'Edit Address Information';
         fieldsContainer.innerHTML = `
-            <div>
-                <label for="edit-val-street" class="block text-xs font-black text-text-muted uppercase tracking-widest mb-1.5">Street Address</label>
-                <input type="text" id="edit-val-street" class="w-full fin-input" value="${addr.street || s.street || ''}" placeholder="House / Flat / Street">
-            </div>
-            <div class="grid grid-cols-2 gap-3">
+            <div class="space-y-3.5">
                 <div>
-                    <label for="edit-val-city" class="block text-xs font-black text-text-muted uppercase tracking-widest mb-1.5">City</label>
-                    <input type="text" id="edit-val-city" class="w-full fin-input" value="${addr.city || s.city || ''}" placeholder="City">
+                    <label for="edit-val-street" class="block text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1.5">Street Address</label>
+                    <input type="text" id="edit-val-street" class="w-full px-3.5 py-2.5 text-sm bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl text-slate-900 dark:text-white placeholder:text-slate-400 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20" value="${addr.street || s.street || ''}" placeholder="House / Flat / Street">
                 </div>
-                <div>
-                    <label for="edit-val-state" class="block text-xs font-black text-text-muted uppercase tracking-widest mb-1.5">State</label>
-                    <input type="text" id="edit-val-state" class="w-full fin-input" value="${addr.state || s.state || ''}" placeholder="State">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label for="edit-val-city" class="block text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1.5">City</label>
+                        <input type="text" id="edit-val-city" class="w-full px-3.5 py-2.5 text-sm bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl text-slate-900 dark:text-white placeholder:text-slate-400 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20" value="${addr.city || s.city || ''}" placeholder="City">
+                    </div>
+                    <div>
+                        <label for="edit-val-state" class="block text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1.5">State</label>
+                        <input type="text" id="edit-val-state" class="w-full px-3.5 py-2.5 text-sm bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl text-slate-900 dark:text-white placeholder:text-slate-400 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20" value="${addr.state || s.state || ''}" placeholder="State">
+                    </div>
                 </div>
-            </div>
-            <div class="grid grid-cols-2 gap-3">
-                <div>
-                    <label for="edit-val-pincode" class="block text-xs font-black text-text-muted uppercase tracking-widest mb-1.5">Pincode</label>
-                    <input type="text" id="edit-val-pincode" pattern="[0-9]{6}" maxlength="6" class="w-full fin-input font-mono" value="${addr.pincode || s.pincode || ''}" placeholder="6-digit code">
-                </div>
-                <div>
-                    <label for="edit-val-country" class="block text-xs font-black text-text-muted uppercase tracking-widest mb-1.5">Country</label>
-                    <input type="text" id="edit-val-country" class="w-full fin-input" value="${addr.country || s.country || 'India'}" placeholder="Country">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label for="edit-val-pincode" class="block text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1.5">Postal Code</label>
+                        <input type="text" id="edit-val-pincode" pattern="[0-9]{6}" maxlength="6" class="w-full px-3.5 py-2.5 text-sm font-mono bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl text-slate-900 dark:text-white placeholder:text-slate-400 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20" value="${addr.pincode || s.pincode || ''}" placeholder="6-digit PIN">
+                    </div>
+                    <div>
+                        <label for="edit-val-country" class="block text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1.5">Country</label>
+                        <input type="text" id="edit-val-country" class="w-full px-3.5 py-2.5 text-sm bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl text-slate-900 dark:text-white placeholder:text-slate-400 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20" value="${addr.country || s.country || 'India'}" placeholder="Country">
+                    </div>
                 </div>
             </div>
         `;
