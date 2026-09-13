@@ -4,7 +4,7 @@ $pageTitle = 'Account Details';
 ob_start();
 ?>
 <div class="flex items-center gap-4 mb-8 ds-animate-fade">
-    <a href="accounts.php" class="w-10 h-10 rounded-full hover:bg-surface-hover flex items-center justify-center transition-colors text-text-main">
+    <a href="accounts.php" class="w-10 h-10 rounded-full hover:bg-surface-subtle flex items-center justify-center transition-colors text-text-main" aria-label="Back to Accounts">
       <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
     </a>
     <div>
@@ -17,24 +17,38 @@ ob_start();
     
     <!-- ASSET IDENTITY (LEFT COLUMN) -->
     <div class="w-full lg:w-1/3 ds-animate-slide-up">
-      <div class="ds-card bg-primary-600 text-white p-6 relative overflow-hidden shadow-lg border-none min-h-[400px] shadow-lg">
+      <div class="ds-card bg-primary-600 text-white p-6 relative overflow-hidden shadow-lg border-none min-h-[400px]">
         <!-- Decorative Grid -->
-        <div class="absolute inset-0 opacity-[0.03] bg-radial-dots"></div>
+        <div class="absolute inset-0 opacity-[0.03] bg-radial-dots pointer-events-none"></div>
+        <div class="absolute -top-24 -right-24 w-64 h-64 bg-white opacity-5 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-16 -left-16 w-48 h-48 bg-black opacity-10 rounded-full blur-2xl pointer-events-none"></div>
         
         <div class="relative z-10 flex flex-col h-full justify-between">
           <div>
             <div class="flex justify-between items-start mb-8">
               <div>
                 <div class="text-xs font-extrabold text-white/70 uppercase tracking-widest mb-1" id="acc-type-label">Savings Account</div>
-                <div class="font-display text-4xl font-black tracking-tighter" id="acc-balance-big">₹0.00</div>
+                <div class="flex items-center gap-2">
+                  <div class="font-display text-4xl font-black tracking-tighter" id="acc-balance-big">₹0.00</div>
+                  <button id="toggle-detail-balance-btn" type="button" class="text-white/60 hover:text-white transition-colors p-1" title="Toggle balance visibility" aria-label="Toggle balance visibility">
+                    <span class="material-symbols-outlined text-2xl" id="detail-balance-eye-icon">visibility</span>
+                  </button>
+                </div>
                 <div class="text-xs font-bold text-white/50 uppercase mt-1 tracking-wider">AVAILABLE BALANCE</div>
               </div>
-              <span class="badge badge badge-success !bg-white/20 !border-white/30 text-white text-xs tracking-widest py-1">ACTIVE</span>
+              <span id="acc-detail-status-badge" class="badge badge-success !bg-white/20 !border-white/30 text-white text-xs tracking-widest py-1">ACTIVE</span>
             </div>
             
             <div class="mt-8 p-4 rounded-xl bg-black/10 border border-white/10 backdrop-blur-sm">
-              <div class="font-mono text-lg font-bold text-white/90 tracking-widest" id="acc-no-big">FNZ — — —</div>
-              <div class="text-xs font-bold text-white/50 uppercase tracking-widest mt-1">ACCOUNT NUMBER</div>
+              <div class="flex items-center justify-between">
+                <div>
+                  <div class="font-mono text-lg font-bold text-white/90 tracking-widest" id="acc-no-big">FNZ — — —</div>
+                  <div class="text-xs font-bold text-white/50 uppercase tracking-widest mt-1">ACCOUNT NUMBER</div>
+                </div>
+                <button id="copy-detail-account-btn" type="button" class="text-white/60 hover:text-white transition-colors p-1.5 rounded-lg hover:bg-white/10" title="Copy Account Number" aria-label="Copy Account Number">
+                  <span class="material-symbols-outlined text-base" id="copy-detail-account-icon">content_copy</span>
+                </button>
+              </div>
             </div>
           </div>
           
@@ -68,17 +82,17 @@ ob_start();
           </div>
           <div class="sm:text-right">
             <div class="text-xs font-bold text-text-muted uppercase tracking-widest mb-1">Used Today</div>
-            <div class="font-display text-xl font-black text-primary-base-base" id="used-amount">₹0</div>
+            <div class="font-display text-xl font-black text-text-primary dark:text-accent font-mono" id="used-amount">₹0</div>
           </div>
         </div>
         
         <div class="ds-card-body p-6">
           <div class="w-full h-3 bg-surface-subtle rounded-full overflow-hidden mb-3 border border-border-main relative">
-            <div id="limit-bar" class="h-full bg-gradient-to-r from-primary-600 to-info-base transition-all duration-1000 ease-out" style="width:0%"></div>
+            <div id="limit-bar" class="h-full bg-gradient-to-r from-primary to-accent transition-all duration-1000 ease-out" style="width:0%"></div>
           </div>
           
           <div class="flex justify-between items-center mb-8">
-            <div class="text-xs font-bold text-success-base tracking-wide" id="limit-remaining">₹0.00 Remaining</div>
+            <div class="text-xs font-bold text-emerald-600 dark:text-emerald-400 tracking-wide" id="limit-remaining">₹0.00 Remaining</div>
             <div class="text-xs font-bold text-text-main tracking-wide">Total Limit: <span id="limit-amount" class="font-black">₹0</span></div>
           </div>
 
@@ -89,7 +103,7 @@ ob_start();
                 <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" aria-hidden="true">currency_rupee</span>
                 <input type="number" class="form-control pl-10 h-12 text-lg font-bold text-text-main" id="new-limit" placeholder="Adjust exposure limit" min="1000" max="100000" step="1000"/>
               </div>
-              <button class="btn btn-primary h-12 px-8" data-action="updateLimit()">Apply Change</button>
+              <button class="btn btn-primary h-12 px-8" id="btn-update-limit" onclick="updateLimit()">Apply Change</button>
             </div>
           </div>
         </div>
@@ -99,14 +113,14 @@ ob_start();
       <div class="ds-card overflow-hidden">
         <div class="ds-card-header border-b border-border-main flex justify-between items-center bg-surface-subtle">
           <h3 class="font-display text-base font-bold text-text-main uppercase tracking-wider">Recent Transactions</h3>
-          <a href="transactions.php" class="flex items-center gap-1 text-xs font-black text-primary-base-base hover:text-primary-base-800 uppercase tracking-widest transition-colors">
+          <a href="transactions.php" class="flex items-center gap-1 text-xs font-black text-primary hover:underline uppercase tracking-widest transition-colors">
             View Full Ledger <span class="material-symbols-outlined text-sm" aria-hidden="true">open_in_new</span>
           </a>
         </div>
         
-        <div id="mini-txns" class="flex flex-col">
+        <div id="mini-txns" class="flex flex-col divide-y divide-border-subtle">
           <!-- Skeletons loaded initially -->
-          <div class="p-4 border-b border-border-main flex items-center justify-between">
+          <div class="p-4 flex items-center justify-between">
             <div class="flex items-center gap-3">
               <div class="skeleton w-10 h-10 rounded-xl"></div>
               <div><div class="skeleton w-32 h-4 mb-2"></div><div class="skeleton w-20 h-3"></div></div>
@@ -118,7 +132,6 @@ ob_start();
       
     </div>
   </div>
-</div>
 
 
 <script defer src="/Finzo/public/assets/js/user/account-detail.js"></script>
@@ -126,6 +139,3 @@ ob_start();
 $slot = ob_get_clean();
 include __DIR__ . '/../layouts/app.php';
 ?>
-
-
-
