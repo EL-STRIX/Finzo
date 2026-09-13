@@ -440,6 +440,15 @@
                     return dt.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
                 };
 
+                const timeAgoLocal = (d) => {
+                    if (!d) return 'Never';
+                    if (window.FinzoUtils && typeof window.FinzoUtils.timeAgo === 'function') {
+                        return window.FinzoUtils.timeAgo(d);
+                    }
+                    const dt = new Date(d);
+                    return isNaN(dt.getTime()) ? String(d) : dt.toLocaleDateString('en-GB');
+                };
+
                 return `
                     <tr class="hover:bg-surface-subtle transition-colors">
                         <td class="py-4 px-6 text-xs font-mono font-bold text-text-secondary">${a.admin_id}</td>
@@ -458,7 +467,7 @@
                         </td>
                         <td class="py-4 px-6">${statHtml}</td>
                         <td class="py-4 px-6">
-                            <div class="text-xs font-bold text-text-primary">${a.last_login_at ? window.FinzoUtils.timeAgo(a.last_login_at) : 'Never'}</div>
+                            <div class="text-xs font-bold text-text-primary">${timeAgoLocal(a.last_login_at)}</div>
                         </td>
                         <td class="py-4 px-6">
                             <div class="text-xs font-bold text-text-primary">${a.created_by_name || 'System'}</div>

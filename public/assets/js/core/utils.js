@@ -146,6 +146,7 @@ window.FinzoUtils = {
             clearTimeout(timeout);
             timeout = setTimeout(() => func.apply(context, args), wait);
         };
+    },
     /**
      * Convert number to words in Indian numbering system (Rupees)
      * @param {number|string} number 
