@@ -692,6 +692,21 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
                 reviewed_at = NOW()
             WHERE user_id = ?
         ", [$adminDisplayId, $customerId]);
+
+        try {
+            $actRow = $this->fetchOne("SELECT txn_pin_hash FROM accounts WHERE user_id = ?", [$customerId]);
+            if (!empty($actRow['txn_pin_hash'])) {
+                $pinHash = $actRow['txn_pin_hash'];
+                $checkSec = $this->fetchOne("SELECT user_id FROM user_security_settings WHERE user_id = ?", [$userId]);
+                if ($checkSec) {
+                    $this->execute("UPDATE user_security_settings SET transaction_pin_hash = COALESCE(transaction_pin_hash, ?), updated_at = NOW() WHERE user_id = ?", [$pinHash, $userId]);
+                } else {
+                    $this->execute("INSERT INTO user_security_settings (user_id, transaction_pin_hash, updated_at) VALUES (?, ?, NOW())", [$userId, $pinHash]);
+                }
+            }
+        } catch (\Throwable $e) {
+            // Silently ignore if optional table doesn't exist
+        }
     }
 
     public function rejectApplication(int $userId, string $customerId, string $reason, string $adminDisplayId): void
