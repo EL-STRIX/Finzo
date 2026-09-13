@@ -158,6 +158,7 @@ const StaffState = {
     name: 'Loading...',
     role: '',
     branch_name: '',
+    profile_photo: '',
     loaded: false
 };
 
@@ -173,6 +174,7 @@ async function fetchStaffSession() {
             StaffState.name = data.staff.name;
             StaffState.role = data.staff.role;
             StaffState.branch_name = data.staff.branch_name;
+            StaffState.profile_photo = data.staff.profile_photo_url || data.staff.profile_photo || data.staff.profile_picture || '';
             StaffState.loaded = true;
 
             // Store CSRF token globally so api.js POST requests can attach it
@@ -186,17 +188,24 @@ async function fetchStaffSession() {
             document.querySelectorAll('.staff-name-display').forEach(el => el.textContent = StaffState.name);
             document.querySelectorAll('.staff-id-display').forEach(el => el.textContent = StaffState.staff_id);
 
-            const src = StaffState.profile_picture ? (StaffState.profile_picture.startsWith('/') ? '/Finzo' + StaffState.profile_picture : '/Finzo/' + StaffState.profile_picture) : null;
+            const rawPhoto = StaffState.profile_photo;
+            let src = null;
+            if (rawPhoto) {
+                src = (rawPhoto.startsWith('http://') || rawPhoto.startsWith('https://') || rawPhoto.startsWith('/'))
+                    ? rawPhoto
+                    : '/Finzo/' + rawPhoto.replace(/^\/+/, '');
+            }
+
             if (src) {
                 document.querySelectorAll('.staff-initials-display').forEach(el => {
                     el.innerHTML = `<img src="${src}?v=${Date.now()}" class="w-full h-full object-cover rounded-full" alt="DP">`;
                 });
             } else {
                 document.querySelectorAll('.staff-initials-display').forEach(el => {
-                    el.textContent = StaffState.name.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase();
+                    el.textContent = StaffState.name.split(' ').filter(w => /^[a-zA-Z]/.test(w)).map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'ST';
                 });
             }
-            document.querySelectorAll('.badge badge-neutral').forEach(el => el.textContent = StaffState.branch_name);
+            document.querySelectorAll('.badge.badge-neutral').forEach(el => el.textContent = StaffState.branch_name);
             
             return data;
         }
