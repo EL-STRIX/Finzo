@@ -68,25 +68,54 @@ class PdfRepository extends BaseRepository implements \App\Domain\Contracts\Repo
     public function getStatementData(int $userId, string $fromDate, string $toDate): array
     {
         $stmt = $this->db->prepare("
-            SELECT a.id, a.account_no, a.account_type, a.balance, u.full_name, u.email, u.phone
-            FROM accounts a JOIN users u ON a.user_id = u.customer_id
-            WHERE u.id = ? AND a.status = 'active' LIMIT 1
+            SELECT u.id, u.customer_id, u.full_name, u.email, u.phone
+            FROM users u
+            WHERE u.id = ?
+            LIMIT 1
         ");
         $stmt->execute([$userId]);
-        $account = $stmt->fetch();
-        if (!$account) return [];
+        $user = $stmt->fetch();
+        if (!$user) return [];
 
         $stmt = $this->db->prepare("
-            SELECT t.txn_id, t.type, t.amount, t.balance_after, t.description, t.created_at,
-                   t.from_account_id, t.to_account_id
+            SELECT a.id, a.account_no, a.account_type, a.balance, a.status
+            FROM accounts a
+            WHERE a.user_id = ? AND a.status = 'active'
+            ORDER BY a.id ASC
+        ");
+        $stmt->execute([$user['customer_id']]);
+        $accounts = $stmt->fetchAll();
+        if (empty($accounts)) return [];
+
+        $primaryAccount = $accounts[0];
+        $primaryAccount['full_name'] = $user['full_name'];
+        $primaryAccount['customer_id'] = $user['customer_id'];
+        $primaryAccount['email'] = $user['email'];
+        $primaryAccount['phone'] = $user['phone'];
+
+        $accountIds = array_column($accounts, 'id');
+        $placeholders = implode(',', array_fill(0, count($accountIds), '?'));
+
+        $stmt = $this->db->prepare("
+            SELECT t.txn_id, t.type, t.amount, t.balance_after, t.description, t.reference_note, t.created_at,
+                   t.from_account_id, t.to_account_id, t.status
             FROM transactions t
-            WHERE (t.from_account_id = ? OR t.to_account_id = ?)
+            WHERE (t.from_account_id IN ($placeholders) OR t.to_account_id IN ($placeholders))
                 AND t.status = 'completed'
                 AND DATE(t.created_at) BETWEEN ? AND ?
             ORDER BY t.created_at ASC
         ");
-        $stmt->execute([$account['id'], $account['id'], $fromDate, $toDate]);
+        $params = array_merge($accountIds, $accountIds, [$fromDate, $toDate]);
+        $stmt->execute($params);
         $transactions = $stmt->fetchAll();
-        return ['account' => $account, 'transactions' => $transactions];
+
+        return [
+            'user' => $user,
+            'account' => $primaryAccount,
+            'accounts' => $accounts,
+            'transactions' => $transactions,
+            'fromDate' => $fromDate,
+            'toDate' => $toDate
+        ];
     }
 }
