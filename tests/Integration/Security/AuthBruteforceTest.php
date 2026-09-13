@@ -108,6 +108,21 @@ class AuthBruteforceTest extends TestCase {
         $doneListExpired = $adminOpsService->getLockedAccounts(['tab' => 'locked', 'search' => $email, 'status' => 'done', 'type' => ''], 1, 10);
         $this->assertEquals(0, $doneListExpired['total'], 'User must be removed from Done list after 60 minutes');
 
+        // 5b. Verify account immediately reappears in active locked queue as Pending with max failed attempts
+        $expiredQueue = $adminOpsService->getLockedAccounts(['tab' => 'locked', 'search' => $email, 'status' => '', 'type' => ''], 1, 10);
+        $this->assertEquals(1, $expiredQueue['total'], 'Expired temp password account must reappear in active locked list');
+        $this->assertEquals('Pending', $expiredQueue['accounts'][0]['status_text']);
+        $this->assertEquals(5, $expiredQueue['accounts'][0]['failed_attempts']);
+        $this->assertTrue($expiredQueue['accounts'][0]['is_locked']);
+
+        // 5c. Verify locked account detail view correctly reflects locked status and inactive temp pass
+        $detailRes = $adminOpsService->getLockedAccountDetail($userId);
+        $this->assertTrue($detailRes['success']);
+        $detailUser = $detailRes['user'];
+        $this->assertTrue($detailUser['is_locked']);
+        $this->assertFalse($detailUser['temp_password_active']);
+        $this->assertEquals(5, $detailUser['failed_attempts']);
+
         // 6. Attempting to log in with the expired temp password fails with 401 expired message
         $session = ['csrf_token' => 'dummy_token'];
         $postData = [
@@ -122,6 +137,45 @@ class AuthBruteforceTest extends TestCase {
             $response = json_decode($e->getMessage(), true);
             $this->assertEquals(401, $response['status']);
             $this->assertStringContainsString('expired (valid for 60 minutes)', $response['message']);
+        }
+
+        // 6b. Verify user is now re-locked and appears in the active locked accounts list
+        $lockedListRelocked = $adminOpsService->getLockedAccounts(['tab' => 'locked', 'search' => $email, 'status' => '', 'type' => ''], 1, 10);
+        $this->assertGreaterThanOrEqual(1, $lockedListRelocked['total'], 'Expired account must reappear in active locked list');
+        $this->assertTrue($lockedListRelocked['accounts'][0]['is_locked']);
+
+        // 6c. Verify attempting to log in with old password also fails because account is locked
+        try {
+            RequestHelper::postJson('auth/login.php', [
+                'identity' => $email,
+                'password' => 'WrongPassword123!',
+                'csrf_token' => 'dummy_token'
+            ], $session);
+            $this->fail("Expected account locked failure");
+        } catch (\Exception $e) {
+            $response = json_decode($e->getMessage(), true);
+            $this->assertEquals(423, $response['status']);
+            $this->assertStringContainsString('Account locked', $response['message']);
+        }
+
+        // 6d. Verify admin can again regenerate a temporary password for the user
+        $unlockRes2 = $adminOpsService->unlockAccount($userId, $adminId);
+        $this->assertTrue($unlockRes2['success']);
+        $this->assertNotEmpty($unlockRes2['temp_password']);
+        $newTempPassword = $unlockRes2['temp_password'];
+
+        // 6e. Verify user can now log in with the newly generated temporary password
+        try {
+            RequestHelper::postJson('auth/login.php', [
+                'identity' => $email,
+                'password' => $newTempPassword,
+                'csrf_token' => 'dummy_token'
+            ], $session);
+            $this->fail("Expected TestResponseException on successful login");
+        } catch (\Throwable $e) {
+            $loginResponse = json_decode($e->getMessage(), true);
+            $this->assertEquals(200, $loginResponse['status'] ?? null, 'Expected 200 OK: ' . ($loginResponse['message'] ?? $e->getMessage()));
+            $this->assertTrue($loginResponse['success'] ?? false, 'Login with regenerated temporary password must succeed');
         }
 
         // 7. Verify a user logging in within the 60 minutes succeeds and clears temp_pass_status

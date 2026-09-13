@@ -14,7 +14,11 @@ class SessionManager
             
             // Do not override in CLI/Testing environments unexpectedly
             if (defined('FINZO_TESTING') && FINZO_TESTING) {
-                session_start();
+                $saved = $_SESSION ?? [];
+                @session_start();
+                if (!empty($saved)) {
+                    $_SESSION = array_merge($_SESSION ?? [], $saved);
+                }
                 return;
             }
 

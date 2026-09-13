@@ -36,5 +36,7 @@ class AppServiceProvider
         $container->bind(\App\Domain\Contracts\Services\ReportServiceInterface::class, \App\Application\Services\ReportService::class);
         $container->bind(\App\Domain\Contracts\Services\NotificationServiceInterface::class, \App\Application\Services\NotificationService::class);
         $container->bind(\App\Domain\Contracts\Services\LedgerServiceInterface::class, \App\Application\Services\LedgerService::class);
+        $container->bind(\App\Infrastructure\Repositories\AdminSupportRepository::class, \App\Infrastructure\Repositories\AdminSupportRepository::class);
+        $container->bind(\App\Application\Services\AdminSupportService::class, \App\Application\Services\AdminSupportService::class);
     }
 }

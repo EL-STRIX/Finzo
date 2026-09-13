@@ -3,7 +3,7 @@
 namespace App\Application\Actions;
 
 use App\Domain\Contracts\Services\UserServiceInterface;
-use App\Shared\Security\SecurityServiceInterface;
+use App\Domain\Contracts\Security\SecurityServiceInterface;
 use App\Domain\Enums\NotificationTypeEnum;
 use App\Domain\Enums\AuditActionEnum;
 use App\Domain\Enums\RoleEnum;

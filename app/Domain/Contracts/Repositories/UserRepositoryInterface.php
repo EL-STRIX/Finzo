@@ -19,6 +19,8 @@ interface UserRepositoryInterface
     public function addBeneficiary($userId, $nickname, $accountNumber, $bank_name);
     public function getUserPasswordHash(int $userId);
     public function updatePassword(int $userId, string $new_hash);
+    public function getTxnPinHash(string $customerId): ?string;
+    public function updateTxnPin(string $customerId, string $pinHash): bool;
     public function getUserFiles(int $userId);
     public function getExistingAccountByCustomerId(string $customer_id);
     public function updateAccountResubmission(string $account_type, float $initial_deposit, string $txn_pin_hash, string $customer_id);

@@ -17,7 +17,7 @@ class PdfController
     {
         if (session_status() === PHP_SESSION_NONE) \App\Shared\Security\SessionManager::start();
         $role = $_SESSION['role'] ?? null;
-        $userId = $_SESSION['user_id'] ?? null;
+        $userId = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : null;
 
         $txnId = $_GET['id'] ?? $_GET['txn_id'] ?? '';
         if (Validator::isEmpty($txnId)) throw new \App\Shared\Core\Exceptions\ApiException('Transaction ID is required', 400);
@@ -64,13 +64,19 @@ class PdfController
     {
         if (session_status() === PHP_SESSION_NONE) \App\Shared\Security\SessionManager::start();
         $role = $_SESSION['role'] ?? null;
-        $userId = $_SESSION['user_id'] ?? null;
+        $userId = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : null;
 
-        if (!in_array($role, ['customer', 'staff', 'admin'])) throw new \App\Shared\Core\Exceptions\ApiException('Authentication required', 401);
+        if (!in_array($role, ['customer', 'user', 'staff', 'admin'], true)) {
+            throw new \App\Shared\Core\Exceptions\ApiException('Authentication required', 401);
+        }
 
-        $targetUserId = max(1, intval($_GET['user_id'] ?? 0));
-        if ($targetUserId === 0 && $role === 'customer') $targetUserId = $userId;
-        if ($role === 'customer' && $userId != $targetUserId) throw new \App\Shared\Core\Exceptions\ApiException('Access denied', 403);
+        $targetUserId = max(0, intval($_GET['user_id'] ?? 0));
+        if ($targetUserId === 0 && in_array($role, ['customer', 'user'], true)) {
+            $targetUserId = (int)$userId;
+        }
+        if (in_array($role, ['customer', 'user'], true) && (int)$userId !== (int)$targetUserId) {
+            throw new \App\Shared\Core\Exceptions\ApiException('Access denied', 403);
+        }
 
         $fromDate = $_GET['from_date'] ?? date('Y-m-d', strtotime('-30 days'));
         $toDate   = $_GET['to_date'] ?? date('Y-m-d');
@@ -78,8 +84,11 @@ class PdfController
         $data = $this->service->getStatement($targetUserId, $fromDate, $toDate);
         if (empty($data)) throw new \App\Shared\Core\Exceptions\ApiException('Account not found', 404);
         
+        $user = $data['user'] ?? null;
         $account = $data['account'];
+        $accounts = $data['accounts'] ?? [$account];
         $transactions = $data['transactions'];
+        $selectedAccount = $account;
 
         header('Content-Type: text/html; charset=utf-8');
         header("Content-Security-Policy: default-src 'self' 'unsafe-inline' https: data:; style-src 'self' 'unsafe-inline' https:; script-src 'self' 'unsafe-inline';");

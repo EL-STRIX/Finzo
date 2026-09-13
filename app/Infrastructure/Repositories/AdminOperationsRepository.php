@@ -227,6 +227,7 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
                 COALESCE(SUM(CASE WHEN type = '{$deposit}' THEN amount ELSE 0 END), 0) as deposits,
                 COALESCE(SUM(CASE WHEN type = '{$withdrawal}' THEN amount ELSE 0 END), 0) as withdrawals,
                 COALESCE(SUM(CASE WHEN type = '{$transfer}' THEN amount ELSE 0 END), 0) as transfers,
+                COALESCE(SUM(amount), 0) as total_turnover,
                 COUNT(*) as count
             FROM transactions
             WHERE status = '{$completed}'
@@ -247,12 +248,20 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
             $month_label = date('M Y', strtotime("-{$i} months"));
             $dataRow = $mapped[$ym] ?? null;
 
+            $dep = (float)($dataRow['deposits'] ?? 0);
+            $wth = (float)($dataRow['withdrawals'] ?? 0);
+            $trf = (float)($dataRow['transfers'] ?? 0);
+            $turnover = (float)($dataRow['total_turnover'] ?? ($dep + $wth + $trf));
+            $netFlow = round($dep - $wth, 2);
+
             $result[] = [
-                'month'       => $month_label,
-                'deposits'    => (float)($dataRow['deposits'] ?? 0),
-                'withdrawals' => (float)($dataRow['withdrawals'] ?? 0),
-                'transfers'   => (float)($dataRow['transfers'] ?? 0),
-                'count'       => (int)($dataRow['count'] ?? 0)
+                'month'          => $month_label,
+                'deposits'       => $dep,
+                'withdrawals'    => $wth,
+                'transfers'      => $trf,
+                'total_turnover' => $turnover,
+                'net_flow'       => $netFlow,
+                'count'          => (int)($dataRow['count'] ?? 0)
             ];
         }
 
@@ -467,7 +476,7 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
             FROM users u
             LEFT JOIN accounts a ON u.customer_id = a.user_id
             WHERE {$whereSql}
-            ORDER BY u.locked_until DESC, u.failed_attempts DESC
+            ORDER BY COALESCE(u.locked_until, u.updated_at) DESC, u.failed_attempts DESC
             LIMIT {$perPage} OFFSET {$offset}
         ", $params);
     }
@@ -476,7 +485,7 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
         return $this->fetchOne("
             SELECT u.id, u.customer_id, u.full_name, u.email, u.phone, u.status,
                    u.profile_picture, u.failed_attempts, u.locked_until,
-                   u.last_login_at, u.last_login_ip, u.updated_at,
+                   u.last_login_at, u.last_login_ip, u.updated_at, u.temp_pass_status,
                    a.account_no, a.account_type, a.balance, a.opened_date
             FROM users u
             LEFT JOIN accounts a ON u.customer_id = a.user_id
@@ -1164,10 +1173,13 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
         // 2. Accounts aggregated in a single query
         $accStats = $this->fetchOne("
             SELECT
-                COUNT(*) as total_accounts,
-                COALESCE(SUM(balance), 0) as total_balance
+                COALESCE(SUM(CASE WHEN status = '{$active}' AND frozen_at IS NULL THEN 1 ELSE 0 END), 0) as active_accounts,
+                COALESCE(SUM(CASE WHEN status = 'pending' THEN 1 ELSE 0 END), 0) as pending_accounts,
+                COALESCE(SUM(CASE WHEN status = 'suspended' THEN 1 ELSE 0 END), 0) as suspended_accounts,
+                COALESCE(SUM(CASE WHEN frozen_at IS NOT NULL OR status IN ('closed', 'rejected') THEN 1 ELSE 0 END), 0) as locked_accounts,
+                COUNT(*) as total_accounts_all,
+                COALESCE(SUM(CASE WHEN status = '{$active}' THEN balance ELSE 0 END), 0) as total_balance
             FROM accounts
-            WHERE status = '{$active}'
         ") ?: [];
 
         // 3. User status conditions aggregated in a single query
@@ -1178,15 +1190,23 @@ class AdminOperationsRepository extends BaseRepository implements \App\Domain\Co
             FROM users
         ") ?: [];
 
+        $activeAccounts = (int)($accStats['active_accounts'] ?? 0);
+        $pendingAccounts = (int)($accStats['pending_accounts'] ?? 0);
+        $suspendedAccounts = (int)($accStats['suspended_accounts'] ?? 0);
+        $lockedAccounts = (int)($accStats['locked_accounts'] ?? 0) + (int)($userStatusCounts['locked_accounts'] ?? 0);
+
         return [
             'transactions_today' => (int)($txnStats['transactions_today'] ?? 0),
             'transactions_month' => (int)($txnStats['transactions_month'] ?? 0),
             'deposits_today'     => (float)($txnStats['deposits_today'] ?? 0),
             'withdrawals_today'  => (float)($txnStats['withdrawals_today'] ?? 0),
             'transfers_today'    => (float)($txnStats['transfers_today'] ?? 0),
-            'locked_accounts'    => (int)($userStatusCounts['locked_accounts'] ?? 0),
+            'locked_accounts'    => $lockedAccounts,
             'total_balance'      => (float)($accStats['total_balance'] ?? 0),
-            'total_accounts'     => (int)($accStats['total_accounts'] ?? 0),
+            'total_accounts'     => $activeAccounts,
+            'active_accounts'    => $activeAccounts,
+            'pending_accounts'   => $pendingAccounts,
+            'suspended_accounts' => $suspendedAccounts,
             'interest_credited'  => (float)($txnStats['interest_credited'] ?? 0),
             'soft_deleted_users' => (int)($userStatusCounts['soft_deleted_users'] ?? 0)
         ];

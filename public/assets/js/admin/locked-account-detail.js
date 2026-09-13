@@ -123,6 +123,9 @@ document.addEventListener('DOMContentLoaded', () => {
             if (unlockActionCard) unlockActionCard.classList.add('hidden');
             const displayPass = document.getElementById('display-pass');
             if (displayPass) displayPass.textContent = user.temp_password;
+        } else {
+            if (tempPassCard) tempPassCard.classList.add('hidden');
+            if (unlockActionCard) unlockActionCard.classList.remove('hidden');
         }
 
         // If account is unlocked (admin already resolved), update badge but keep controls

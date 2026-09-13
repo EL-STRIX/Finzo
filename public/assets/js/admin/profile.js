@@ -68,8 +68,10 @@
                 const nameDisplay = document.getElementById('profile-name-display');
                 if (nameDisplay) nameDisplay.textContent = admin.full_name;
 
+                const adminDisplayId = admin.admin_id || admin.customer_id || (admin.id ? 'ADM' + String(admin.id).padStart(3, '0') : 'ADM---');
+
                 const heroAdminId = document.getElementById('hero-admin-id-text');
-                if (heroAdminId) heroAdminId.textContent = 'ID: ' + (admin.admin_id || '#' + admin.id);
+                if (heroAdminId) heroAdminId.textContent = 'ID: ' + adminDisplayId;
 
                 const heroEmail = document.getElementById('hero-email-text');
                 if (heroEmail) heroEmail.textContent = admin.email || 'admin@finzo.com';
@@ -77,7 +79,7 @@
                 const headerName = document.getElementById('header-profile-name');
                 if (headerName) headerName.textContent = admin.full_name;
                 const headerId = document.getElementById('header-profile-id');
-                if (headerId) headerId.textContent = 'ID: ' + (admin.admin_id || '#' + admin.id);
+                if (headerId) headerId.textContent = 'ID: ' + adminDisplayId;
 
                 // Form bindings
                 const adminIdInput = document.getElementById('profile-admin-id-input');
@@ -440,6 +442,15 @@
                     return dt.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
                 };
 
+                const timeAgoLocal = (d) => {
+                    if (!d) return 'Never';
+                    if (window.FinzoUtils && typeof window.FinzoUtils.timeAgo === 'function') {
+                        return window.FinzoUtils.timeAgo(d);
+                    }
+                    const dt = new Date(d);
+                    return isNaN(dt.getTime()) ? String(d) : dt.toLocaleDateString('en-GB');
+                };
+
                 return `
                     <tr class="hover:bg-surface-subtle transition-colors">
                         <td class="py-4 px-6 text-xs font-mono font-bold text-text-secondary">${a.admin_id}</td>
@@ -458,7 +469,7 @@
                         </td>
                         <td class="py-4 px-6">${statHtml}</td>
                         <td class="py-4 px-6">
-                            <div class="text-xs font-bold text-text-primary">${a.last_login_at ? window.FinzoUtils.timeAgo(a.last_login_at) : 'Never'}</div>
+                            <div class="text-xs font-bold text-text-primary">${timeAgoLocal(a.last_login_at)}</div>
                         </td>
                         <td class="py-4 px-6">
                             <div class="text-xs font-bold text-text-primary">${a.created_by_name || 'System'}</div>

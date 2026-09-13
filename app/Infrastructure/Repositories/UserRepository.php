@@ -77,7 +77,7 @@ class UserRepository extends BaseRepository implements \App\Domain\Contracts\Rep
     public function fetchMiniStatement(int $account_id)
     {
         $stmt = $this->db->prepare("
-            SELECT txn_id, type, amount, balance_after, description, status, created_at
+            SELECT txn_id, from_account_id, to_account_id, type, amount, balance_after, description, status, created_at
             FROM transactions
             WHERE (from_account_id = ? OR to_account_id = ?) AND status = 'completed'
             ORDER BY created_at DESC
@@ -110,10 +110,14 @@ class UserRepository extends BaseRepository implements \App\Domain\Contracts\Rep
     public function fetchBeneficiaries($userId)
     {
         $stmt = $this->db->prepare("
-            SELECT id, nickname, account_no, bank_name, created_at
-            FROM beneficiaries
-            WHERE user_id = ?
-            ORDER BY created_at DESC
+            SELECT b.id, b.nickname, b.account_no, b.bank_name, b.created_at,
+                   COALESCE(u.full_name, b.nickname) AS name,
+                   u.full_name AS holder_name
+            FROM beneficiaries b
+            LEFT JOIN accounts a ON a.account_no = b.account_no
+            LEFT JOIN users u ON u.customer_id = a.user_id
+            WHERE b.user_id = ?
+            ORDER BY b.created_at DESC
         ");
         $stmt->execute([$userId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -161,6 +165,41 @@ class UserRepository extends BaseRepository implements \App\Domain\Contracts\Rep
     {
         $stmt = $this->db->prepare("UPDATE users SET password_hash = ?, updated_at = NOW() WHERE id = ?");
         return $stmt->execute([$new_hash, $userId]);
+    }
+
+    public function getTxnPinHash(string $customerId): ?string
+    {
+        $stmt = $this->db->prepare("SELECT txn_pin_hash FROM accounts WHERE user_id = ? AND status = 'active' ORDER BY id ASC LIMIT 1");
+        $stmt->execute([$customerId]);
+        $hash = $stmt->fetchColumn();
+        return $hash ?: null;
+    }
+
+    public function updateTxnPin(string $customerId, string $pinHash): bool
+    {
+        $stmt = $this->db->prepare("UPDATE accounts SET txn_pin_hash = ?, updated_at = NOW() WHERE user_id = ?");
+        $res = $stmt->execute([$pinHash, $customerId]);
+
+        try {
+            $uStmt = $this->db->prepare("SELECT id FROM users WHERE customer_id = ?");
+            $uStmt->execute([$customerId]);
+            $numUserId = $uStmt->fetchColumn();
+            if ($numUserId) {
+                $checkStmt = $this->db->prepare("SELECT user_id FROM user_security_settings WHERE user_id = ?");
+                $checkStmt->execute([$numUserId]);
+                if ($checkStmt->fetchColumn()) {
+                    $updSec = $this->db->prepare("UPDATE user_security_settings SET transaction_pin_hash = ?, updated_at = NOW() WHERE user_id = ?");
+                    $updSec->execute([$pinHash, $numUserId]);
+                } else {
+                    $insSec = $this->db->prepare("INSERT INTO user_security_settings (user_id, transaction_pin_hash, updated_at) VALUES (?, ?, NOW())");
+                    $insSec->execute([$numUserId, $pinHash]);
+                }
+            }
+        } catch (\Throwable $e) {
+            // Silently ignore if optional table doesn't exist
+        }
+
+        return $res;
     }
 
     // -- Complete Profile --
@@ -226,7 +265,7 @@ class UserRepository extends BaseRepository implements \App\Domain\Contracts\Rep
                    COALESCE(k.profile_picture, u.profile_picture) AS profile_picture,
                    u.created_at, u.updated_at
             FROM users u
-            LEFT JOIN kyc_applications k ON u.customer_id = k.user_id
+            LEFT JOIN kyc_applications k ON k.id = (SELECT MAX(id) FROM kyc_applications WHERE user_id = u.customer_id)
             WHERE u.id = ? AND u.is_deleted = 0
         ");
         $stmt->execute([$userId]);
@@ -239,7 +278,7 @@ class UserRepository extends BaseRepository implements \App\Domain\Contracts\Rep
             SELECT id, account_no, account_type, balance, interest_rate, daily_limit, status, opened_date
             FROM accounts
             WHERE user_id = ?
-            ORDER BY status = 'active' DESC, created_at DESC
+            ORDER BY (status = 'active') DESC, created_at DESC
             LIMIT 1
         ");
         $stmt->execute([$customer_id]);
@@ -250,7 +289,7 @@ class UserRepository extends BaseRepository implements \App\Domain\Contracts\Rep
     {
         $stmt = $this->db->prepare("
             SELECT
-                t.txn_id, t.type, t.amount, t.description, t.status, t.created_at,
+                t.txn_id, t.from_account_id, t.to_account_id, t.type, t.amount, t.description, t.status, t.created_at,
                 CASE 
                     WHEN t.type = ? AND t.from_account_id = ? THEN (SELECT u.full_name FROM accounts a JOIN users u ON a.user_id = u.customer_id WHERE a.id = t.to_account_id) 
                     WHEN t.type = ? AND t.to_account_id = ? THEN (SELECT u.full_name FROM accounts a JOIN users u ON a.user_id = u.customer_id WHERE a.id = t.from_account_id) 

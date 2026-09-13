@@ -84,6 +84,60 @@ class UserValidator extends Validator
         ];
     }
 
+    public function validatePinChange(array $data): array
+    {
+        $errors = [];
+        $authType = trim($data['auth_type'] ?? 'pin');
+        if (!in_array($authType, ['pin', 'password'], true)) {
+            $authType = 'pin';
+        }
+
+        $currentPin = trim($data['current_pin'] ?? '');
+        $currentPassword = $data['current_password'] ?? '';
+        $newPin = trim($data['new_pin'] ?? '');
+        $confirmPin = trim($data['confirm_pin'] ?? '');
+
+        if ($authType === 'password') {
+            if (empty($currentPassword)) {
+                $errors['current_password'] = 'Account password is required';
+            }
+        } else {
+            if (empty($currentPin)) {
+                $errors['current_pin'] = 'Current 4-digit PIN is required';
+            } elseif (!preg_match('/^\d{4}$/', $currentPin)) {
+                $errors['current_pin'] = 'Current PIN must be exactly 4 digits';
+            }
+        }
+
+        if (empty($newPin)) {
+            $errors['new_pin'] = 'New 4-digit PIN is required';
+        } elseif (!preg_match('/^\d{4}$/', $newPin)) {
+            $errors['new_pin'] = 'New PIN must be exactly 4 numeric digits';
+        }
+
+        if (empty($confirmPin)) {
+            $errors['confirm_pin'] = 'Please confirm your new PIN';
+        } elseif ($newPin !== $confirmPin) {
+            $errors['confirm_pin'] = 'New PINs do not match';
+        }
+
+        if ($authType === 'pin' && !empty($newPin) && $currentPin === $newPin) {
+            $errors['new_pin'] = 'New PIN must be different from current PIN';
+        }
+
+        if (!empty($errors)) {
+            throw new ValidationException('Validation failed', ['errors' => $errors]);
+        }
+
+        return [
+            'auth_type'        => $authType,
+            'current_pin'      => $currentPin,
+            'current_password' => $currentPassword,
+            'new_pin'          => $newPin,
+            'confirm_pin'      => $confirmPin,
+        ];
+    }
+
     public function validateBeneficiary(array $data): array
     {
         $errors = [];
@@ -110,10 +164,11 @@ class UserValidator extends Validator
     public function validateTransfer(array $data): array
     {
         $errors = [];
-        $toAccountNo = self::sanitize(['to_account_no' => $data['to_account_no'] ?? ''])['to_account_no'];
+        $rawAccount  = $data['to_account_no'] ?? $data['to_account'] ?? '';
+        $toAccountNo = strtoupper(trim(self::sanitize(['to_account_no' => $rawAccount])['to_account_no']));
         $amount      = floatval($data['amount'] ?? 0);
         $description = self::sanitize(['description' => $data['description'] ?? ''])['description'];
-        $txnPin      = self::sanitize(['txn_pin' => $data['txn_pin'] ?? ''])['txn_pin'];
+        $txnPin      = trim(self::sanitize(['txn_pin' => $data['txn_pin'] ?? $data['pin'] ?? ''])['txn_pin']);
 
         if (empty($toAccountNo)) {
             $errors['to_account_no'] = 'Recipient account number is required';
@@ -129,6 +184,8 @@ class UserValidator extends Validator
         }
         if (empty($txnPin)) {
             $errors['txn_pin'] = 'Please enter your 4-digit transaction PIN';
+        } elseif (!preg_match('/^\d{4}$/', $txnPin)) {
+            $errors['txn_pin'] = 'Transaction PIN must be exactly 4 numeric digits';
         }
 
         if (!empty($errors)) {

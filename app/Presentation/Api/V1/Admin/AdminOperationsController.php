@@ -73,7 +73,7 @@ class AdminOperationsController
         $adminId = \App\Shared\Security\Auth::user()['id'] ?? 0;
         
         $pdo = \App\Shared\Core\Database::getInstance();
-        $stmt = $pdo->prepare("SELECT id, admin_id as customer_id, full_name, profile_photo, admin_role FROM admin_users WHERE id = ?");
+        $stmt = $pdo->prepare("SELECT id, admin_id, admin_id as customer_id, full_name, profile_photo, admin_role, email FROM admin_users WHERE id = ?");
         $stmt->execute([$adminId]);
         $admin = $stmt->fetch(\PDO::FETCH_ASSOC);
 
@@ -89,13 +89,15 @@ class AdminOperationsController
         $adminId = \App\Shared\Security\Auth::user()['id'];
         $data = $this->service->getDashboardData($adminId);
 
-
+        $adminDisplayId = $data['admin']['admin_id'] ?? ('ADM' . str_pad((string)$adminId, 3, '0', STR_PAD_LEFT));
 
         return [
             'success' => true,
             'csrf_token' => $_SESSION['csrf_token'],
             'admin' => [
                 'id' => $adminId,
+                'admin_id' => $adminDisplayId,
+                'customer_id' => $adminDisplayId,
                 'full_name' => $data['admin']['full_name'],
                 'email' => $data['admin']['email'],
                 'profile_photo' => $data['admin']['profile_photo'],

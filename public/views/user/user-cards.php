@@ -27,53 +27,120 @@ ob_start();
 
 <!-- Virtual Card Showcase & Interactive Security Preview Grid -->
 <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-8 ds-animate-slide-up">
-    
+
     <!-- 3D Interactive Card Showcase -->
     <div class="lg:col-span-5 flex flex-col items-center">
-        <div class="w-full max-w-sm aspect-[1.586/1] rounded-2xl p-6 text-white relative shadow-2xl overflow-hidden transition-all duration-500 hover:scale-[1.02] cursor-pointer group bg-gradient-to-tr from-slate-950 via-slate-900 to-accent border border-white/20" id="virtual-card-box">
-            <!-- Glass Glow & Background Elements -->
-            <div class="absolute -right-12 -bottom-12 w-48 h-48 bg-primary/20 rounded-full blur-3xl group-hover:bg-primary/30 transition-all"></div>
-            <div class="absolute -left-12 -top-12 w-48 h-48 bg-accent/20 rounded-full blur-3xl"></div>
 
-            <!-- Front Side -->
-            <div id="card-front" class="relative z-10 h-full flex flex-col justify-between">
-                <div class="flex justify-between items-center">
-                    <div class="flex items-center gap-2">
-                        <span class="material-symbols-outlined text-amber-400 text-2xl">contactless</span>
-                        <span class="text-xs font-bold uppercase tracking-widest opacity-80" id="card-display-type">Metal Edition</span>
+        <!-- Perspective wrapper — required for 3D flip -->
+        <div id="card-perspective" class="w-full max-w-sm" style="perspective: 1000px;">
+
+            <!-- Inner card — flips in 3D space -->
+            <div id="virtual-card-box"
+                 class="relative w-full cursor-pointer group"
+                 style="aspect-ratio:1.586/1; transform-style:preserve-3d; transition:transform 0.7s cubic-bezier(.4,0,.2,1); border-radius:1rem;">
+
+                <!-- ══ FRONT FACE ══ -->
+                <div id="card-front"
+                     class="absolute inset-0 rounded-2xl p-6 text-white shadow-2xl overflow-hidden bg-gradient-to-tr from-slate-950 via-slate-900 to-accent border border-white/20"
+                     style="backface-visibility:hidden; -webkit-backface-visibility:hidden;">
+
+                    <!-- Ambient glow blobs -->
+                    <div class="absolute -right-12 -bottom-12 w-48 h-48 bg-primary/20 rounded-full blur-3xl pointer-events-none"></div>
+                    <div class="absolute -left-12 -top-12 w-48 h-48 bg-accent/20 rounded-full blur-3xl pointer-events-none"></div>
+
+                    <!-- Front content -->
+                    <div class="relative z-10 h-full flex flex-col justify-between">
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center gap-2">
+                                <span class="material-symbols-outlined text-amber-400 text-2xl">contactless</span>
+                                <span class="text-xs font-bold uppercase tracking-widest opacity-80" id="card-display-type">Metal Edition</span>
+                            </div>
+                            <span class="font-headline font-black text-xl tracking-wider text-white" id="card-display-network">FINZO</span>
+                        </div>
+
+                        <!-- EMV Chip & card number -->
+                        <div class="my-auto">
+                            <div class="w-11 h-8 rounded-md bg-gradient-to-br from-amber-300 via-amber-400 to-amber-600 border border-amber-200/50 shadow-inner flex items-center justify-center mb-3">
+                                <div class="w-7 h-5 border border-amber-800/30 rounded-sm"></div>
+                            </div>
+                            <div class="font-mono text-xl font-bold tracking-[0.2em]" id="card-display-number">•••• •••• •••• 8842</div>
+                        </div>
+
+                        <div class="flex justify-between items-end">
+                            <div>
+                                <div class="text-[9px] font-bold uppercase tracking-widest text-white/60">Cardholder</div>
+                                <div class="font-bold text-sm uppercase tracking-wider font-mono text-white" id="card-display-holder">VALUED FINZO MEMBER</div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-[9px] font-bold uppercase tracking-widest text-white/60">Valid Thru</div>
+                                <div class="font-bold text-sm font-mono text-white" id="card-display-expiry">12/29</div>
+                            </div>
+                        </div>
                     </div>
-                    <span class="font-headline font-black text-xl tracking-wider text-white" id="card-display-network">FINZO EXCLUSIVE</span>
                 </div>
 
-                <!-- Chip & Hologram -->
-                <div class="my-auto">
-                    <div class="w-11 h-8 rounded-md bg-gradient-to-br from-amber-300 via-amber-400 to-amber-600 border border-amber-200/50 shadow-inner flex items-center justify-center mb-3">
-                        <div class="w-7 h-5 border border-amber-800/30 rounded-sm"></div>
+                <!-- ══ BACK FACE ══ -->
+                <div id="card-back"
+                     class="absolute inset-0 rounded-2xl text-white shadow-2xl overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 border border-white/20"
+                     style="backface-visibility:hidden; -webkit-backface-visibility:hidden; transform:rotateY(180deg);">
+
+                    <!-- Ambient glow (mirrored) -->
+                    <div class="absolute -left-12 -bottom-12 w-48 h-48 bg-accent/20 rounded-full blur-3xl pointer-events-none"></div>
+                    <div class="absolute -right-12 -top-12 w-48 h-48 bg-primary/20 rounded-full blur-3xl pointer-events-none"></div>
+
+                    <!-- Magnetic stripe -->
+                    <div class="absolute top-8 left-0 right-0 h-11 bg-gradient-to-r from-black via-zinc-900 to-black opacity-95"></div>
+
+                    <!-- Back content -->
+                    <div class="relative z-10 h-full flex flex-col justify-between p-6 pt-24">
+
+                        <!-- Signature strip + CVV -->
+                        <div class="flex items-center gap-3">
+                            <!-- Signature panel -->
+                            <div class="flex-1 h-10 rounded bg-white/90 flex items-center px-3 overflow-hidden">
+                                <span class="font-mono text-slate-400 italic text-xs tracking-widest select-none" id="back-signature">Authorized Signature</span>
+                            </div>
+                            <!-- CVV box -->
+                            <div class="flex flex-col items-center">
+                                <div class="text-[8px] uppercase tracking-wider text-white/50 mb-0.5">CVV</div>
+                                <div id="back-cvv"
+                                     class="rounded px-3 py-1 font-mono font-bold text-sm tracking-widest transition-all duration-300"
+                                     style="background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.2); color:#fff; min-width:44px; text-align:center;">
+                                    &bull;&bull;&bull;
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Network & bank info -->
+                        <div class="flex items-end justify-between">
+                            <div>
+                                <div class="text-[9px] font-bold uppercase tracking-widest text-white/50 mb-0.5">Issued By</div>
+                                <div class="font-headline font-black text-sm tracking-widest text-white">FINZO BANK LTD.</div>
+                                <div class="text-[9px] text-white/40 mt-0.5">finzobank.com &nbsp;|&nbsp; 1800-000-FINZO</div>
+                            </div>
+                            <!-- Hologram sticker simulation -->
+                            <div class="w-10 h-10 rounded-full flex items-center justify-center"
+                                 style="background: conic-gradient(from 0deg, #f59e0b, #6366f1, #10b981, #f59e0b); opacity:.85;">
+                                <div class="w-7 h-7 rounded-full bg-slate-900 flex items-center justify-center">
+                                    <span class="text-[8px] font-black text-white">F</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="font-mono text-xl font-bold tracking-[0.2em] text-shadow" id="card-display-number">•••• •••• •••• 8842</div>
                 </div>
 
-                <div class="flex justify-between items-end">
-                    <div>
-                        <div class="text-[9px] font-bold uppercase tracking-widest text-white/60">Cardholder</div>
-                        <div class="font-bold text-sm uppercase tracking-wider font-mono text-white" id="card-display-holder">VALUED FINZO MEMBER</div>
-                    </div>
-                    <div class="text-right">
-                        <div class="text-[9px] font-bold uppercase tracking-widest text-white/60">Valid Thru</div>
-                        <div class="font-bold text-sm font-mono text-white" id="card-display-expiry">12/29</div>
-                    </div>
-                </div>
-            </div>
-        </div>
+            </div><!-- /.virtual-card-box -->
+        </div><!-- /.card-perspective -->
 
-        <div class="flex items-center gap-3 mt-4">
+        <!-- Control buttons -->
+        <div class="flex flex-wrap items-center gap-2 mt-5 justify-center">
             <button id="btn-toggle-cvv" class="btn btn-secondary btn-sm flex items-center gap-1.5">
                 <span class="material-symbols-outlined text-sm">visibility</span>
-                <span id="lbl-cvv">Reveal Demo CVV</span>
+                <span id="lbl-cvv">Reveal Demo Card Details</span>
             </button>
             <button id="btn-toggle-flip" class="btn btn-secondary btn-sm flex items-center gap-1.5">
                 <span class="material-symbols-outlined text-sm">cached</span>
-                <span>Flip Card</span>
+                <span id="lbl-flip">Flip Card</span>
             </button>
         </div>
     </div>

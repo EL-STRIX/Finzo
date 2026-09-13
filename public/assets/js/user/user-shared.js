@@ -106,8 +106,14 @@ async function fetchUserSession() {
 
       document.querySelectorAll('.user-name, .sidebar-user-name').forEach(el => el.textContent = _userCache.name);
       document.querySelectorAll('.user-id, .sidebar-user-id').forEach(el => el.textContent = _userCache.customerId ? 'ID: ' + _userCache.customerId : '');
+      const _initials = _userCache.name
+        .split(' ')
+        .filter(Boolean)
+        .slice(0, 2)
+        .map(w => w[0].toUpperCase())
+        .join('');
       document.querySelectorAll('.user-initials, .sidebar-avatar').forEach(el => {
-        if (!_userCache.avatarUrl) el.textContent = UserState.initials;
+        if (!_userCache.avatarUrl) el.textContent = _initials;
       });
 
       // Sync status badge in sidebar
@@ -147,6 +153,9 @@ async function fetchUserSession() {
           el.innerHTML = imgTag;
         });
       }
+
+      // Expose raw API response for page-specific scripts (avoids duplicate API calls)
+      window.__FINZO_DASH__ = res;
 
       // Sync metadata back to localStorage
       localStorage.setItem(STATE_KEYS.STATUS, _userCache.status);
@@ -197,8 +206,10 @@ const UserState = {
   get accountNo() { return _userCache.accountNo; },
   get accountType() { return _userCache.accountType; },
   get balance() { return _userCache.balance; },
+  set balance(val) { _userCache.balance = String(val); },
   get interestRate() { return _userCache.interestRate; },
   get dailyLimit() { return _userCache.dailyLimit; },
+  set dailyLimit(val) { _userCache.dailyLimit = String(val); },
   get openedDate() { return _userCache.openedDate; },
   get rejectionReason() { return _userCache.rejectionReason; },
   get rejectedAt() { return _userCache.rejectedAt; },
@@ -428,16 +439,16 @@ function buildSidebar(activePage) {
   const isRejected = status === 'rejected';
 
   // Pages locked when not active
-  const lockedWhenInactive = ['dashboard', 'accounts', 'transfer', 'loans', 'cards', 'investments', 'bill-payments', 'transactions', 'statement', 'beneficiary'];
+  const lockedWhenInactive = ['accounts', 'transfer', 'loans', 'cards', 'investments', 'bill-payments', 'transactions', 'statement', 'beneficiary'];
   
   const mainLinks = [
-    { id: 'dashboard', icon: 'dashboard', label: 'Dashboard', href: 'dashboard.php', lockedWhenInactive: true },
+    { id: 'dashboard', icon: 'dashboard', label: 'Dashboard', href: 'dashboard.php' },
     { id: 'accounts', icon: 'account_balance', label: 'My Accounts', href: 'accounts.php', lockedWhenInactive: true },
     { id: 'transfer', icon: 'swap_horiz', label: 'Fund Transfer', href: 'transfer.php', lockedWhenInactive: true },
-    { id: 'loans', icon: 'account_balance_wallet', label: 'Loans & Credit', href: 'user-loans.php', lockedWhenInactive: true },
-    { id: 'cards', icon: 'credit_card', label: 'Cards & Controls', href: 'user-cards.php', lockedWhenInactive: true },
-    { id: 'investments', icon: 'savings', label: 'Investments & FDs', href: 'user-investments.php', lockedWhenInactive: true },
-    { id: 'bill-payments', icon: 'payments', label: 'Bill Payments', href: 'user-bill-payments.php', lockedWhenInactive: true },
+    { id: 'loans', icon: 'account_balance_wallet', label: 'Loans & Credit', href: 'user-loans.php', lockedWhenInactive: true, badge: 'Soon' },
+    { id: 'cards', icon: 'credit_card', label: 'Cards & Controls', href: 'user-cards.php', lockedWhenInactive: true, badge: 'Soon' },
+    { id: 'investments', icon: 'savings', label: 'Investments & FDs', href: 'user-investments.php', lockedWhenInactive: true, badge: 'Soon' },
+    { id: 'bill-payments', icon: 'payments', label: 'Bill Payments', href: 'user-bill-payments.php', lockedWhenInactive: true, badge: 'Soon' },
     { id: 'transactions', icon: 'receipt_long', label: 'Transactions', href: 'transactions.php', lockedWhenInactive: true },
     { id: 'beneficiary', icon: 'group', label: 'Beneficiaries', href: 'beneficiary.php', lockedWhenInactive: true },
     { id: 'statement', icon: 'description', label: 'Statement', href: 'statement.php', lockedWhenInactive: true },
@@ -657,13 +668,28 @@ function showToast(message, type = 'success', duration = 3000) {
     document.body.appendChild(container);
   }
   const toast = document.createElement('div');
-  const icons = { success: 'check_circle', error: 'cancel', warning: 'warning', info: 'info' };
-  const colors = { success: '#10b981', error: '#f43f5e', warning: '#f59e0b', info: '#0891b2' };
-  toast.className = `toast toast-${type}`;
-  toast.innerHTML = `<span class="material-symbols-outlined"  aria-hidden="true">${icons[type]}</span><span>${message}</span>`;
+  const typeClass = (type === 'error' || type === 'danger') ? 'toast-danger' : `toast-${type}`;
+  const icons = { success: 'check_circle', error: 'cancel', danger: 'cancel', warning: 'warning', info: 'info' };
+  toast.className = `toast ${typeClass}`;
+  toast.innerHTML = `
+    <div class="toast-icon">
+      <span class="material-symbols-outlined text-base" aria-hidden="true">${icons[type] || 'info'}</span>
+    </div>
+    <div class="toast-content">
+      <div class="toast-title">${type.charAt(0).toUpperCase() + type.slice(1)}</div>
+      <div class="toast-message">${message}</div>
+    </div>
+  `;
   container.appendChild(toast);
-  setTimeout(() => { toast.style.opacity = '0'; toast.style.transform = 'translateX(20px)'; toast.style.transition = '0.3s'; setTimeout(() => toast.remove(), 300); }, duration);
+  requestAnimationFrame(() => {
+    toast.classList.add('is-active');
+  });
+  setTimeout(() => {
+    toast.classList.remove('is-active');
+    setTimeout(() => toast.remove(), 350);
+  }, duration);
 }
+window.showToast = showToast;
 
 // ── MODAL ──
 function openModal(id) { document.getElementById(id)?.classList.remove('hidden'); }

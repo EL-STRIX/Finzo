@@ -308,6 +308,100 @@ ob_start();
                 </form>
             </div>
 
+            <!-- Change Transaction PIN (For Money Transfers) -->
+            <div class="ds-card p-5" id="card-change-pin">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 mb-4 border-b border-border-main">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary text-base">pin</span>
+                            <h3 class="text-xs font-black uppercase tracking-widest text-text-main">Transaction Security PIN</h3>
+                        </div>
+                        <p class="text-[11px] text-text-muted mt-0.5">Required to authorize transfers and instant money payments</p>
+                    </div>
+                    <div>
+                        <button type="button" id="btn-toggle-pin-mode" onclick="togglePinResetMode()" class="text-[11px] font-bold text-primary hover:underline flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[13px]" id="icon-pin-mode">help</span>
+                            <span id="label-pin-mode">Forgot PIN? Verify with password</span>
+                        </button>
+                    </div>
+                </div>
+
+                <form id="change-pin-form" onsubmit="event.preventDefault(); updateTxnPin();" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <input type="hidden" id="pin-auth-type" value="pin" />
+
+                    <!-- Current PIN / Password Container -->
+                    <div class="sm:col-span-2" id="box-current-pin">
+                        <div class="flex items-center justify-between mb-1.5">
+                            <label for="current-txn-pin" class="text-[10px] font-bold text-text-muted uppercase tracking-wide">Current 4-Digit PIN</label>
+                            <span class="text-[10px] text-text-muted font-medium">4 digits</span>
+                        </div>
+                        <div class="relative">
+                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-muted text-[17px] pointer-events-none">pin</span>
+                            <input type="password" id="current-txn-pin" class="fin-input w-full pl-9 pr-10 text-sm font-mono tracking-widest" placeholder="••••" maxlength="4" inputmode="numeric" />
+                            <button type="button" onclick="togglePassVisibility('current-txn-pin','icon-toggle-cur-pin')" class="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-main">
+                                <span class="material-symbols-outlined text-[17px]" id="icon-toggle-cur-pin">visibility</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Current Password Container (Hidden unless in forgot PIN mode) -->
+                    <div class="sm:col-span-2 hidden" id="box-current-password">
+                        <div class="flex items-center justify-between mb-1.5">
+                            <label for="current-account-pass" class="text-[10px] font-bold text-text-muted uppercase tracking-wide">Account Login Password</label>
+                            <span class="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium">Password Authorization</span>
+                        </div>
+                        <div class="relative">
+                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-muted text-[17px] pointer-events-none">lock</span>
+                            <input type="password" id="current-account-pass" class="fin-input w-full pl-9 pr-10 text-sm" placeholder="Enter your login password to reset PIN" />
+                            <button type="button" onclick="togglePassVisibility('current-account-pass','icon-toggle-cur-acc-pass')" class="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-main">
+                                <span class="material-symbols-outlined text-[17px]" id="icon-toggle-cur-acc-pass">visibility</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- New 4-digit PIN -->
+                    <div>
+                        <div class="flex items-center justify-between mb-1.5">
+                            <label for="new-txn-pin" class="text-[10px] font-bold text-text-muted uppercase tracking-wide">New 4-Digit PIN</label>
+                            <span class="text-[10px] text-text-muted font-medium">Numbers only</span>
+                        </div>
+                        <div class="relative">
+                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-muted text-[17px] pointer-events-none">password</span>
+                            <input type="password" id="new-txn-pin" class="fin-input w-full pl-9 pr-10 text-sm font-mono tracking-widest" placeholder="••••" required maxlength="4" minlength="4" inputmode="numeric" />
+                            <button type="button" onclick="togglePassVisibility('new-txn-pin','icon-toggle-new-pin')" class="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-main">
+                                <span class="material-symbols-outlined text-[17px]" id="icon-toggle-new-pin">visibility</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Confirm New 4-digit PIN -->
+                    <div>
+                        <div class="flex items-center justify-between mb-1.5">
+                            <label for="confirm-txn-pin" class="text-[10px] font-bold text-text-muted uppercase tracking-wide">Confirm New PIN</label>
+                            <span class="text-[10px] text-text-muted font-medium">Re-enter 4 digits</span>
+                        </div>
+                        <div class="relative">
+                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-muted text-[17px] pointer-events-none">check_circle</span>
+                            <input type="password" id="confirm-txn-pin" class="fin-input w-full pl-9 pr-10 text-sm font-mono tracking-widest" placeholder="••••" required maxlength="4" minlength="4" inputmode="numeric" />
+                            <button type="button" onclick="togglePassVisibility('confirm-txn-pin','icon-toggle-conf-pin')" class="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-main">
+                                <span class="material-symbols-outlined text-[17px]" id="icon-toggle-conf-pin">visibility</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="sm:col-span-2 flex items-center justify-between pt-1">
+                        <span class="text-[11px] text-text-muted flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[14px] text-emerald-600">verified_user</span>
+                            Never share your transaction PIN with anyone.
+                        </span>
+                        <button type="submit" id="btn-update-pin" class="btn btn-primary text-xs">
+                            <span class="material-symbols-outlined text-sm">lock_reset</span>
+                            <span>Save Transaction PIN</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
             <!-- 2FA -->
             <div class="ds-card p-5">
                 <div class="flex items-center justify-between mb-4">
@@ -355,15 +449,32 @@ ob_start();
 
 <script>
 function switchTab(name) {
+    const activeBtn = document.querySelector('[data-tab="' + name + '"]');
+    const panel = document.getElementById('tab-' + name);
+    if (!activeBtn || !panel) return;
+
     document.querySelectorAll('.profile-tab').forEach(t => t.classList.remove('active'));
     document.querySelectorAll('.profile-tab-panel').forEach(p => p.classList.add('hidden'));
-    document.querySelector('[data-tab="' + name + '"]').classList.add('active');
-    const panel = document.getElementById('tab-' + name);
-    if (panel) panel.classList.remove('hidden');
+    activeBtn.classList.add('active');
+    panel.classList.remove('hidden');
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    const params = new URLSearchParams(window.location.search);
+    const rawTab = params.get('tab') || window.location.hash.replace('#', '').replace('tab-', '');
+    if (rawTab && ['personal', 'contact', 'identity', 'financial', 'security'].includes(rawTab)) {
+        switchTab(rawTab);
+        if (window.location.hash) {
+            setTimeout(() => {
+                const target = document.querySelector(window.location.hash);
+                if (target) target.scrollIntoView({ behavior: 'smooth' });
+            }, 100);
+        }
+    }
+});
 </script>
 
-<script defer src="/Finzo/public/assets/js/user/profile.js"></script>
+<script defer src="/Finzo/public/assets/js/user/profile.js?v=<?= time() ?>"></script>
 
 <?php
 $slot = ob_get_clean();

@@ -14,12 +14,19 @@ ob_start();
   </div>
 
   <div class="flex justify-between items-center mb-4 print:hidden px-4 sm:px-0">
-    <a href="transactions.php" class="flex items-center gap-1 text-xs font-bold text-text-muted hover:text-primary-base-base transition-colors uppercase tracking-widest">
-      <span class="material-symbols-outlined text-base" aria-hidden="true">arrow_back</span> History
+    <a href="transactions.php" class="flex items-center gap-1 text-xs font-bold text-text-muted hover:text-primary transition-colors uppercase tracking-widest">
+      <span class="material-symbols-outlined text-base" aria-hidden="true">arrow_back</span> Back to Transactions
     </a>
-    <button class="btn btn-secondary !py-1.5 !px-3" data-action="window.print()">
-      <span class="material-symbols-outlined text-base" aria-hidden="true">print</span> Print Receipt
-    </button>
+    <div class="flex items-center gap-2">
+      <button type="button" id="btn-official-receipt" class="btn btn-primary !py-2 !px-4 flex items-center gap-1.5 text-xs font-bold rounded-xl shadow-sm cursor-pointer" onclick="openOfficialReceipt()">
+        <span class="material-symbols-outlined text-base" aria-hidden="true">receipt_long</span>
+        <span>Official Receipt PDF</span>
+      </button>
+      <button type="button" id="btn-print-receipt" class="btn btn-secondary !py-2 !px-4 flex items-center gap-1.5 text-xs font-bold rounded-xl cursor-pointer" onclick="openOfficialReceipt()">
+        <span class="material-symbols-outlined text-base" aria-hidden="true">print</span>
+        <span>Print Receipt</span>
+      </button>
+    </div>
   </div>
 
   <!-- RECEIPT CARD -->
@@ -115,7 +122,10 @@ ob_start();
   <div class="flex flex-col sm:flex-row gap-3 mt-6 print:hidden ds-animate-slide-up delay-200">
     <a href="dashboard.php" class="btn btn-secondary flex-1 h-12">Return to Dashboard</a>
     <a href="transfer.php" class="btn btn-primary flex-1 h-12">New Transfer</a>
-  <script defer src="/Finzo/public/assets/js/user/receipt.js"></script>
+  </div>
+</div>
+
+<script defer src="/Finzo/public/assets/js/user/receipt.js?v=<?= time() ?>"></script>
 <?php
 $slot = ob_get_clean();
 include __DIR__ . '/../layouts/app.php';

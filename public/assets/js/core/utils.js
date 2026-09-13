@@ -146,12 +146,47 @@ window.FinzoUtils = {
             clearTimeout(timeout);
             timeout = setTimeout(() => func.apply(context, args), wait);
         };
+    },
+    /**
+     * Convert number to words in Indian numbering system (Rupees)
+     * @param {number|string} number 
+     * @returns {string}
+     */
+    numberToWords: function(number) {
+        let num = Math.floor(Math.abs(Number(number) || 0));
+        if (num === 0) return 'Zero';
+        const ones = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+        const tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+
+        function convertLessThanOneThousand(n) {
+            if (n === 0) return '';
+            if (n < 20) return ones[n];
+            if (n < 100) return tens[Math.floor(n / 10)] + (n % 10 !== 0 ? ' ' + ones[n % 10] : '');
+            return ones[Math.floor(n / 100)] + ' Hundred' + (n % 100 !== 0 ? ' ' + convertLessThanOneThousand(n % 100) : '');
+        }
+
+        let parts = [];
+        const crore = Math.floor(num / 10000000);
+        num %= 10000000;
+        const lakh = Math.floor(num / 100000);
+        num %= 100000;
+        const thousand = Math.floor(num / 1000);
+        num %= 1000;
+        const remainder = num;
+
+        if (crore > 0) parts.push(convertLessThanOneThousand(crore) + ' Crore');
+        if (lakh > 0) parts.push(convertLessThanOneThousand(lakh) + ' Lakh');
+        if (thousand > 0) parts.push(convertLessThanOneThousand(thousand) + ' Thousand');
+        if (remainder > 0) parts.push(convertLessThanOneThousand(remainder));
+
+        return parts.join(' ').trim();
     }
 };
 
 // Aliases for shorter usage if window is already populated
 window.formatINR = window.FinzoUtils.formatINR;
 window.formatDate = window.FinzoUtils.formatDate;
+window.numberToWords = window.FinzoUtils.numberToWords;
 
 // ==========================================
 // Dropdowns Utilities (Delegates to FinzoUI)

@@ -37,11 +37,22 @@ class UserController
             if (!$result || $result['status'] !== \App\Domain\Enums\AccountStatusEnum::ACTIVE->value) {
                 json_response(['success' => false, 'message' => 'Finzo account not found'], 404);
             }
+            $userId = $_SESSION['user_id'] ?? null;
+            $isSelf = false;
+            if ($userId) {
+                try {
+                    $ownAccount = $this->service->fetchAccountDetails($userId);
+                    if ($ownAccount && strcasecmp($ownAccount['account_no'] ?? '', $accountNumber) === 0) {
+                        $isSelf = true;
+                    }
+                } catch (\Throwable $e) {}
+            }
             json_response([
                 'success' => true,
                 'account' => [
                     'holder_name'  => $result['full_name'],
-                    'account_type' => $result['account_type']
+                    'account_type' => $result['account_type'],
+                    'is_self'      => $isSelf
                 ]
             ]);
         } catch (PDOException $e) {
@@ -52,26 +63,37 @@ class UserController
 
     public function accountSettings()
     {
-        $userId = $_SESSION['user_id'];
+        if (empty($_SESSION['user_id'])) {
+            json_response(['success' => false, 'message' => 'Unauthorized'], 401);
+        }
+        $userId = (int)$_SESSION['user_id'];
         try {
             $account = $this->service->fetchAccountSettings($userId);
             if (!$account) {
                 json_response(['success' => false, 'message' => 'No active account found'], 404);
             }
             if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-                $used_today = $this->service->fetchUsedToday($account['id']);
+                $used_today = (float)$this->service->fetchUsedToday($account['id']);
+                $daily_limit = (float)$account['daily_limit'];
                 json_response([
                     'success' => true,
-                    'daily_limit' => (float)$account['daily_limit'],
-                    'used_today' => (float)$used_today
+                    'daily_limit' => $daily_limit,
+                    'used_today' => $used_today,
+                    'remaining_limit' => max(0, $daily_limit - $used_today)
                 ]);
             } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                $daily_limit = $this->security->cleanInput($_POST['daily_limit'] ?? '');
+                $input = json_decode(file_get_contents('php://input'), true) ?? [];
+                $daily_limit = $input['daily_limit'] ?? $_POST['daily_limit'] ?? '';
+                $daily_limit = $this->security->cleanInput($daily_limit);
                 if (!is_numeric($daily_limit) || $daily_limit < 1000 || $daily_limit > 100000) {
-                    json_response(['success' => false, 'message' => 'Invalid limit value. Must be between 1,000 and 1,00,000'], 422);
+                    json_response(['success' => false, 'message' => 'Invalid limit value. Must be between ₹1,000 and ₹1,00,000'], 422);
                 }
-                $this->service->updateDailyLimit($account['id'], $daily_limit);
-                json_response(['success' => true, 'message' => 'Daily limit updated']);
+                $this->service->updateDailyLimit($account['id'], (float)$daily_limit);
+                json_response([
+                    'success' => true, 
+                    'message' => 'Daily limit updated successfully',
+                    'daily_limit' => (float)$daily_limit
+                ]);
             } else {
                 json_response(['success' => false, 'message' => 'Method not allowed'], 405);
             }
@@ -86,7 +108,10 @@ class UserController
         if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
             json_response(['success' => false, 'message' => 'Method not allowed'], 405);
         }
-        $userId = $_SESSION['user_id'];
+        if (empty($_SESSION['user_id'])) {
+            json_response(['success' => false, 'message' => 'Unauthorized'], 401);
+        }
+        $userId = (int)$_SESSION['user_id'];
         try {
             $userStatus = $_SESSION['user_status'] ?? 'pending';
             if ($userStatus !== 'active') {
@@ -99,6 +124,10 @@ class UserController
             $mini_statement = [];
             if ($account['status'] === \App\Domain\Enums\AccountStatusEnum::ACTIVE->value) {
                 $mini_statement = $this->service->fetchMiniStatement($account['id']);
+                foreach ($mini_statement as &$tx) {
+                    $tx['direction'] = ((int)($tx['to_account_id'] ?? 0) === (int)$account['id']) ? 'credit' : 'debit';
+                }
+                unset($tx);
             }
             $today_transfer_total = (float)$this->service->fetchTodayTransferTotal($account['id']);
             json_response([
@@ -128,9 +157,13 @@ class UserController
 
     public function beneficiary()
     {
-        $userId = $_SESSION['user_id'];
-        $customer_id = $this->service->getCustomerId($userId);
-        $userId = $customer_id ?: $userId;
+        $userId = $_SESSION['user_customer_id'] ?? null;
+        if (!$userId && !empty($_SESSION['user_id'])) {
+            $userId = $this->service->getCustomerId((int)$_SESSION['user_id']);
+        }
+        if (!$userId) {
+            $userId = $_SESSION['user_id'] ?? null;
+        }
 
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             try {
@@ -142,9 +175,13 @@ class UserController
             }
         }
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $action = $this->security->cleanInput($_POST['action'] ?? 'add');
+            $rawInput = file_get_contents('php://input');
+            $input = json_decode($rawInput, true) ?? [];
+            $postData = !empty($input) ? array_merge($_POST, $input) : $_POST;
+
+            $action = $this->security->cleanInput($postData['action'] ?? 'add');
             if ($action === 'delete') {
-                $beneficiary_id = intval($_POST['beneficiary_id'] ?? 0);
+                $beneficiary_id = intval($postData['beneficiary_id'] ?? 0);
                 if (!$beneficiary_id) {
                     json_response(['success' => false, 'message' => 'Beneficiary ID is required'], 422);
                 }
@@ -159,13 +196,36 @@ class UserController
                     json_response(['success' => false, 'message' => 'Failed to remove beneficiary'], 500);
                 }
             }
-            $validator = new \App\Presentation\Validators\UserValidator($this->service);
-            $validated = $validator->validateBeneficiary($_POST);
-            $nickname = $validated['nickname'];
-            $accountNumber = $validated['account_no'];
-            $bank_name = $this->security->cleanInput($_POST['bank_name'] ?? 'Finzo');
 
             try {
+                $validator = new \App\Presentation\Validators\UserValidator($this->service);
+                $validated = $validator->validateBeneficiary($postData);
+            } catch (\App\Shared\Core\Exceptions\ValidationException $e) {
+                $errors = $e->getPayload()['errors'] ?? [];
+                $firstError = !empty($errors) ? current($errors) : $e->getMessage();
+                json_response(['success' => false, 'message' => $firstError, 'errors' => $errors], 422);
+            }
+
+            $nickname = $validated['nickname'];
+            $accountNumber = $validated['account_no'];
+            $bank_name = $this->security->cleanInput($postData['bank_name'] ?? 'Finzo Banking System');
+
+            try {
+                $targetAccount = $this->service->fetchAccountLookup($accountNumber);
+                if (!$targetAccount || $targetAccount['status'] !== \App\Domain\Enums\AccountStatusEnum::ACTIVE->value) {
+                    json_response(['success' => false, 'message' => 'Recipient account not found or is inactive'], 404);
+                }
+
+                $rawSessionUserId = $_SESSION['user_id'] ?? 0;
+                if ($rawSessionUserId) {
+                    try {
+                        $ownAcc = $this->service->fetchAccountDetails($rawSessionUserId);
+                        if ($ownAcc && strcasecmp($ownAcc['account_no'] ?? '', $accountNumber) === 0) {
+                            json_response(['success' => false, 'message' => 'Cannot add your own account as a beneficiary'], 422);
+                        }
+                    } catch (\Throwable $e) {}
+                }
+
                 $max_beneficiaries = get_setting($this->service->getDb(), 'max_beneficiaries', 10);
                 $count = $this->service->countBeneficiaries($userId);
                 if ($count >= $max_beneficiaries) {
@@ -187,8 +247,12 @@ class UserController
             }
         }
         if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
-            parse_str(file_get_contents('php://input'), $delete_data);
-            $beneficiary_id = intval($delete_data['beneficiary_id'] ?? $_GET['id'] ?? 0);
+            $rawInput = file_get_contents('php://input');
+            $delete_data = json_decode($rawInput, true) ?? [];
+            if (empty($delete_data)) {
+                parse_str($rawInput, $delete_data);
+            }
+            $beneficiary_id = intval($delete_data['beneficiary_id'] ?? $_POST['beneficiary_id'] ?? $_GET['id'] ?? 0);
             if (!$beneficiary_id) {
                 json_response(['success' => false, 'message' => 'Beneficiary ID is required'], 422);
             }
@@ -270,12 +334,15 @@ class UserController
         header("Cache-Control: post-check=0, pre-check=0", false);
         header("Pragma: no-cache");
 
-        $userId = $_SESSION['user_id'];
+        if (empty($_SESSION['user_id'])) {
+            json_response(['success' => false, 'message' => 'Unauthorized'], 401);
+        }
+        $userId = (int)$_SESSION['user_id'];
         try {
             $user = $this->service->getUserDashboardData($userId);
             if (!$user) {
                 destroy_session();
-                json_response(['success' => false, 'message' => 'User not found', 'redirect' => '/public/views/auth/login.html'], 404);
+                json_response(['success' => false, 'message' => 'User not found', 'redirect' => '/Finzo/public/views/auth/login.php'], 404);
             }
             $_SESSION['user_status'] = $user['status'];
             $account = null;
@@ -287,15 +354,8 @@ class UserController
                 if ($account && $account['status'] === \App\Domain\Enums\AccountStatusEnum::ACTIVE->value) {
                     $recent_transactions = $this->service->getRecentTransactions($account['id']);
                     foreach ($recent_transactions as &$txn) {
-                        if ($txn['type'] === \App\Domain\Enums\TransactionTypeEnum::TRANSFER->value) {
-                            $txn['direction'] = 'debit';
-                            $txn_data = $this->service->getTransactionToAccountId($txn['txn_id']);
-                            $txn['direction'] = ($txn_data && $txn_data['to_account_id'] == $account['id']) ? 'credit' : 'debit';
-                        } elseif (in_array($txn['type'], ['deposit', 'interest_credit'])) {
-                            $txn['direction'] = 'credit';
-                        } else {
-                            $txn['direction'] = 'debit';
-                        }
+                        $isIncoming = ((int)($txn['to_account_id'] ?? 0) === (int)$account['id']);
+                        $txn['direction'] = $isIncoming ? 'credit' : 'debit';
                     }
                     unset($txn);
 
@@ -448,7 +508,10 @@ class UserController
         if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
             json_response(['success' => false, 'message' => 'Method not allowed'], 405);
         }
-        $userId = $_SESSION['user_id'];
+        if (empty($_SESSION['user_id'])) {
+            json_response(['success' => false, 'message' => 'Unauthorized'], 401);
+        }
+        $userId = (int)$_SESSION['user_id'];
         try {
             $account = $this->service->getActiveAccount($userId);
             if (!$account) {
@@ -486,21 +549,29 @@ class UserController
         if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
             json_response(['success' => false, 'message' => 'Method not allowed'], 405);
         }
-        $userId = $_SESSION['user_id'];
+        if (empty($_SESSION['user_id'])) {
+            json_response(['success' => false, 'message' => 'Unauthorized'], 401);
+        }
+        $userId = (int)$_SESSION['user_id'];
         try {
-            $account = $this->service->fetchAccountSettings($userId);
+            $account = $this->service->getActiveAccount($userId);
+            if (!$account) {
+                $account = $this->service->fetchAccountSettings($userId);
+            }
             if (!$account) {
                 json_response(['success' => true, 'transactions' => [], 'total' => 0, 'pages' => 0, 'current_page' => 1, 'message' => 'No active account found']);
             }
-            $account_id = $account['id'];
+            $account_id = (int)$account['id'];
+            $perPage = intval($_GET['per_page'] ?? $_GET['limit'] ?? 15);
             $filters = [
                 'type' => $this->security->cleanInput($_GET['type'] ?? 'all'),
+                'direction' => $this->security->cleanInput($_GET['direction'] ?? 'all'),
                 'status' => $this->security->cleanInput($_GET['status'] ?? 'all'),
                 'from_date' => $this->security->cleanInput($_GET['from_date'] ?? ''),
                 'to_date' => $this->security->cleanInput($_GET['to_date'] ?? ''),
                 'search' => $this->security->cleanInput($_GET['search'] ?? ''),
                 'page' => max(1, intval($_GET['page'] ?? 1)),
-                'per_page' => min(50, max(10, intval($_GET['per_page'] ?? 20)))
+                'per_page' => min(100, max(5, $perPage))
             ];
 
             $data = $this->service->getTransactions($account_id, $filters);
@@ -524,19 +595,23 @@ class UserController
             json_response(['success' => false, 'message' => 'Method not allowed'], 405);
         }
 
+        if (empty($_SESSION['user_id'])) {
+            json_response(['success' => false, 'message' => 'Unauthorized'], 401);
+        }
+
         if (($_SESSION['user_status'] ?? '') !== \App\Domain\Enums\AccountStatusEnum::ACTIVE->value) {
             json_response(['success' => false, 'message' => 'Your account is not active. Transfers are not allowed.'], 403);
         }
 
-        $userId = $_SESSION['user_id'];
-        $validator = new \App\Presentation\Validators\UserValidator($this->service);
-        $validated = $validator->validateTransfer($_POST);
-        $to_account_no = $validated['to_account_no'];
-        $amount = $validated['amount'];
-        $description = $validated['description'];
-        $txnPin = $validated['txn_pin'];
+        $userId = (int)$_SESSION['user_id'];
+        $rawInput = file_get_contents('php://input');
+        $input = json_decode($rawInput, true) ?? [];
+        $postData = !empty($input) ? array_merge($_POST, $input) : $_POST;
 
         try {
+            $validator = new \App\Presentation\Validators\UserValidator($this->service);
+            $validated = $validator->validateTransfer($postData);
+
             $dto = new \App\Application\DTOs\TransferRequestDTO($userId, $validated);
             $action = new \App\Application\Actions\ProcessTransferAction($this->service, $this->security);
             $result = $action->execute($dto);
@@ -550,10 +625,16 @@ class UserController
                 'to_name' => $result['to_name'], 
                 'to_account' => $result['to_account'], 
                 'new_balance' => $result['new_balance'], 
-                'redirect' => '/public/views/user/receipt.html?id=' . $result['transaction_id']
+                'redirect' => '/Finzo/public/views/user/receipt.php?id=' . $result['transaction_id'] . '&success=1'
             ]);
+        } catch (\App\Shared\Core\Exceptions\ValidationException $e) {
+            json_response([
+                'success' => false,
+                'message' => $e->getMessage(),
+                'errors' => method_exists($e, 'getPayload') ? ($e->getPayload()['errors'] ?? []) : []
+            ], 422);
         } catch (\App\Shared\Core\Exceptions\ApiException $e) {
-            json_response(['success' => false, 'message' => $e->getMessage(), 'errors' => $e->getPayload()], $e->getCode());
+            json_response(['success' => false, 'message' => $e->getMessage(), 'errors' => $e->getPayload()], $e->getCode() ?: 400);
         } catch (\App\Shared\Core\Exceptions\BusinessRuleException $e) {
             json_response(['success' => false, 'message' => $e->getMessage()], 422);
         } catch (\App\Shared\Core\Exceptions\ResourceNotFoundException $e) {
@@ -582,5 +663,64 @@ class UserController
             json_response(['success' => false, 'message' => 'Incorrect PIN'], 401);
         }
         json_response(['success' => true, 'message' => 'PIN verified successfully']);
+    }
+
+    public function changePin()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            json_response(['success' => false, 'message' => 'Method not allowed'], 405);
+        }
+
+        $userId = (int)($_SESSION['user_id'] ?? 0);
+        if (!$userId) {
+            json_response(['success' => false, 'message' => 'Unauthorized'], 401);
+        }
+
+        $rawInput = json_decode(file_get_contents('php://input'), true);
+        $input = is_array($rawInput) ? $rawInput : $_POST;
+
+        $validator = new \App\Presentation\Validators\UserValidator($this->service);
+
+        try {
+            $validated = $validator->validatePinChange($input);
+            $this->service->changeTxnPin($userId, $validated);
+
+            $customerId = $this->service->getCustomerId($userId);
+            $pdo = $this->service->getDb();
+
+            write_audit_log(
+                $pdo,
+                'txn_pin_changed',
+                $customerId,
+                'user',
+                $userId,
+                'user',
+                'Customer updated 4-digit money transfer security PIN'
+            );
+
+            send_notification(
+                $pdo,
+                $customerId,
+                \App\Domain\Enums\NotificationTypeEnum::SECURITY->value,
+                'Transaction PIN Updated',
+                'Your 4-digit security PIN for money transfers was changed successfully. If you did not make this change, please contact support immediately.'
+            );
+
+            json_response([
+                'success' => true,
+                'message' => 'Transaction PIN changed successfully! You can now use your new PIN to authorize money transfers.'
+            ]);
+        } catch (\App\Shared\Core\Exceptions\TestResponseException $e) {
+            throw $e;
+        } catch (\App\Shared\Core\Exceptions\ValidationException $e) {
+            $payload = $e->getPayload();
+            $errors = $payload['errors'] ?? ['general' => $e->getMessage()];
+            json_response(['success' => false, 'message' => $e->getMessage(), 'errors' => $errors], 422);
+        } catch (\App\Shared\Core\Exceptions\ResourceNotFoundException $e) {
+            json_response(['success' => false, 'message' => $e->getMessage()], 404);
+        } catch (\Throwable $e) {
+            \App\Shared\Core\Logging\Logger::getInstance()->error('Change PIN error', ['context' => $e->getMessage()]);
+            json_response(['success' => false, 'message' => 'An error occurred while updating your transaction PIN. Please try again.'], 500);
+        }
     }
 }

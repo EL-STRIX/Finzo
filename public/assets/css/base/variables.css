@@ -108,6 +108,20 @@
   --color-disabled-bg: #E7E5E4;
   --color-overlay: rgba(12, 10, 9, 0.4);
 
+  /* Token Aliases for Cross-Component Compatibility */
+  --color-text-main: var(--color-text-primary);
+  --color-border-main: var(--color-border-subtle);
+  --color-primary-base: var(--color-primary);
+  --color-primary-surface: var(--color-primary-50);
+  --color-success-base: var(--color-success);
+  --color-success-surface: var(--color-success-bg);
+  --color-warning-base: var(--color-warning);
+  --color-warning-surface: var(--color-warning-bg);
+  --color-danger-base: var(--color-error);
+  --color-danger-surface: var(--color-error-bg);
+  --color-info-base: var(--color-info);
+  --color-info-surface: var(--color-info-bg);
+
   /* 3. TYPOGRAPHY SYSTEM */
   --font-display: 'Cormorant', 'Playfair Display', serif;
   --font-body: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;

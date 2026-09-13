@@ -385,3 +385,132 @@ async function updatePassword() {
     }
   }
 }
+
+function togglePinResetMode() {
+  const authTypeInput = document.getElementById('pin-auth-type');
+  const boxPin = document.getElementById('box-current-pin');
+  const boxPass = document.getElementById('box-current-password');
+  const labelMode = document.getElementById('label-pin-mode');
+  const curPinInput = document.getElementById('current-txn-pin');
+  const curPassInput = document.getElementById('current-account-pass');
+
+  if (!authTypeInput || !boxPin || !boxPass) return;
+
+  if (authTypeInput.value === 'pin') {
+    authTypeInput.value = 'password';
+    boxPin.classList.add('hidden');
+    boxPass.classList.remove('hidden');
+    if (labelMode) labelMode.textContent = 'Know current PIN? Verify with PIN instead';
+    if (curPinInput) curPinInput.value = '';
+    if (curPassInput) curPassInput.focus();
+  } else {
+    authTypeInput.value = 'pin';
+    boxPass.classList.add('hidden');
+    boxPin.classList.remove('hidden');
+    if (labelMode) labelMode.textContent = 'Forgot PIN? Verify with password';
+    if (curPassInput) curPassInput.value = '';
+    if (curPinInput) curPinInput.focus();
+  }
+}
+
+async function updateTxnPin() {
+  const authType = document.getElementById('pin-auth-type')?.value || 'pin';
+  const curPin = document.getElementById('current-txn-pin')?.value.trim() || '';
+  const curPass = document.getElementById('current-account-pass')?.value || '';
+  const newPin = document.getElementById('new-txn-pin')?.value.trim() || '';
+  const confPin = document.getElementById('confirm-txn-pin')?.value.trim() || '';
+  const btn = document.getElementById('btn-update-pin');
+
+  // Client-side quick validations
+  if (authType === 'password') {
+    if (!curPass) {
+      if (typeof showToast === 'function') showToast('Please enter your account password to authorize PIN reset', 'error');
+      return;
+    }
+  } else {
+    if (!curPin) {
+      if (typeof showToast === 'function') showToast('Please enter your current 4-digit PIN', 'error');
+      return;
+    }
+    if (!/^\d{4}$/.test(curPin)) {
+      if (typeof showToast === 'function') showToast('Current PIN must be exactly 4 digits', 'error');
+      return;
+    }
+  }
+
+  if (!newPin) {
+    if (typeof showToast === 'function') showToast('Please enter a new 4-digit PIN', 'error');
+    return;
+  }
+  if (!/^\d{4}$/.test(newPin)) {
+    if (typeof showToast === 'function') showToast('New PIN must be exactly 4 numeric digits', 'error');
+    return;
+  }
+  if (authType === 'pin' && newPin === curPin) {
+    if (typeof showToast === 'function') showToast('New PIN must be different from current PIN', 'error');
+    return;
+  }
+  if (newPin !== confPin) {
+    if (typeof showToast === 'function') showToast('New PIN and confirmation do not match', 'error');
+    return;
+  }
+
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<span class="material-symbols-outlined text-sm animate-spin">sync</span><span>Saving PIN...</span>';
+  }
+
+  try {
+    const formData = new FormData();
+    formData.append('auth_type', authType);
+    if (authType === 'password') {
+      formData.append('current_password', curPass);
+    } else {
+      formData.append('current_pin', curPin);
+    }
+    formData.append('new_pin', newPin);
+    formData.append('confirm_pin', confPin);
+
+    let res;
+    if (window.api && typeof window.api.post === 'function') {
+      res = await window.api.post('/user/security/change-pin', formData, true);
+    } else {
+      const csrf = window.csrfToken || '';
+      if (csrf) formData.append('csrf_token', csrf);
+      const rawRes = await fetch('/Finzo/public/api/v1/user/security/change-pin', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: csrf ? { 'X-CSRF-Token': csrf } : {},
+        body: formData
+      });
+      res = await rawRes.json();
+    }
+
+    if (res && res.success) {
+      if (typeof showToast === 'function') {
+        showToast(res.message || 'Transaction PIN changed successfully!', 'success');
+      }
+      if (document.getElementById('current-txn-pin')) document.getElementById('current-txn-pin').value = '';
+      if (document.getElementById('current-account-pass')) document.getElementById('current-account-pass').value = '';
+      if (document.getElementById('new-txn-pin')) document.getElementById('new-txn-pin').value = '';
+      if (document.getElementById('confirm-txn-pin')) document.getElementById('confirm-txn-pin').value = '';
+      if (authType === 'password') {
+        togglePinResetMode();
+      }
+    } else {
+      let errMsg = (res && res.message) ? res.message : 'Failed to update transaction PIN';
+      if (res && res.errors) {
+        const firstErr = Object.values(res.errors)[0];
+        if (firstErr) errMsg = firstErr;
+      }
+      if (typeof showToast === 'function') showToast(errMsg, 'error');
+    }
+  } catch (err) {
+    if (typeof showToast === 'function') showToast('Connection error while updating transaction PIN', 'error');
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = '<span class="material-symbols-outlined text-sm">lock_reset</span><span>Save Transaction PIN</span>';
+    }
+  }
+}

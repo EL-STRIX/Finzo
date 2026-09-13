@@ -21,10 +21,25 @@ ob_start();
 
 <!-- Support Tickets Table -->
 <div class="ds-card p-6 border border-border-subtle mb-8 ds-animate-slide-up">
-    <div class="flex items-center justify-between mb-6">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
             <h3 class="font-headline font-bold text-xl text-text-primary">My Support Tickets &amp; Disputes</h3>
             <p class="text-xs text-text-secondary">Overview of all open, in-progress, and resolved support inquiries.</p>
+        </div>
+        <div class="w-full sm:w-48 relative z-10">
+            <div class="finzo-dropdown relative w-full" id="user-status-filter-dropdown">
+                <input type="hidden" id="user-status-filter" value="all">
+                <div class="finzo-dropdown-trigger fin-input !flex items-center justify-between cursor-pointer w-full !py-2 !h-[40px] text-xs">
+                    <span class="dropdown-label font-bold text-xs text-text-primary">All Statuses</span>
+                    <span class="material-symbols-outlined chevron transition-transform duration-300 text-text-secondary text-[18px]" aria-hidden="true">expand_more</span>
+                </div>
+                <div class="finzo-dropdown-menu !z-[1000] !w-full">
+                    <div class="finzo-dropdown-option is-selected text-xs" data-value="all">All Statuses</div>
+                    <div class="finzo-dropdown-option text-xs" data-value="open">Open</div>
+                    <div class="finzo-dropdown-option text-xs" data-value="in_progress">In Progress</div>
+                    <div class="finzo-dropdown-option text-xs" data-value="resolved">Resolved</div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -74,25 +89,39 @@ ob_start();
         </div>
 
         <form id="create-ticket-form" onsubmit="submitCreateTicket(event)" class="space-y-4">
-            <div>
+            <div class="relative z-30">
                 <label class="fin-label fin-label-required">Inquiry Category</label>
-                <select id="ticket-category" class="fin-select w-full" required>
-                    <option value="Transaction Dispute">Transaction Dispute</option>
-                    <option value="Card Lock / PIN Issue">Card Lock / PIN Issue</option>
-                    <option value="Account & Profile Inquiry">Account &amp; Profile Inquiry</option>
-                    <option value="Loan & Interest Query">Loan &amp; Interest Query</option>
-                    <option value="Technical Issue">Technical / App Issue</option>
-                </select>
+                <div class="finzo-dropdown relative w-full" id="ticket-category-dropdown">
+                    <input type="hidden" id="ticket-category" value="Transaction Dispute">
+                    <div class="finzo-dropdown-trigger fin-input !flex items-center justify-between cursor-pointer w-full !py-2.5 !h-[44px] text-sm">
+                        <span class="dropdown-label font-bold text-sm text-text-primary">Transaction Dispute</span>
+                        <span class="material-symbols-outlined chevron transition-transform duration-300 text-text-secondary" aria-hidden="true">expand_more</span>
+                    </div>
+                    <div class="finzo-dropdown-menu !z-[3500] !w-full">
+                        <div class="finzo-dropdown-option is-selected text-sm" data-value="Transaction Dispute">Transaction Dispute</div>
+                        <div class="finzo-dropdown-option text-sm" data-value="Card Lock / PIN Issue">Card Lock / PIN Issue</div>
+                        <div class="finzo-dropdown-option text-sm" data-value="Account & Profile Inquiry">Account &amp; Profile Inquiry</div>
+                        <div class="finzo-dropdown-option text-sm" data-value="Loan & Interest Query">Loan &amp; Interest Query</div>
+                        <div class="finzo-dropdown-option text-sm" data-value="Technical Issue">Technical / App Issue</div>
+                    </div>
+                </div>
             </div>
 
-            <div>
+            <div class="relative z-20">
                 <label class="fin-label fin-label-required">Priority Level</label>
-                <select id="ticket-priority" class="fin-select w-full" required>
-                    <option value="low">Low Priority</option>
-                    <option value="medium" selected>Medium Priority</option>
-                    <option value="high">High Priority</option>
-                    <option value="urgent">Urgent / Fraud Alert</option>
-                </select>
+                <div class="finzo-dropdown relative w-full" id="ticket-priority-dropdown">
+                    <input type="hidden" id="ticket-priority" value="medium">
+                    <div class="finzo-dropdown-trigger fin-input !flex items-center justify-between cursor-pointer w-full !py-2.5 !h-[44px] text-sm">
+                        <span class="dropdown-label font-bold text-sm text-text-primary">Medium Priority</span>
+                        <span class="material-symbols-outlined chevron transition-transform duration-300 text-text-secondary" aria-hidden="true">expand_more</span>
+                    </div>
+                    <div class="finzo-dropdown-menu !z-[3500] !w-full">
+                        <div class="finzo-dropdown-option text-sm" data-value="low">Low Priority</div>
+                        <div class="finzo-dropdown-option is-selected text-sm" data-value="medium">Medium Priority</div>
+                        <div class="finzo-dropdown-option text-sm" data-value="high">High Priority</div>
+                        <div class="finzo-dropdown-option text-sm" data-value="urgent">Urgent / Fraud Alert</div>
+                    </div>
+                </div>
             </div>
 
             <div>
