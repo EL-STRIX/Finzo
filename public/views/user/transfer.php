@@ -167,7 +167,12 @@ ob_start();
           <input type="text" class="form-control" id="transfer-desc" placeholder="e.g. Rent, Service Payment, Invoice" maxlength="100"/>
         </div>
         <div>
-          <label for="transfer-pin" class="block text-xs font-bold text-text-muted uppercase tracking-widest mb-2">4-Digit Security PIN</label>
+          <div class="flex items-center justify-between mb-2">
+            <label for="transfer-pin" class="block text-xs font-bold text-text-muted uppercase tracking-widest">4-Digit Security PIN</label>
+            <a href="profile.php?tab=security#card-change-pin" target="_blank" class="text-[11px] font-bold text-primary hover:underline flex items-center gap-0.5" title="Change or reset transfer PIN in security settings">
+              <span class="material-symbols-outlined text-xs">edit</span> Change PIN
+            </a>
+          </div>
           <div class="relative">
             <input type="password" class="form-control font-mono tracking-widest text-center pr-10" id="transfer-pin" placeholder="••••" maxlength="4" autocomplete="off"/>
             <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-main p-1 transition-colors" onclick="togglePinVisibility()" title="Toggle PIN visibility">
