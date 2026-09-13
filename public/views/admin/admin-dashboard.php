@@ -170,6 +170,7 @@ ob_start();
                         <div class="flex items-center gap-4 text-xs font-black uppercase tracking-widest">
                             <span class="flex items-center gap-2 text-success"><span class="w-2 h-2 rounded-full bg-success shadow-sm"></span> Deposits</span>
                             <span class="flex items-center gap-2 text-info"><span class="w-2 h-2 rounded-full bg-info shadow-sm"></span> Withdrawals</span>
+                            <span class="flex items-center gap-2 text-amber-500"><span class="w-2 h-2 rounded-full bg-amber-500 shadow-sm"></span> Transfers</span>
                         </div>
                     </div>
                     <div class="relative h-[320px] w-full">
@@ -209,10 +210,14 @@ ob_start();
 
             <!-- REVENUE CHART -->
             <div class="ds-card p-6 sm:p-8 mb-6 sm:mb-8">
-                <div class="border-b border-border-subtle pb-6 mb-8 flex justify-between items-center">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4 border-b border-border-subtle pb-6">
                     <div>
                         <h3 class="font-headline font-black text-lg text-text-primary">Revenue Performance</h3>
-                        <p class="text-xs font-bold text-text-secondary mt-1 uppercase tracking-widest">Monthly Growth Analysis</p>
+                        <p class="text-xs font-bold text-text-secondary mt-1 uppercase tracking-widest">Monthly Growth &amp; Turnover Analysis</p>
+                    </div>
+                    <div class="flex items-center gap-4 text-xs font-black uppercase tracking-widest">
+                        <span class="flex items-center gap-2 text-indigo-500"><span class="w-2 h-2 rounded-full bg-indigo-500 shadow-sm"></span> Gross Turnover</span>
+                        <span class="flex items-center gap-2 text-emerald-500"><span class="w-2 h-2 rounded-full bg-emerald-500 shadow-sm"></span> Net Inflow</span>
                     </div>
                 </div>
                 <div class="relative h-[280px] w-full">

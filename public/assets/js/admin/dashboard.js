@@ -159,10 +159,14 @@
             const labels = data.monthly_chart_data.map(d => d.month);
             const deposits = data.monthly_chart_data.map(d => Number(d.deposits || 0));
             const withdrawals = data.monthly_chart_data.map(d => Number(d.withdrawals || 0));
+            const transfers = data.monthly_chart_data.map(d => Number(d.transfers || 0));
 
             charts.transactions.data.labels = labels;
             charts.transactions.data.datasets[0].data = deposits;
             charts.transactions.data.datasets[1].data = withdrawals;
+            if (charts.transactions.data.datasets[2]) {
+                charts.transactions.data.datasets[2].data = transfers;
+            }
             charts.transactions.update();
         }
 
@@ -170,12 +174,12 @@
         const acCanvas = document.getElementById('chart-accounts');
         if (acCanvas && data.stats) {
             const stats = data.stats;
-            const values = [
-                Number(stats.active_users || 0),
-                Number(stats.pending_approvals ?? stats.pending_users ?? 0),
-                Number(stats.suspended_users || 0),
-                Number(stats.locked_accounts || 0)
-            ];
+            const activeVal = Number(stats.active_accounts ?? stats.active_users ?? 0);
+            const pendingVal = Number(stats.pending_accounts ?? stats.pending_approvals ?? stats.pending_users ?? 0);
+            const suspendedVal = Number(stats.suspended_accounts ?? stats.suspended_users ?? 0);
+            const lockedVal = Number(stats.locked_accounts ?? 0);
+
+            const values = [activeVal, pendingVal, suspendedVal, lockedVal];
             
             // Update Legend numbers
             const activeEl = document.getElementById('legend-active');
@@ -183,10 +187,10 @@
             const suspendedEl = document.getElementById('legend-suspended');
             const lockedEl = document.getElementById('legend-locked');
 
-            if (activeEl) activeEl.textContent = String(stats.active_users || 0);
-            if (pendingEl) pendingEl.textContent = String(stats.pending_approvals ?? stats.pending_users ?? 0);
-            if (suspendedEl) suspendedEl.textContent = String(stats.suspended_users || 0);
-            if (lockedEl) lockedEl.textContent = String(stats.locked_accounts || 0);
+            if (activeEl) activeEl.textContent = String(activeVal);
+            if (pendingEl) pendingEl.textContent = String(pendingVal);
+            if (suspendedEl) suspendedEl.textContent = String(suspendedVal);
+            if (lockedEl) lockedEl.textContent = String(lockedVal);
             
             document.querySelectorAll('#donut-legend .skeleton').forEach(el => el.classList.remove('skeleton'));
 
@@ -199,9 +203,13 @@
         // 3. Monthly Revenue (Bar Chart)
         const rvCanvas = document.getElementById('chart-revenue');
         if (rvCanvas && charts.revenue && hasChartData) {
-            charts.revenue.data.labels = data.monthly_chart_data.map(d => d.month);
-            charts.revenue.data.datasets[0].data = data.monthly_chart_data.map(d => Number(d.deposits || 0));
-            charts.revenue.data.datasets[1].data = data.monthly_chart_data.map(d => Number(d.withdrawals || 0));
+            const labels = data.monthly_chart_data.map(d => d.month);
+            const turnover = data.monthly_chart_data.map(d => Number(d.total_turnover ?? (Number(d.deposits || 0) + Number(d.withdrawals || 0) + Number(d.transfers || 0))));
+            const netFlow = data.monthly_chart_data.map(d => Number(d.net_flow !== undefined ? d.net_flow : (Number(d.deposits || 0) - Number(d.withdrawals || 0))));
+
+            charts.revenue.data.labels = labels;
+            charts.revenue.data.datasets[0].data = turnover;
+            charts.revenue.data.datasets[1].data = netFlow;
             charts.revenue.update();
         }
     }
@@ -239,7 +247,8 @@
                     labels: [],
                     datasets: [
                         { label: 'Deposits', data: [], borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.1)', fill: true, tension: 0.4, pointRadius: 4, pointHoverRadius: 7, borderWidth: 2.5 },
-                        { label: 'Withdrawals', data: [], borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)', fill: true, tension: 0.4, pointRadius: 4, pointHoverRadius: 7, borderWidth: 2.5 }
+                        { label: 'Withdrawals', data: [], borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)', fill: true, tension: 0.4, pointRadius: 4, pointHoverRadius: 7, borderWidth: 2.5 },
+                        { label: 'Transfers', data: [], borderColor: '#f59e0b', backgroundColor: 'rgba(245, 158, 11, 0.1)', fill: true, tension: 0.4, pointRadius: 4, pointHoverRadius: 7, borderWidth: 2.5 }
                     ]
                 },
                 options: {
@@ -286,8 +295,8 @@
                 data: {
                     labels: [],
                     datasets: [
-                        { label: 'Deposits', data: [], backgroundColor: '#10b981', borderRadius: 8, barPercentage: 0.6 },
-                        { label: 'Withdrawals', data: [], backgroundColor: '#3b82f6', borderRadius: 8, barPercentage: 0.6 }
+                        { label: 'Gross Turnover', data: [], backgroundColor: '#6366f1', borderRadius: 8, barPercentage: 0.6 },
+                        { label: 'Net Inflow', data: [], backgroundColor: '#10b981', borderRadius: 8, barPercentage: 0.6 }
                     ]
                 },
                 options: {
@@ -341,5 +350,13 @@
 
         // 2. Silent Background Sync for real-time consistency
         loadDashboard();
+
+        // 3. Periodic Real-Time Polling & Focus-Regain Sync (Every 15s)
+        setInterval(loadDashboard, 15000);
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') {
+                loadDashboard();
+            }
+        });
     });
 })();
