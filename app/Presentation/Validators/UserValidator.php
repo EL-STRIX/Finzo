@@ -110,10 +110,11 @@ class UserValidator extends Validator
     public function validateTransfer(array $data): array
     {
         $errors = [];
-        $toAccountNo = self::sanitize(['to_account_no' => $data['to_account_no'] ?? $data['to_account'] ?? ''])['to_account_no'];
+        $rawAccount  = $data['to_account_no'] ?? $data['to_account'] ?? '';
+        $toAccountNo = strtoupper(trim(self::sanitize(['to_account_no' => $rawAccount])['to_account_no']));
         $amount      = floatval($data['amount'] ?? 0);
         $description = self::sanitize(['description' => $data['description'] ?? ''])['description'];
-        $txnPin      = self::sanitize(['txn_pin' => $data['txn_pin'] ?? $data['pin'] ?? ''])['txn_pin'];
+        $txnPin      = trim(self::sanitize(['txn_pin' => $data['txn_pin'] ?? $data['pin'] ?? ''])['txn_pin']);
 
         if (empty($toAccountNo)) {
             $errors['to_account_no'] = 'Recipient account number is required';
@@ -129,6 +130,8 @@ class UserValidator extends Validator
         }
         if (empty($txnPin)) {
             $errors['txn_pin'] = 'Please enter your 4-digit transaction PIN';
+        } elseif (!preg_match('/^\d{4}$/', $txnPin)) {
+            $errors['txn_pin'] = 'Transaction PIN must be exactly 4 numeric digits';
         }
 
         if (!empty($errors)) {

@@ -584,23 +584,23 @@ class UserController
             json_response(['success' => false, 'message' => 'Method not allowed'], 405);
         }
 
+        if (empty($_SESSION['user_id'])) {
+            json_response(['success' => false, 'message' => 'Unauthorized'], 401);
+        }
+
         if (($_SESSION['user_status'] ?? '') !== \App\Domain\Enums\AccountStatusEnum::ACTIVE->value) {
             json_response(['success' => false, 'message' => 'Your account is not active. Transfers are not allowed.'], 403);
         }
 
-        $userId = $_SESSION['user_id'];
+        $userId = (int)$_SESSION['user_id'];
         $rawInput = file_get_contents('php://input');
         $input = json_decode($rawInput, true) ?? [];
         $postData = !empty($input) ? array_merge($_POST, $input) : $_POST;
 
-        $validator = new \App\Presentation\Validators\UserValidator($this->service);
-        $validated = $validator->validateTransfer($postData);
-        $to_account_no = $validated['to_account_no'];
-        $amount = $validated['amount'];
-        $description = $validated['description'];
-        $txnPin = $validated['txn_pin'];
-
         try {
+            $validator = new \App\Presentation\Validators\UserValidator($this->service);
+            $validated = $validator->validateTransfer($postData);
+
             $dto = new \App\Application\DTOs\TransferRequestDTO($userId, $validated);
             $action = new \App\Application\Actions\ProcessTransferAction($this->service, $this->security);
             $result = $action->execute($dto);
@@ -614,10 +614,16 @@ class UserController
                 'to_name' => $result['to_name'], 
                 'to_account' => $result['to_account'], 
                 'new_balance' => $result['new_balance'], 
-                'redirect' => '/public/views/user/receipt.html?id=' . $result['transaction_id']
+                'redirect' => '/Finzo/public/views/user/receipt.php?id=' . $result['transaction_id'] . '&success=1'
             ]);
+        } catch (\App\Shared\Core\Exceptions\ValidationException $e) {
+            json_response([
+                'success' => false,
+                'message' => $e->getMessage(),
+                'errors' => method_exists($e, 'getPayload') ? ($e->getPayload()['errors'] ?? []) : []
+            ], 422);
         } catch (\App\Shared\Core\Exceptions\ApiException $e) {
-            json_response(['success' => false, 'message' => $e->getMessage(), 'errors' => $e->getPayload()], $e->getCode());
+            json_response(['success' => false, 'message' => $e->getMessage(), 'errors' => $e->getPayload()], $e->getCode() ?: 400);
         } catch (\App\Shared\Core\Exceptions\BusinessRuleException $e) {
             json_response(['success' => false, 'message' => $e->getMessage()], 422);
         } catch (\App\Shared\Core\Exceptions\ResourceNotFoundException $e) {
