@@ -134,7 +134,7 @@ ob_start();
   </div>
 
 
-<script defer src="/Finzo/public/assets/js/user/account-detail.js"></script>
+<script defer src="/Finzo/public/assets/js/user/account-detail.js?v=<?= time() ?>"></script>
 <?php
 $slot = ob_get_clean();
 include __DIR__ . '/../layouts/app.php';

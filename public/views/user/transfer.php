@@ -242,7 +242,7 @@ ob_start();
   </div>
 </div>
 
-<script defer src="/Finzo/public/assets/js/user/transfer.js"></script>
+<script defer src="/Finzo/public/assets/js/user/transfer.js?v=<?= time() ?>"></script>
 <?php
 $slot = ob_get_clean();
 include __DIR__ . '/../layouts/app.php';
