@@ -134,7 +134,7 @@ class StaffRepository extends BaseRepository implements \App\Domain\Contracts\Re
     public function findAccountForUpdate(string $accountNumber)
     {
         return $this->fetchOne("
-            SELECT a.id, a.account_no, a.balance, a.status, u.id as owner_user_id, u.customer_id, u.full_name
+            SELECT a.id, a.account_no, a.balance, a.status, a.daily_limit, u.id as owner_user_id, u.customer_id, u.full_name
             FROM accounts a
             JOIN users u ON a.user_id = u.customer_id
             WHERE a.account_no = ?

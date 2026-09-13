@@ -259,6 +259,15 @@ class StaffService implements \App\Domain\Contracts\Services\StaffServiceInterfa
                 throw new BusinessRuleException("Maximum withdrawal amount is " . format_currency($max_withdrawal));
             }
 
+            $dailyLimit = (float)($account['daily_limit'] ?? 0);
+            if ($dailyLimit > 0) {
+                $usedToday = $this->repository->getUsedDailyLimit($accountNumber);
+                if (($usedToday + $amount) > $dailyLimit) {
+                    $remaining = max(0, $dailyLimit - $usedToday);
+                    throw new BusinessRuleException("Withdrawal exceeds daily limit. Remaining daily limit: " . format_currency($remaining));
+                }
+            }
+
             $result = $this->executeTransactionCore($account, $amount, \App\Domain\Enums\TransactionTypeEnum::WITHDRAWAL->value, $identity_notes, $staffId);
 
             $this->repository->commit();
