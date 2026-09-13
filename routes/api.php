@@ -206,6 +206,12 @@ $router->post('/api/v1/staff/deposit', [StaffController::class, 'deposit'], [Sta
 $router->post('/api/staff/deposit.php', [StaffController::class, 'deposit'], [StaffAuthMiddleware::class]);
 $router->post('/api/v1/staff/withdrawal', [StaffController::class, 'withdrawal'], [StaffAuthMiddleware::class]);
 $router->post('/api/staff/withdrawal.php', [StaffController::class, 'withdrawal'], [StaffAuthMiddleware::class]);
+$router->post('/api/v1/staff-portal/withdraw', [StaffController::class, 'withdrawal'], [StaffAuthMiddleware::class]);
+$router->post('/api/v1/staff/withdraw', [StaffController::class, 'withdrawal'], [StaffAuthMiddleware::class]);
+$router->post('/api/staff/withdraw.php', [StaffController::class, 'withdrawal'], [StaffAuthMiddleware::class]);
+$router->get('/api/v1/staff/receipt', [StaffController::class, 'receipt'], [StaffAuthMiddleware::class]);
+$router->get('/api/v1/staff/receipt.php', [StaffController::class, 'receipt'], [StaffAuthMiddleware::class]);
+$router->get('/api/staff/receipt.php', [StaffController::class, 'receipt'], [StaffAuthMiddleware::class]);
 $router->get('/api/staff/staff-profile.php', [StaffController::class, 'profile'], [StaffAuthMiddleware::class]);
 $router->post('/api/staff/staff-profile.php', [StaffController::class, 'profile'], [StaffAuthMiddleware::class]);
 $router->post('/api/staff/update-profile.php', [StaffController::class, 'profile'], [StaffAuthMiddleware::class]);
