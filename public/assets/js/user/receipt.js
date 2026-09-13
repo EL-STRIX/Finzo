@@ -91,3 +91,22 @@
   document.getElementById('rcpt-to-name').textContent = '-';
   document.getElementById('rcpt-to-acc').textContent = '-';
 })();
+
+function openOfficialReceipt(id) {
+  const params = new URLSearchParams(window.location.search);
+  const txn = id || params.get('id') || document.getElementById('rcpt-txn-id')?.textContent.trim();
+  if (txn && txn !== 'UNKNOWN' && txn !== '') {
+    window.open(`/Finzo/api/v1/documents/receipt?id=${encodeURIComponent(txn)}`, '_blank');
+  } else {
+    window.print();
+  }
+}
+
+window.openOfficialReceipt = openOfficialReceipt;
+window.openReceipt = openOfficialReceipt;
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('btn-official-receipt')?.addEventListener('click', () => openOfficialReceipt());
+  document.getElementById('btn-print-receipt')?.addEventListener('click', () => openOfficialReceipt());
+});
+

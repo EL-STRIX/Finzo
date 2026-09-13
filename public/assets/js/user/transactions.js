@@ -318,9 +318,9 @@ function renderTable() {
           ${statusBadge}
         </td>
         <td class="p-4 align-middle text-center whitespace-nowrap">
-          <a href="receipt.php?id=${encodeURIComponent(t.id)}" class="w-8 h-8 rounded-lg bg-surface-subtle hover:bg-primary/10 hover:text-primary border border-border-main text-text-muted inline-flex items-center justify-center transition-colors shadow-sm" title="View & Download Receipt">
-            <span class="material-symbols-outlined text-base">receipt</span>
-          </a>
+          <button type="button" onclick="openReceipt('${escapeHtml(t.id)}')" class="w-8 h-8 rounded-lg bg-surface-subtle hover:bg-primary/10 hover:text-primary border border-border-main text-text-muted inline-flex items-center justify-center transition-colors shadow-sm cursor-pointer" title="Official Receipt PDF / Print">
+            <span class="material-symbols-outlined text-base">receipt_long</span>
+          </button>
         </td>
       </tr>
     `;
@@ -537,6 +537,11 @@ function copyTxnId(id) {
   }
 }
 
+function openReceipt(txnId) {
+  if (!txnId) return;
+  window.open(`/Finzo/api/v1/documents/receipt?id=${encodeURIComponent(txnId)}`, '_blank');
+}
+
 function printStatement() {
   const f = txnState.fromDate;
   const t = txnState.toDate;
@@ -620,4 +625,5 @@ window.goPage = goPage;
 window.setPage = setPage;
 window.copyTxnId = copyTxnId;
 window.printStatement = printStatement;
+window.openReceipt = openReceipt;
 window.exportTransactionsCsv = exportTransactionsCsv;

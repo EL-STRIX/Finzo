@@ -17,7 +17,7 @@ class PdfController
     {
         if (session_status() === PHP_SESSION_NONE) \App\Shared\Security\SessionManager::start();
         $role = $_SESSION['role'] ?? null;
-        $userId = $_SESSION['user_id'] ?? null;
+        $userId = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : null;
 
         $txnId = $_GET['id'] ?? $_GET['txn_id'] ?? '';
         if (Validator::isEmpty($txnId)) throw new \App\Shared\Core\Exceptions\ApiException('Transaction ID is required', 400);

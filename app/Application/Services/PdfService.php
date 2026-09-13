@@ -28,7 +28,7 @@ class PdfService implements \App\Domain\Contracts\Services\PdfServiceInterface
     {
         // Authentication gate — receipts must never be publicly accessible.
         // Mirrors statement()/staffStatement() role enforcement.
-        if (!in_array($role, ['customer', 'staff', 'admin'], true)) {
+        if (!in_array($role, ['customer', 'user', 'staff', 'admin'], true)) {
             return null;
         }
 
@@ -36,7 +36,7 @@ class PdfService implements \App\Domain\Contracts\Services\PdfServiceInterface
         if (!$txn) return null;
 
         // Customers may only access receipts for their own accounts (IDOR protection)
-        if ($role === 'customer' && $userId) {
+        if (in_array($role, ['customer', 'user'], true) && $userId) {
             $user_accounts = $this->repository->getUserAccounts($userId);
             if (!in_array($txn['from_account_id'], $user_accounts) && !in_array($txn['to_account_id'], $user_accounts)) {
                 return null;
