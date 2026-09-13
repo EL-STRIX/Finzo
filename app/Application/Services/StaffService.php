@@ -337,7 +337,7 @@ class StaffService implements \App\Domain\Contracts\Services\StaffServiceInterfa
         $idNumber = $staff['id_number'] ?? '';
         if (!empty($idNumber)) {
             try {
-                $crypto = \App\Shared\Security\EncryptionService::getInstance();
+                $crypto = new \App\Shared\Security\EncryptionService();
                 $decrypted = $crypto->decrypt($idNumber);
                 if (!empty($decrypted)) {
                     $idNumber = $decrypted;
