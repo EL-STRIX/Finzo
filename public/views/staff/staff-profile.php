@@ -247,8 +247,8 @@ ob_start();
     </div>
 </div>
 
-<script defer src="/Finzo/public/assets/js/staff/staff-profile.js"></script>
 <?php
 $slot = ob_get_clean();
+$extraScripts = '<script defer src="/Finzo/public/assets/js/staff/staff-profile.js?v=' . time() . '"></script>';
 include __DIR__ . '/../layouts/app.php';
 ?>

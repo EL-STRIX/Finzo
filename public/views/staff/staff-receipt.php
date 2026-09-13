@@ -107,8 +107,8 @@ ob_start();
             <a href="staff-transaction.php?type=deposit" class="flex-1 sm:flex-none text-center px-8 py-3 bg-success-surface border border-success-base text-success-base dark:bg-success-surface/10 dark:border-success-base/20 dark:text-success-base font-bold rounded-xl hover:bg-success-surface transition-all text-sm uppercase tracking-widest">New Deposit</a>
             <a href="staff-transaction.php?type=withdraw" class="flex-1 sm:flex-none text-center px-8 py-3 bg-danger-surface border border-danger-base text-danger-base dark:bg-danger-surface/10 dark:border-danger-base/20 dark:text-danger-base font-bold rounded-xl hover:bg-danger-surface transition-all text-sm uppercase tracking-widest">New Withdrawal</a>
         </div>
-<script defer src="/Finzo/public/assets/js/staff/staff-receipt.js"></script>
 <?php
 $slot = ob_get_clean();
+$extraScripts = '<script defer src="/Finzo/public/assets/js/staff/staff-receipt.js?v=' . time() . '"></script>';
 include __DIR__ . '/../layouts/app.php';
 ?>

@@ -64,11 +64,26 @@
         loadHistory();
     }
 
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
-    } else {
-        init();
+    function ready(fn) {
+        if (document.readyState !== 'loading' && window.api) {
+            fn();
+        } else {
+            const handler = () => {
+                if (window.api) {
+                    fn();
+                } else {
+                    setTimeout(fn, 50);
+                }
+            };
+            if (document.readyState !== 'loading') {
+                setTimeout(handler, 20);
+            } else {
+                document.addEventListener('DOMContentLoaded', handler);
+            }
+        }
     }
+
+    ready(init);
 
     // ── Event Bindings ──
     function bindEvents() {
@@ -301,21 +316,32 @@
             } else {
                 const qs = new URLSearchParams(queryParams).toString();
                 const response = await fetch('/Finzo/api/v1/staff-portal/history?' + qs, {
-                    credentials: 'same-origin'
+                    credentials: 'include',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json'
+                    }
                 });
                 res = await response.json();
             }
 
-            if (res && res.success) {
-                // Update Historical Stats Cards
-                if (res.stats) {
-                    updateStatsUI(res.stats);
+            const payload = (res && res.data && typeof res.data === 'object' && (res.data.transactions || res.data.stats)) ? res.data : (res || {});
+            const hasSuccess = res && (res.success === true || payload.transactions !== undefined);
+
+            if (hasSuccess) {
+                const stats = payload.stats || res.stats || null;
+                if (stats) {
+                    updateStatsUI(stats);
                 }
 
-                // Render Table Transactions
-                renderTable(res.transactions || [], res.total || 0, res.current_page || 1, res.pages || 1);
+                const transactions = payload.transactions || res.transactions || [];
+                const total = payload.total !== undefined ? payload.total : (res.total !== undefined ? res.total : transactions.length);
+                const page = payload.current_page || res.current_page || currentPage;
+                const pages = payload.pages || res.pages || 1;
+
+                renderTable(transactions, total, page, pages);
             } else {
-                renderError(res ? res.message : 'Failed to retrieve history.');
+                renderError((res && res.message) ? res.message : 'Failed to retrieve transaction history.');
             }
         } catch (err) {
             console.error('History load error:', err);
@@ -327,7 +353,12 @@
 
     // ── Update Stats Cards ──
     function updateStatsUI(stats) {
-        const fmt = (n) => typeof formatINR === 'function' ? formatINR(n) : '₹' + parseFloat(n || 0).toFixed(2);
+        if (!stats || typeof stats !== 'object') return;
+        const fmt = (n) => {
+            if (typeof formatINR === 'function') return formatINR(n);
+            if (window.FinzoUtils && typeof window.FinzoUtils.formatINR === 'function') return window.FinzoUtils.formatINR(n);
+            return '₹' + parseFloat(n || 0).toFixed(2);
+        };
 
         const statDeposits = document.getElementById('stat-deposits');
         const statWithdrawals = document.getElementById('stat-withdrawals');
@@ -337,10 +368,10 @@
         const depBadge = document.getElementById('stat-deposits-badge');
         const withBadge = document.getElementById('stat-withdrawals-badge');
 
-        if (statDeposits) statDeposits.textContent = fmt(stats.deposits_total);
-        if (statWithdrawals) statWithdrawals.textContent = fmt(stats.withdrawals_total);
-        if (statTransactions) statTransactions.textContent = (stats.total_all_time || 0).toLocaleString();
-        if (statMonthCount) statMonthCount.textContent = (stats.total_this_month || 0).toLocaleString();
+        if (statDeposits && stats.deposits_total !== undefined) statDeposits.textContent = fmt(stats.deposits_total);
+        if (statWithdrawals && stats.withdrawals_total !== undefined) statWithdrawals.textContent = fmt(stats.withdrawals_total);
+        if (statTransactions && stats.total_all_time !== undefined) statTransactions.textContent = Number(stats.total_all_time || 0).toLocaleString();
+        if (statMonthCount && stats.total_this_month !== undefined) statMonthCount.textContent = Number(stats.total_this_month || 0).toLocaleString();
 
         if (depBadge && stats.deposits_count !== undefined) {
             depBadge.textContent = `${stats.deposits_count} deposit${stats.deposits_count === 1 ? '' : 's'}`;
@@ -376,7 +407,11 @@
             return;
         }
 
-        const fmt = (n) => typeof formatINR === 'function' ? formatINR(n) : '₹' + parseFloat(n || 0).toFixed(2);
+        const fmt = (n) => {
+            if (typeof formatINR === 'function') return formatINR(n);
+            if (window.FinzoUtils && typeof window.FinzoUtils.formatINR === 'function') return window.FinzoUtils.formatINR(n);
+            return '₹' + parseFloat(n || 0).toFixed(2);
+        };
 
         let html = '';
         transactions.forEach((item, idx) => {
@@ -398,9 +433,14 @@
             const amtColor = isDeposit ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400';
             const amtPrefix = isDeposit ? '+' : '-';
 
-            const dateObj = new Date(item.created_at);
-            const dateStr = dateObj.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
-            const timeStr = dateObj.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
+            const rawDate = item.created_at || item.date || '';
+            const dateObj = new Date(rawDate ? rawDate.replace(' ', 'T') : Date.now());
+            const dateStr = !isNaN(dateObj.getTime())
+                ? dateObj.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
+                : (rawDate.split(' ')[0] || '—');
+            const timeStr = !isNaN(dateObj.getTime())
+                ? dateObj.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true })
+                : (rawDate.split(' ')[1] || '');
 
             const custName = item.customer_name || 'Customer';
             const initials = custName
@@ -585,7 +625,11 @@
             } else {
                 const qs = new URLSearchParams(queryParams).toString();
                 const response = await fetch('/Finzo/api/v1/staff-portal/history?' + qs, {
-                    credentials: 'same-origin'
+                    credentials: 'include',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json'
+                    }
                 });
                 res = await response.json();
             }
@@ -593,7 +637,10 @@
             btn.disabled = false;
             btn.innerHTML = originalHtml;
 
-            if (!res || !res.success || !res.transactions || res.transactions.length === 0) {
+            const payload = (res && res.data && typeof res.data === 'object' && (res.data.transactions || res.data.stats)) ? res.data : (res || {});
+            const txns = payload.transactions || (res && res.transactions) || [];
+
+            if (!txns || txns.length === 0) {
                 if (typeof showToast === 'function') {
                     showToast('No transactions found to print with current filters.', 'warning');
                 } else {
@@ -602,7 +649,6 @@
                 return;
             }
 
-            const txns = res.transactions;
             let totalDeposits = 0;
             let totalWithdrawals = 0;
 
@@ -615,7 +661,11 @@
                 }
             });
 
-            const fmt = (n) => typeof formatINR === 'function' ? formatINR(n) : '₹' + parseFloat(n || 0).toFixed(2);
+            const fmt = (n) => {
+                if (typeof formatINR === 'function') return formatINR(n);
+                if (window.FinzoUtils && typeof window.FinzoUtils.formatINR === 'function') return window.FinzoUtils.formatINR(n);
+                return '₹' + parseFloat(n || 0).toFixed(2);
+            };
             const now = new Date();
             const printDate = now.toLocaleString('en-IN', {
                 day: '2-digit',
@@ -631,8 +681,11 @@
 
             let rowsHtml = '';
             txns.forEach((item, idx) => {
-                const dateObj = new Date(item.created_at);
-                const dateStr = dateObj.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+                const rawDate = item.created_at || item.date || '';
+                const dateObj = new Date(rawDate ? rawDate.replace(' ', 'T') : Date.now());
+                const dateStr = !isNaN(dateObj.getTime())
+                    ? dateObj.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
+                    : (rawDate.split(' ')[0] || '—');
                 const isDeposit = (item.type || '').toLowerCase() === 'deposit';
                 const amtColor = isDeposit ? '#059669' : '#e11d48';
 
