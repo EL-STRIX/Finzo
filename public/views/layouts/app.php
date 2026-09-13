@@ -6,13 +6,18 @@ if (!defined('FINZO_ROOT')) {
 \App\Shared\Security\SessionManager::start();
 
 // Centralized Access Control for User Portal
-if ($portal === 'user' && !empty($_SESSION['user_id'])) {
+if ($portal === 'user') {
+    if (empty($_SESSION['user_id'])) {
+        ob_end_clean();
+        header('Location: /Finzo/public/views/auth/login.php');
+        exit;
+    }
     $currentFile = basename($_SERVER['PHP_SELF'], '.php');
     $status = $_SESSION['user_status'] ?? 'pending';
     
     $activeOnly = [
-        'dashboard', 'accounts', 'account-detail', 'transfer', 'transactions', 
-        'statement', 'beneficiary', 'user-bill-payments', 'user-cards', 
+        'accounts', 'account-detail', 'transfer', 'transactions',
+        'statement', 'beneficiary', 'user-bill-payments', 'user-cards',
         'user-investments', 'user-loans', 'receipt'
     ];
     $pendingOnly = ['complete-profile', 'account-pending', 'account-rejected'];

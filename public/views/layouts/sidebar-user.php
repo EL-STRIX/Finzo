@@ -78,12 +78,11 @@ function isActiveUserNav($path, $current) {
                 <?php endif; ?>
 
                 <li>
-                    <a href="<?= $isActive ? 'dashboard.php' : '#' ?>" class="flex items-center justify-between px-5 py-2 text-xs font-semibold transition-all <?= isActiveUserNav('dashboard', $currentPath) ?> <?= !$isActive ? 'opacity-50 cursor-not-allowed' : '' ?>" <?= !$isActive ? 'title="Available after account activation"' : '' ?>>
+                    <a href="dashboard.php" class="flex items-center justify-between px-5 py-2 text-xs font-semibold transition-all <?= isActiveUserNav('dashboard', $currentPath) ?>">
                         <div class="flex items-center gap-3">
                             <span class="material-symbols-outlined text-[18px]" aria-hidden="true">dashboard</span>
                             <span>Dashboard</span>
                         </div>
-                        <?php if (!$isActive): ?><span class="material-symbols-outlined text-[14px] text-text-secondary" aria-hidden="true">lock</span><?php endif; ?>
                     </a>
                 </li>
 
