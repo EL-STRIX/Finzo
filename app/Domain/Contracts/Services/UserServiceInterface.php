@@ -23,6 +23,9 @@ interface UserServiceInterface
     public function addBeneficiary(...$args);
     public function getUserPasswordHash(...$args);
     public function updatePassword(...$args);
+    public function getTxnPinHash(...$args);
+    public function updateTxnPin(...$args);
+    public function changeTxnPin(int $userId, array $data): bool;
     public function getUserFiles(...$args);
     public function getExistingAccountByCustomerId(...$args);
     public function updateAccountResubmission(...$args);

@@ -157,6 +157,7 @@ $router->post('/api/v1/user/transfer', [UserController::class, 'transfer'], [Use
 $router->post('/api/user/transfer.php', [UserController::class, 'transfer'], [UserAuthMiddleware::class]);
 $router->post('/api/v1/user/security/change-password', [UserController::class, 'changePassword'], [UserAuthMiddleware::class]);
 $router->post('/api/v1/user/security/verify-pin', [UserController::class, 'verifyPin'], [UserAuthMiddleware::class]);
+$router->post('/api/v1/user/security/change-pin', [UserController::class, 'changePin'], [UserAuthMiddleware::class]);
 
 use App\Presentation\Api\V1\User\UserSecurityCenterController;
 $router->get('/api/v1/user/security/overview', [UserSecurityCenterController::class, 'overview'], [UserAuthMiddleware::class]);

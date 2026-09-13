@@ -84,6 +84,60 @@ class UserValidator extends Validator
         ];
     }
 
+    public function validatePinChange(array $data): array
+    {
+        $errors = [];
+        $authType = trim($data['auth_type'] ?? 'pin');
+        if (!in_array($authType, ['pin', 'password'], true)) {
+            $authType = 'pin';
+        }
+
+        $currentPin = trim($data['current_pin'] ?? '');
+        $currentPassword = $data['current_password'] ?? '';
+        $newPin = trim($data['new_pin'] ?? '');
+        $confirmPin = trim($data['confirm_pin'] ?? '');
+
+        if ($authType === 'password') {
+            if (empty($currentPassword)) {
+                $errors['current_password'] = 'Account password is required';
+            }
+        } else {
+            if (empty($currentPin)) {
+                $errors['current_pin'] = 'Current 4-digit PIN is required';
+            } elseif (!preg_match('/^\d{4}$/', $currentPin)) {
+                $errors['current_pin'] = 'Current PIN must be exactly 4 digits';
+            }
+        }
+
+        if (empty($newPin)) {
+            $errors['new_pin'] = 'New 4-digit PIN is required';
+        } elseif (!preg_match('/^\d{4}$/', $newPin)) {
+            $errors['new_pin'] = 'New PIN must be exactly 4 numeric digits';
+        }
+
+        if (empty($confirmPin)) {
+            $errors['confirm_pin'] = 'Please confirm your new PIN';
+        } elseif ($newPin !== $confirmPin) {
+            $errors['confirm_pin'] = 'New PINs do not match';
+        }
+
+        if ($authType === 'pin' && !empty($newPin) && $currentPin === $newPin) {
+            $errors['new_pin'] = 'New PIN must be different from current PIN';
+        }
+
+        if (!empty($errors)) {
+            throw new ValidationException('Validation failed', ['errors' => $errors]);
+        }
+
+        return [
+            'auth_type'        => $authType,
+            'current_pin'      => $currentPin,
+            'current_password' => $currentPassword,
+            'new_pin'          => $newPin,
+            'confirm_pin'      => $confirmPin,
+        ];
+    }
+
     public function validateBeneficiary(array $data): array
     {
         $errors = [];

@@ -161,4 +161,82 @@ class UserServiceTest extends TestCase
         $this->assertIsArray($resDebit);
         $this->assertArrayHasKey('transactions', $resDebit);
     }
+
+    public function testChangeTxnPinSuccessWithPin(): void
+    {
+        $customerId = \Tests\Factories\UserFactory::createCustomer();
+        \Tests\Factories\UserFactory::createAccount($customerId, ['txn_pin_hash' => password_hash('1234', PASSWORD_BCRYPT)]);
+        
+        $stmt = $this->db->prepare("SELECT id FROM users WHERE customer_id = ?");
+        $stmt->execute([$customerId]);
+        $userId = (int)$stmt->fetchColumn();
+
+        $res = $this->userService->changeTxnPin($userId, [
+            'auth_type' => 'pin',
+            'current_pin' => '1234',
+            'new_pin' => '5678',
+            'confirm_pin' => '5678'
+        ]);
+
+        $this->assertTrue($res);
+        $newHash = $this->userService->getTxnPinHash($customerId);
+        $this->assertTrue(password_verify('5678', $newHash));
+    }
+
+    public function testChangeTxnPinSuccessWithPassword(): void
+    {
+        $customerId = \Tests\Factories\UserFactory::createCustomer(['password' => 'MySecretPass123!']);
+        \Tests\Factories\UserFactory::createAccount($customerId, ['txn_pin_hash' => password_hash('1234', PASSWORD_BCRYPT)]);
+        
+        $stmt = $this->db->prepare("SELECT id FROM users WHERE customer_id = ?");
+        $stmt->execute([$customerId]);
+        $userId = (int)$stmt->fetchColumn();
+
+        $res = $this->userService->changeTxnPin($userId, [
+            'auth_type' => 'password',
+            'current_password' => 'MySecretPass123!',
+            'new_pin' => '9988',
+            'confirm_pin' => '9988'
+        ]);
+
+        $this->assertTrue($res);
+        $newHash = $this->userService->getTxnPinHash($customerId);
+        $this->assertTrue(password_verify('9988', $newHash));
+    }
+
+    public function testChangeTxnPinFailsWithWrongCurrentPin(): void
+    {
+        $customerId = \Tests\Factories\UserFactory::createCustomer();
+        \Tests\Factories\UserFactory::createAccount($customerId, ['txn_pin_hash' => password_hash('1234', PASSWORD_BCRYPT)]);
+        
+        $stmt = $this->db->prepare("SELECT id FROM users WHERE customer_id = ?");
+        $stmt->execute([$customerId]);
+        $userId = (int)$stmt->fetchColumn();
+
+        $this->expectException(\App\Shared\Core\Exceptions\ValidationException::class);
+        $this->userService->changeTxnPin($userId, [
+            'auth_type' => 'pin',
+            'current_pin' => '9999',
+            'new_pin' => '5678',
+            'confirm_pin' => '5678'
+        ]);
+    }
+
+    public function testChangeTxnPinFailsWithWrongPassword(): void
+    {
+        $customerId = \Tests\Factories\UserFactory::createCustomer(['password' => 'MySecretPass123!']);
+        \Tests\Factories\UserFactory::createAccount($customerId, ['txn_pin_hash' => password_hash('1234', PASSWORD_BCRYPT)]);
+        
+        $stmt = $this->db->prepare("SELECT id FROM users WHERE customer_id = ?");
+        $stmt->execute([$customerId]);
+        $userId = (int)$stmt->fetchColumn();
+
+        $this->expectException(\App\Shared\Core\Exceptions\ValidationException::class);
+        $this->userService->changeTxnPin($userId, [
+            'auth_type' => 'password',
+            'current_password' => 'WrongPassword!',
+            'new_pin' => '5678',
+            'confirm_pin' => '5678'
+        ]);
+    }
 }

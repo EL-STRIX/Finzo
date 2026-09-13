@@ -436,6 +436,63 @@ class UserService implements \App\Domain\Contracts\Services\UserServiceInterface
     {
         return $this->repository->updatePassword(...$args);
     }
+
+    /**
+     * Get Transaction PIN Hash.
+     *
+     * @param mixed ...$args
+     * @return mixed
+     */
+    public function getTxnPinHash(...$args)
+    {
+        return $this->repository->getTxnPinHash(...$args);
+    }
+
+    /**
+     * Update Transaction PIN Hash.
+     *
+     * @param mixed ...$args
+     * @return mixed
+     */
+    public function updateTxnPin(...$args)
+    {
+        return $this->repository->updateTxnPin(...$args);
+    }
+
+    /**
+     * Change Transaction PIN for Money Transfers.
+     *
+     * @param int $userId
+     * @param array $data
+     * @return bool
+     * @throws \App\Shared\Core\Exceptions\ResourceNotFoundException
+     * @throws \App\Shared\Core\Exceptions\ValidationException
+     */
+    public function changeTxnPin(int $userId, array $data): bool
+    {
+        $customerId = $this->repository->getCustomerId($userId);
+        if (!$customerId) {
+            throw new \App\Shared\Core\Exceptions\ResourceNotFoundException('User account not found');
+        }
+
+        $authType = $data['auth_type'] ?? 'pin';
+        if ($authType === 'password') {
+            $user = $this->repository->getUserPasswordHash($userId);
+            if (!$user || !password_verify($data['current_password'] ?? '', $user['password_hash'])) {
+                throw new \App\Shared\Core\Exceptions\ValidationException('Validation failed', ['errors' => ['current_password' => 'Incorrect account login password']]);
+            }
+        } else {
+            $currentPinHash = $this->repository->getTxnPinHash($customerId);
+            if ($currentPinHash) {
+                if (empty($data['current_pin']) || !password_verify($data['current_pin'], $currentPinHash)) {
+                    throw new \App\Shared\Core\Exceptions\ValidationException('Validation failed', ['errors' => ['current_pin' => 'Current 4-digit PIN is incorrect']]);
+                }
+            }
+        }
+
+        $newPinHash = password_hash($data['new_pin'], PASSWORD_BCRYPT);
+        return $this->repository->updateTxnPin($customerId, $newPinHash);
+    }
     /**
      * Get User Files.
      *

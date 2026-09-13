@@ -664,4 +664,61 @@ class UserController
         }
         json_response(['success' => true, 'message' => 'PIN verified successfully']);
     }
+
+    public function changePin()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            json_response(['success' => false, 'message' => 'Method not allowed'], 405);
+        }
+
+        $userId = (int)($_SESSION['user_id'] ?? 0);
+        if (!$userId) {
+            json_response(['success' => false, 'message' => 'Unauthorized'], 401);
+        }
+
+        $rawInput = json_decode(file_get_contents('php://input'), true);
+        $input = is_array($rawInput) ? $rawInput : $_POST;
+
+        $validator = new \App\Presentation\Validators\UserValidator($this->service);
+
+        try {
+            $validated = $validator->validatePinChange($input);
+            $this->service->changeTxnPin($userId, $validated);
+
+            $customerId = $this->service->getCustomerId($userId);
+            $pdo = $this->service->getDb();
+
+            write_audit_log(
+                $pdo,
+                'txn_pin_changed',
+                $customerId,
+                'user',
+                $userId,
+                'user',
+                'Customer updated 4-digit money transfer security PIN'
+            );
+
+            send_notification(
+                $pdo,
+                $customerId,
+                \App\Domain\Enums\NotificationTypeEnum::SECURITY->value,
+                'Transaction PIN Updated',
+                'Your 4-digit security PIN for money transfers was changed successfully. If you did not make this change, please contact support immediately.'
+            );
+
+            json_response([
+                'success' => true,
+                'message' => 'Transaction PIN changed successfully! You can now use your new PIN to authorize money transfers.'
+            ]);
+        } catch (\App\Shared\Core\Exceptions\ValidationException $e) {
+            $payload = $e->getPayload();
+            $errors = $payload['errors'] ?? ['general' => $e->getMessage()];
+            json_response(['success' => false, 'message' => $e->getMessage(), 'errors' => $errors], 422);
+        } catch (\App\Shared\Core\Exceptions\ResourceNotFoundException $e) {
+            json_response(['success' => false, 'message' => $e->getMessage()], 404);
+        } catch (\Throwable $e) {
+            \App\Shared\Core\Logging\Logger::getInstance()->error('Change PIN error', ['context' => $e->getMessage()]);
+            json_response(['success' => false, 'message' => 'An error occurred while updating your transaction PIN. Please try again.'], 500);
+        }
+    }
 }

@@ -167,6 +167,41 @@ class UserRepository extends BaseRepository implements \App\Domain\Contracts\Rep
         return $stmt->execute([$new_hash, $userId]);
     }
 
+    public function getTxnPinHash(string $customerId): ?string
+    {
+        $stmt = $this->db->prepare("SELECT txn_pin_hash FROM accounts WHERE user_id = ? AND status = 'active' ORDER BY id ASC LIMIT 1");
+        $stmt->execute([$customerId]);
+        $hash = $stmt->fetchColumn();
+        return $hash ?: null;
+    }
+
+    public function updateTxnPin(string $customerId, string $pinHash): bool
+    {
+        $stmt = $this->db->prepare("UPDATE accounts SET txn_pin_hash = ?, updated_at = NOW() WHERE user_id = ?");
+        $res = $stmt->execute([$pinHash, $customerId]);
+
+        try {
+            $uStmt = $this->db->prepare("SELECT id FROM users WHERE customer_id = ?");
+            $uStmt->execute([$customerId]);
+            $numUserId = $uStmt->fetchColumn();
+            if ($numUserId) {
+                $checkStmt = $this->db->prepare("SELECT id FROM user_security_settings WHERE user_id = ?");
+                $checkStmt->execute([$numUserId]);
+                if ($checkStmt->fetchColumn()) {
+                    $updSec = $this->db->prepare("UPDATE user_security_settings SET transaction_pin_hash = ?, updated_at = NOW() WHERE user_id = ?");
+                    $updSec->execute([$pinHash, $numUserId]);
+                } else {
+                    $insSec = $this->db->prepare("INSERT INTO user_security_settings (user_id, transaction_pin_hash, updated_at) VALUES (?, ?, NOW())");
+                    $insSec->execute([$numUserId, $pinHash]);
+                }
+            }
+        } catch (\Throwable $e) {
+            // Silently ignore if optional table doesn't exist
+        }
+
+        return $res;
+    }
+
     // -- Complete Profile --
     public function getUserFiles(int $userId)
     {
