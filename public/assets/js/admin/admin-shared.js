@@ -48,7 +48,10 @@ window.AdminPortal = {
         const nameEl = document.getElementById('header-profile-name');
         const idEl = document.getElementById('header-profile-id');
         if (nameEl) nameEl.textContent = name;
-        if (idEl) idEl.textContent = 'ID: ' + (admin.admin_id || '#' + (admin.id || '---'));
+        if (idEl) {
+            const displayId = admin.admin_id || admin.customer_id || (admin.id ? 'ADM' + String(admin.id).padStart(3, '0') : 'ADM---');
+            idEl.textContent = 'ID: ' + displayId;
+        }
 
 
         // Update topbar admin avatar

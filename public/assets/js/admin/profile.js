@@ -68,8 +68,10 @@
                 const nameDisplay = document.getElementById('profile-name-display');
                 if (nameDisplay) nameDisplay.textContent = admin.full_name;
 
+                const adminDisplayId = admin.admin_id || admin.customer_id || (admin.id ? 'ADM' + String(admin.id).padStart(3, '0') : 'ADM---');
+
                 const heroAdminId = document.getElementById('hero-admin-id-text');
-                if (heroAdminId) heroAdminId.textContent = 'ID: ' + (admin.admin_id || '#' + admin.id);
+                if (heroAdminId) heroAdminId.textContent = 'ID: ' + adminDisplayId;
 
                 const heroEmail = document.getElementById('hero-email-text');
                 if (heroEmail) heroEmail.textContent = admin.email || 'admin@finzo.com';
@@ -77,7 +79,7 @@
                 const headerName = document.getElementById('header-profile-name');
                 if (headerName) headerName.textContent = admin.full_name;
                 const headerId = document.getElementById('header-profile-id');
-                if (headerId) headerId.textContent = 'ID: ' + (admin.admin_id || '#' + admin.id);
+                if (headerId) headerId.textContent = 'ID: ' + adminDisplayId;
 
                 // Form bindings
                 const adminIdInput = document.getElementById('profile-admin-id-input');
