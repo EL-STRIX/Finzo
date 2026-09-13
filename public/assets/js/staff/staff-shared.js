@@ -36,6 +36,9 @@
 })();
 
 // ── UI HELPERS ──
+const el = (selector) => document.querySelector(selector);
+const els = (selector) => document.querySelectorAll(selector);
+
 function formatINR(amount) {
     const num = parseFloat(amount) || 0;
     return '₹' + num.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -46,9 +49,6 @@ function updateClock() {
     const now = new Date();
     const timeStr = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
     const dateStr = now.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
-
-    const el = (selector) => document.querySelector(selector);
-    const els = (selector) => document.querySelectorAll(selector);
 
     if (el('#live-clock')) el('#live-clock').textContent = timeStr;
     els('#live-date, #header-date').forEach(e => e.textContent = dateStr);
@@ -206,4 +206,48 @@ async function fetchStaffSession() {
     }
     return null;
 }
+
+// ── TOAST NOTIFICATION ──
+function showToast(message, type = 'success', duration = 3000) {
+    let container = document.getElementById('toast-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'toast-container';
+        container.className = 'fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none';
+        document.body.appendChild(container);
+    }
+    const toast = document.createElement('div');
+    const typeClasses = {
+        success: 'bg-emerald-600 text-white shadow-emerald-500/20',
+        error: 'bg-rose-600 text-white shadow-rose-500/20',
+        danger: 'bg-rose-600 text-white shadow-rose-500/20',
+        warning: 'bg-amber-600 text-white shadow-amber-500/20',
+        info: 'bg-blue-600 text-white shadow-blue-500/20'
+    };
+    const icons = {
+        success: 'check_circle',
+        error: 'cancel',
+        danger: 'cancel',
+        warning: 'warning',
+        info: 'info'
+    };
+    const bg = typeClasses[type] || typeClasses.info;
+    const icon = icons[type] || 'info';
+
+    toast.className = `pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-xl shadow-xl font-bold text-sm transition-all transform duration-300 translate-y-2 opacity-0 ${bg}`;
+    toast.innerHTML = `
+        <span class="material-symbols-outlined text-[20px] shrink-0" aria-hidden="true">${icon}</span>
+        <span class="flex-1">${message}</span>
+    `;
+    container.appendChild(toast);
+    requestAnimationFrame(() => {
+        toast.classList.remove('translate-y-2', 'opacity-0');
+        toast.classList.add('translate-y-0', 'opacity-100');
+    });
+    setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-2');
+        setTimeout(() => toast.remove(), 350);
+    }, duration);
+}
+window.showToast = showToast;
 

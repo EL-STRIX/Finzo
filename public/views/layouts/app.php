@@ -86,6 +86,8 @@ $csrfToken = $_SESSION['csrf_token'];
         <script defer src="/Finzo/public/assets/js/admin/admin-shared.js"></script>
     <?php elseif ($portal === 'user'): ?>
         <script defer src="/Finzo/public/assets/js/user/user-shared.js"></script>
+    <?php elseif ($portal === 'staff'): ?>
+        <script defer src="/Finzo/public/assets/js/staff/staff-shared.js"></script>
     <?php endif; ?>
     <?php if (!empty($useCharts)): ?>
         <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
