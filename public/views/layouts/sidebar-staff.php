@@ -1,7 +1,16 @@
 <?php
 $currentPath = basename($_SERVER['PHP_SELF']);
-function isActiveStaff($path, $current) {
-    return (strpos($current, $path) !== false) ? 'bg-warning-surface/10 text-warning-base border-r-4 border-warning-base active-nav-item' : 'text-text-muted hover:bg-surface-subtle dark:hover:bg-white/5 hover:text-text-main dark:hover:text-white border-r-4 border-transparent';
+function isActiveStaff($path, $current, $type = null) {
+    if ($type !== null) {
+        $currentType = $_GET['type'] ?? '';
+        if (empty($currentType) && strpos($current, 'transaction') !== false) {
+            $currentType = 'deposit';
+        }
+        $isMatch = ((strpos($current, $path) !== false) || (strpos($current, $type) !== false)) && ($currentType === $type || strpos($current, $type) !== false);
+    } else {
+        $isMatch = (strpos($current, $path) !== false);
+    }
+    return $isMatch ? 'bg-warning-surface/10 text-warning-base border-r-4 border-warning-base active-nav-item' : 'text-text-muted hover:bg-surface-subtle dark:hover:bg-white/5 hover:text-text-main dark:hover:text-white border-r-4 border-transparent';
 }
 ?>
 <!-- Staff Sidebar -->
@@ -41,13 +50,13 @@ function isActiveStaff($path, $current) {
                 </a>
             </li>
             <li>
-                <a href="staff-transaction.php?type=deposit" class="flex items-center gap-3 px-4 py-2.5 rounded-lg font-bold transition-all <?= isActiveStaff('transaction', $currentPath) ?>">
+                <a href="staff-transaction.php?type=deposit" class="flex items-center gap-3 px-4 py-2.5 rounded-lg font-bold transition-all <?= isActiveStaff('transaction', $currentPath, 'deposit') ?>">
                     <span class="material-symbols-outlined text-[20px]" aria-hidden="true">add_circle</span>
                     <span class="text-sm">New Deposit</span>
                 </a>
             </li>
             <li>
-                <a href="staff-transaction.php?type=withdraw" class="flex items-center gap-3 px-4 py-2.5 rounded-lg font-bold transition-all text-text-muted hover:bg-surface-subtle dark:hover:bg-white/5 hover:text-text-main dark:hover:text-white border-r-4 border-transparent">
+                <a href="staff-transaction.php?type=withdraw" class="flex items-center gap-3 px-4 py-2.5 rounded-lg font-bold transition-all <?= isActiveStaff('transaction', $currentPath, 'withdraw') ?>">
                     <span class="material-symbols-outlined text-[20px]" aria-hidden="true">remove_circle</span>
                     <span class="text-sm">New Withdrawal</span>
                 </a>
