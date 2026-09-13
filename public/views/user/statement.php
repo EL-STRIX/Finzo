@@ -61,17 +61,17 @@ ob_start();
 
       <!-- Summary Metrics -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-        <div class="p-5 text-center bg-success-surface/40 print:bg-transparent border border-success-base/20 print:border-black rounded-xl print:rounded-none">
-          <div class="text-xs font-bold text-success-base print:text-black uppercase tracking-widest mb-2">Total Credits</div>
-          <div class="font-display text-2xl font-black text-success-base print:text-black" id="stmt-credits"><div class="skeleton w-20 h-6 mx-auto"></div></div>
+        <div class="p-5 text-center bg-emerald-500/10 print:bg-transparent border border-emerald-500/20 print:border-black rounded-xl print:rounded-none">
+          <div class="text-xs font-bold text-emerald-600 dark:text-emerald-400 print:text-black uppercase tracking-widest mb-2">Total Credits</div>
+          <div class="font-display text-2xl font-black text-emerald-600 dark:text-emerald-400 print:text-black font-mono" id="stmt-credits"><div class="skeleton w-20 h-6 mx-auto"></div></div>
         </div>
-        <div class="p-5 text-center bg-danger-surface/40 print:bg-transparent border border-danger-base/20 print:border-black rounded-xl print:rounded-none">
-          <div class="text-xs font-bold text-danger-base print:text-black uppercase tracking-widest mb-2">Total Debits</div>
-          <div class="font-display text-2xl font-black text-danger-base print:text-black" id="stmt-debits"><div class="skeleton w-20 h-6 mx-auto"></div></div>
+        <div class="p-5 text-center bg-rose-500/10 print:bg-transparent border border-rose-500/20 print:border-black rounded-xl print:rounded-none">
+          <div class="text-xs font-bold text-rose-600 dark:text-rose-400 print:text-black uppercase tracking-widest mb-2">Total Debits</div>
+          <div class="font-display text-2xl font-black text-rose-600 dark:text-rose-400 print:text-black font-mono" id="stmt-debits"><div class="skeleton w-20 h-6 mx-auto"></div></div>
         </div>
-        <div class="p-5 text-center bg-primary-surface/40 print:bg-transparent border border-primary-base/20 print:border-black rounded-xl print:rounded-none">
-          <div class="text-xs font-bold text-primary-base-base print:text-black uppercase tracking-widest mb-2">Closing Balance</div>
-          <div class="font-display text-2xl font-black text-primary-base-base print:text-black" id="stmt-closing"><div class="skeleton w-20 h-6 mx-auto"></div></div>
+        <div class="p-5 text-center bg-primary/10 print:bg-transparent border border-primary/20 print:border-black rounded-xl print:rounded-none">
+          <div class="text-xs font-bold text-primary print:text-black uppercase tracking-widest mb-2">Closing Balance</div>
+          <div class="font-display text-2xl font-black text-primary print:text-black font-mono" id="stmt-closing"><div class="skeleton w-20 h-6 mx-auto"></div></div>
         </div>
       </div>
 
@@ -104,8 +104,11 @@ ob_start();
       <div class="mt-12 pt-6 border-t border-border-main print:border-black text-center">
         <div class="text-xs font-bold text-text-muted print:text-black tracking-widest uppercase">This is a computer-generated statement. No signature required.</div>
       </div>
+
+    </div>
+  </div>
       
-    <script defer src="/Finzo/public/assets/js/user/statement.js"></script>
+<script defer src="/Finzo/public/assets/js/user/statement.js"></script>
 <?php
 $slot = ob_get_clean();
 include __DIR__ . '/../layouts/app.php';
