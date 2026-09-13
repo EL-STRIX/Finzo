@@ -19,10 +19,38 @@ define('FINZO_TESTING', true);
 // ── 1. Load .env.testing ────────────────────────────────────────────────────
 $envFile = FINZO_ROOT . '/.env.testing';
 if (file_exists($envFile)) {
-    $envConfig = parse_ini_file($envFile);
-    foreach ($envConfig as $key => $value) {
-        putenv("{$key}={$value}");
-        $_ENV[$key] = $value;
+    $lines = file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    if ($lines !== false) {
+        foreach ($lines as $line) {
+            $line = trim($line);
+            // Skip full-line comments and empty lines
+            if ($line === '' || str_starts_with($line, '#') || str_starts_with($line, ';')) {
+                continue;
+            }
+
+            if (str_contains($line, '=')) {
+                list($name, $value) = explode('=', $line, 2);
+                $name = trim($name);
+                $value = trim($value);
+
+                // Remove inline comments that are not inside quotes
+                if (str_contains($value, '#')) {
+                    if (!preg_match('/^([\'"]).*\1$/', $value)) {
+                        $valueParts = explode('#', $value, 2);
+                        $value = trim($valueParts[0]);
+                    }
+                }
+
+                // Remove wrapping quotes if present
+                if (preg_match('/^([\'"])(.*)\1$/', $value, $matches)) {
+                    $value = $matches[2];
+                }
+
+                putenv(sprintf('%s=%s', $name, $value));
+                $_ENV[$name] = $value;
+                $_SERVER[$name] = $value;
+            }
+        }
     }
 } else {
     echo "[Test Bootstrap] FATAL: .env.testing file is missing.\n";
