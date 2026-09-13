@@ -106,15 +106,16 @@ class StaffController
             json_response(['success' => false, 'message' => 'Method not allowed'], 405);
         }
 
-
+        $raw = file_get_contents('php://input');
+        $input = json_decode($raw, true);
+        $data = (is_array($input) && !empty($input)) ? $input : $_POST;
 
         $staffId = $_SESSION['staff_id'];
         $validator = new \App\Presentation\Validators\StaffValidator();
-        $validated = $validator->validateDeposit($_POST);
+        $validated = $validator->validateDeposit($data);
         $accountNumber = $validated['account_no'];
         $amount = $validated['amount'];
         $reference_note = $validated['reference_note'];
-
 
         try {
             $data = $this->service->processDeposit($staffId, $accountNumber, $amount, $reference_note);
@@ -126,7 +127,7 @@ class StaffController
                 'account_no'     => $data['account_no'],
                 'amount'         => $data['amount'],
                 'new_balance'    => $data['new_balance'],
-                'redirect'       => '/public/views/staff/staff-receipt.html?id=' . $data['transaction_id']
+                'redirect'       => '/Finzo/public/views/staff/staff-receipt.php?id=' . $data['transaction_id']
             ]);
         } catch (\Exception $e) {
             throw $e;
@@ -277,15 +278,16 @@ class StaffController
             json_response(['success' => false, 'message' => 'Method not allowed'], 405);
         }
 
-
+        $raw = file_get_contents('php://input');
+        $input = json_decode($raw, true);
+        $data = (is_array($input) && !empty($input)) ? $input : $_POST;
 
         $staffId = $_SESSION['staff_id'];
         $validator = new \App\Presentation\Validators\StaffValidator();
-        $validated = $validator->validateWithdrawal($_POST);
+        $validated = $validator->validateWithdrawal($data);
         $accountNumber = $validated['account_no'];
         $amount = $validated['amount'];
         $identity_notes = $validated['identity_notes'];
-
 
         try {
             $data = $this->service->processWithdrawal($staffId, $accountNumber, $amount, $identity_notes);
@@ -297,7 +299,7 @@ class StaffController
                 'account_no'     => $data['account_no'],
                 'amount'         => $data['amount'],
                 'new_balance'    => $data['new_balance'],
-                'redirect'       => '/public/views/staff/staff-receipt.html?id=' . $data['transaction_id']
+                'redirect'       => '/Finzo/public/views/staff/staff-receipt.php?id=' . $data['transaction_id']
             ]);
         } catch (\Exception $e) {
             throw $e;
