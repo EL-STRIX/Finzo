@@ -60,11 +60,40 @@ function convertToWords(number) {
   return parts.join(' ').trim();
 }
 
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+// Expose globals immediately for inline and data-action handlers
+window.useBeneficiary = useBeneficiary;
+window.resetLookup = resetLookup;
+window.lookupAccount = lookupAccount;
+window.quickAmount = quickAmount;
+window.updateSummary = updateSummary;
+window.togglePinVisibility = togglePinVisibility;
+window.confirmTransfer = confirmTransfer;
+window.closeModal = closeModal;
+window.processTransfer = processTransfer;
+
 (async function initFundTransfer() {
-  await fetchUserSession();
-  buildSidebar('transfer');
-  buildNavbar('Banking', 'Fund Transfer');
-  handleStatusRedirect('transfer');
+  if (typeof fetchUserSession === 'function') {
+    await fetchUserSession();
+  }
+  if (typeof buildSidebar === 'function') {
+    buildSidebar('transfer');
+  }
+  if (typeof buildNavbar === 'function') {
+    buildNavbar('Banking', 'Fund Transfer');
+  }
+  if (typeof handleStatusRedirect === 'function') {
+    handleStatusRedirect('transfer');
+  }
 
   await loadSourceAccount();
   await loadBeneficiaries();
@@ -73,7 +102,14 @@ function convertToWords(number) {
 
 async function loadSourceAccount() {
   try {
-    const res = await window.api.get('/user/accounts');
+    let res = null;
+    if (window.api && typeof window.api.get === 'function') {
+      res = await window.api.get('/user/accounts');
+    } else {
+      const r = await fetch('/Finzo/api/v1/user/accounts', { credentials: 'same-origin' });
+      res = await r.json();
+    }
+
     if (res && res.success && res.account) {
       const acc = res.account;
       transferState.accountNo = acc.account_no || (typeof UserState !== 'undefined' ? UserState.accountNo : '');
@@ -115,6 +151,7 @@ function renderSourceAccount() {
   const maxEl = document.getElementById('src-limit-max');
   const progressEl = document.getElementById('src-limit-progress');
   const cmFromEl = document.getElementById('cm-from');
+  const statusBadge = document.getElementById('src-status-badge');
 
   if (accNoEl) accNoEl.textContent = transferState.accountNo || 'NOT ASSIGNED';
   if (accTypeEl) accTypeEl.textContent = (transferState.accountType || 'SAVINGS').toUpperCase();
@@ -123,6 +160,24 @@ function renderSourceAccount() {
   if (usedEl) usedEl.textContent = formatMoney(transferState.todayTransferTotal);
   if (maxEl) maxEl.textContent = formatMoney(transferState.dailyLimit);
   if (cmFromEl) cmFromEl.textContent = transferState.accountNo || '-';
+
+  if (statusBadge) {
+    if (transferState.status === 'active') {
+      statusBadge.innerHTML = `
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-bold border border-emerald-500/20">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          Active
+        </span>
+      `;
+    } else {
+      statusBadge.innerHTML = `
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-rose-500/10 text-rose-600 dark:text-rose-400 text-xs font-bold border border-rose-500/20">
+          <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+          ${transferState.status.toUpperCase()}
+        </span>
+      `;
+    }
+  }
 
   if (progressEl) {
     const total = transferState.dailyLimit > 0 ? transferState.dailyLimit : 1;
@@ -143,7 +198,14 @@ async function loadBeneficiaries() {
   if (!container) return;
 
   try {
-    const data = await window.api.get('/user/beneficiaries');
+    let data = null;
+    if (window.api && typeof window.api.get === 'function') {
+      data = await window.api.get('/user/beneficiaries');
+    } else {
+      const r = await fetch('/Finzo/api/v1/user/beneficiaries', { credentials: 'same-origin' });
+      data = await r.json();
+    }
+
     if (data && data.success && data.beneficiaries && data.beneficiaries.length > 0) {
       container.innerHTML = data.beneficiaries.map(b => {
         const safeAcc = escapeHtml(b.account_no);
@@ -175,16 +237,6 @@ async function loadBeneficiaries() {
   }
 }
 
-function escapeHtml(str) {
-  if (!str) return '';
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
-}
-
 function useBeneficiary(acc, name) {
   const toInput = document.getElementById('to-account');
   if (toInput) {
@@ -211,20 +263,21 @@ function resetLookup() {
 
 async function lookupAccount() {
   const inputEl = document.getElementById('to-account');
-  if (!inputEl) return;
-  const accNo = inputEl.value.trim().toUpperCase();
+  if (!inputEl) return false;
+  const accNo = inputEl.value.replace(/[\s\-]/g, '').toUpperCase();
+  inputEl.value = accNo;
 
   if (!accNo) {
-    showToast('Please enter an account number', 'warning');
-    return;
+    if (typeof showToast === 'function') showToast('Please enter an account number', 'warning');
+    return false;
   }
 
   const myAccount = transferState.accountNo || (typeof UserState !== 'undefined' ? UserState.accountNo : '');
-  if (myAccount && accNo.toUpperCase() === myAccount.toUpperCase()) {
-    showToast('Cannot transfer to your own account', 'error');
+  if (myAccount && accNo === myAccount.replace(/[\s\-]/g, '').toUpperCase()) {
+    if (typeof showToast === 'function') showToast('Cannot transfer to your own account', 'error');
     recipientVerified = false;
     showLookupError('Cannot transfer to your own account');
-    return;
+    return false;
   }
 
   const btn = document.getElementById('btn-verify-identity');
@@ -234,7 +287,14 @@ async function lookupAccount() {
   }
 
   try {
-    const data = await window.api.get('/user/accounts/lookup', { account_no: accNo });
+    let data = null;
+    if (window.api && typeof window.api.get === 'function') {
+      data = await window.api.get('/user/accounts/lookup', { account_no: accNo });
+    } else {
+      const r = await fetch('/Finzo/api/v1/user/accounts/lookup?account_no=' + encodeURIComponent(accNo), { credentials: 'same-origin' });
+      data = await r.json();
+    }
+
     const resultContainer = document.getElementById('lookup-result');
     const foundEl = document.getElementById('lookup-found');
     const notFoundEl = document.getElementById('lookup-not-found');
@@ -245,8 +305,8 @@ async function lookupAccount() {
       if (data.account.is_self) {
         recipientVerified = false;
         showLookupError('Cannot transfer to your own account');
-        showToast('Cannot transfer to your own account', 'warning');
-        return;
+        if (typeof showToast === 'function') showToast('Cannot transfer to your own account', 'warning');
+        return false;
       }
 
       recipientVerified = true;
@@ -261,18 +321,21 @@ async function lookupAccount() {
       if (nameEl) nameEl.textContent = recipientName;
       if (typeEl) typeEl.textContent = (data.account.account_type || 'Savings') + ' Account';
 
-      showToast('Recipient verified: ' + recipientName, 'success');
+      if (typeof showToast === 'function') showToast('Recipient verified: ' + recipientName, 'success');
       updateSummary();
+      return true;
     } else {
       recipientVerified = false;
       const msg = (data && data.message) ? data.message : 'Finzo account not found';
       showLookupError(msg);
-      showToast(msg, 'error');
+      if (typeof showToast === 'function') showToast(msg, 'error');
+      return false;
     }
   } catch (err) {
     recipientVerified = false;
     showLookupError('Account lookup failed. Please try again.');
-    showToast('Lookup failed. Please check connection.', 'error');
+    if (typeof showToast === 'function') showToast('Lookup failed. Please check connection.', 'error');
+    return false;
   } finally {
     if (btn) {
       btn.disabled = false;
@@ -360,47 +423,53 @@ function togglePinVisibility() {
   }
 }
 
-function confirmTransfer() {
+async function confirmTransfer() {
+  const toInput = document.getElementById('to-account');
   const amountEl = document.getElementById('transfer-amount');
   const pinEl = document.getElementById('transfer-pin');
   const descEl = document.getElementById('transfer-desc');
+
+  // If user hasn't clicked verify yet but entered an account, automatically attempt verification
+  if (!recipientVerified && toInput && toInput.value.trim().length > 0) {
+    const ok = await lookupAccount();
+    if (!ok) return;
+  }
+
+  if (!recipientVerified) {
+    if (typeof showToast === 'function') showToast('Please enter and verify the recipient account first', 'warning');
+    if (toInput) toInput.focus();
+    return;
+  }
 
   const amount = parseFloat(amountEl ? amountEl.value : 0);
   const pin = pinEl ? pinEl.value.trim() : '';
   const desc = descEl ? descEl.value.trim() : '';
 
-  if (!recipientVerified) {
-    showToast('Please enter and verify the recipient account first', 'warning');
-    const toInput = document.getElementById('to-account');
-    if (toInput) toInput.focus();
-    return;
-  }
-
   if (isNaN(amount) || amount <= 0) {
-    showToast('Please enter a valid transfer amount', 'warning');
+    if (typeof showToast === 'function') showToast('Please enter a valid transfer amount', 'warning');
     if (amountEl) amountEl.focus();
     return;
   }
 
   if (amount < 10) {
-    showToast('Minimum transfer amount is ₹10.00', 'warning');
+    if (typeof showToast === 'function') showToast('Minimum transfer amount is ₹10.00', 'warning');
     if (amountEl) amountEl.focus();
     return;
   }
 
   if (amount > transferState.balance) {
-    showToast('Insufficient funds in source account', 'error');
+    if (typeof showToast === 'function') showToast('Insufficient funds in source account', 'error');
     if (amountEl) amountEl.focus();
     return;
   }
 
   if (amount > transferState.remainingLimit) {
-    showToast('Transfer exceeds today\'s remaining daily limit of ' + formatMoney(transferState.remainingLimit), 'error');
+    if (typeof showToast === 'function') showToast('Transfer exceeds today\'s remaining daily limit of ' + formatMoney(transferState.remainingLimit), 'error');
     return;
   }
 
   if (!pin || !/^\d{4}$/.test(pin)) {
-    showToast('Please enter your 4-digit numeric security PIN', 'warning');
+    if (typeof showToast === 'function') showToast('Please enter your 4-digit numeric security PIN', 'warning');
     if (pinEl) pinEl.focus();
     return;
   }
@@ -452,34 +521,54 @@ async function processTransfer() {
       description: desc
     };
 
-    const data = await window.api.post('/user/transactions/transfer', payload);
+    let data = null;
+    if (window.api && typeof window.api.post === 'function') {
+      data = await window.api.post('/user/transactions/transfer', payload);
+    } else {
+      const r = await fetch('/Finzo/api/v1/user/transactions/transfer', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest',
+          'X-CSRF-Token': window.csrfToken || ''
+        },
+        body: JSON.stringify(payload)
+      });
+      data = await r.json();
+    }
 
     if (data && data.success) {
-      showToast('Transfer authorized successfully!', 'success');
+      if (typeof showToast === 'function') showToast('Transfer authorized successfully!', 'success');
       const txnId = data.transaction_id || data.txn_id || '';
       
       // Update local cache balance if returned
       if (data.new_balance !== undefined && typeof UserState !== 'undefined') {
-        UserState.balance = data.new_balance;
+        try {
+          UserState.balance = data.new_balance;
+        } catch (e) {
+          console.warn('Could not update UserState.balance:', e);
+        }
       }
 
       setTimeout(() => {
         if (data.redirect) {
-          window.location.href = data.redirect;
+          // Clean possible HTML entity encoding in query strings (&amp; -> &)
+          window.location.href = data.redirect.replace(/&amp;/g, '&');
         } else {
           window.location.href = `receipt.php?id=${encodeURIComponent(txnId)}&success=1`;
         }
       }, 500);
     } else {
       const msg = (data && data.message) ? data.message : 'Transfer failed';
-      showToast(msg, 'error');
+      if (typeof showToast === 'function') showToast(msg, 'error');
       if (btn) {
         btn.disabled = false;
         btn.innerHTML = '<span class="material-symbols-outlined text-lg" aria-hidden="true">done_all</span><span>Authorize & Send</span>';
       }
     }
   } catch (err) {
-    showToast('Network error during transfer. Please check your transaction history before retrying.', 'error');
+    if (typeof showToast === 'function') showToast('Network error during transfer. Please check your transaction history before retrying.', 'error');
     if (btn) {
       btn.disabled = false;
       btn.innerHTML = '<span class="material-symbols-outlined text-lg" aria-hidden="true">done_all</span><span>Authorize & Send</span>';
@@ -507,15 +596,37 @@ function setupEventListeners() {
       }
     });
   }
-}
 
-// Expose globals for inline and data-action handlers
-window.useBeneficiary = useBeneficiary;
-window.resetLookup = resetLookup;
-window.lookupAccount = lookupAccount;
-window.quickAmount = quickAmount;
-window.updateSummary = updateSummary;
-window.togglePinVisibility = togglePinVisibility;
-window.confirmTransfer = confirmTransfer;
-window.closeModal = closeModal;
-window.processTransfer = processTransfer;
+  // Direct click bindings for bulletproof execution
+  const btnVerify = document.getElementById('btn-verify-identity');
+  if (btnVerify) {
+    btnVerify.addEventListener('click', function(e) {
+      e.preventDefault();
+      lookupAccount();
+    });
+  }
+
+  const btnTransfer = document.getElementById('transfer-btn');
+  if (btnTransfer) {
+    btnTransfer.addEventListener('click', function(e) {
+      e.preventDefault();
+      confirmTransfer();
+    });
+  }
+
+  const btnFinal = document.getElementById('final-transfer-btn');
+  if (btnFinal) {
+    btnFinal.addEventListener('click', function(e) {
+      e.preventDefault();
+      processTransfer();
+    });
+  }
+
+  const btnModalCancel = document.getElementById('modal-cancel-btn');
+  if (btnModalCancel) {
+    btnModalCancel.addEventListener('click', function(e) {
+      e.preventDefault();
+      closeModal('confirm-modal');
+    });
+  }
+}

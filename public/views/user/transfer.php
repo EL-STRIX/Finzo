@@ -90,7 +90,7 @@ ob_start();
             <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-muted text-lg" aria-hidden="true">account_box</span>
             <input type="text" class="form-control pl-10 font-mono font-bold tracking-wider uppercase h-12 text-sm" id="to-account" placeholder="Enter Finzo Account No. (e.g. FNZ...)" oninput="resetLookup()" autocomplete="off"/>
           </div>
-          <button class="btn btn-secondary h-12 px-6 flex items-center justify-center gap-2" id="btn-verify-identity" data-action="lookupAccount()">
+          <button type="button" class="btn btn-secondary h-12 px-6 flex items-center justify-center gap-2" id="btn-verify-identity" onclick="lookupAccount()" data-action="lookupAccount()">
             <span class="material-symbols-outlined text-lg" aria-hidden="true">verified</span>
             <span>Verify Identity</span>
           </button>
@@ -177,7 +177,7 @@ ob_start();
         </div>
       </div>
       
-      <button class="btn btn-primary w-full h-14 text-base font-bold mt-8 shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2" data-action="confirmTransfer()" id="transfer-btn">
+      <button type="button" class="btn btn-primary w-full h-14 text-base font-bold mt-8 shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2" id="transfer-btn" onclick="confirmTransfer()" data-action="confirmTransfer()">
         <span class="material-symbols-outlined text-xl" aria-hidden="true">lock_open</span>
         <span>Review & Authorize Transfer</span>
       </button>
@@ -233,8 +233,8 @@ ob_start();
     </div>
     
     <div class="flex gap-3">
-      <button class="btn btn-secondary flex-1 h-12" data-action="closeModal(&#039;confirm-modal&#039;)">Cancel</button>
-      <button class="btn btn-primary flex-[2] h-12 flex items-center justify-center gap-2" id="final-transfer-btn" data-action="processTransfer()">
+      <button type="button" class="btn btn-secondary flex-1 h-12" id="modal-cancel-btn" onclick="closeModal('confirm-modal')" data-action="closeModal('confirm-modal')">Cancel</button>
+      <button type="button" class="btn btn-primary flex-[2] h-12 flex items-center justify-center gap-2" id="final-transfer-btn" onclick="processTransfer()" data-action="processTransfer()">
         <span class="material-symbols-outlined text-lg" aria-hidden="true">done_all</span>
         <span>Authorize & Send</span>
       </button>
