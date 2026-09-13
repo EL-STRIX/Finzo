@@ -512,6 +512,7 @@
             modal.classList.add('flex');
         }
     }
+    window.openClockOutModal = openClockOutModal;
 
     function closeClockOutModal() {
         const modal = document.getElementById('clockout-modal');

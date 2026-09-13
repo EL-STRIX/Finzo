@@ -1,41 +1,68 @@
-/* ═══════════════════════════════════════════
+/* ═══════════════════════════════════════════════════════════════
    FINZO — Staff Portal Shared JavaScript
-   ═══════════════════════════════════════════ */
+   Enterprise clean architecture, Vanilla JS, Dark/Light Mode
+   ═══════════════════════════════════════════════════════════════ */
 
-// ── THEME ENGINE ──
+// ── 1. UNIFIED THEME ENGINE ──
 (function () {
-    const STORAGE_KEY = 'finzo-staff-theme';
+    const STORAGE_KEY = 'finzo-theme';
     const html = document.documentElement;
 
     function applyTheme(theme) {
-        html.setAttribute('data-theme', theme);
-        html.classList.toggle('dark', theme === 'dark');
-        localStorage.setItem(STORAGE_KEY, theme);
+        const activeTheme = theme || localStorage.getItem(STORAGE_KEY) || localStorage.getItem('finzo-staff-theme') || 'light';
 
-        const icon = document.getElementById('theme-icon');
-        const label = document.getElementById('theme-label');
-        if (icon) icon.textContent = theme === 'dark' ? 'light_mode' : 'dark_mode';
-        if (label) label.textContent = theme === 'dark' ? 'Light Mode' : 'Dark Mode';
+        html.setAttribute('data-theme', activeTheme);
+        html.classList.toggle('dark', activeTheme === 'dark');
+
+        localStorage.setItem(STORAGE_KEY, activeTheme);
+        localStorage.setItem('finzo-staff-theme', activeTheme);
+
+        // Update all icons across DOM (header, sidebar, etc.)
+        document.querySelectorAll('[data-theme-icon], #theme-icon').forEach(icon => {
+            icon.textContent = activeTheme === 'dark' ? 'light_mode' : 'dark_mode';
+        });
+
+        // Update all labels across DOM
+        document.querySelectorAll('[data-theme-label], #theme-label').forEach(label => {
+            label.textContent = activeTheme === 'dark' ? 'Light Mode' : 'Dark Mode';
+        });
+
+        // Update theme badges if present
+        document.querySelectorAll('#theme-badge').forEach(badge => {
+            badge.textContent = activeTheme === 'dark' ? 'Dark' : 'Light';
+        });
     }
 
     function toggleTheme() {
-        const current = localStorage.getItem(STORAGE_KEY) || 'light';
-        applyTheme(current === 'dark' ? 'light' : 'dark');
+        const current = localStorage.getItem(STORAGE_KEY) || localStorage.getItem('finzo-staff-theme') || 'light';
+        const target = current === 'dark' ? 'light' : 'dark';
+        applyTheme(target);
     }
 
-    // Initial load
-    const saved = localStorage.getItem(STORAGE_KEY) || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    // Immediate sync to match theme-init.js
+    const saved = localStorage.getItem(STORAGE_KEY) || localStorage.getItem('finzo-staff-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
     applyTheme(saved);
 
-    document.addEventListener('DOMContentLoaded', function () {
-        const toggleBtn = document.querySelector('#toggle-theme-btn');
+    window.FinzoTheme = {
+        toggle: toggleTheme,
+        apply: applyTheme,
+        current: () => localStorage.getItem(STORAGE_KEY) || 'light'
+    };
+
+    // Global click listener for any theme toggle button anywhere in the DOM
+    document.addEventListener('click', function (e) {
+        const toggleBtn = e.target.closest('#toggle-theme-btn, [data-toggle-theme]');
         if (toggleBtn) {
-            toggleBtn.addEventListener('click', toggleTheme);
+            e.preventDefault();
+            toggleTheme();
         }
     });
+
+    // Re-sync after DOM finishes loading
+    document.addEventListener('DOMContentLoaded', () => applyTheme());
 })();
 
-// ── UI HELPERS ──
+// ── 2. UI HELPERS ──
 const el = (selector) => document.querySelector(selector);
 const els = (selector) => document.querySelectorAll(selector);
 
@@ -56,109 +83,85 @@ function updateClock() {
 setInterval(updateClock, 1000);
 document.addEventListener('DOMContentLoaded', updateClock);
 
-// Global Events (Sidebar, Modals)
-document.addEventListener('DOMContentLoaded', function () {
-    // Mobile Sidebar Toggle
-    const mobileBtn = el('#mobile-menu-btn');
-    if (mobileBtn) {
-        mobileBtn.addEventListener('click', function () {
-            el('#admin-sidebar').classList.add('mobile-open');
-            el('#sidebar-overlay').classList.add('active');
-        });
-    }
+// ── 3. MOBILE SIDEBAR & RESPONSIVE BEHAVIOR ──
+function setupMobileSidebar() {
+    const mobileBtn = document.getElementById('mobile-menu-btn');
+    const sidebar = document.getElementById('sidebar') || document.getElementById('admin-sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
 
-    const sidebarOverlay = el('#sidebar-overlay');
-    if (sidebarOverlay) {
-        sidebarOverlay.addEventListener('click', function () {
-            el('#admin-sidebar').classList.remove('mobile-open');
-            el('#sidebar-overlay').classList.remove('active');
-        });
-    }
-
-    // End Shift Modal
-    els('.end-shift-trigger').forEach(trigger => {
-        trigger.addEventListener('click', function () {
-            el('#modal-overlay').style.display = 'flex';
-            el('#modal-overlay').classList.remove('hidden');
-            el('#modal-overlay').classList.add('opacity-100');
-            el('#logout-modal').classList.remove('hidden');
-            el('#logout-modal').style.display = 'block';
-            el('#logout-modal').classList.add('scale-100');
-        });
-    });
-
-    els('.modal-close').forEach(closeBtn => {
-        closeBtn.addEventListener('click', function () {
-            el('#modal-overlay').classList.remove('opacity-100');
-            el('#modal-overlay').classList.add('hidden');
-            el('#modal-overlay').style.display = 'none';
-            el('#logout-modal').classList.remove('scale-100');
-            el('#logout-modal').classList.add('hidden');
-        });
-    });
-
-    if (sidebarOverlay) {
-        sidebarOverlay.addEventListener('click', function(e) {
-            if (e.target === this) {
-                el('#modal-overlay').classList.remove('opacity-100');
-                el('#modal-overlay').classList.add('hidden');
-                el('#modal-overlay').style.display = 'none';
-                if (el('#logout-modal')) {
-                    el('#logout-modal').classList.remove('scale-100');
-                    el('#logout-modal').classList.add('hidden');
-                }
-            }
-        });
-    }
-
-    // Component Loaded Event (for active nav highlighting)
-    document.addEventListener('componentsLoaded', function() {
-        const currentPath = window.location.pathname.split('/').pop();
-        const sidebar = document.getElementById('admin-sidebar');
+    function openSidebar() {
         if (sidebar) {
-            const links = sidebar.querySelectorAll('a.staff-nav-item');
-            links.forEach(link => {
-                const href = link.getAttribute('href');
-                if (href && href === currentPath) {
-                    link.classList.remove('text-slate-600', 'dark:text-slate-400', 'hover:bg-slate-50', 'dark:hover:bg-white/5', 'hover:text-slate-900', 'dark:hover:text-white');
-                    link.classList.add('bg-amber-50', 'dark:bg-amber-500/10', 'text-amber-600', 'dark:text-amber-500', 'border', 'border-amber-200', 'dark:border-amber-500/20');
-                }
-            });
+            sidebar.classList.remove('-translate-x-full');
+            sidebar.classList.add('translate-x-0');
         }
+        if (overlay) {
+            overlay.classList.remove('hidden', 'opacity-0');
+            overlay.classList.add('opacity-100');
+        }
+    }
 
-        // Set Navbar Title based on page title
-        const navbarTitle = document.getElementById('page-title');
-        if (navbarTitle) {
-            const title = document.title.split('—')[1] || document.title;
-            if (title) {
-                navbarTitle.textContent = title.trim();
+    function closeSidebar() {
+        if (sidebar) {
+            sidebar.classList.remove('translate-x-0');
+            sidebar.classList.add('-translate-x-full');
+        }
+        if (overlay) {
+            overlay.classList.add('hidden', 'opacity-0');
+            overlay.classList.remove('opacity-100');
+        }
+    }
+
+    if (mobileBtn) {
+        mobileBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            if (sidebar && sidebar.classList.contains('translate-x-0')) {
+                closeSidebar();
+            } else {
+                openSidebar();
             }
-        }
-        
-        // Re-bind sidebar toggle
-        // Deprecated mobile button bindings left in legacy staff-shared
-        // These are now handled in the global listener above, leaving empty block for legacy compat
-        const themeBtn2 = document.querySelector('#toggle-theme-btn');
-        if (themeBtn2) {
-            themeBtn2.addEventListener('click', function() {
-                // Handled globally
-            });
-        }
+        });
+    }
 
-        // Populate staff info if loaded
-        if (StaffState && StaffState.loaded) {
-            populateStaffUI(StaffState);
-        }
+    if (overlay) {
+        overlay.addEventListener('click', closeSidebar);
+    }
+
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') closeSidebar();
     });
-});
+}
+document.addEventListener('DOMContentLoaded', setupMobileSidebar);
 
-// ── STAFF SESSION STATE ──
+// ── 4. SHIFT PILL & STATUS SYNC ──
+function updateSidebarShiftPill(shift) {
+    const pill = document.getElementById('sidebar-shift-pill');
+    const dot = document.getElementById('sidebar-shift-dot');
+    const text = document.getElementById('sidebar-shift-text');
+    if (!pill || !dot || !text) return;
+
+    const isActive = shift && shift.status === 'active';
+    if (isActive) {
+        pill.className = 'inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-amber-500/10 dark:bg-amber-500/15 border border-amber-500/20';
+        dot.className = 'w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse';
+        text.className = 'text-[10px] font-black text-amber-600 dark:text-amber-400 uppercase tracking-widest';
+        text.textContent = 'Active Shift';
+    } else {
+        pill.className = 'inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-slate-500/10 dark:bg-slate-500/15 border border-slate-500/20';
+        dot.className = 'w-1.5 h-1.5 rounded-full bg-slate-400';
+        text.className = 'text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest';
+        text.textContent = 'Off Duty';
+    }
+}
+window.updateSidebarShiftPill = updateSidebarShiftPill;
+
+// ── 5. STAFF SESSION STATE ──
 const StaffState = {
     staff_id: '',
     name: 'Loading...',
     role: '',
     branch_name: '',
     profile_photo: '',
+    current_shift: null,
     loaded: false
 };
 
@@ -172,6 +175,7 @@ async function fetchStaffSession() {
         const data = res || {};
         const payload = (data.data && typeof data.data === 'object' && data.data.staff) ? data.data : data;
         const staff = payload.staff || data.staff;
+        const shift = payload.current_shift || data.current_shift;
 
         if (data.success && staff) {
             StaffState.staff_id = staff.staff_id || staff.id || '';
@@ -179,20 +183,28 @@ async function fetchStaffSession() {
             StaffState.role = staff.role || staff.designation || 'Teller';
             StaffState.branch_name = staff.branch_name || 'Unassigned';
             StaffState.profile_photo = staff.profile_photo_url || staff.profile_photo || staff.profile_picture || '';
+            StaffState.current_shift = shift || null;
             StaffState.loaded = true;
 
-            // Store CSRF token globally so api.js POST requests can attach it
+            // Store CSRF token globally
             const csrf = data.csrf_token || payload.csrf_token;
             if (csrf) {
                 window.csrfToken = csrf;
                 const meta = document.querySelector('meta[name="csrf-token"]');
                 if (meta) meta.setAttribute('content', csrf);
             }
-            
-            // Populate basic DOM if present
+
+            // Populate DOM displays
             document.querySelectorAll('.staff-name-display').forEach(el => el.textContent = StaffState.name);
             document.querySelectorAll('.staff-id-display').forEach(el => el.textContent = StaffState.staff_id);
+            document.querySelectorAll('.staff-branch-display, .badge.badge-neutral').forEach(el => el.textContent = StaffState.branch_name);
 
+            // Update shift indicator in sidebar
+            if (shift) {
+                updateSidebarShiftPill(shift);
+            }
+
+            // Avatar / initials
             const rawPhoto = StaffState.profile_photo;
             let src = null;
             if (rawPhoto) {
@@ -203,25 +215,163 @@ async function fetchStaffSession() {
 
             if (src) {
                 document.querySelectorAll('.staff-initials-display').forEach(el => {
-                    el.innerHTML = `<img src="${src}?v=${Date.now()}" class="w-full h-full object-cover rounded-full" alt="DP">`;
+                    el.innerHTML = `<img src="${src}?v=${Date.now()}" class="w-full h-full object-cover rounded-xl" alt="DP">`;
                 });
             } else {
                 document.querySelectorAll('.staff-initials-display').forEach(el => {
-                    el.textContent = StaffState.name.split(' ').filter(w => /^[a-zA-Z]/.test(w)).map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'ST';
+                    const initials = StaffState.name.split(' ').filter(w => /^[a-zA-Z]/.test(w)).map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'ST';
+                    el.textContent = initials;
                 });
             }
-            document.querySelectorAll('.badge.badge-neutral').forEach(el => el.textContent = StaffState.branch_name);
-            
+
             return data;
         }
 
-    } catch(e) {
+    } catch (e) {
         console.warn('Failed to load staff session:', e);
     }
     return null;
 }
+window.fetchStaffSession = fetchStaffSession;
 
-// ── TOAST NOTIFICATION ──
+// ── 6. END SHIFT & LOGOUT ACTIONS ──
+document.addEventListener('click', function (e) {
+    // End Shift Trigger
+    const endShiftTrigger = e.target.closest('.end-shift-trigger, #sidebar-end-shift-btn');
+    if (endShiftTrigger) {
+        e.preventDefault();
+
+        // 1. If dashboard custom modal exists and window.openClockOutModal is exposed, use it
+        const dashboardModal = document.getElementById('clockout-modal');
+        if (dashboardModal && typeof window.openClockOutModal === 'function') {
+            window.openClockOutModal();
+            return;
+        }
+
+        // 2. Otherwise, open universal sidebar clockout modal
+        const sidebarModal = document.getElementById('sidebar-clockout-modal');
+        if (sidebarModal) {
+            sidebarModal.classList.remove('hidden');
+            sidebarModal.classList.add('flex');
+            return;
+        }
+
+        // 3. Fallback prompt
+        if (confirm('Are you sure you want to end your active shift?')) {
+            window.api.post('/staff-portal/shift/clock-out', { notes: '' })
+                .then(res => {
+                    showToast('Shift ended successfully.', 'success');
+                    updateSidebarShiftPill({ status: 'not_clocked_in' });
+                    setTimeout(() => window.location.reload(), 600);
+                })
+                .catch(err => {
+                    showToast(err.message || 'Failed to end shift', 'error');
+                });
+        }
+    }
+
+    // Sign Out Trigger
+    const logoutTrigger = e.target.closest('#sidebar-logout-btn, .staff-logout-trigger');
+    if (logoutTrigger) {
+        e.preventDefault();
+        if (confirm('Are you sure you want to sign out of Finzo Staff Portal?')) {
+            window.api.post('/auth/logout')
+                .catch(() => {})
+                .finally(() => {
+                    window.location.href = '/Finzo/public/views/auth/staff-login.php';
+                });
+        }
+    }
+});
+
+// Setup sidebar clockout form
+document.addEventListener('DOMContentLoaded', function () {
+    const form = document.getElementById('sidebar-clockout-form');
+    const closeBtns = document.querySelectorAll('#btn-close-sidebar-clockout, #btn-cancel-sidebar-clockout');
+    const modal = document.getElementById('sidebar-clockout-modal');
+
+    closeBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            if (modal) {
+                modal.classList.remove('flex');
+                modal.classList.add('hidden');
+            }
+        });
+    });
+
+    if (modal) {
+        modal.addEventListener('click', function (e) {
+            if (e.target === this) {
+                modal.classList.remove('flex');
+                modal.classList.add('hidden');
+            }
+        });
+    }
+
+    if (form) {
+        form.addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const submitBtn = document.getElementById('btn-submit-sidebar-clockout');
+            const notesInput = document.getElementById('sidebar-shift-notes');
+            const errEl = document.getElementById('sidebar-clockout-error');
+
+            if (errEl) {
+                errEl.textContent = '';
+                errEl.classList.add('hidden');
+            }
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = `
+                    <div class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    <span>Ending Shift...</span>
+                `;
+            }
+
+            try {
+                const notes = notesInput ? notesInput.value.trim() : '';
+                const res = await window.api.post('/staff-portal/shift/clock-out', { notes });
+                if (res && res.success) {
+                    showToast('Shift ended successfully.', 'success');
+                    if (modal) {
+                        modal.classList.remove('flex');
+                        modal.classList.add('hidden');
+                    }
+                    updateSidebarShiftPill({ status: 'not_clocked_in' });
+                    setTimeout(() => window.location.reload(), 600);
+                } else {
+                    const msg = (res && res.message) ? res.message : 'Failed to end shift';
+                    if (errEl) {
+                        errEl.textContent = msg;
+                        errEl.classList.remove('hidden');
+                    } else {
+                        showToast(msg, 'error');
+                    }
+                }
+            } catch (err) {
+                const msg = err.message || 'Error communicating with server';
+                if (errEl) {
+                    errEl.textContent = msg;
+                    errEl.classList.remove('hidden');
+                } else {
+                    showToast(msg, 'error');
+                }
+            } finally {
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = `
+                        <span class="material-symbols-outlined text-base" aria-hidden="true">check_circle</span>
+                        <span>Confirm Clock Out</span>
+                    `;
+                }
+            }
+        });
+    }
+
+    // Auto-fetch staff session on initial load
+    fetchStaffSession();
+});
+
+// ── 7. TOAST NOTIFICATION ──
 function showToast(message, type = 'success', duration = 3000) {
     let container = document.getElementById('toast-container');
     if (!container) {
@@ -264,4 +414,3 @@ function showToast(message, type = 'success', duration = 3000) {
     }, duration);
 }
 window.showToast = showToast;
-
