@@ -14,10 +14,6 @@ ob_start();
       <span class="material-symbols-outlined text-lg text-primary" aria-hidden="true">csv</span>
       <span class="text-xs font-bold">Export CSV</span>
     </button>
-    <a href="statement.php" class="btn btn-primary h-11 px-4 flex items-center gap-2" title="Generate Formal Account Statement">
-      <span class="material-symbols-outlined text-lg" aria-hidden="true">description</span>
-      <span class="text-xs font-bold">Account Statement</span>
-    </a>
   </div>
 </div>
 
@@ -88,7 +84,7 @@ ob_start();
   
   <!-- Controls -->
   <div class="p-4 sm:p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-4 items-end">
-    <div class="lg:col-span-5">
+    <div class="lg:col-span-6">
       <label for="search" class="block text-xs font-bold text-text-muted uppercase tracking-widest mb-1.5">Search Transactions</label>
       <div class="relative">
         <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-muted text-lg" aria-hidden="true">search</span>
@@ -109,22 +105,10 @@ ob_start();
       <input type="date" id="to-date" class="form-control h-11 text-sm" onchange="onDateChange()"/>
     </div>
 
-    <div class="lg:col-span-1">
-      <label for="per-page-select" class="block text-xs font-bold text-text-muted uppercase tracking-widest mb-1.5">Rows</label>
-      <select id="per-page-select" class="form-control h-11 text-sm cursor-pointer" onchange="onPerPageChange(this.value)">
-        <option value="10">10</option>
-        <option value="15" selected>15</option>
-        <option value="25">25</option>
-        <option value="50">50</option>
-      </select>
-    </div>
-
-    <div class="lg:col-span-2 flex gap-2">
-      <button class="btn btn-secondary h-11 flex-1 text-xs font-bold" onclick="resetFilters()">
-        <span class="material-symbols-outlined text-base mr-1">restart_alt</span> Reset
-      </button>
-      <button class="btn btn-secondary h-11 px-3" onclick="printStatement()" title="Download / Print Statement">
-        <span class="material-symbols-outlined text-lg" aria-hidden="true">print</span>
+    <div class="lg:col-span-2">
+      <button class="btn btn-secondary w-full h-11 flex items-center justify-center gap-1.5 text-xs font-bold" onclick="resetFilters()">
+        <span class="material-symbols-outlined text-base">restart_alt</span>
+        <span>Reset</span>
       </button>
     </div>
   </div>
