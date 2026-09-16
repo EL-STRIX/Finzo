@@ -75,7 +75,9 @@ class RoleController
         $input = $this->getRequestInput();
 
         $result = $this->service->createRole($input);
-        http_response_code(201);
+        if (!headers_sent()) {
+            http_response_code(201);
+        }
         return ['success' => true, 'message' => 'Role created successfully', 'data' => $result];
     }
 

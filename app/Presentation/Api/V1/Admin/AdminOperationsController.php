@@ -22,6 +22,9 @@ class AdminOperationsController
 
     public function auditLog(?string $id = null, ?string $extra = null): array
     {
+        $adminId = (int)(\App\Shared\Security\Auth::user()['id'] ?? ($_SESSION['admin_id'] ?? 0));
+        $this->security->checkAdminPermission($adminId, 'view_audit_logs');
+
         $filters = [
             'search'      => $this->security->cleanInput($_GET['search'] ?? ''),
             'action_type' => $this->security->cleanInput($_GET['action_type'] ?? 'all'),
@@ -170,6 +173,9 @@ class AdminOperationsController
 
     public function lockedAccounts(?string $id = null, ?string $extra = null): array
     {
+        $adminId = (int)(\App\Shared\Security\Auth::user()['id'] ?? ($_SESSION['admin_id'] ?? 0));
+        $this->security->checkAdminPermission($adminId, 'manage_users');
+
         $filters = [
             'tab'    => $this->security->cleanInput($_GET['tab'] ?? 'locked'),
             'search' => $this->security->cleanInput($_GET['search'] ?? ''),
@@ -186,6 +192,9 @@ class AdminOperationsController
 
     public function lockedAccountDetail(?string $id = null, ?string $extra = null): array
     {
+        $adminId = (int)(\App\Shared\Security\Auth::user()['id'] ?? ($_SESSION['admin_id'] ?? 0));
+        $this->security->checkAdminPermission($adminId, 'manage_users');
+
         $userId = intval(($id ?? $_GET['id'] ?? null) ?? 0);
         if (!$userId) {
             throw new ApiException('User ID is required', 422);
@@ -200,6 +209,9 @@ class AdminOperationsController
 
     public function pendingApprovals(?string $id = null, ?string $extra = null): array
     {
+        $adminId = (int)(\App\Shared\Security\Auth::user()['id'] ?? ($_SESSION['admin_id'] ?? 0));
+        $this->security->checkAdminPermission($adminId, 'approve_application');
+
         $filters = [
             'status'       => $this->security->cleanInput($_GET['status'] ?? 'all'),
             'search'       => $this->security->cleanInput($_GET['search'] ?? ''),
@@ -246,7 +258,8 @@ class AdminOperationsController
 
     public function reviewApplication(?string $id = null, ?string $extra = null): array
     {
-        $adminId = \App\Shared\Security\Auth::user()['id'];
+        $adminId = (int)(\App\Shared\Security\Auth::user()['id'] ?? ($_SESSION['admin_id'] ?? 0));
+        $this->security->checkAdminPermission($adminId, 'approve_application');
 
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $userId = intval($_GET['user_id'] ?? ($id ?? $_GET['id'] ?? null) ?? 0);
@@ -413,6 +426,9 @@ class AdminOperationsController
 
     public function users(?string $id = null, ?string $extra = null): array
     {
+        $adminId = (int)(\App\Shared\Security\Auth::user()['id'] ?? ($_SESSION['admin_id'] ?? 0));
+        $this->security->checkAdminPermission($adminId, 'manage_users');
+
         $filters = [
             'search'    => $this->security->cleanInput($_GET['search'] ?? ''),
             'status'    => $this->security->cleanInput($_GET['status'] ?? 'all'),
@@ -430,6 +446,9 @@ class AdminOperationsController
 
     public function exportUsers(): void
     {
+        $adminId = (int)(\App\Shared\Security\Auth::user()['id'] ?? ($_SESSION['admin_id'] ?? 0));
+        $this->security->checkAdminPermission($adminId, 'manage_users');
+
         $filters = [
             'search'    => $this->security->cleanInput($_GET['search'] ?? ''),
             'status'    => $this->security->cleanInput($_GET['status'] ?? 'all'),
@@ -522,7 +541,8 @@ class AdminOperationsController
         $json = json_decode($raw, true);
         $userId = intval($id ?: ($_POST['user_id'] ?? ($json['user_id'] ?? 0)));
         $adminUser = \App\Shared\Security\Auth::user();
-        $adminId = $adminUser['id'] ?? ($_SESSION['admin_id'] ?? 1);
+        $adminId = (int)($adminUser['id'] ?? ($_SESSION['admin_id'] ?? 1));
+        $this->security->checkAdminPermission($adminId, 'manage_users');
 
         if (!$userId) {
             throw new ApiException('User ID is required', 422);
@@ -569,6 +589,9 @@ class AdminOperationsController
 
     public function userDetail(?string $id = null, ?string $extra = null): array
     {
+        $adminId = (int)(\App\Shared\Security\Auth::user()['id'] ?? ($_SESSION['admin_id'] ?? 0));
+        $this->security->checkAdminPermission($adminId, 'manage_users');
+
         $userId = intval($_GET['user_id'] ?? ($id ?? $_GET['id'] ?? null) ?? 0);
         if (!$userId) {
             throw new ApiException('User ID is required', 422);
@@ -602,7 +625,8 @@ class AdminOperationsController
 
         $transactionId = $id ?? $_POST['transaction_id'] ?? '';
         $reason = $this->security->cleanInput($_POST['reason'] ?? '');
-        $adminId = \App\Shared\Security\Auth::user()['id'] ?? 0;
+        $adminId = (int)(\App\Shared\Security\Auth::user()['id'] ?? ($_SESSION['admin_id'] ?? 0));
+        $this->security->checkAdminPermission($adminId, 'process_transactions');
 
         if (empty($transactionId) || empty($reason)) {
             throw new ApiException('Transaction ID and reason are required', 422);

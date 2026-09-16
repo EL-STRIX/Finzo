@@ -233,11 +233,19 @@
 
         permissions.forEach(p => {
             let placed = false;
-            for (const [catName, permNames] of Object.entries(CATEGORIES)) {
-                if (permNames.includes(p.name)) {
-                    categorized[catName].push(p);
-                    placed = true;
-                    break;
+            if (p.group_name) {
+                if (!categorized[p.group_name]) {
+                    categorized[p.group_name] = [];
+                }
+                categorized[p.group_name].push(p);
+                placed = true;
+            } else {
+                for (const [catName, permNames] of Object.entries(CATEGORIES)) {
+                    if (permNames.includes(p.name)) {
+                        categorized[catName].push(p);
+                        placed = true;
+                        break;
+                    }
                 }
             }
             if (!placed) {

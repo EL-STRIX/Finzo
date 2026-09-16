@@ -13,7 +13,7 @@ class StaffRepository extends BaseRepository implements \App\Domain\Contracts\Re
             FROM accounts a
             JOIN users u ON a.user_id = u.customer_id
             WHERE a.account_no = ?
-        ", [$accountNumber], \App\Domain\Models\Staff::class);
+        ", [$accountNumber]);
     }
 
     public function getUsedDailyLimit(string $accountNumber)
@@ -54,7 +54,7 @@ class StaffRepository extends BaseRepository implements \App\Domain\Contracts\Re
             FROM transactions
             WHERE processed_by_staff_id = ? AND type = '{$deposit}'
                 AND status = '{$completed}' AND DATE(created_at) = CURDATE()
-        ", [$staffId], \App\Domain\Models\Staff::class);
+        ", [$staffId]);
     }
 
     public function getStaffShiftWithdrawals(int $staffId)
@@ -66,7 +66,7 @@ class StaffRepository extends BaseRepository implements \App\Domain\Contracts\Re
             FROM transactions
             WHERE processed_by_staff_id = ? AND type = '{$withdrawal}'
                 AND status = '{$completed}' AND DATE(created_at) = CURDATE()
-        ", [$staffId], \App\Domain\Models\Staff::class);
+        ", [$staffId]);
     }
 
     public function getStaffTotalTransactionsToday(int $staffId)
@@ -103,7 +103,7 @@ class StaffRepository extends BaseRepository implements \App\Domain\Contracts\Re
             WHERE t.processed_by_staff_id = ?
             ORDER BY t.created_at DESC
             LIMIT 10
-        ", [$staffId], \App\Domain\Models\Staff::class);
+        ", [$staffId]);
     }
 
     public function getStaffInfoWithBranch(int $staffId)
@@ -134,12 +134,12 @@ class StaffRepository extends BaseRepository implements \App\Domain\Contracts\Re
     public function findAccountForUpdate(string $accountNumber)
     {
         return $this->fetchOne("
-            SELECT a.id, a.account_no, a.balance, a.status, u.id as owner_user_id, u.customer_id, u.full_name
+            SELECT a.id, a.account_no, a.balance, a.status, a.daily_limit, u.id as owner_user_id, u.customer_id, u.full_name
             FROM accounts a
             JOIN users u ON a.user_id = u.customer_id
             WHERE a.account_no = ?
             FOR UPDATE
-        ", [$accountNumber], \App\Domain\Models\Staff::class);
+        ", [$accountNumber]);
     }
 
     public function creditAccount(int $account_id, float $amount)
@@ -231,12 +231,15 @@ class StaffRepository extends BaseRepository implements \App\Domain\Contracts\Re
                 t.created_at,
                 t.processed_by_staff_id,
                 fa.account_no as from_account_no,
+                fa.account_type as from_account_type,
                 COALESCE(fu.full_name, '') as from_name,
                 ta.account_no as to_account_no,
+                ta.account_type as to_account_type,
                 COALESCE(tu.full_name, '') as to_name,
                 s.staff_id as staff_display_id,
                 s.full_name as staff_name,
-                b.name as branch_name
+                b.name as branch_name,
+                b.branch_code as branch_code
             FROM transactions t
             LEFT JOIN accounts fa ON t.from_account_id = fa.id
             LEFT JOIN users fu ON fa.user_id = fu.customer_id
@@ -245,7 +248,7 @@ class StaffRepository extends BaseRepository implements \App\Domain\Contracts\Re
             LEFT JOIN staff s ON t.processed_by_staff_id = s.id
             LEFT JOIN branches b ON s.branch_id = b.id
             WHERE t.txn_id = ?
-        ", [$transactionId], \App\Domain\Models\Staff::class);
+        ", [$transactionId]);
     }
 
     public function getFullStaffProfile(int $staffId)
@@ -279,12 +282,18 @@ class StaffRepository extends BaseRepository implements \App\Domain\Contracts\Re
 
     public function clockIn(int $staffId, string $staffIdentifier): bool
     {
+        // INSERT a new shift or reset an existing completed/absent shift back to active.
+        // This allows staff to clock back in after clocking out on the same day.
         $stmt = $this->db->prepare("
             INSERT INTO staff_shifts (staff_id, shift_date, clock_in, status)
             VALUES (?, CURDATE(), NOW(), 'active')
-            ON DUPLICATE KEY UPDATE clock_in = IF(clock_in IS NULL, NOW(), clock_in)
+            ON DUPLICATE KEY UPDATE
+                clock_in  = IF(status = 'active', clock_in, NOW()),
+                clock_out = IF(status = 'active', clock_out, NULL),
+                status    = 'active'
         ");
-        return $stmt->execute([$staffIdentifier]);
+        $stmt->execute([$staffIdentifier]);
+        return $stmt->rowCount() > 0;
     }
 
     public function clockOut(int $staffId, string $staffIdentifier, string $notes): bool
@@ -294,6 +303,64 @@ class StaffRepository extends BaseRepository implements \App\Domain\Contracts\Re
             SET clock_out = NOW(), status = 'completed', notes = ?
             WHERE staff_id = ? AND shift_date = CURDATE() AND status = 'active'
         ");
-        return $stmt->execute([$notes, $staffIdentifier]);
+        $stmt->execute([$notes, $staffIdentifier]);
+        return $stmt->rowCount() > 0;
+    }
+
+    public function getCurrentShift(string $staffIdentifier): ?array
+    {
+        $stmt = $this->db->prepare("
+            SELECT id, staff_id, shift_date, clock_in, clock_out, status, notes
+            FROM staff_shifts
+            WHERE staff_id = ? AND shift_date = CURDATE()
+            ORDER BY id DESC
+            LIMIT 1
+        ");
+        $stmt->execute([$staffIdentifier]);
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return $row ?: null;
+    }
+
+    public function getStaffHistoricalStats(int $staffId): array
+    {
+        $deposit = \App\Domain\Enums\TransactionTypeEnum::DEPOSIT->value;
+        $withdrawal = \App\Domain\Enums\TransactionTypeEnum::WITHDRAWAL->value;
+        $completed = \App\Domain\Enums\AccountStatusEnum::COMPLETED->value;
+
+        $dep = $this->fetchOne("
+            SELECT COUNT(*) as count, COALESCE(SUM(amount), 0) as total
+            FROM transactions
+            WHERE processed_by_staff_id = ? AND type = '{$deposit}' AND status = '{$completed}'
+        ", [$staffId]);
+
+        $with = $this->fetchOne("
+            SELECT COUNT(*) as count, COALESCE(SUM(amount), 0) as total
+            FROM transactions
+            WHERE processed_by_staff_id = ? AND type = '{$withdrawal}' AND status = '{$completed}'
+        ", [$staffId]);
+
+        $stmtTotal = $this->db->prepare("
+            SELECT COUNT(*) FROM transactions
+            WHERE processed_by_staff_id = ? AND status = '{$completed}'
+        ");
+        $stmtTotal->execute([$staffId]);
+        $totalAllTime = (int)$stmtTotal->fetchColumn();
+
+        $stmtMonth = $this->db->prepare("
+            SELECT COUNT(*) FROM transactions
+            WHERE processed_by_staff_id = ? AND status = '{$completed}'
+                AND MONTH(created_at) = MONTH(CURDATE()) AND YEAR(created_at) = YEAR(CURDATE())
+        ");
+        $stmtMonth->execute([$staffId]);
+        $totalMonth = (int)$stmtMonth->fetchColumn();
+
+        return [
+            'deposits_count'    => (int)($dep['count'] ?? 0),
+            'deposits_total'    => (float)($dep['total'] ?? 0),
+            'withdrawals_count' => (int)($with['count'] ?? 0),
+            'withdrawals_total' => (float)($with['total'] ?? 0),
+            'total_all_time'    => $totalAllTime,
+            'total_this_month'  => $totalMonth
+        ];
     }
 }

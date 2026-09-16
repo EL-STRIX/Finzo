@@ -148,7 +148,7 @@ class AdminBranchController
 
     public function departments(): array
     {
-        $this->security->enforcePermission('view_branches');
+        $this->security->enforcePermission('add_branch');
         return $this->service->getDepartmentAnalytics();
     }
 }

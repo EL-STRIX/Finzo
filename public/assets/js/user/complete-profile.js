@@ -229,6 +229,46 @@ function validateStep(step) {
     
     formValues['id-type'] = idType;
     formValues['id-number'] = idNum;
+  } else if (step === 4) {
+    const branchEl = document.getElementById('branch');
+    const branch = branchEl ? branchEl.value.trim() : '';
+    if (!branch) {
+      showToast('Please select a servicing branch', 'error');
+      const branchContainer = document.getElementById('branch-dropdown-container');
+      if (branchContainer) branchContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return false;
+    }
+
+    const pinEl = document.getElementById('txn-pin');
+    const confirmPinEl = document.getElementById('confirm-txn-pin');
+    const txnPin = pinEl ? pinEl.value.trim() : '';
+    const confirmTxnPin = confirmPinEl ? confirmPinEl.value.trim() : '';
+
+    if (!txnPin) {
+      showToast('Please set your 4-digit transaction PIN', 'error');
+      if (pinEl) pinEl.focus();
+      return false;
+    }
+    if (!/^\d{4}$/.test(txnPin)) {
+      showToast('Transaction PIN must be exactly 4 numeric digits', 'error');
+      if (pinEl) pinEl.focus();
+      return false;
+    }
+    if (txnPin !== confirmTxnPin) {
+      showToast('Transaction PIN and Confirm PIN do not match', 'error');
+      if (confirmPinEl) confirmPinEl.focus();
+      return false;
+    }
+
+    const termsEl = document.getElementById('terms');
+    if (!termsEl || !termsEl.checked) {
+      showToast('You must agree to the Terms of Service & Privacy Policy', 'error');
+      if (termsEl) termsEl.focus();
+      return false;
+    }
+
+    formValues['branch'] = branch;
+    formValues['txn_pin'] = txnPin;
   }
   return true;
 }
@@ -249,6 +289,20 @@ function prevStep(step) {
   updateProgress();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
+
+function togglePinVisibility(inputId, iconId) {
+  const el = document.getElementById(inputId);
+  const icon = document.getElementById(iconId);
+  if (!el) return;
+  if (el.type === 'password') {
+    el.type = 'text';
+    if (icon) icon.textContent = 'visibility_off';
+  } else {
+    el.type = 'password';
+    if (icon) icon.textContent = 'visibility';
+  }
+}
+window.togglePinVisibility = togglePinVisibility;
 
 function updateProgress() {
   const progressBar = document.getElementById('progress-bar');
@@ -297,25 +351,13 @@ async function submitProfile() {
   if (!validateStep(1)) { goToStep(1); return; }
   if (!validateStep(2)) { goToStep(2); return; }
   if (!validateStep(3)) { goToStep(3); return; }
+  if (!validateStep(4)) { return; }
 
   const type = document.querySelector('input[name="account-type"]:checked')?.value || 'savings';
   const branchEl = document.getElementById('branch');
   const branch = branchEl ? branchEl.value.trim() : '';
-  const termsEl = document.getElementById('terms');
-  const terms = termsEl ? termsEl.checked : false;
-
-  if (!branch) {
-    showToast('Please select a servicing branch', 'error');
-    const branchContainer = document.getElementById('branch-dropdown-container');
-    if (branchContainer) branchContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    return;
-  }
-
-  if (!terms) {
-    showToast('You must agree to the Terms of Service & Privacy Policy', 'error');
-    if (termsEl) termsEl.focus();
-    return;
-  }
+  const pinEl = document.getElementById('txn-pin');
+  const txnPin = pinEl ? pinEl.value.trim() : '';
 
   const btn = document.getElementById('submit-btn');
   if (btn) {
@@ -344,7 +386,7 @@ async function submitProfile() {
     formData.append('account_type', type);
     formData.append('branch', branch);
     formData.append('initial_deposit', '500');
-    formData.append('txn_pin', '1234');
+    formData.append('txn_pin', txnPin);
 
     if (profileFile) formData.append('profile_photo', profileFile);
     if (frontFile) formData.append('id_front', frontFile);

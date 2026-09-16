@@ -29,6 +29,7 @@ $router->post('/api/v1/auth/login', [AuthController::class, 'login']);
 $router->post('/api/v1/auth/admin-login', [AuthController::class, 'adminLogin']);
 $router->post('/api/v1/auth/staff-login', [AuthController::class, 'staffLogin']);
 $router->post('/api/v1/auth/logout', [AuthController::class, 'logout']);
+$router->get('/api/v1/auth/logout', [AuthController::class, 'logout']);
 $router->post('/api/v1/auth/register', [AuthController::class, 'register']);
 $router->post('/api/v1/auth/forgot-password', [AuthController::class, 'forgotPassword']);
 $router->post('/api/v1/auth/reset-password', [AuthController::class, 'resetPassword']);
@@ -196,6 +197,35 @@ $router->get('/api/v1/staff-portal/receipt', [StaffController::class, 'receipt']
 $router->get('/api/v1/staff-portal/profile', [StaffController::class, 'profile'], [StaffAuthMiddleware::class]);
 $router->post('/api/v1/staff-portal/profile', [StaffController::class, 'profile'], [StaffAuthMiddleware::class]);
 $router->post('/api/v1/staff-portal/change-password', [StaffController::class, 'changePassword'], [StaffAuthMiddleware::class]);
+
+// Staff Legacy & Direct Route Aliases
+$router->get('/api/v1/staff/dashboard', [StaffController::class, 'dashboard'], [StaffAuthMiddleware::class]);
+$router->get('/api/staff/dashboard.php', [StaffController::class, 'dashboard'], [StaffAuthMiddleware::class]);
+$router->post('/api/v1/staff-portal/clock-in', [StaffController::class, 'clockIn'], [StaffAuthMiddleware::class]);
+$router->post('/api/v1/staff-portal/clock-out', [StaffController::class, 'clockOut'], [StaffAuthMiddleware::class]);
+$router->post('/api/v1/staff/deposit', [StaffController::class, 'deposit'], [StaffAuthMiddleware::class]);
+$router->post('/api/staff/deposit.php', [StaffController::class, 'deposit'], [StaffAuthMiddleware::class]);
+$router->post('/api/v1/staff/withdrawal', [StaffController::class, 'withdrawal'], [StaffAuthMiddleware::class]);
+$router->post('/api/staff/withdrawal.php', [StaffController::class, 'withdrawal'], [StaffAuthMiddleware::class]);
+$router->post('/api/v1/staff-portal/withdraw', [StaffController::class, 'withdrawal'], [StaffAuthMiddleware::class]);
+$router->post('/api/v1/staff/withdraw', [StaffController::class, 'withdrawal'], [StaffAuthMiddleware::class]);
+$router->post('/api/staff/withdraw.php', [StaffController::class, 'withdrawal'], [StaffAuthMiddleware::class]);
+$router->get('/api/v1/staff/receipt', [StaffController::class, 'receipt'], [StaffAuthMiddleware::class]);
+$router->get('/api/v1/staff/receipt.php', [StaffController::class, 'receipt'], [StaffAuthMiddleware::class]);
+$router->get('/api/staff/receipt.php', [StaffController::class, 'receipt'], [StaffAuthMiddleware::class]);
+$router->get('/api/v1/staff/history', [StaffController::class, 'history'], [StaffAuthMiddleware::class]);
+$router->get('/api/v1/staff/history.php', [StaffController::class, 'history'], [StaffAuthMiddleware::class]);
+$router->get('/api/staff/history.php', [StaffController::class, 'history'], [StaffAuthMiddleware::class]);
+$router->get('/api/staff/staff-profile.php', [StaffController::class, 'profile'], [StaffAuthMiddleware::class]);
+$router->post('/api/staff/staff-profile.php', [StaffController::class, 'profile'], [StaffAuthMiddleware::class]);
+$router->post('/api/staff/update-profile.php', [StaffController::class, 'profile'], [StaffAuthMiddleware::class]);
+$router->post('/api/staff/upload-photo.php', [StaffController::class, 'profile'], [StaffAuthMiddleware::class]);
+$router->post('/api/staff/change-password.php', [StaffController::class, 'changePassword'], [StaffAuthMiddleware::class]);
+$router->post('/api/v1/staff-portal/logout', [AuthController::class, 'logout']);
+$router->get('/api/v1/staff-portal/logout', [AuthController::class, 'logout']);
+$router->post('/api/v1/staff/logout', [AuthController::class, 'logout']);
+$router->get('/api/v1/staff/logout', [AuthController::class, 'logout']);
+$router->get('/api/staff/logout.php', [AuthController::class, 'logout']);
 
 return $router;
 

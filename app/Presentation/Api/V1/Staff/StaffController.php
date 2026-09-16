@@ -54,8 +54,12 @@ class StaffController
         }
 
         $staffId = $_SESSION['staff_id'];
+        $raw = file_get_contents('php://input');
+        $input = json_decode($raw, true);
+        $data = (is_array($input) && !empty($input)) ? $input : $_POST;
+
         $validator = new \App\Presentation\Validators\StaffValidator();
-        $validated = $validator->validatePasswordUpdate($_POST);
+        $validated = $validator->validatePasswordUpdate($data);
         $currentPassword = $validated['current_password'];
         $newPassword = $validated['new_password'];
 
@@ -83,12 +87,13 @@ class StaffController
             $data = $this->service->getDashboardData($staffId);
 
             json_response([
-                'success' => true,
-                'staff' => $data['staff'],
-                'shift_stats' => $data['shift_stats'],
+                'success'         => true,
+                'staff'           => $data['staff'],
+                'current_shift'   => $data['current_shift'],
+                'shift_stats'     => $data['shift_stats'],
                 'recent_activity' => $data['recent_activity'],
-                'greeting' => get_greeting(),
-                'csrf_token' => $_SESSION['csrf_token'] ?? ''
+                'greeting'        => get_greeting(),
+                'csrf_token'      => $_SESSION['csrf_token'] ?? ''
             ]);
         } catch (Exception $e) {
             \App\Shared\Core\Logging\Logger::getInstance()->error('Staff dashboard error: ', ['context' => $e->getMessage()]);
@@ -102,15 +107,16 @@ class StaffController
             json_response(['success' => false, 'message' => 'Method not allowed'], 405);
         }
 
-
+        $raw = file_get_contents('php://input');
+        $input = json_decode($raw, true);
+        $data = (is_array($input) && !empty($input)) ? $input : $_POST;
 
         $staffId = $_SESSION['staff_id'];
         $validator = new \App\Presentation\Validators\StaffValidator();
-        $validated = $validator->validateDeposit($_POST);
+        $validated = $validator->validateDeposit($data);
         $accountNumber = $validated['account_no'];
         $amount = $validated['amount'];
         $reference_note = $validated['reference_note'];
-
 
         try {
             $data = $this->service->processDeposit($staffId, $accountNumber, $amount, $reference_note);
@@ -122,7 +128,7 @@ class StaffController
                 'account_no'     => $data['account_no'],
                 'amount'         => $data['amount'],
                 'new_balance'    => $data['new_balance'],
-                'redirect'       => '/public/views/staff/staff-receipt.html?id=' . $data['transaction_id']
+                'redirect'       => '/Finzo/public/views/staff/staff-receipt.php?id=' . $data['transaction_id'] . '&print=1'
             ]);
         } catch (\Exception $e) {
             throw $e;
@@ -159,7 +165,8 @@ class StaffController
                 'total'        => $data['total'],
                 'pages'        => $data['pages'],
                 'current_page' => $filters['page'],
-                'per_page'     => $filters['per_page']
+                'per_page'     => $filters['per_page'],
+                'stats'        => $data['stats'] ?? null
             ]);
         } catch (\Exception $e) {
             throw $e;
@@ -181,13 +188,16 @@ class StaffController
             $transaction = $this->service->getReceipt($transactionId);
 
             $customer_name = '';
-            $accountNumber    = '';
+            $accountNumber = '';
+            $accountType   = 'Savings Account';
             if ($transaction['type'] === \App\Domain\Enums\TransactionTypeEnum::DEPOSIT->value) {
                 $customer_name = $transaction['to_name'];
-                $accountNumber    = $transaction['to_account_no'];
+                $accountNumber = $transaction['to_account_no'];
+                $accountType   = !empty($transaction['to_account_type']) ? ucwords(str_replace('_', ' ', $transaction['to_account_type'])) . ' Account' : 'Savings Account';
             } elseif ($transaction['type'] === \App\Domain\Enums\TransactionTypeEnum::WITHDRAWAL->value) {
                 $customer_name = $transaction['from_name'];
-                $accountNumber    = $transaction['from_account_no'];
+                $accountNumber = $transaction['from_account_no'];
+                $accountType   = !empty($transaction['from_account_type']) ? ucwords(str_replace('_', ' ', $transaction['from_account_type'])) . ' Account' : 'Savings Account';
             }
 
             json_response([
@@ -203,13 +213,15 @@ class StaffController
                     'date'           => $transaction['created_at'],
                     'customer_name'  => $customer_name,
                     'account_no'     => $accountNumber,
+                    'account_type'   => $accountType,
                     'from_account'   => $transaction['from_account_no'],
                     'from_name'      => $transaction['from_name'],
                     'to_account'     => $transaction['to_account_no'],
                     'to_name'        => $transaction['to_name'],
                     'staff_id'       => $transaction['staff_display_id'],
                     'staff_name'     => $transaction['staff_name'],
-                    'branch_name'    => $transaction['branch_name']
+                    'branch_name'    => $transaction['branch_name'] ?? 'Finzo Main Branch',
+                    'branch_code'    => $transaction['branch_code'] ?? 'FNZ-HQ'
                 ]
             ]);
         } catch (\Exception $e) {
@@ -237,23 +249,22 @@ class StaffController
         }
 
         if ($method === 'POST') {
+            $raw = file_get_contents('php://input');
+            $input = json_decode($raw, true);
+            $data = (is_array($input) && !empty($input)) ? $input : $_POST;
 
+            $file = null;
+            if (\App\Shared\Core\Validation\Validator::isSet($_FILES['profile_photo']) && $_FILES['profile_photo']['error'] === UPLOAD_ERR_OK) {
+                $file = $_FILES['profile_photo'];
+            } elseif (\App\Shared\Core\Validation\Validator::isSet($_FILES['photo']) && $_FILES['photo']['error'] === UPLOAD_ERR_OK) {
+                $file = $_FILES['photo'];
+            }
 
-            $file = (\App\Shared\Core\Validation\Validator::isSet($_FILES['profile_photo']) && $_FILES['profile_photo']['error'] === UPLOAD_ERR_OK) ? $_FILES['profile_photo'] : null;
-            
             $validator = new \App\Presentation\Validators\StaffValidator();
-            $validated = $validator->validateProfileUpdate($_POST, $file);
-            $phone = $validated['phone'];
-            $emergency_contact_name = $validated['emergency_contact_name'];
-            $emergency_contact_phone = $validated['emergency_contact_phone'];
-
+            $validated = $validator->validateProfileUpdate($data, $file);
 
             try {
-                $updated = $this->service->updateProfile($staffId, [
-                    'phone' => $phone,
-                    'emergency_contact_name' => $emergency_contact_name,
-                    'emergency_contact_phone' => $emergency_contact_phone
-                ], $file);
+                $updated = $this->service->updateProfile($staffId, $validated, $file);
 
                 json_response([
                     'success' => true,
@@ -274,15 +285,16 @@ class StaffController
             json_response(['success' => false, 'message' => 'Method not allowed'], 405);
         }
 
-
+        $raw = file_get_contents('php://input');
+        $input = json_decode($raw, true);
+        $data = (is_array($input) && !empty($input)) ? $input : $_POST;
 
         $staffId = $_SESSION['staff_id'];
         $validator = new \App\Presentation\Validators\StaffValidator();
-        $validated = $validator->validateWithdrawal($_POST);
+        $validated = $validator->validateWithdrawal($data);
         $accountNumber = $validated['account_no'];
         $amount = $validated['amount'];
         $identity_notes = $validated['identity_notes'];
-
 
         try {
             $data = $this->service->processWithdrawal($staffId, $accountNumber, $amount, $identity_notes);
@@ -294,7 +306,7 @@ class StaffController
                 'account_no'     => $data['account_no'],
                 'amount'         => $data['amount'],
                 'new_balance'    => $data['new_balance'],
-                'redirect'       => '/public/views/staff/staff-receipt.html?id=' . $data['transaction_id']
+                'redirect'       => '/Finzo/public/views/staff/staff-receipt.php?id=' . $data['transaction_id'] . '&print=1'
             ]);
         } catch (\Exception $e) {
             throw $e;
@@ -323,7 +335,9 @@ class StaffController
         }
 
         $staffId = $_SESSION['staff_id'];
-        $notes = $this->security->cleanInput($_POST['notes'] ?? '');
+        $raw = file_get_contents('php://input');
+        $input = json_decode($raw, true);
+        $notes = $this->security->cleanInput((is_array($input) && isset($input['notes'])) ? $input['notes'] : ($_POST['notes'] ?? ''));
         
         try {
             $this->service->clockOut($staffId, $notes);

@@ -44,7 +44,7 @@ class CompleteUserProfileAction
             'id_number' => $this->security->cleanInput($postData['id_number'] ?? $postData['id-number'] ?? ''),
             'account_type' => $this->security->cleanInput($postData['account_type'] ?? $postData['account-type'] ?? 'savings'),
             'initial_deposit' => !empty($postData['initial_deposit']) ? floatval($postData['initial_deposit']) : 500.0,
-            'txn_pin' => !empty($postData['txn_pin']) ? (string)$postData['txn_pin'] : '1234',
+            'txn_pin' => isset($postData['txn_pin']) ? trim((string)$postData['txn_pin']) : '',
             'branch_id' => !empty($postData['branch']) ? intval($postData['branch']) : (!empty($postData['branch_id']) ? intval($postData['branch_id']) : null),
         ];
 
@@ -87,6 +87,20 @@ class CompleteUserProfileAction
                 $this->userService->updateAccountResubmission($data['account_type'], $data['initial_deposit'], $txn_pin_hash, $customer_id_str);
             } else {
                 $this->userService->insertPendingAccount($customer_id_str, 'PENDING_' . $userId, $data['account_type'], $data['initial_deposit'], $txn_pin_hash);
+            }
+
+            try {
+                $checkSec = $pdo->prepare("SELECT user_id FROM user_security_settings WHERE user_id = ?");
+                $checkSec->execute([$userId]);
+                if ($checkSec->fetchColumn()) {
+                    $updSec = $pdo->prepare("UPDATE user_security_settings SET transaction_pin_hash = ?, updated_at = NOW() WHERE user_id = ?");
+                    $updSec->execute([$txn_pin_hash, $userId]);
+                } else {
+                    $insSec = $pdo->prepare("INSERT INTO user_security_settings (user_id, transaction_pin_hash, updated_at) VALUES (?, ?, NOW())");
+                    $insSec->execute([$userId, $txn_pin_hash]);
+                }
+            } catch (\Throwable $e) {
+                // Silently ignore if optional table doesn't exist
             }
 
             $year = date('Y');
