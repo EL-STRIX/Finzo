@@ -4,14 +4,17 @@
 
 ---
 
-## 1. Master Reports & Engineering Studies
+## 1. Getting Started & Master Reports
 
 | Document | Description |
 |---|---|
+| [Local Setup & Installation Guide](../SETUP_GUIDE.md) | Complete step-by-step humanized guide to running Finzo locally from scratch |
 | [Project Engineering Report](reports/PROJECT_REPORT.md) | Comprehensive architecture, auth flows, and engineering specifications |
 | [Engineering Case Study](case-study/FINZO_CASE_STUDY.md) | In-depth architectural case study and design rationale |
 | [Security Audit](reports/Security-Audit.md) | Security architecture, threat modeling, and defensive boundaries |
 | [Accessibility Audit](reports/Accessibility-Audit.md) | Formal WCAG 2.2 AA audit and verification |
+| [UI Visual Audit](reports/UI-Audit.md) | User interface visual consistency, responsive design, and layout audit |
+| [UX Journey Audit](reports/UX-Audit.md) | User experience flow, friction points, and interaction state audit |
 
 ---
 

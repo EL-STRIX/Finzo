@@ -48,7 +48,9 @@ docs/
 └── reports/
     ├── PROJECT_REPORT.md          # Master Project Engineering & Modernization Report
     ├── Security-Audit.md          # Security & Vulnerability Assessment Report
-    └── Accessibility-Audit.md     # WCAG 2.2 AA Accessibility Conformance Audit
+    ├── Accessibility-Audit.md     # WCAG 2.2 AA Accessibility Conformance Audit
+    ├── UI-Audit.md                # UI Visual Conformance & Responsive Audit
+    └── UX-Audit.md                # User Experience Journey & Flow Audit
 ```
 
 ---
