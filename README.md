@@ -10,71 +10,29 @@
 [![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
 
 <p align="center">
-  <strong>A modern, high-performance, and security-first enterprise banking management platform.</strong><br>
-  Built with native PHP 8.4, MySQL 8.0, and vanilla JavaScript following Clean Architecture principles — delivering full core-banking workflows without the overhead of heavy enterprise frameworks.
+  <strong>A modern, high-performance, and security-first enterprise banking platform.</strong><br>
+  Engineered with native PHP 8.4, MySQL 8.0, and vanilla JavaScript following Clean Architecture principles — delivering full-scale core banking capabilities with zero framework bloat.
 </p>
 
-[**🚀 Quick Setup Guide**](SETUP_GUIDE.md) • [**📚 Documentation Hub**](docs/INDEX.md) • [**🏛️ Architecture Overview**](docs/ARCHITECTURE.md) • [**🔐 Security & Compliance**](docs/security/README.md) • [**🧪 Testing Suite**](tests/)
+[**🚀 Setup & Installation Guide**](SETUP_GUIDE.md) • [**📚 Documentation Hub**](docs/INDEX.md) • [**🏛️ Architecture Overview**](docs/ARCHITECTURE.md) • [**🔐 Security Standards**](docs/security/README.md) • [**🧪 Testing Suite**](tests/)
 
 </div>
 
 ---
 
-## 🌟 Executive Summary
+## 🌟 About Finzo
 
-**Finzo** is a full-featured core banking and financial operations platform engineered to digitize and unify banking management. From day-to-day retail customer transactions to branch teller operations and executive compliance oversight, Finzo provides an end-to-end, ACID-compliant financial ecosystem.
+**Finzo** is an enterprise-grade core banking and financial operations management platform designed to streamline banking processes for retail customers, branch tellers, and administrative executives alike.
 
-Designed from the ground up on **Clean Architecture (Domain-Driven Design concepts)**, Finzo completely decouples presentation, business services, domain models, and infrastructure repositories. This ensures that every ledger transaction, KYC application, and role-based action is strictly validated, secure by default, and covered by automated regression tests.
+Rather than relying on heavy, opinionated frameworks, Finzo is built on **pure PHP 8.4 and Vanilla ES6+ JavaScript**, strictly adhering to **Clean Architecture** and **Domain-Driven Design (DDD)** concepts. This design yields sub-millisecond API response times, transparent business logic, rock-solid ACID financial atomicity, and uncompromising data security.
 
----
-
-## 💎 Core Highlights
-
-- **🏛️ Clean Architecture & DDD:** Strict separation of concerns across Presentation (Controllers & Middleware), Application (Actions & Services), Domain (Entities & Enums), and Infrastructure (Repositories & Adapters).
-- **🔒 Enterprise Security Posture:** OWASP ASVS Top-10 defensive mitigations, Bcrypt password hashing, AES-256 encrypted PII storage, session hijacking protection, CSRF token validation, and IP-aware rate limiting.
-- **⚡ Zero Framework Lock-In:** Built on lightweight, native PHP 8.4 and Vanilla ES6+ JavaScript. Ultra-fast page loads, sub-millisecond API responses, and minimal server overhead.
-- **💼 Double-Entry Ledger & ACID Safety:** Every monetary transfer, deposit, and withdrawal is wrapped in atomic database transactions (`BEGIN`, `COMMIT`, `ROLLBACK`) with idempotency locks.
-- **🛡️ Automated BCDR & Encryption at Rest:** Integrated Disaster Recovery manager featuring AES-256 encrypted database backup creation, point-in-time restoration, and ledger balance integrity audits.
-- **🧪 100% Automated Test Coverage:** 196+ unit, integration, and security tests verified via PHPUnit with zero failures.
+Whether managing high-volume inter-account transfers, onboarding users through digital KYC workflows, or executing encrypted disaster recovery snapshots, Finzo provides an enterprise-ready foundation out of the box.
 
 ---
 
-## 👥 Multi-Role Portal Experiences
+## 🏛️ System Architecture
 
-Finzo delivers purpose-built, dedicated portals for the three core stakeholders of a financial institution:
-
-### 1. 👤 Retail Customer Banking Portal
-*Designed for seamless, self-service personal wealth management.*
-- **Live Account Overview:** Real-time balance tracking, account details, and localized currency formatting.
-- **Privacy-First Balance Obfuscation:** One-click balance masking in public spaces, unlocked only via 4-digit Security PIN.
-- **Instant Intra-Bank Transfers:** ACID-safe money transfers with instant beneficiary name resolution and duplicate-prevention locks.
-- **Beneficiary Address Book:** Speed-dial favorite payees, manage beneficiary lists, and save account numbers.
-- **KYC Application Workflow:** Tier-1 onboarding pipeline with photo upload, government ID verification (front/back), and review state tracking.
-- **Interactive Mini-Ledger:** Granular transaction filters, debit/credit color indicators, and paginated statement exports.
-- **Security Command Center:** Password resets, active session revocation, 2FA authenticator toggle, and 4-digit transaction PIN management.
-- **Adaptive Visual Themes:** Instant dark and light mode UI toggling with browser-cached preferences.
-
-### 2. 🏢 Branch Staff & Teller Operations Desk
-*Empowering branch officers with real-time customer servicing tools.*
-- **Over-the-Counter Cash Operations:** Instant manual cash deposits and teller withdrawals with customer PIN verification.
-- **Customer Lookup Engine:** Rapid customer identity lookup, KYC compliance status check, and active account confirmation.
-- **Branch Operational Ledger:** Shift-based deposit/withdrawal summaries and automated audit receipt logging.
-- **Staff Security & Profile:** Dedicated staff credential management and branch assignment isolation.
-
-### 3. 👑 Executive & Administrator Management Console
-*Complete visibility, branch governance, and platform-wide control.*
-- **Global Liquidity & KPI Analytics:** Total customer base, active vs. pending accounts, global deposits, and system liquidity metrics.
-- **Branch Governance:** Geographic branch creation, state management, and status toggling.
-- **Staff Provisioning:** Creation, assignment, and revocation of branch teller and manager accounts.
-- **KYC Verification Queue:** Review pending customer applications, inspect uploaded documents, and approve or reject with custom feedback.
-- **Audit Trails & Security Logs:** Immutable chronological log of all administrative and financial actions.
-- **BCDR Backup & Recovery Station:** Execute full or schema-only AES-256 encrypted database snapshots and verify ledger integrity directly from the CLI/UI.
-
----
-
-## 🏗️ System Architecture
-
-Finzo follows a decoupled, API-first Clean Architecture pattern:
+Finzo enforces a strict separation of concerns across four decoupled architectural layers:
 
 ```text
                      ┌────────────────────────────────────────┐
@@ -105,7 +63,7 @@ Finzo follows a decoupled, API-first Clean Architecture pattern:
                      │         Infrastructure Layer           │
                      │   (PDO Adapters, QueryStore, Storage)  │
                      └───────────────────┬────────────────────┘
-                                         │ SQL / Prepared Statements
+                                         │ Prepared Statements
                                          ▼
                      ┌────────────────────────────────────────┐
                      │          MySQL 8.0 Database            │
@@ -113,160 +71,161 @@ Finzo follows a decoupled, API-first Clean Architecture pattern:
                      └────────────────────────────────────────┘
 ```
 
-### Folder Structure
-```text
-Finzo/
-├── app/
-│   ├── Application/          # Application business logic (Services, Actions, DTOs, Jobs)
-│   ├── Domain/               # Domain models, Enums, Contracts, and Domain Exceptions
-│   ├── Infrastructure/       # Database Repositories, Query Stores, and File Storage
-│   ├── Presentation/         # HTTP Controllers, Security Middleware, and Validators
-│   └── Shared/               # Core Framework (Router, IoC Container, Security, Cache, Queue)
-├── bin/                      # CLI tools (bin/finzo migration/seed runner, check-coverage.php)
-├── bootstrap/                # Application initialization and dependency injection setup
-├── config/                   # Centralized configuration (db.php, mailer.php, config.php)
-├── database/                 # Migrations, seeders, and BcdrManager backup engine
-├── docs/                     # Comprehensive engineering reports, API specs, and audits
-├── public/                   # Public web root (index.php, CSS design system, JS components, Views)
-├── routes/                   # Route registry mapping all HTTP verbs to controllers (routes/api.php)
-├── storage/                  # Logs, encrypted backups, file cache, and runtime sessions
-├── tests/                    # PHPUnit Unit, Integration, Banking Atomicity, and Security tests
-├── SETUP_GUIDE.md            # Complete step-by-step local setup & installation guide
-├── composer.json             # Autoloading configuration & developer tooling dependencies
-├── phpcs.xml                 # PSR-12 code style ruleset definition
-├── phpstan.neon              # Static analysis configuration
-└── phpunit.xml               # Automated test suite runner configuration
-```
+---
+
+## ⚡ Complete Feature Directory
+
+Finzo delivers an extensive, production-ready feature matrix organized by portal and domain:
+
+### 👤 1. Retail Customer Banking Portal
+- **Real-Time Account Dashboard:** Live multi-account balance overview with localized currency formatting and metadata.
+- **One-Click Privacy Balance Mask:** Instantly obfuscates balances on screen for privacy in public spaces.
+- **4-Digit PIN Security Gate:** Protects balance reveals and financial transactions with dedicated PIN authentication.
+- **Instant Intra-Bank Transfers:** Real-time money routing between accounts with automated sender and receiver ledger updates.
+- **Beneficiary Resolution Preview:** Automatically resolves and verifies the recipient's full name before payment confirmation.
+- **Beneficiary Speed-Dial & Address Book:** Save, star-favorite, and manage frequently used payees for rapid fund transfers.
+- **Duplicate Transfer Protection:** 2-minute idempotency window preventing accidental double-clicks and repeated transfers.
+- **Daily Transfer Limit Engine:** Configurable daily spending limits with live tracking of remaining daily transfer quota.
+- **Digital KYC Onboarding Pipeline:** Structured onboarding workflow capturing personal, employment, and income details.
+- **Government ID Document Upload:** Secure file upload for identity cards (front and back) with server-side validation.
+- **Avatar & Profile Photo Manager:** Dynamic avatar management with real-time profile picture previews and cropping.
+- **Application Status Tracker:** Real-time visual tracking for *Pending*, *Under Review*, *Approved*, and *Rejected* KYC states.
+- **Interactive Mini-Ledger:** Searchable, paginated transaction history table with debit/credit visual indicators.
+- **Transaction Filtering:** Filter transaction records by date range, transaction type, status, or keyword.
+- **Downloadable Account Statements:** Instant export of paginated banking statements to CSV and printable view.
+- **Adaptive Dark & Light Mode:** Seamless theme toggling with client-side localStorage preference persistence.
+- **In-App Notification Center:** Dropdown alert center with live unread badge counters and a "Mark all as read" button.
+- **Two-Factor Authentication (2FA):** TOTP authenticator integration with dynamic secret generation and QR setup.
+- **Active Session Security Manager:** View all active login sessions with IP/device info and revoke unauthorized devices.
+- **Password Reset & Recovery:** Secure forgotten password recovery workflows powered by time-limited email tokens.
+- **Interactive Toast Notifications:** Micro-animated toast alerts delivering instant visual feedback for all operations.
+
+---
+
+### 🏢 2. Branch Staff & Teller Workstation
+- **Dedicated Teller Portal:** Segregated, role-restricted login station built exclusively for branch bank officers.
+- **Customer Quick-Lookup Engine:** Instant customer discovery via Customer ID, Account Number, Phone, or Name.
+- **Live Account Status Verification:** Real-time verification of customer account eligibility, KYC status, and balance limits.
+- **Over-the-Counter Cash Deposits:** Teller desk module for processing physical cash deposits with immediate balance credit.
+- **Over-the-Counter Cash Withdrawals:** Physical cash withdrawal processing requiring customer 4-digit PIN verification.
+- **Branch Operational Journal:** Live shift ledger tracking all cash movements processed by the logged-in teller.
+- **Digital Transaction Receipts:** Automated transaction receipt generation complete with unique reference tracking IDs.
+- **Branch Customer KYC Intake:** Teller assistance module for reviewing customer documentation and verifying physical IDs.
+- **Staff Security & Profile Desk:** Dedicated staff credential management and localized security settings.
+- **Branch Data Isolation:** Enforces strict branch-level scoping so staff can only service accounts within their jurisdiction.
+
+---
+
+### 👑 3. Administrator & Executive Governance
+- **Executive KPI Analytics Dashboard:** Real-time metrics on total liquidity, active accounts, daily volume, and system health.
+- **Geographic Branch Manager:** Complete branch management module to create, edit, locate, and toggle branch statuses.
+- **Staff Account Provisioning:** Provision teller and manager accounts and assign them to specific branch locations.
+- **Staff Access Suspension & Revocation:** One-click suspension or permanent revocation of compromised staff credentials.
+- **Central KYC Verification Queue:** Review submitted KYC identity applications, inspect ID documents, and approve or reject.
+- **KYC Custom Rejection Notes:** Send structured rejection feedback with clear instructions for document resubmission.
+- **Immutable Audit Trail Engine:** Comprehensive, tamper-proof logging of all administrative actions, logins, and transfers.
+- **Automated BCDR Backup Manager:** One-click creation of AES-256 encrypted database snapshots stored safely at rest.
+- **Point-in-Time Database Restore:** Restore database state directly from encrypted backups with automatic integrity checks.
+- **Double-Entry Balance Validator:** Diagnostic tool validating that total debits match total credits across all journal lines.
+- **Anti-Bruteforce Lockout Engine:** Automatically locks accounts after repeated failed login attempts to prevent attacks.
+- **Security Question Recovery:** Super Admin emergency unlock flow using cryptographic security question answers.
+- **Global Settings Configuration:** Live adjustment of interest rates, minimum deposits, transfer limits, and maintenance modes.
+- **Financial & Demographic CSV Exports:** Generate and download high-level analytical CSV reports for compliance audits.
+- **Customer Support Ticket Queue:** Centralized ticketing console to prioritize, assign, and reply to user inquiries.
+
+---
+
+### 🛡️ 4. Security, Integrity & Core Architecture
+- **Headless API-First Architecture:** Clean RESTful backend responding with standardized JSON response envelopes.
+- **IoC Dependency Injection Container:** Lightweight reflection container supporting automatic constructor dependency resolution.
+- **Centralized Declarative Router:** High-speed regex router handling GET, POST, PUT, PATCH, and DELETE verbs.
+- **Double-Entry Ledger Bookkeeping:** Accounting engine enforcing strict double-entry debits and credits for all transactions.
+- **ACID-Compliant Transaction Wrapping:** Guarantees database atomicity and auto-rollback on any mid-operation failure.
+- **Bcrypt Password Cryptography:** Password hashing using PHP's native algorithms with adaptive cost factors.
+- **AES-256 PII Encryption at Rest:** Transparent OpenSSL encryption for sensitive government ID and tax numbers.
+- **CSRF Token Middleware:** Session-bound cryptographic token verification on all state-altering requests.
+- **Granular RBAC Authorization:** Middleware gating Customer, Staff, Admin, and Super Admin endpoints.
+- **IP-Aware Rate Limiter:** Token-bucket sliding window rate limiter preventing API spam and bruteforce attempts.
+- **Strict Input Validation & Sanitization:** Centralized Validator service ensuring robust payload verification.
+- **XSS & Output Escaping:** Context-aware output escaping preventing cross-site scripting attacks.
+- **Zero-Framework Runtime:** Native PHP 8.4 and Vanilla ES6+ JS delivering lightning speed and minimal resource usage.
+- **Modular Design System:** CSS custom properties, utility classes, and accessible WCAG 2.2 AA compliant UI components.
+- **100% Passing Test Suite:** 196+ automated unit, integration, and security tests verified via PHPUnit.
 
 ---
 
 ## 🛠️ Technology Stack
 
-| Domain | Technology | Purpose |
+| Component | Technology | Description |
 | :--- | :--- | :--- |
-| **Backend Engine** | **PHP 8.4+** | High-performance core API, OOP Clean Architecture, Strict Typing |
-| **Database** | **MySQL 8.0 / MariaDB** | ACID relational storage, foreign key constraints, prepared statements |
-| **Frontend UI** | **Vanilla ES6+ JS** | Lightweight, reactive UI without client framework overhead |
-| **Styling** | **Custom Design Tokens + Tailwind CSS** | Fluid typography, responsive layouts, dynamic Dark/Light theme |
-| **Security** | **Bcrypt & OpenSSL (AES-256)** | State-of-the-art credential and PII data encryption at rest |
-| **Testing** | **PHPUnit 13.x** | Automated Unit, Integration, Regression, and Security testing |
-| **Quality Assurance**| **PHP_CodeSniffer (PSR-12) & PHPStan** | Strict linting, static type analysis, and coding style validation |
-| **Dependency Mgmt** | **Composer 2.x** | PSR-4 autoloading and developer tooling management |
+| **Backend Language** | **PHP 8.4+** | Strict types, native OOP, Clean Architecture, zero runtime vendor bloat |
+| **Database Engine** | **MySQL 8.0 / MariaDB** | InnoDB engine, ACID transactions, foreign keys, UTF-8 unicode collation |
+| **Frontend UI** | **Vanilla ES6+ JavaScript** | Decoupled client-side components, Fetch API, DOM manipulation |
+| **Styling & Theme** | **Custom Design System + Tailwind CSS** | Fluid typography, CSS variables, Dark/Light modes, responsive design |
+| **Security & Cryptography**| **Bcrypt & OpenSSL (AES-256)** | Password hashing, sensitive PII encryption at rest, secure session cookies |
+| **Testing Suite** | **PHPUnit 13.x** | Automated unit, integration, security, and banking atomicity test suites |
+| **Linting & Quality** | **PHP_CodeSniffer (PSR-12) & PHPStan** | Static analysis, strict typing validation, and PSR-12 code style compliance |
+| **CLI & Migrations** | **Finzo CLI (`bin/finzo`)** | Custom CLI for schema migrations, data seeding, and BCDR backup operations |
 
 ---
 
-## 🚀 Quick Setup & Installation
+## 🚀 Getting Started & Installation
 
-> 📖 **Need a complete beginner-friendly walkthrough?** See the full [**Local Setup & Installation Guide (SETUP_GUIDE.md)**](SETUP_GUIDE.md) for OS-specific instructions, virtual host setups, and troubleshooting.
+For full step-by-step installation instructions, environment configuration details, and troubleshooting, please refer to our dedicated guide:
 
-### 1. Clone the Repository
-```bash
-git clone https://github.com/EL-STRIX/Finzo.git
-cd Finzo
-```
+👉 [**Read the Full Local Setup & Installation Guide (SETUP_GUIDE.md)**](SETUP_GUIDE.md)
 
-### 2. Install Dependencies
-```bash
-composer install
-```
+### ⚡ Quick Summary
+1. Clone the repository into your local server root: `git clone https://github.com/EL-STRIX/Finzo.git`
+2. Install dependencies: `composer install`
+3. Configure `.env` from `.env.example` with your MySQL credentials.
+4. Run migrations and seeds: `php bin/finzo migrate && php bin/finzo seed system && php bin/finzo seed dev`
+5. Open your browser: `http://localhost/Finzo/public`
 
-### 3. Configure Environment
-```bash
-# Copy the environment template
-cp .env.example .env
-```
-Open `.env` and set your MySQL credentials:
-```ini
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_NAME=finzo_db
-DB_USER=root
-DB_PASS=
-```
-
-### 4. Migrate & Seed Database
-```bash
-php bin/finzo migrate
-php bin/finzo seed system
-php bin/finzo seed dev
-```
-
-### 5. Start Apache / Server
-Ensure Apache and MySQL are running in **XAMPP**, **Laragon**, or start the built-in server:
-```bash
-php -S localhost:8000 -t public
-```
-Visit your application in the browser at: `http://localhost/Finzo/public` (or `http://localhost:8000`).
-
----
-
-## 🔑 Default Seeded Credentials
-
-When seeded with `php bin/finzo seed dev`, use the following pre-configured credentials:
-
-| Role | Portal URL | Login Email / ID | Password | Notes |
+### 🔑 Default Demo Accounts
+| Role | Portal URL | Login Email | Password | Default PIN |
 | :--- | :--- | :--- | :--- | :--- |
-| **Super Admin** | `/public/views/auth/admin-login.html` | `admin@finzo.com` | `Admin@123` | Full administrative control & platform KPIs |
-| **Branch Staff** | `/public/views/auth/staff-login.html` | `rahul.sharma1@finzo.com` | `Staff@123` | Teller operations (Deposits, Withdrawals, KYC) |
-| **Customer User** | `/public/views/auth/login.html` | `rahul.sharma1@example.com` | `User@123` | Retail banking dashboard (PIN: `1234`) |
+| **Super Admin** | `/public/views/auth/admin-login.html` | `admin@finzo.com` | `Admin@123` | N/A |
+| **Branch Staff** | `/public/views/auth/staff-login.html` | `rahul.sharma1@finzo.com` | `Staff@123` | N/A |
+| **Customer User** | `/public/views/auth/login.html` | `rahul.sharma1@example.com` | `User@123` | **`1234`** |
 
 ---
 
-## 🧪 Testing & Code Quality
+## 📚 Documentation Index
 
-Finzo comes with an automated testing and verification suite to ensure rock-solid stability before deployment.
+Extensive technical runbooks, architecture reports, and API specifications are documented in the [`docs/`](docs/) directory:
 
-```bash
-# Run the complete PHPUnit test suite (196+ tests, 620+ assertions)
-vendor/bin/phpunit
-
-# Verify strict PSR-12 coding standard compliance
-vendor/bin/phpcs --standard=phpcs.xml app/ tests/
-
-# Execute static analysis
-vendor/bin/phpstan analyse
-
-# Check code coverage metrics
-php bin/check-coverage.php
-```
+- [**📘 Master Documentation Hub (docs/INDEX.md)**](docs/INDEX.md) — Main index for all technical documentation
+- [**🏛️ Clean Architecture Guide (docs/ARCHITECTURE.md)**](docs/ARCHITECTURE.md) — Layered design principles and request lifecycles
+- [**🗄️ Database Schema Reference (docs/database/SCHEMA_REFERENCE.md)**](docs/database/SCHEMA_REFERENCE.md) — Detailed table dictionary & relations
+- [**🔄 DBA Migration & BCDR Guide (docs/database/MIGRATION_GUIDE.md)**](docs/database/MIGRATION_GUIDE.md) — Migrations, seeders, and backup recovery
+- [**📡 API Reference Specification (docs/api/README.md)**](docs/api/README.md) — RESTful endpoints, payloads, and envelopes
+- [**🔐 Security & OWASP Audit (docs/security/README.md)**](docs/security/README.md) — Threat models and OWASP ASVS compliance
+- [**🧪 Testing Strategy (docs/testing/README.md)**](docs/testing/README.md) — Test architecture, assertions, and CI gating
 
 ---
 
-## 📚 Documentation Sitemap
+## 🤝 Contributing & Code Quality
 
-Comprehensive architectural runbooks, security audits, and API dictionaries are available in the [`docs/`](docs/) directory:
-
-- [**📘 Documentation Index (docs/INDEX.md)**](docs/INDEX.md) — Master table of contents
-- [**🏛️ Clean Architecture Guide (docs/ARCHITECTURE.md)**](docs/ARCHITECTURE.md) — Architectural principles and request lifecycle
-- [**🗄️ Database Schema Reference (docs/database/SCHEMA_REFERENCE.md)**](docs/database/SCHEMA_REFERENCE.md) — Table schemas and relationships
-- [**🔄 DBA Migration Runbook (docs/database/MIGRATION_GUIDE.md)**](docs/database/MIGRATION_GUIDE.md) — Migrations, seeding, and BCDR
-- [**📡 API Reference (docs/api/README.md)**](docs/api/README.md) — RESTful endpoints, payloads, and response standards
-- [**🔐 Security & Compliance Audit (docs/security/README.md)**](docs/security/README.md) — Threat models and OWASP mitigations
-- [**🧪 Testing Strategy (docs/testing/README.md)**](docs/testing/README.md) — Testing philosophy, isolation, and CI gating
-
----
-
-## 🤝 Contributing & Engineering Standards
-
-We welcome contributions from the community! To maintain the highest engineering quality:
-1. Follow **PSR-12** standards strictly (`vendor/bin/phpcs`).
-2. Adhere to **Clean Architecture** (Keep Controllers thin, Services rich, and DB access in Repositories).
-3. Cover new business logic with unit/integration tests (`vendor/bin/phpunit`).
-4. Commit atomically with concise, descriptive commit messages.
+Contributions are welcome! Please ensure all modifications follow these standards:
+- **PSR-12 Compliance:** Verify code formatting with `vendor/bin/phpcs --standard=phpcs.xml`.
+- **Clean Architecture:** Maintain separation of concerns (thin controllers, fat services, repository-only database access).
+- **Test Coverage:** Ensure all new business logic is accompanied by passing PHPUnit tests (`vendor/bin/phpunit`).
+- **Atomic Commits:** Make single-line, descriptive git commits following standard conventions.
 
 ---
 
 ## 📄 License
 
-This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
+This project is open-sourced under the [**MIT License**](LICENSE).
 
 ---
 
-## 👨‍💻 Project Developer
+## 👨‍💻 Author & Developer
 
 **Sujay Paul**  
 *Full Stack Developer & Software Engineering Student*  
 - **GitHub:** [@EL-STRIX](https://github.com/EL-STRIX)  
 - **Project Repository:** [https://github.com/EL-STRIX/Finzo](https://github.com/EL-STRIX/Finzo)
 
-*Crafted with passion for clean code, robust software architecture, and financial reliability.*
+*Crafted with precision, clean engineering principles, and a passion for financial technology.*
