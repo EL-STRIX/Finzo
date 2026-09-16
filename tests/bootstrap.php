@@ -164,8 +164,7 @@ spl_autoload_register(function ($class) {
     if (file_exists($file)) require $file;
 });
 
-// Load config constants
-require_once FINZO_ROOT . '/config/config.php';
+// Load helper functions and vendor autoloader
 require_once FINZO_ROOT . '/config/functions.php';
 require_once FINZO_ROOT . '/vendor/autoload.php';
 
