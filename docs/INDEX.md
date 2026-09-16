@@ -4,10 +4,11 @@
 
 ---
 
-## 1. Master Reports & Engineering Studies
+## 1. Getting Started & Master Reports
 
 | Document | Description |
 |---|---|
+| [Local Setup & Installation Guide](../SETUP_GUIDE.md) | Complete step-by-step humanized guide to running Finzo locally from scratch |
 | [Project Engineering Report](reports/PROJECT_REPORT.md) | Comprehensive architecture, auth flows, and engineering specifications |
 | [Engineering Case Study](case-study/FINZO_CASE_STUDY.md) | In-depth architectural case study and design rationale |
 | [Security Audit](reports/Security-Audit.md) | Security architecture, threat modeling, and defensive boundaries |

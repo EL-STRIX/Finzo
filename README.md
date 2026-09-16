@@ -225,6 +225,8 @@ Standardized responses follow a uniform `{ success: boolean, message: string, da
 
 ## 10. Installation & Setup
 
+> 📖 **Looking for a comprehensive, beginner-friendly walkthrough?** See the full [**Local Setup & Installation Guide (SETUP_GUIDE.md)**](SETUP_GUIDE.md) for detailed platform-specific steps, troubleshooting, and configuration options.
+
 1. **Clone the Repository:**
    ```bash
    git clone https://github.com/EL-STRIX/Finzo.git
