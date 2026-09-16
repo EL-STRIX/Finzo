@@ -176,22 +176,20 @@ Finzo follows a decoupled, API-first architecture pattern:
 
 ```text
 Finzo/
-├── app/                  # Core application logic
-│   ├── Application/      # Application services, commands, queries
-│   ├── Domain/           # Domain models, enums, interface contracts
-│   ├── Infrastructure/   # Database repositories and external services
-│   ├── Presentation/     # Controllers and Middleware
-│   └── Shared/           # Core utilities (Router, Logging, Config)
-├── bin/                  # CLI scripts and workers
-├── bootstrap/            # Application bootstrap and DI setup
-├── config/               # Global configuration (Cache, Mail, Redis)
-├── database/             # SQL migrations and schemas
-├── docker-compose.yml    # Docker services definition
-├── Dockerfile            # Production PHP-FPM image
-├── ops/                  # CI/CD deployment scripts and Nginx config
+├── app/                  # Core application logic (Clean Architecture)
+│   ├── Application/      # Services, DTOs, Actions, Listeners, Jobs
+│   ├── Domain/           # Entities, Enums, Contracts/Interfaces
+│   ├── Infrastructure/   # Repositories and database adapters
+│   ├── Presentation/     # Controllers, Middlewares, Validators
+│   └── Shared/           # Core utilities (Router, Logging, Security)
+├── bin/                  # CLI tool (finzo) and coverage checkers
+├── bootstrap/            # Application bootstrap and DI container
+├── config/               # Global configuration (db, mailer, events)
+├── database/             # SQL schemas, migrations, and seeders
+├── docs/                 # Architectural reports, API references, audits
 ├── public/               # Public document root (index.php, CSS, JS, Views)
 ├── routes/               # API route definitions
-└── storage/              # File uploads, logs, and cache
+└── storage/              # File uploads, logs, and backups
 ```
 ## 7. Authentication & Security
 
@@ -227,44 +225,32 @@ Standardized responses follow a uniform `{ success: boolean, message: string, da
 
 ## 10. Installation & Setup
 
-### Option 1: Docker (Recommended)
-The easiest way to run Finzo locally is using Docker.
-
 1. **Clone the Repository:**
    ```bash
-   git clone https://github.com/your-username/Finzo.git
-   cd Finzo
+   git clone https://github.com/EL-STRIX/Finzo.git
    ```
 
 2. **Environment Setup:**
-   ```bash
-   cp .env.example .env
-   # Update DB passwords if necessary, default is 'secret' for Docker
-   ```
+   - Move or clone the `Finzo` directory into your local web root (e.g. `c:/xampp/htdocs/Finzo`).
+   - Copy `.env.example` to `.env` and configure your database parameters:
+     ```bash
+     cp .env.example .env
+     ```
 
-3. **Start Services:**
-   ```bash
-   docker-compose up -d
-   ```
-   The application will be available at `http://localhost:8080`.
+3. **Install Dependencies & Database Setup:**
+   - Install Composer dependencies:
+     ```bash
+     composer install
+     ```
+   - Run database migrations and seed baseline data:
+     ```bash
+     php bin/finzo migrate
+     php bin/finzo seed system
+     ```
 
-### Option 2: Local Server (XAMPP/WAMP)
-
-1. **Clone the Repository:**
-   ```bash
-   git clone https://github.com/your-username/Finzo.git
-   ```
-
-2. **Environment Setup:**
-   - Move the `Finzo` directory into your local server's web root (e.g., `htdocs`).
-   - Copy `.env.example` to `.env` and fill in your DB credentials.
-
-3. **Database Configuration:**
-   - Create a database named `finzo_db`.
-   - Import the schema from `database/schema.sql` (if available, otherwise run migrations).
-
-4. **Run the Application:**
-   Start Apache and MySQL. Access the platform at `http://localhost/Finzo/public`.
+4. **Access the Application:**
+   Start Apache and MySQL. Access the platform at:
+   `http://localhost/Finzo/public`
 
 ## 11. Environment Configuration
 

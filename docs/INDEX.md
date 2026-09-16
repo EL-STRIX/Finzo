@@ -12,6 +12,8 @@
 | [Engineering Case Study](case-study/FINZO_CASE_STUDY.md) | In-depth architectural case study and design rationale |
 | [Security Audit](reports/Security-Audit.md) | Security architecture, threat modeling, and defensive boundaries |
 | [Accessibility Audit](reports/Accessibility-Audit.md) | Formal WCAG 2.2 AA audit and verification |
+| [UI Visual Audit](reports/UI-Audit.md) | User interface visual consistency, responsive design, and layout audit |
+| [UX Journey Audit](reports/UX-Audit.md) | User experience flow, friction points, and interaction state audit |
 
 ---
 
